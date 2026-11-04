@@ -5,7 +5,10 @@ En ny kurs är en ny mapp i `src/courses/` och en rad i
 Behöver den det, lägg till det i kontraktet i `SPEC.md` så att nästa
 kurs slipper, i stället för att lösa det med ett specialfall.
 
-Python är mallen: `src/courses/python/` har allt en kurs kan ha.
+Tre kurser att utgå från: `python` (en körning som startas, Kör rad
+för rad, Streamlit), `html` (rättas direkt i webbläsaren, ingen
+Kör-knapp) och `js` (en worker per körning, React-förhandsvisning,
+Prettier). Välj den som liknar det nya språket mest.
 
 ## Mappen
 
@@ -38,6 +41,9 @@ Se Kontraktet i `SPEC.md`. Det viktigaste:
 - **`useWorkbench`** svarar med det kursen visar runt editorn. En kurs
   utan egna verktyg svarar `{ runOptions: {}, editor: {} }`.
 - **`texts` och `help`**: allt i gränssnittet som nämner språket.
+- Valfritt (se SPEC.md): `editor.format`, `editor.normalize`,
+  `playground.slots`, `runtime.hasResult`, `ResultPreview` och
+  `progress` (bara om kursen sparat framsteg på annat sätt förut).
 - **`content.ideaStarterCode(idea)`**: Lekplatsens startkod (idé eller
   fri kod) i kursens språk.
 
@@ -79,8 +85,9 @@ Användaren testar efter varje steg.
 
 ### TypeScript – nästa kurs (etapp 7)
 
-- Körningen från JS Academy (JavaScript i en worker) plus `typescript`
-  från npm: `ts.transpileModule` gör om koden till JavaScript.
+- Utgå från `src/courses/js`: samma worker (`runner/`) plus `typescript`
+  från npm, där `ts.transpileModule` gör om koden till JavaScript före
+  körningen.
 - Typfelen kommer från en `LanguageService` med
   `getSemanticDiagnostics`. Visa dem som syntaxfel med radnummer.
 - Övningar kan rättas på typerna: "den här koden ska ge typfel" är ett

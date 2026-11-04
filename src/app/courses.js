@@ -1,20 +1,14 @@
 import { meta as html } from '../courses/html/meta';
+import { meta as js } from '../courses/js/meta';
 import { meta as python } from '../courses/python/meta';
 
 // Alla kurser i ordning. load() hämtar kursen först när den öppnas, så
 // att startsidan inte laddar Python eller något annat språk.
-// href: kurser som inte flyttat in än ligger kvar på sin gamla sajt.
+// href: en kurs som inte flyttat in än och ligger kvar på sin gamla sajt.
 export const COURSES = [
   { ...python, load: () => import('../courses/python') },
   { ...html, load: () => import('../courses/html') },
-  {
-    id: 'js',
-    name: 'JavaScript',
-    icon: '⚡',
-    tagline: 'Gör sidor levande, och lär dig React',
-    storagePrefix: 'academy-',
-    href: 'https://jorgenjonsson80.github.io/js-academy/',
-  },
+  { ...js, load: () => import('../courses/js') },
 ];
 
 // Kursen som adressen pekar på, t.ex. /kodskolan/python, eller null för

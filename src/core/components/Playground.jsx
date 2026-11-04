@@ -18,12 +18,17 @@ export default function Playground({ ideas, ideaId, onSelectIdea, onBack }) {
   const course = useCourse();
   const { runtime, texts, ResultPreview } = course;
   // HTML visar sidan medan man skriver och har ingen Kör-knapp.
-  const { runs, intro } = course.playground;
+  // slots: kursens egna platser i listan, t.ex. JS:s React-komponent,
+  // med { key, label, starter }.
+  const { runs, intro, slots = [] } = course.playground;
   const [codes, setCodes] = useState(() => loadPlaygroundCodes(course));
   const idea = ideas.find(item => item.id === ideaId && item.unlocked) ?? null;
   const hasCopy = codes[COPY] !== undefined;
-  const key = idea?.id ?? (ideaId === COPY && hasCopy ? COPY : FREE);
-  const code = codes[key] ?? course.content.ideaStarterCode(idea);
+  const slot = slots.find(item => item.key === ideaId) ?? null;
+  const key =
+    idea?.id ?? slot?.key ?? (ideaId === COPY && hasCopy ? COPY : FREE);
+  const code =
+    codes[key] ?? slot?.starter ?? course.content.ideaStarterCode(idea);
   const [run, setRun] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
   const workbench = course.useWorkbench({
@@ -88,6 +93,11 @@ export default function Playground({ ideas, ideaId, onSelectIdea, onBack }) {
         Bygg
         <select value={key} onChange={handleSelect}>
           <option value={FREE}>Fritt – ingen idé</option>
+          {slots.map(item => (
+            <option key={`slot-${item.key}`} value={item.key}>
+              {item.label}
+            </option>
+          ))}
           {hasCopy && <option value={COPY}>📋 Kopia från övningen</option>}
           {tracksWithIdeas.map(trackTitle => (
             <optgroup key={`group-${trackTitle}`} label={trackTitle}>
@@ -169,9 +179,9 @@ export default function Playground({ ideas, ideaId, onSelectIdea, onBack }) {
         {run &&
           !run.failed &&
           !run.timedOut &&
-          !(run.app?.length && !run.console.length) && (
+          !(runtime.hasResult?.(run) && !run.console.length) && (
             <figure className="console-output">
-              <figcaption>Utskrift</figcaption>
+              <figcaption>{texts.outputLabel ?? 'Utskrift'}</figcaption>
               <pre>
                 {run.console.length > 0
                   ? run.console.join('\n')

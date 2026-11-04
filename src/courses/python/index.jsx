@@ -36,6 +36,8 @@ export default {
     warmUp,
     onStatus,
     timeoutMs: TIMEOUT_MS,
+    // Lekplatsen visar Streamlit-appen i stället för en tom utskrift.
+    hasResult: run => run.app?.length > 0,
     statusText: {
       idle: '🐍 Python vilar',
       starting: '🐍 Startar Python…',
@@ -50,6 +52,9 @@ export default {
     describeAt: pythonHover,
     comment: text => `# ${text}`,
     codeFence: 'python',
+    // Facit jämförs utan kommentarer, blanksteg och sorts citattecken.
+    normalize: code =>
+      code.replace(/#.*$/gm, '').replace(/"/g, "'").replace(/\s/g, ''),
     tips: (
       <>
         <kbd>Tab</kbd> drar in fyra mellanslag

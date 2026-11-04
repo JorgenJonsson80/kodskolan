@@ -39,9 +39,14 @@ export function buildAiPrompt({
   feedback,
   learnedTracks,
 }) {
-  const task = lesson.task.replace(/^Uppgift:\s*/, '').replace(/`/g, '');
+  const task = (lesson.task ?? lesson.description ?? '')
+    .replace(/^Uppgift:\s*/, '')
+    .replace(/`/g, '');
+  // Språket och kodblocket kan bero på banan (JS: React eller inte).
+  const pick = value =>
+    typeof value === 'function' ? value({ lesson, learnedTracks }) : value;
 
-  return `Hej! Jag lär mig ${course.texts.learning} och har kört fast på en övning. Jag är nybörjare.
+  return `Hej! Jag lär mig ${pick(course.texts.learning)} och har kört fast på en övning. Jag är nybörjare.
 
 Ge mig INTE hela lösningen – jag vill lära mig själv. Hjälp mig så här:
 1. Förklara på enkel svenska vad som är fel eller vad jag missar.
@@ -55,7 +60,7 @@ Uppgift:
 ${task.trim()}
 
 Min kod:
-\`\`\`${course.editor.codeFence}
+\`\`\`${pick(course.editor.codeFence)}
 ${code.trim()}
 \`\`\`
 

@@ -25,6 +25,6 @@ export function encouragement(failedAttempts, kind, own = {}) {
       ? (own.syntax ?? SYNTAX)
       : kind === 'crash'
         ? (own.crash ?? CRASH)
-        : TRY_AGAIN;
+        : (own.tests ?? TRY_AGAIN);
   return list[failedAttempts % list.length];
 }

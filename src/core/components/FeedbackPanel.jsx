@@ -25,7 +25,7 @@ export default function FeedbackPanel({ feedback, stage }) {
       {ResultPreview && <ResultPreview result={feedback} />}
       {feedback.output?.length > 0 && (
         <figure className="console-output">
-          <figcaption>Utskrift</figcaption>
+          <figcaption>{texts.outputLabel ?? 'Utskrift'}</figcaption>
           <pre>{feedback.output.join('\n')}</pre>
         </figure>
       )}

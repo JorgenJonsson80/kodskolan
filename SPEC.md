@@ -65,26 +65,41 @@ export default {
     tracks, lessons, projects, projectSteps, ideas, quiz, resources,
     ideaStarterCode, // Lekplatsens startkod i kursens språk
   },
+  progress?: {    // bara om kursen sparade på annat sätt förut (JS)
+    legacyCompleted, // () => klara id:n från gamla nycklar
+    cloud,        // { select, fromRow, toRow } för tabellens kolumner
+  },
 
   runtime: {
-    run,          // ({ code, tests, inputs, files }) => svaret nedan
-    evaluate,     // (lesson, code, svar) => feedback (som i dag)
+    run,          // ({ code, tests, inputs, files, ...runOptions }) => svar
+    evaluate,     // (lesson, code, svar) => feedback
+    hasResult?,   // run => true när Lekplatsen visar något annat än
+                  // utskriften (Streamlit-appen, en React-komponent)
     warmUp, onStatus, statusText, timeoutMs, // valfria: bara det som
   },                                         // behöver startas (Python)
   editor: {
     extensions,   // () => CodeMirror-tillägg: språk, indrag, förslag
     describeAt,   // hover: (state, pos, side) => { from, to, title, body }
     comment,      // text => en kommentar i språket (projektsteg, Lekplatsen)
-    codeFence,    // språket i AI-frågans kodblock
+    codeFence,    // språket i AI-frågans kodblock (eller en funktion)
+    normalize?,   // kod => kod utan det som bara är stil (jämförs med facit)
+    format?,      // (kod, markör) => { formatted, cursorOffset } (JS: Prettier)
     tips,         // raden under editorn
   },
   errors: { errorTitle, explainError, icon },
   useWorkbench,   // hook: Kör rad för rad, förhandsvisning m.m. (nedan)
-  ResultPreview,  // valfri: det körningen ritade (Streamlit-appen …)
-  playground: { runs, intro }, // runs: false = ingen Kör-knapp (HTML)
+  ResultPreview?, // det körningen ritade (Streamlit-appen, React …)
+  playground: {
+    runs,         // false = ingen Kör-knapp, sidan syns direkt (HTML)
+    intro,
+    slots?,       // egna platser i listan: [{ key, label, starter }]
+  },
   texts: {        // det i gränssnittet som säger något om språket
     failedToStart, running, starting?, nothingPrinted?, warningsTitle?,
-    docs: track => …, readGuide, learning, copyNote, encouragement?,
+    outputLabel?, // "Utskrift" (standard) eller "Konsol"
+    docs: track => …, readGuide, copyNote,
+    learning,     // språket i AI-frågan (eller en funktion av banorna)
+    encouragement?: { syntax?, crash?, tests? },
   },
   help: {         // kursens delar av Hjälp-rutan och Fastnat?
     intro, checkResult, playground?, editor, firstTips, laterTips,
@@ -111,15 +126,18 @@ runt editorn. `lesson` är null på Lekplatsen. Den svarar `{ runOptions,
 editor, beforeEditor, afterEditor, actions, panels }`: `runOptions`
 skickas med till `run` (t.ex. svaren till input() på Lekplatsen),
 `editor` går till CodeEditor (markerad rad och lapp), `actions` är
-knappar bredvid Kolla lösning och `panels` visas under knapparna. Python har Kör rad för rad och Streamlit där,
-HTML får förhandsvisningen.
+knappar bredvid Kolla lösning och `panels` visas under knapparna.
+`editor` kan också ha `fileName`, som visas i editorns rubrik. Python
+har Kör rad för rad, svaren till input() och Streamlit där, HTML
+förhandsvisningen och JS filerna, Kör rad för rad och vad som ska
+förhandsvisas.
 
 ## Data och konton
 
 | Tabell             | Etapp | Innehåll                                         |
 | ------------------ | ----- | ------------------------------------------------ |
-| `py_progress` m.fl.| 1–2   | som i dag, en per kurs                           |
-| `progress`         | 3     | user_id, course_id, klara id:n, utkast, lägen    |
+| `py_progress` m.fl.| 1–2   | som i dag, en per kurs (JS: `progress`)          |
+| `course_progress`  | 3     | user_id, course_id, klara id:n, utkast, lägen    |
 | `entitlements`     | 5     | user_id, course_id, giltig till, källa           |
 | `lesson_content`   | 5     | betalbanornas övningar, läses bara med tillgång  |
 | `schools` …        | 6     | skolor, klasser, medlemmar                       |
@@ -145,9 +163,13 @@ Användaren testar efter varje etapp.
 2. **HTML och JS flyttar in.** Det som skiljer sig mellan de tre
    versionerna av kärnan slås ihop. Gamla adresser skickar vidare.
    HTML ✅ (kontraktet fick `playground`, fler `help`-delar och
-   `warnings`). Kvar: JS och vidarebefordran från de gamla sajterna.
-3. **Ett konto, Mina kurser.** En tabell `progress`, och de gamla
-   tabellerna flyttas över.
+   `warnings`). JS ✅ (kontraktet fick `progress`, `editor.format`,
+   `normalize`, `playground.slots`, `hasResult` och `outputLabel`).
+   Kvar: vidarebefordran från de gamla sajterna, när Kodskolan är
+   publicerad.
+3. **Ett konto, Mina kurser.** En tabell `course_progress` (namnet
+   `progress` är upptaget av JS Academy), och de gamla tabellerna
+   flyttas över.
 4. **Språkfil.** All text i kärnan i `sv.js`, så att engelska blir en
    ny fil.
 5. **Låst innehåll och Stripe.** Gratisbanor, köp och betalbanor från

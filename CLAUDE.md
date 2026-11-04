@@ -6,10 +6,11 @@ tester. Planen och etapperna står i `SPEC.md` – läs den först.
 `docs/NY-KURS.md` är checklistan för en ny kurs. Varje kurs har sin egen
 `CLAUDE.md` i sin mapp och sin SPEC i `docs/kurser/`.
 
-Byggs i etapper enligt `SPEC.md`; användaren testar efter varje. Python
-och HTML & CSS har flyttat in. JS Academy ligger kvar i sitt eget repo
-(`../React från S`) tills den flyttat in. De gamla repona för Python och
-HTML (`../python från S`, `../html från S`) rörs inte.
+Byggs i etapper enligt `SPEC.md`; användaren testar efter varje. Python,
+HTML & CSS och JavaScript har flyttat in (`src/courses/python`, `html`,
+`js`). De gamla repona (`../python från S`, `../html från S`,
+`../React från S`) och deras sajter rörs inte; de används fortfarande
+tills Kodskolan är publicerad.
 
 Vite + React 19 (JavaScript, inte TypeScript), CodeMirror 6. Ingen egen
 server. Supabase för inloggning och synkade framsteg (valfritt – utan
@@ -35,8 +36,8 @@ Push till `main` kör testerna och publicerar via
 - `src/app/` – sajten. `main.jsx` läser adressen (`courseFromPath` i
   `courses.js`) och visar startsidan (`Home.jsx`) eller en kurs.
   Kursen och kärnan laddas med `import()` först när en kurs öppnas.
-  `courses.js` har alla kurser i ordning; en kurs med `href` har inte
-  flyttat in än och öppnas på sin gamla sajt.
+  `courses.js` har alla kurser i ordning; en kurs med `href` i stället
+  för `load` öppnas på en annan sajt.
 - `src/core/` – det alla kurser delar. **Får aldrig importera från en
   kurs** (ESLint stoppar det). Det som beror på språket hämtas med
   `useCourse()` från `core/course.js`.

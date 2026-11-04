@@ -11,6 +11,7 @@ import Quiz from './components/Quiz';
 import TrackList from './components/TrackList';
 import { CourseContext } from './course';
 import { copyToPlayground, PLAYGROUND_COPY } from './lib/playground';
+import { mergeCompleted } from './lib/progress';
 import { isStringList, isStringMap, readJson, writeJson } from './lib/storage';
 import { useCloudProgress } from './lib/useCloudProgress';
 import { isProjectComplete, noHintsBonusXp, noHintsId } from './projects';
@@ -65,8 +66,13 @@ function Academy({ course }) {
     const saved = readJson(KEYS.current, null, id => typeof id === 'string');
     return EXERCISES.some(item => item.id === saved) ? saved : LESSONS[0].id;
   });
+  // legacyCompleted: klara id:n som en äldre version av kursen sparade
+  // på annat sätt (JS Academys klarade quiz), så att inget tappas.
   const [completedIds, setCompletedIds] = useState(() =>
-    readJson(KEYS.completed, [], isStringList),
+    mergeCompleted(
+      readJson(KEYS.completed, [], isStringList),
+      course.progress?.legacyCompleted?.() ?? [],
+    ),
   );
   const [drafts, setDrafts] = useState(() =>
     readJson(KEYS.drafts, {}, isStringMap),
@@ -113,6 +119,7 @@ function Academy({ course }) {
 
   const account = useCloudProgress({
     table: course.progressTable,
+    cloud: course.progress?.cloud,
     completedIds,
     setCompletedIds,
     drafts,

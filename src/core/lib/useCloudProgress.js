@@ -7,8 +7,25 @@ import { supabase } from './supabase';
 // status: 'loading' när kontot hämtas, 'synced' när allt är sparat och
 // 'error' om något gick fel. Själva sparandet visas inte, eftersom det
 // sker hela tiden och annars får sidan att flimra.
+// Så här ser en rad ut i Python- och HTML-kursens tabeller. En kurs med
+// andra kolumner (JS) skickar med en egen cloud: { select, fromRow, toRow }.
+const STANDARD = {
+  select: 'completed_ids, drafts, project_modes',
+  fromRow: row => ({
+    completedIds: row?.completed_ids,
+    drafts: row?.drafts,
+    projectModes: row?.project_modes,
+  }),
+  toRow: ({ completedIds, drafts, projectModes }) => ({
+    completed_ids: completedIds,
+    drafts,
+    project_modes: projectModes,
+  }),
+};
+
 export function useCloudProgress({
   table,
+  cloud = STANDARD,
   completedIds,
   setCompletedIds,
   drafts,
@@ -38,7 +55,7 @@ export function useCloudProgress({
     let ignore = false;
     supabase
       .from(table)
-      .select('completed_ids, drafts, project_modes')
+      .select(cloud.select)
       .eq('user_id', userId)
       .maybeSingle()
       .then(({ data, error }) => {
@@ -47,16 +64,17 @@ export function useCloudProgress({
           setStatus('error');
           return;
         }
-        setCompletedIds(local => mergeCompleted(local, data?.completed_ids));
-        setDrafts(local => mergeDrafts(local, data?.drafts));
-        setProjectModes(local => mergeDrafts(local, data?.project_modes));
+        const saved = cloud.fromRow(data);
+        setCompletedIds(local => mergeCompleted(local, saved.completedIds));
+        setDrafts(local => mergeDrafts(local, saved.drafts));
+        setProjectModes(local => mergeDrafts(local, saved.projectModes));
         setLoadedUserId(userId);
         setStatus('synced');
       });
     return () => {
       ignore = true;
     };
-  }, [table, userId, setCompletedIds, setDrafts, setProjectModes]);
+  }, [table, cloud, userId, setCompletedIds, setDrafts, setProjectModes]);
 
   // Spara en sekund efter senaste ändringen, så att inte varje
   // tangenttryckning skickas.
@@ -65,15 +83,13 @@ export function useCloudProgress({
     const timer = setTimeout(async () => {
       const { error } = await supabase.from(table).upsert({
         user_id: userId,
-        completed_ids: completedIds,
-        drafts,
-        project_modes: projectModes,
+        ...cloud.toRow({ completedIds, drafts, projectModes }),
         updated_at: new Date().toISOString(),
       });
       setStatus(error ? 'error' : 'synced');
     }, 1000);
     return () => clearTimeout(timer);
-  }, [table, userId, loadedUserId, completedIds, drafts, projectModes]);
+  }, [table, cloud, userId, loadedUserId, completedIds, drafts, projectModes]);
 
   async function signIn(email) {
     const { error } = await supabase.auth.signInWithOtp({

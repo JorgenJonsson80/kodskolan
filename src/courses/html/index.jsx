@@ -38,6 +38,12 @@ export default {
     describeAt: htmlHover,
     comment: text => `<!-- ${text} -->`,
     codeFence: 'html',
+    // Facit jämförs utan kommentarer, blanksteg och sorts citattecken.
+    normalize: code =>
+      code
+        .replace(/<!--[^]*?-->|\/\*[^]*?\*\//g, '')
+        .replace(/"/g, "'")
+        .replace(/\s/g, ''),
     tips: (
       <>
         <kbd>Tab</kbd> drar in två mellanslag · skriv <code>&lt;</code> så

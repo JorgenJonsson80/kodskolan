@@ -2,11 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { isNoticeablyLonger } from './compare';
 
 describe('isNoticeablyLonger', () => {
-  it('räknar inte kommentarer, blanksteg och citattecken', () => {
+  it('räknar inte blanksteg och citattecken', () => {
     const solution = 'print("Hej")\n';
-    expect(
-      isNoticeablyLonger("# Min lösning\nprint( 'Hej' )\n", solution),
-    ).toBe(false);
+    expect(isNoticeablyLonger("print( 'Hej' )\n", solution)).toBe(false);
+  });
+
+  it('använder kursens normalize, t.ex. utan kommentarer', () => {
+    const solution = 'print("Hej")\n';
+    const withComment = '# En lång kommentar om koden\nprint("Hej")\n';
+    const noComments = code => code.replace(/#.*$/gm, '').replace(/\s/g, '');
+    expect(isNoticeablyLonger(withComment, solution)).toBe(true);
+    expect(isNoticeablyLonger(withComment, solution, noComments)).toBe(false);
   });
 
   it('säger till när koden är mer än 30 % och 15 tecken längre', () => {

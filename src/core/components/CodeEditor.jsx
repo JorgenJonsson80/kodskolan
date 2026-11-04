@@ -28,10 +28,11 @@ import {
   WidgetType,
 } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCourse } from '../course';
 
 const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+const FORMAT_KEYS = isMac ? 'Cmd+Shift+F' : 'Ctrl+Shift+F';
 const RUN_KEYS = isMac ? 'Cmd+Enter' : 'Ctrl+Enter';
 const COMMENT_KEYS = isMac ? 'Cmd+/' : 'Ctrl+/';
 
@@ -55,6 +56,18 @@ function renderInfo({ title, body }) {
   });
   dom.append(heading, paragraph);
   return dom;
+}
+
+// Formaterar med kursens format(källkod, markör) som svarar
+// { formatted, cursorOffset } (JS: Prettier). Kastar vid syntaxfel.
+async function formatCode(view, format) {
+  const source = view.state.doc.toString();
+  const result = await format(source, view.state.selection.main.head);
+  if (result.formatted === source) return;
+  view.dispatch({
+    changes: { from: 0, to: view.state.doc.length, insert: result.formatted },
+    selection: { anchor: Math.max(0, result.cursorOffset) },
+  });
 }
 
 // describeAt kommer från kursen och svarar { from, to, title, body }.
@@ -243,11 +256,13 @@ export default function CodeEditor({
   onRun,
   activeLine = null,
   stepNote = null,
+  fileName = null,
 }) {
   const { editor } = useCourse();
   const hostRef = useRef(null);
   const viewRef = useRef(null);
   const callbacks = useRef({ onCodeChange, onRun });
+  const [formatError, setFormatError] = useState(false);
 
   useEffect(() => {
     callbacks.current = { onCodeChange, onRun };
@@ -273,6 +288,22 @@ export default function CodeEditor({
           syntaxHighlighting(highlightStyle),
           editorTheme,
           EditorView.contentAttributes.of({ 'aria-labelledby': 'code-label' }),
+          // Formatera med Cmd/Ctrl+Shift+F, eller Shift+Alt+F som i VS Code.
+          // ⌥⇧F ger ett specialtecken på Mac, så vi läser den fysiska
+          // tangenten (event.code) i stället för tecknet.
+          EditorView.domEventHandlers({
+            keydown(event, view) {
+              const modifier = event.metaKey || event.ctrlKey || event.altKey;
+              if (!editor.format || event.code !== 'KeyF') return false;
+              if (!event.shiftKey || !modifier) return false;
+              event.preventDefault();
+              formatCode(view, editor.format).then(
+                () => setFormatError(false),
+                () => setFormatError(true),
+              );
+              return true;
+            },
+          }),
           keymap.of([
             {
               key: 'Mod-Enter',
@@ -291,6 +322,7 @@ export default function CodeEditor({
           EditorView.updateListener.of(update => {
             if (update.docChanged) {
               callbacks.current.onCodeChange(update.state.doc.toString());
+              setFormatError(false);
             }
           }),
         ],
@@ -332,13 +364,26 @@ export default function CodeEditor({
   return (
     <>
       <label id="code-label" onClick={() => viewRef.current?.focus()}>
-        Din kod
+        Din kod{fileName && ` (${fileName})`}
       </label>
       <div ref={hostRef} />
       <p className="editor-tips muted">
-        <kbd>{RUN_KEYS}</kbd> kör koden · {editor.tips} ·{' '}
-        <kbd>{COMMENT_KEYS}</kbd> kommenterar bort en rad · håll musen över ett
-        namn för att se vad det är
+        {formatError ? (
+          <span className="editor-tips-error">
+            Kunde inte formatera – det finns ett syntaxfel någonstans.
+          </span>
+        ) : (
+          <>
+            <kbd>{RUN_KEYS}</kbd> kör koden · {editor.tips} ·{' '}
+            {editor.format && (
+              <>
+                <kbd>{FORMAT_KEYS}</kbd> formaterar ·{' '}
+              </>
+            )}
+            <kbd>{COMMENT_KEYS}</kbd> kommenterar bort en rad · håll musen över
+            ett namn för att se vad det är
+          </>
+        )}
       </p>
     </>
   );
