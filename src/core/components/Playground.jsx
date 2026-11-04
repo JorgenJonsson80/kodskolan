@@ -17,6 +17,8 @@ import ErrorBox from './ErrorBox';
 export default function Playground({ ideas, ideaId, onSelectIdea, onBack }) {
   const course = useCourse();
   const { runtime, texts, ResultPreview } = course;
+  // HTML visar sidan medan man skriver och har ingen Kör-knapp.
+  const { runs, intro } = course.playground;
   const [codes, setCodes] = useState(() => loadPlaygroundCodes(course));
   const idea = ideas.find(item => item.id === ideaId && item.unlocked) ?? null;
   const hasCopy = codes[COPY] !== undefined;
@@ -78,8 +80,7 @@ export default function Playground({ ideas, ideaId, onSelectIdea, onBack }) {
       </button>
       <h2 id="playground-title">🧪 Lekplatsen</h2>
       <p>
-        Här finns inga tester och inget facit. Skriv vad du vill, tryck på{' '}
-        <strong>Kör koden</strong> och se vad som händer. Du bestämmer själv när
+        Här finns inga tester och inget facit. {intro} Du bestämmer själv när
         det är klart.
       </p>
 
@@ -132,19 +133,21 @@ export default function Playground({ ideas, ideaId, onSelectIdea, onBack }) {
       <CodeEditor
         code={code}
         onCodeChange={handleCodeChange}
-        onRun={handleRun}
+        onRun={runs ? handleRun : undefined}
         {...workbench.editor}
       />
       {workbench.afterEditor}
       <div className="editor-actions">
-        <button
-          className="primary-button"
-          type="button"
-          onClick={handleRun}
-          disabled={isRunning}
-        >
-          {isRunning ? 'Kör koden…' : '▶ Kör koden'}
-        </button>
+        {runs && (
+          <button
+            className="primary-button"
+            type="button"
+            onClick={handleRun}
+            disabled={isRunning}
+          >
+            {isRunning ? 'Kör koden…' : '▶ Kör koden'}
+          </button>
+        )}
         {workbench.actions}
         <button type="button" onClick={handleReset}>
           Börja om
@@ -172,7 +175,7 @@ export default function Playground({ ideas, ideaId, onSelectIdea, onBack }) {
               <pre>
                 {run.console.length > 0
                   ? run.console.join('\n')
-                  : 'Inget skrevs ut. Använd print för att se vad koden gör.'}
+                  : texts.nothingPrinted}
               </pre>
             </figure>
           )}

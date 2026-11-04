@@ -19,7 +19,7 @@ export default function StuckPanel({
   aiPrompt,
 }) {
   // null tills man själv öppnat eller stängt panelen.
-  const { texts } = useCourse();
+  const { help, texts } = useCourse();
   const [chosenOpen, setChosenOpen] = useState(null);
   const isOpen = chosenOpen ?? failedAttempts >= OPEN_AFTER;
   // null, 'copied' eller 'failed'.
@@ -47,16 +47,7 @@ export default function StuckPanel({
 
       <h3>Bryt ner koden</h3>
       <ul>
-        <li>
-          <strong>Kör rad för rad.</strong> Tryck på <em>👣 Kör rad för rad</em>{' '}
-          och stega igenom koden. Du ser vilken rad som körs och vad varje
-          variabel innehåller just då.
-        </li>
-        <li>
-          <strong>Se vad som händer.</strong> Lägg in <code>print(…)</code>{' '}
-          efter raderna du är osäker på och tryck på Kolla lösning. Då ser du
-          värdena under Utskrift.
-        </li>
+        {help.stuckTips}
         <li>
           <strong>En sak i taget.</strong> Markera rader och tryck{' '}
           <kbd>{COMMENT_KEYS}</kbd> för att kommentera bort dem. Få första delen

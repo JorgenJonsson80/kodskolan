@@ -1,3 +1,4 @@
+import { meta as html } from '../courses/html/meta';
 import { meta as python } from '../courses/python/meta';
 
 // Alla kurser i ordning. load() hämtar kursen först när den öppnas, så
@@ -5,14 +6,7 @@ import { meta as python } from '../courses/python/meta';
 // href: kurser som inte flyttat in än ligger kvar på sin gamla sajt.
 export const COURSES = [
   { ...python, load: () => import('../courses/python') },
-  {
-    id: 'html',
-    name: 'HTML & CSS',
-    icon: '🎨',
-    tagline: 'Bygg riktiga hemsidor, från första rubrik till Tailwind',
-    storagePrefix: 'htmlacademy-',
-    href: 'https://jorgenjonsson80.github.io/html-academy/',
-  },
+  { ...html, load: () => import('../courses/html') },
   {
     id: 'js',
     name: 'JavaScript',

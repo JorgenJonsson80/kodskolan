@@ -25,6 +25,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Chrome till testerna som mäter layout (vitest browser mode).
+      - run: npx playwright install --with-deps chromium
       - run: npx vitest run
       - run: npm run build
         env:

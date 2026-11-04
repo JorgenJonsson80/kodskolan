@@ -102,8 +102,10 @@ function Academy({ course }) {
   );
 
   // Språket startas direkt i bakgrunden, så att det är varmt när eleven
-  // trycker på Kolla lösning första gången.
+  // trycker på Kolla lösning första gången. En kurs utan något att starta
+  // (HTML rättas i webbläsaren direkt) saknar onStatus.
   useEffect(() => {
+    if (!runtime.onStatus) return;
     const stop = runtime.onStatus(setStatus);
     runtime.warmUp().catch(() => {});
     return stop;
@@ -373,9 +375,14 @@ function Academy({ course }) {
           </a>
           <span aria-hidden="true"> › {course.icon}</span> {course.name}
         </h1>
-        <p className={`runtime-status runtime-status-${status}`} role="status">
-          {runtime.statusText[status]}
-        </p>
+        {runtime.statusText && (
+          <p
+            className={`runtime-status runtime-status-${status}`}
+            role="status"
+          >
+            {runtime.statusText[status]}
+          </p>
+        )}
         <nav className="header-nav" aria-label="Verktyg">
           <button
             type="button"

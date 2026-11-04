@@ -69,8 +69,8 @@ export default {
   runtime: {
     run,          // ({ code, tests, inputs, files }) => svaret nedan
     evaluate,     // (lesson, code, svar) => feedback (som i dag)
-    warmUp, onStatus, statusText, timeoutMs,
-  },
+    warmUp, onStatus, statusText, timeoutMs, // valfria: bara det som
+  },                                         // behöver startas (Python)
   editor: {
     extensions,   // () => CodeMirror-tillägg: språk, indrag, förslag
     describeAt,   // hover: (state, pos, side) => { from, to, title, body }
@@ -81,8 +81,15 @@ export default {
   errors: { errorTitle, explainError, icon },
   useWorkbench,   // hook: Kör rad för rad, förhandsvisning m.m. (nedan)
   ResultPreview,  // valfri: det körningen ritade (Streamlit-appen …)
-  texts: { … },   // det i gränssnittet som säger något om språket
-  help: { editor, tools }, // kursens delar av Hjälp-rutan
+  playground: { runs, intro }, // runs: false = ingen Kör-knapp (HTML)
+  texts: {        // det i gränssnittet som säger något om språket
+    failedToStart, running, starting?, nothingPrinted?, warningsTitle?,
+    docs: track => …, readGuide, learning, copyNote, encouragement?,
+  },
+  help: {         // kursens delar av Hjälp-rutan och Fastnat?
+    intro, checkResult, playground?, editor, firstTips, laterTips,
+    stuckTips,
+  },
 };
 ```
 
@@ -94,7 +101,8 @@ export default {
   error: null | { type, message, line },
   tests: [{ passed, actual, repr } | { passed: false, error }],
   output: [...], console: [...],
-  warnings?: [...], app?: [...],   // det kursen själv använder
+  warnings?: [...], // visas i en gul ruta under feedbacken
+  app?: [...],      // det ResultPreview ritar
 }
 ```
 
@@ -136,6 +144,8 @@ Användaren testar efter varje etapp.
    eleven märker ingen skillnad.
 2. **HTML och JS flyttar in.** Det som skiljer sig mellan de tre
    versionerna av kärnan slås ihop. Gamla adresser skickar vidare.
+   HTML ✅ (kontraktet fick `playground`, fler `help`-delar och
+   `warnings`). Kvar: JS och vidarebefordran från de gamla sajterna.
 3. **Ett konto, Mina kurser.** En tabell `progress`, och de gamla
    tabellerna flyttas över.
 4. **Språkfil.** All text i kärnan i `sv.js`, så att engelska blir en

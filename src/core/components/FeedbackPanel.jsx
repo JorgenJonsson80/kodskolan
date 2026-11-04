@@ -1,10 +1,11 @@
 import Avatar from './Avatar';
 import DiffView from './DiffView';
+import CodeText from './CodeText';
 import ErrorBox from './ErrorBox';
 import { useCourse } from '../course';
 
 export default function FeedbackPanel({ feedback, stage }) {
-  const { ResultPreview } = useCourse();
+  const { ResultPreview, texts } = useCourse();
   if (!feedback) return null;
   return (
     <div aria-live="polite">
@@ -27,6 +28,18 @@ export default function FeedbackPanel({ feedback, stage }) {
           <figcaption>Utskrift</figcaption>
           <pre>{feedback.output.join('\n')}</pre>
         </figure>
+      )}
+      {feedback.warnings?.length > 0 && (
+        <div className="feedback-warnings">
+          <p className="feedback-warnings-title">{texts.warningsTitle}</p>
+          <ul>
+            {feedback.warnings.map((warning, index) => (
+              <li key={`warning-${index}`}>
+                <CodeText text={warning} />
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
       {feedback.error && <ErrorBox error={feedback.error} />}
       {feedback.results?.length > 0 && (

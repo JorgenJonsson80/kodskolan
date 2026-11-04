@@ -45,8 +45,7 @@ export default function HelpDialog({ onClose }) {
         </li>
         <li>
           <strong>Tryck på Kolla lösning</strong> (eller <kbd>{MOD}+Enter</kbd>
-          ). Du ser direkt vilka tester som gick igenom, och under{' '}
-          <em>Utskrift</em> det din kod skrev ut.
+          ). Du ser direkt vilka tester som gick igenom. {help.checkResult}
         </li>
       </ol>
       <p className="muted">
@@ -98,11 +97,7 @@ export default function HelpDialog({ onClose }) {
 
         <h3>Tips och trix</h3>
         <ul>
-          <li>
-            <strong>Läs felmeddelandet.</strong> Det står vilken rad felet är
-            på, och under står en förklaring på svenska.
-          </li>
-          {help.tools}
+          {help.firstTips}
           <li>
             <strong>🔍 Visa skillnaden.</strong> Under ett test som inte gick
             igenom kan du se exakt vilka tecken som skiljer, till exempel ett
@@ -114,10 +109,7 @@ export default function HelpDialog({ onClose }) {
             hjälper utan att ge svaret, eller hitta en förklaring och en video
             om ämnet.
           </li>
-          <li>
-            <strong>Använd print.</strong> Skriv ut värden mitt i koden för att
-            se vad som faktiskt händer. Det gör proffs också.
-          </li>
+          {help.laterTips}
           <li>
             <strong>Små steg.</strong> Skriv lite, kör, och skriv lite till. Det
             är lättare att hitta felet i tre nya rader än i trettio.

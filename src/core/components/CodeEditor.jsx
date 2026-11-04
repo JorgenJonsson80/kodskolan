@@ -42,12 +42,16 @@ function renderInfo({ title, body }) {
   const heading = document.createElement('strong');
   heading.textContent = title;
   const paragraph = document.createElement('p');
-  body.split(/`([^`]+)`/).forEach((part, index) => {
-    if (index % 2 === 0) paragraph.append(part);
-    else
-      paragraph.append(
-        Object.assign(document.createElement('code'), { textContent: part }),
-      );
+  // `kod` blir <code> och *ord* kursivt.
+  body.split(/(`[^`]+`|\*[^*\s](?:[^*]*[^*\s])?\*)/).forEach(part => {
+    const tag = { '`': 'code', '*': 'em' }[part[0]];
+    paragraph.append(
+      tag && part.length > 2 && part.at(-1) === part[0]
+        ? Object.assign(document.createElement(tag), {
+            textContent: part.slice(1, -1),
+          })
+        : part,
+    );
   });
   dom.append(heading, paragraph);
   return dom;
@@ -139,6 +143,9 @@ const highlightStyle = HighlightStyle.define([
   { tag: tags.definition(tags.variableName), color: '#fde68a' },
   { tag: tags.propertyName, color: '#f9a8d4' },
   { tag: [tags.className, tags.typeName], color: '#5eead4' },
+  { tag: [tags.tagName, tags.angleBracket], color: '#7dd3fc' },
+  { tag: tags.attributeName, color: '#fde68a' },
+  { tag: tags.attributeValue, color: '#86efac' },
 ]);
 
 const editorTheme = EditorView.theme(
@@ -216,6 +223,8 @@ const editorTheme = EditorView.theme(
       borderRadius: '4px',
       background: 'var(--task-code-bg)',
       color: 'var(--task-code-text)',
+      fontFamily: "'JetBrains Mono', monospace",
+      fontSize: '13px',
     },
     '.cm-completionDetail': { color: 'var(--muted)', fontStyle: 'normal' },
     '.cm-tooltip-autocomplete ul li[aria-selected]': {

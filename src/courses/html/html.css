@@ -1,0 +1,63 @@
+/* --- Förhandsvisningen av elevens sida --- */
+.page-preview {
+  margin: 0 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.page-preview figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.preview-sizes {
+  display: flex;
+  gap: 4px;
+}
+
+.preview-sizes button {
+  padding: 2px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.preview-sizes button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+/* I mobilläget står sidan i mitten, med grått runt om som en skärmkant. */
+.page-preview.is-mobile .preview-frame {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  background: var(--border-strong);
+}
+
+.page-preview.is-mobile iframe {
+  flex: none;
+  max-width: none;
+}
+
+/* Vit som en riktig webbsida, oavsett tema runt omkring. */
+.page-preview iframe {
+  display: block;
+  width: 100%;
+  height: 320px;
+  border: 0;
+  background: #fff;
+  resize: vertical;
+}

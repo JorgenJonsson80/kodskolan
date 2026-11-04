@@ -7,9 +7,9 @@ tester. Planen och etapperna står i `SPEC.md` – läs den först.
 `CLAUDE.md` i sin mapp och sin SPEC i `docs/kurser/`.
 
 Byggs i etapper enligt `SPEC.md`; användaren testar efter varje. Python
-Academy, HTML & CSS Academy och JS Academy ligger kvar i egna repon
-(`../python från S`, `../html från S`, `../React från S`) tills de
-flyttat in.
+och HTML & CSS har flyttat in. JS Academy ligger kvar i sitt eget repo
+(`../React från S`) tills den flyttat in. De gamla repona för Python och
+HTML (`../python från S`, `../html från S`) rörs inte.
 
 Vite + React 19 (JavaScript, inte TypeScript), CodeMirror 6. Ingen egen
 server. Supabase för inloggning och synkade framsteg (valfritt – utan
@@ -19,8 +19,9 @@ Supabase-projekt som de gamla akademierna.
 ## Kommandon
 
 - `npm run dev` – utvecklingsserver
-- `npx vitest run` – alla tester, även kursernas (Python körs på riktigt
-  via `pyodide` från npm)
+- `npx vitest run` – alla tester, även kursernas: i Node (Python körs på
+  riktigt via `pyodide` från npm, HTML med jsdom) och `*.browser.test.js`
+  i riktig Chrome (`npx playwright install chromium` första gången)
 - `npm run lint` och `npx prettier --check src`
 - `npm run build` – byggs med `base: /kodskolan/` och kopierar
   `index.html` till `404.html`, så att `/kodskolan/python` fungerar

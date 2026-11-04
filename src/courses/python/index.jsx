@@ -61,12 +61,24 @@ export default {
 
   useWorkbench,
   ResultPreview,
+  playground: {
+    runs: true,
+    intro: (
+      <>
+        Skriv vad du vill, tryck på <strong>Kör koden</strong> och se vad som
+        händer.
+      </>
+    ),
+  },
 
   texts: {
     failedToStart:
       'Python kunde inte starta. Kolla internetanslutningen och ladda om sidan.',
     starting: 'Startar Python…',
-    docs: '📚 Läs mer i Pythons dokumentation (engelska)',
+    running: 'Kör koden…',
+    nothingPrinted: 'Inget skrevs ut. Använd print för att se vad koden gör.',
+    warningsTitle: '⚠️ Bra att veta',
+    docs: () => '📚 Läs mer i Pythons dokumentation (engelska)',
     readGuide: '📖 Läs i Pythons guide',
     learning: 'Python',
     copyNote: 'Bryt ner den: kör en bit i taget och lägg in print.',
@@ -84,6 +96,11 @@ export default {
 
   help: {
     intro: 'Här lär du dig Python genom att skriva riktig kod',
+    checkResult: (
+      <>
+        Under <em>Utskrift</em> ser du det din kod skrev ut.
+      </>
+    ),
     playground: (
       <>
         med egna svar till <code>input()</code>
@@ -116,14 +133,40 @@ export default {
         </li>
       </>
     ),
-    tools: (
+    firstTips: (
+      <>
+        <li>
+          <strong>Läs felmeddelandet.</strong> Det står vilken rad felet är på,
+          och under står en förklaring på svenska.
+        </li>
+        <li>
+          <strong>Kör rad för rad.</strong> Knappen 👣 stegar igenom koden en
+          rad i taget och visar vad varje variabel innehåller. Under varje steg
+          står vad raden gjorde: om villkoret var sant, vilket varv loopen är på
+          och vad en funktion lämnar tillbaka. Slå på 🤔 Gissa först och gissa
+          själv innan du ser svaret, eller tryck ▶ Spela upp och se allt köras.
+        </li>
+      </>
+    ),
+    laterTips: (
       <li>
-        <strong>Kör rad för rad.</strong> Knappen 👣 stegar igenom koden en rad
-        i taget och visar vad varje variabel innehåller. Under varje steg står
-        vad raden gjorde: om villkoret var sant, vilket varv loopen är på och
-        vad en funktion lämnar tillbaka. Slå på 🤔 Gissa först och gissa själv
-        innan du ser svaret, eller tryck ▶ Spela upp och se allt köras.
+        <strong>Använd print.</strong> Skriv ut värden mitt i koden för att se
+        vad som faktiskt händer. Det gör proffs också.
       </li>
+    ),
+    stuckTips: (
+      <>
+        <li>
+          <strong>Kör rad för rad.</strong> Tryck på <em>👣 Kör rad för rad</em>{' '}
+          och stega igenom koden. Du ser vilken rad som körs och vad varje
+          variabel innehåller just då.
+        </li>
+        <li>
+          <strong>Se vad som händer.</strong> Lägg in <code>print(…)</code>{' '}
+          efter raderna du är osäker på och tryck på Kolla lösning. Då ser du
+          värdena under Utskrift.
+        </li>
+      </>
     ),
   },
 };
