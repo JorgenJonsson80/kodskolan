@@ -1,20 +1,112 @@
-import { isStringList, readJson } from '../core/lib/storage';
+import { useEffect, useState } from 'react';
+import AccountPanel from '../core/components/AccountPanel';
+import { mergeCompleted } from '../core/lib/progress';
+import {
+  isStringList,
+  progressKeys,
+  readJson,
+  writeJson,
+} from '../core/lib/storage';
+import { supabase } from '../core/lib/supabase';
+import { useAccount } from '../core/lib/useAccount';
 import { COURSES } from './courses';
 
-// Hur långt man kommit i en kurs, från webbläsaren. Klarade tester för en
-// bana (…-testad) och projektbonusar räknas inte som övningar.
-function doneCount(course) {
-  const ids = readJson(
-    `${course.storagePrefix}completed-ids`,
-    [],
-    isStringList,
-  );
-  return ids.filter(id => !/-(testad|utan-ledtradar)$/.test(id)).length;
+// Klara övningar i en kurs. Klarade tester för en bana (…-testad) och
+// projektbonusar räknas inte som övningar.
+const lessonCount = ids =>
+  ids.filter(id => !/-(testad|utan-ledtradar)$/.test(id)).length;
+
+const localIds = course =>
+  readJson(progressKeys(course.storagePrefix).completed, [], isStringList);
+
+// Klara id:n per kurs i kontot ({ python: […] }), eller null tills de
+// hämtats. Utan inloggning finns inget att hämta.
+function useCloudCompleted(userId) {
+  const [saved, setSaved] = useState({ userId: null, byCourse: {} });
+
+  useEffect(() => {
+    if (!supabase || !userId) return;
+    let ignore = false;
+    supabase
+      .from('course_progress')
+      .select('course_id, completed_ids')
+      .eq('user_id', userId)
+      .then(({ data, error }) => {
+        if (ignore) return;
+        const byCourse = Object.fromEntries(
+          (error ? [] : data).map(row => [row.course_id, row.completed_ids]),
+        );
+        setSaved({ userId, byCourse, error: Boolean(error) });
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [userId]);
+
+  return saved.userId === userId ? saved : null;
 }
 
-// Startsidan: alla kurser. En kurs som inte flyttat in än öppnas på sin
-// gamla sajt.
+function CourseCard({ course, done }) {
+  return (
+    <li>
+      <a
+        className="course-card"
+        href={course.href ?? `${import.meta.env.BASE_URL}${course.id}`}
+      >
+        <span className="course-icon" aria-hidden="true">
+          {course.icon}
+        </span>
+        <strong>{course.name}</strong>
+        <span className="muted">{course.tagline}</span>
+        <span className="course-progress">
+          {done > 0
+            ? `✓ ${done} ${done === 1 ? 'klar övning' : 'klara övningar'} · Fortsätt →`
+            : 'Börja →'}
+        </span>
+      </a>
+    </li>
+  );
+}
+
+// Startsidan: inloggningen och alla kurser. De man börjat på (i den här
+// webbläsaren eller i kontot) står först under Mina kurser.
 export default function Home() {
+  const account = useAccount();
+  const cloud = useCloudCompleted(account.user?.id ?? null);
+  // Ökar vid utloggning, så att räkningen läses om från webbläsaren
+  // efter att den tömts.
+  const [, setSignOuts] = useState(0);
+
+  const courses = COURSES.map(course => ({
+    course,
+    done: lessonCount(
+      mergeCompleted(localIds(course), cloud?.byCourse[course.id]),
+    ),
+  }));
+  const mine = courses.filter(item => item.done > 0);
+  const more = courses.filter(item => item.done === 0);
+
+  // Som i en kurs: efter utloggning töms webbläsaren, så att nästa person
+  // här inte får med sig dina framsteg. De finns kvar i kontot.
+  async function handleSignOut() {
+    await account.signOut();
+    for (const course of COURSES) {
+      const keys = progressKeys(course.storagePrefix);
+      writeJson(keys.completed, []);
+      writeJson(keys.drafts, {});
+      writeJson(keys.projectModes, {});
+    }
+    setSignOuts(count => count + 1);
+  }
+
+  const status = !account.user
+    ? 'synced'
+    : !cloud
+      ? 'loading'
+      : cloud.error
+        ? 'error'
+        : 'synced';
+
   return (
     <>
       <header className="app-header">
@@ -30,32 +122,42 @@ export default function Home() {
             något.
           </p>
         </section>
-        <ul className="course-cards">
-          {COURSES.map(course => {
-            const done = doneCount(course);
-            return (
-              <li key={`course-${course.id}`}>
-                <a
-                  className="course-card"
-                  href={
-                    course.href ?? `${import.meta.env.BASE_URL}${course.id}`
-                  }
-                >
-                  <span className="course-icon" aria-hidden="true">
-                    {course.icon}
-                  </span>
-                  <strong>{course.name}</strong>
-                  <span className="muted">{course.tagline}</span>
-                  <span className="course-progress">
-                    {done > 0
-                      ? `✓ ${done} klara övningar · Fortsätt →`
-                      : 'Börja →'}
-                  </span>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
+        {account.isReady && (
+          <div className="home-account">
+            <AccountPanel
+              account={{ ...account, status }}
+              onSignOut={handleSignOut}
+            />
+          </div>
+        )}
+        {mine.length > 0 && (
+          <section aria-labelledby="mine-title">
+            <h2 id="mine-title">Mina kurser</h2>
+            <ul className="course-cards">
+              {mine.map(({ course, done }) => (
+                <CourseCard
+                  key={`mine-${course.id}`}
+                  course={course}
+                  done={done}
+                />
+              ))}
+            </ul>
+          </section>
+        )}
+        {more.length > 0 && (
+          <section aria-labelledby="more-title">
+            {mine.length > 0 && <h2 id="more-title">Fler kurser</h2>}
+            <ul className="course-cards">
+              {more.map(({ course }) => (
+                <CourseCard
+                  key={`more-${course.id}`}
+                  course={course}
+                  done={0}
+                />
+              ))}
+            </ul>
+          </section>
+        )}
       </main>
     </>
   );

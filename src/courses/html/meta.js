@@ -4,7 +4,6 @@ export const meta = {
   name: 'HTML & CSS',
   icon: '🧩',
   tagline: 'Bygg riktiga hemsidor, från första rubrik till Tailwind',
-  // Samma nycklar och tabell som HTML & CSS Academy, så att inget tappas.
+  // Samma nycklar som HTML & CSS Academy, så att inget tappas i webbläsaren.
   storagePrefix: 'htmlacademy-',
-  progressTable: 'html_progress',
 };

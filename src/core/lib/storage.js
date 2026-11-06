@@ -24,3 +24,13 @@ export const isStringMap = value =>
   typeof value === 'object' &&
   !Array.isArray(value) &&
   Object.values(value).every(item => typeof item === 'string');
+
+// En kurs nycklar i localStorage. Prefixet är kursens, så att kurserna inte
+// skriver över varandra (och akademiernas sparade framsteg följer med).
+export const progressKeys = prefix => ({
+  completed: `${prefix}completed-ids`,
+  drafts: `${prefix}drafts`,
+  current: `${prefix}current-lesson`,
+  helpSeen: `${prefix}help-seen`,
+  projectModes: `${prefix}project-modes`,
+});

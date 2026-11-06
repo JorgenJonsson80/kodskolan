@@ -14,7 +14,7 @@ Prettier). Välj den som liknar det nya språket mest.
 
 ```
 src/courses/<id>/
-  meta.js           id, name, icon, tagline, storagePrefix, progressTable
+  meta.js           id, name, icon, tagline, storagePrefix
   index.jsx         kursen enligt kontraktet i SPEC.md
   useWorkbench.jsx  kursens verktyg runt editorn (kan vara nästan tom)
   runner/           körningen: run() och evaluate(), felförklaringar
@@ -114,6 +114,6 @@ mindre nytta här.
 
 ## Konton
 
-Till etapp 3 har varje kurs sin egen tabell (`progressTable`) i samma
-Supabase-projekt. Kopiera en migration och byt tabellnamnet. Användaren
-kör SQL:en själv i Supabase.
+Inget att göra: framstegen sparas i `course_progress` med kursens `id`
+som `course_id`. Byt inte `id` på en kurs som har elever, då tappar de
+framstegen i kontot.

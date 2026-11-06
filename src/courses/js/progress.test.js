@@ -1,35 +1,24 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import course from '.';
 
-const { cloud } = course.progress;
+// JS Academy sparade klarade quiz under en egen nyckel. Kursen läser dem
+// som <bana>-testad, så att de räknas som i de andra kurserna.
+describe('JS-kursens gamla framsteg i webbläsaren', () => {
+  afterEach(() => vi.unstubAllGlobals());
 
-// JS Academys tabell har klarade quiz i en egen kolumn och inga
-// projektlägen. Kursen gör om dem till <bana>-testad och tillbaka.
-describe('JS-kursens framsteg i kontot', () => {
   it('läser klarade quiz som <bana>-testad', () => {
-    const saved = cloud.fromRow({
-      completed_ids: ['js-log-01'],
-      passed_track_ids: ['js-basics'],
-      drafts: { 'js-log-01': 'kod' },
+    vi.stubGlobal('localStorage', {
+      getItem: key =>
+        key === 'academy-passed-tracks' ? '["js-basics","js-loops"]' : null,
     });
-    expect(saved.completedIds).toEqual(['js-log-01', 'js-basics-testad']);
-    expect(saved.drafts).toEqual({ 'js-log-01': 'kod' });
+    expect(course.progress.legacyCompleted()).toEqual([
+      'js-basics-testad',
+      'js-loops-testad',
+    ]);
   });
 
-  it('sparar tillbaka i JS Academys kolumner, utan projektlägen', () => {
-    const row = cloud.toRow({
-      completedIds: ['js-log-01', 'js-basics-testad'],
-      drafts: {},
-      projectModes: { 'proj-x': 'hints' },
-    });
-    expect(row).toEqual({
-      completed_ids: ['js-log-01'],
-      passed_track_ids: ['js-basics'],
-      drafts: {},
-    });
-  });
-
-  it('klarar ett konto utan sparade framsteg', () => {
-    expect(cloud.fromRow(null).completedIds).toEqual([]);
+  it('tål skräp under nyckeln', () => {
+    vi.stubGlobal('localStorage', { getItem: () => '{"inte":"en lista"}' });
+    expect(course.progress.legacyCompleted()).toEqual([]);
   });
 });

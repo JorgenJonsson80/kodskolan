@@ -12,21 +12,17 @@ import TrackList from './components/TrackList';
 import { CourseContext } from './course';
 import { copyToPlayground, PLAYGROUND_COPY } from './lib/playground';
 import { mergeCompleted } from './lib/progress';
-import { isStringList, isStringMap, readJson, writeJson } from './lib/storage';
+import {
+  isStringList,
+  isStringMap,
+  progressKeys,
+  readJson,
+  writeJson,
+} from './lib/storage';
 import { useCloudProgress } from './lib/useCloudProgress';
 import { isProjectComplete, noHintsBonusXp, noHintsId } from './projects';
 import { passedId, passedTrackIdsFrom } from './quiz';
 import { getGrowth, trackProgress } from './stages';
-
-// Nycklarna i localStorage. Prefixet är kursens, så att kurserna inte
-// skriver över varandra (och Python Academys sparade framsteg följer med).
-const keysFor = prefix => ({
-  completed: `${prefix}completed-ids`,
-  drafts: `${prefix}drafts`,
-  current: `${prefix}current-lesson`,
-  helpSeen: `${prefix}help-seen`,
-  projectModes: `${prefix}project-modes`,
-});
 
 const isModeMap = value =>
   isStringMap(value) &&
@@ -53,7 +49,7 @@ function Academy({ course }) {
     resources: RESOURCES,
   } = course.content;
   const { runtime } = course;
-  const KEYS = useMemo(() => keysFor(course.storagePrefix), [course]);
+  const KEYS = useMemo(() => progressKeys(course.storagePrefix), [course]);
   // Övningarna och projektstegen i en lista, så att samma editor och
   // rättning används för båda.
   const EXERCISES = useMemo(
@@ -118,8 +114,7 @@ function Academy({ course }) {
   }, [runtime]);
 
   const account = useCloudProgress({
-    table: course.progressTable,
-    cloud: course.progress?.cloud,
+    courseId: course.id,
     completedIds,
     setCompletedIds,
     drafts,

@@ -9,13 +9,18 @@ tester. Planen och etapperna står i `SPEC.md` – läs den först.
 Byggs i etapper enligt `SPEC.md`; användaren testar efter varje. Python,
 HTML & CSS och JavaScript har flyttat in (`src/courses/python`, `html`,
 `js`). De gamla repona (`../python från S`, `../html från S`,
-`../React från S`) och deras sajter rörs inte; de används fortfarande
-tills Kodskolan är publicerad.
+`../React från S`) publicerar bara en sida som skickar vidare hit.
+
+Live: https://jorgenjonsson80.github.io/kodskolan/
 
 Vite + React 19 (JavaScript, inte TypeScript), CodeMirror 6. Ingen egen
 server. Supabase för inloggning och synkade framsteg (valfritt – utan
 nycklar i `.env.local` sparas allt bara i localStorage). Samma
-Supabase-projekt som de gamla akademierna.
+Supabase-projekt som de gamla akademierna. Framstegen ligger i
+`course_progress`, en rad per användare och kurs. Ny SQL i
+`supabase/migrations/` testas i `supabase/migrations.test.js` (PGlite)
+och körs sedan av användaren i Supabase innan koden som behöver den
+pushas.
 
 ## Kommandon
 
@@ -48,8 +53,8 @@ Push till `main` kör testerna och publicerar via
     `key` per övning), `Playground.jsx`, `CodeEditor.jsx` (språket och
     hovern från kursen), `Quiz.jsx`, `Collection.jsx`, `StuckPanel.jsx` …
   - `lib/` lagring (`storage.js`, localStorage i try/catch som tål
-    skräpdata), synk (`useCloudProgress.js` med kursens tabell,
-    `progress.js` slår ihop), `aiPrompt.js`, `playground.js`
+    skräpdata), inloggning (`useAccount.js`, samma i alla kurser och på
+    startsidan), synk (`useCloudProgress.js`, `progress.js` slår ihop), `aiPrompt.js`, `playground.js`
   - `projects.js`, `quiz.js`, `resources.js`, `stages.js` (figuren som
     växer en ålder per klar bana), `encouragement.js`
   - `runner/diff.js` och `compare.js` – Visa skillnaden och facit-längd

@@ -4,7 +4,6 @@ export const meta = {
   name: 'Python',
   icon: '🐍',
   tagline: 'Från första print till egna webbappar med Streamlit',
-  // Samma nycklar och tabell som Python Academy, så att inget tappas.
+  // Samma nycklar som Python Academy, så att inget tappas i webbläsaren.
   storagePrefix: 'pyacademy-',
-  progressTable: 'py_progress',
 };

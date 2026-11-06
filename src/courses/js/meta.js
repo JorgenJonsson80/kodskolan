@@ -4,7 +4,6 @@ export const meta = {
   name: 'JavaScript',
   icon: '⚡',
   tagline: 'Gör sidor levande, och lär dig React',
-  // Samma nycklar och tabell som JS Academy, så att inget tappas.
+  // Samma nycklar som JS Academy, så att inget tappas i webbläsaren.
   storagePrefix: 'academy-',
-  progressTable: 'progress',
 };

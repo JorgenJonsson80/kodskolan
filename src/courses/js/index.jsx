@@ -52,30 +52,12 @@ export default {
     resources,
   },
 
-  // JS Academy sparade klarade quiz under en egen nyckel och i en egen
-  // kolumn, och tabellen har inga projektlägen. Här görs de om till
-  // <bana>-testad bland de klara, som i de andra kurserna, och tillbaka
-  // när de sparas, så att den gamla sajten fortsätter fungera.
+  // JS Academy sparade klarade quiz under en egen nyckel i webbläsaren.
+  // Här blir de <bana>-testad bland de klara, som i de andra kurserna.
+  // (I kontot gjorde SQL:en till course_progress samma sak.)
   progress: {
     legacyCompleted: () =>
       readJson('academy-passed-tracks', [], isStringList).map(passedId),
-    cloud: {
-      select: 'completed_ids, drafts, passed_track_ids',
-      fromRow: row => ({
-        completedIds: [
-          ...(row?.completed_ids ?? []),
-          ...(row?.passed_track_ids ?? []).map(passedId),
-        ],
-        drafts: row?.drafts,
-      }),
-      toRow: ({ completedIds, drafts }) => ({
-        completed_ids: completedIds.filter(id => !id.endsWith('-testad')),
-        passed_track_ids: completedIds
-          .filter(id => id.endsWith('-testad'))
-          .map(id => id.slice(0, -'-testad'.length)),
-        drafts,
-      }),
-    },
   },
 
   runtime: {

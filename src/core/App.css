@@ -1901,6 +1901,15 @@
   font-size: 1.8rem;
 }
 
+.home-account {
+  max-width: 420px;
+  margin-top: 24px;
+}
+
+.home section > h2 {
+  margin: 32px 0 0;
+}
+
 .course-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
