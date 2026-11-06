@@ -118,4 +118,63 @@ export const TRACKS = [
       { title: 'Nycklar', url: `${TUTORIAL}sqlite-foreign-key/` },
     ],
   },
+  {
+    id: 'saknas',
+    title: 'Det som saknas',
+    teaches: [
+      'LEFT JOIN',
+      'IS NULL efter JOIN',
+      'COALESCE',
+      'COUNT(kolumn)',
+      'villkor i ON',
+    ],
+    reward: { emoji: '🔍', name: 'Förstoringsglas' },
+    canBuild:
+      'listor över det som inte hänt: kunder som aldrig handlat, böcker som aldrig lånats',
+    docs: [
+      { title: 'LEFT JOIN', url: `${TUTORIAL}sqlite-left-join/` },
+      { title: 'NULL', url: `${TUTORIAL}sqlite-is-null/` },
+    ],
+  },
+  {
+    id: 'andra',
+    title: 'Ändra data',
+    teaches: [
+      'INSERT INTO',
+      'VALUES',
+      'UPDATE … SET',
+      'DELETE FROM',
+      'främmande nycklar',
+    ],
+    reward: { emoji: '✏️', name: 'Penna' },
+    canBuild:
+      'det som händer i en riktig app: nya kunder, ändrade priser och en order som registreras',
+    docs: [
+      { title: 'INSERT', url: `${TUTORIAL}sqlite-insert/` },
+      { title: 'UPDATE', url: `${TUTORIAL}sqlite-update/` },
+      { title: 'DELETE', url: `${TUTORIAL}sqlite-delete/` },
+    ],
+  },
+  {
+    id: 'skapa',
+    title: 'Bygg en databas',
+    teaches: [
+      'CREATE TABLE',
+      'typer',
+      'PRIMARY KEY',
+      'NOT NULL',
+      'DEFAULT',
+      'CHECK',
+      'REFERENCES',
+      'ALTER TABLE',
+    ],
+    reward: { emoji: '🏗️', name: 'Byggkran' },
+    canBuild:
+      'en egen databas från grunden, med tabeller som hänger ihop och regler som håller den hel',
+    docs: [
+      { title: 'CREATE TABLE', url: `${TUTORIAL}sqlite-create-table/` },
+      { title: 'PRIMARY KEY', url: `${TUTORIAL}sqlite-primary-key/` },
+      { title: 'FOREIGN KEY', url: `${TUTORIAL}sqlite-foreign-key/` },
+    ],
+  },
 ];

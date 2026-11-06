@@ -15,23 +15,24 @@
 
 const MAX_ROWS = 200;
 
+const totalChanges = database =>
+  database.exec('SELECT total_changes()')[0].values[0][0];
+
 // Kör satserna en i taget, så att en SELECT utan rader ändå ger sina
-// kolumner (exec() svarar inte alls då).
+// kolumner (exec() svarar inte alls då). changes är hur många rader all
+// koden ändrade, och statements hur många satser som kördes.
 function runStatements(database, code) {
   const results = [];
-  let changes = 0;
+  const before = totalChanges(database);
+  let statements = 0;
   for (const statement of database.iterateStatements(code)) {
+    statements += 1;
     const columns = statement.getColumnNames();
     const values = [];
     while (statement.step()) values.push(statement.get());
-    if (columns.length > 0) {
-      results.push({ columns, values });
-      changes = 0;
-    } else {
-      changes = database.getRowsModified();
-    }
+    if (columns.length > 0) results.push({ columns, values });
   }
-  return { results, changes };
+  return { results, changes: totalChanges(database) - before, statements };
 }
 
 function execute(SQL, setup, code, queries) {
@@ -42,8 +43,9 @@ function execute(SQL, setup, code, queries) {
     let results = [];
     let error = null;
     let changes = 0;
+    let statements = 0;
     try {
-      ({ results, changes } = runStatements(database, code));
+      ({ results, changes, statements } = runStatements(database, code));
     } catch (thrown) {
       error = { message: String(thrown.message ?? thrown) };
     }
@@ -60,7 +62,7 @@ function execute(SQL, setup, code, queries) {
       }
     });
     const names = schemaNames(database);
-    return { results, error, changes, after, names };
+    return { results, error, changes, statements, after, names };
   } finally {
     database.close();
   }
@@ -318,6 +320,16 @@ function warningsFor(code, names) {
   return warnings;
 }
 
+// Vad koden gjorde när den inte gav någon tabell att visa.
+function messageFor({ changes, statements }) {
+  if (changes > 0) {
+    return [`${changes} ${changes === 1 ? 'rad' : 'rader'} ändrades.`];
+  }
+  return statements > 0
+    ? ['Klart, utan fel. Lägg till en SELECT för att se resultatet.']
+    : [];
+}
+
 // job: { code, setup, tests, solution }. Svaret har samma form som i de
 // andra kurserna (syntaxError, error, tests, output, console) och table,
 // det sista resultatet, som ResultPreview visar.
@@ -334,12 +346,7 @@ export function runSql(SQL, { code, setup = '', tests = [], solution }) {
     ? describeError(student.error, code, student.names)
     : null;
   const table = tableOf(student.results.at(-1));
-  const console =
-    !error && !table && student.changes > 0
-      ? [
-          `${student.changes} ${student.changes === 1 ? 'rad' : 'rader'} ändrades.`,
-        ]
-      : [];
+  const console = error || table ? [] : messageFor(student);
   return {
     syntaxError: error?.type === 'SyntaxError' ? error : null,
     error: error?.type === 'SyntaxError' ? null : error,

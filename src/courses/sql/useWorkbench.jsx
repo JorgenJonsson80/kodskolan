@@ -5,13 +5,14 @@ import { useTables } from './lib/useTables';
 
 // SQL-kursens verktyg runt editorn: övningens databas (📋 Tabellerna
 // ovanför editorn, och tabellerna till editorns förslag och hover). På
-// Lekplatsen (lesson saknas) väljer eleven databas, om idén inte har en.
+// Lekplatsen (lesson saknas) väljer eleven databas till fri kod. En idé
+// har alltid sin egen (db, eller null för en tom databas).
 export function useWorkbench({ lesson, idea }) {
   const [chosen, setChosen] = useState('butik');
-  const source = lesson ?? (idea?.db || idea?.setup ? idea : { db: chosen });
+  const source = lesson ?? idea ?? { db: chosen };
   const setup = setupFor(source);
   const tables = useTables(setup);
-  const canChoose = !lesson && !idea?.db && !idea?.setup;
+  const canChoose = !lesson && !idea;
 
   return {
     runOptions: lesson ? { setup, solution: lesson.solution } : { setup },

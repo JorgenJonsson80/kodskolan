@@ -229,4 +229,111 @@ export const QUIZ = {
         'Barbie har regissor_id 6, och i regissorer har Greta Gerwig id 6.',
     },
   ],
+  saknas: [
+    {
+      question: 'Hur många rader ger frågan?',
+      code: 'SELECT f.titel FROM filmer f LEFT JOIN regissorer r ON f.regissor_id = r.id;',
+      db: 'filmer',
+      check: 'rows',
+      options: ['16', '15', '7', '0'],
+      explain: 'LEFT JOIN behåller alla filmer, även kortfilmen utan regissör.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'SELECT COALESCE(NULL, NULL, 3, 4);',
+      db: 'butik',
+      options: ['3', 'NULL', '4', '7'],
+      explain: 'COALESCE ger det första värdet som inte är NULL.',
+    },
+    {
+      question: 'Vilken räknar inte rader där kolumnen är NULL?',
+      options: ['COUNT(kolumn)', 'COUNT(*)', 'Båda', 'Ingen av dem'],
+      explain:
+        'COUNT(*) räknar rader. COUNT(kolumn) räknar bara värden som inte är NULL.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'SELECT COUNT(*) FROM kunder k LEFT JOIN ordrar o ON o.kund_id = k.id WHERE o.id IS NULL;',
+      db: 'butik',
+      options: ['2', '0', '10', '15'],
+      explain:
+        'Två kunder har aldrig handlat. De har NULL i o.id efter LEFT JOIN.',
+    },
+  ],
+  andra: [
+    {
+      question: 'Vad gör UPDATE produkter SET pris = 0; utan WHERE?',
+      options: [
+        'Alla produkter får priset 0',
+        'Ingenting',
+        'Den första produkten får priset 0',
+        'Det blir ett fel',
+      ],
+      explain:
+        'Utan WHERE ändras alla rader. Därför ska UPDATE nästan alltid ha WHERE.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'UPDATE produkter SET lager = lager + 5 WHERE id = 3;\nSELECT lager FROM produkter WHERE id = 3;',
+      db: 'butik',
+      options: ['5', '0', '3', '8'],
+      explain: 'Kaffe Ljusrost (id 3) hade 0 i lager. 0 + 5 = 5.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'DELETE FROM recensioner WHERE betyg < 4;\nSELECT COUNT(*) FROM recensioner;',
+      db: 'filmer',
+      options: ['21', '28', '7', '0'],
+      explain: 'Sju recensioner har betyg 2 eller 3. 28 - 7 = 21 är kvar.',
+    },
+    {
+      question: 'En order har rader i orderrader. Hur tar man bort ordern?',
+      options: [
+        'Först raderna, sedan ordern',
+        'Först ordern, sedan raderna',
+        'Det går inte',
+        'Bara ordern – raderna försvinner av sig själva',
+      ],
+      explain:
+        'Raderna pekar på ordern. Tar man bort ordern först blir det FOREIGN KEY constraint failed.',
+    },
+  ],
+  skapa: [
+    {
+      question: 'Vad gör id INTEGER PRIMARY KEY?',
+      options: [
+        'Ger varje rad ett unikt id, av sig självt om du inte anger något',
+        'Gör id till ett decimaltal',
+        'Gör att id får vara NULL',
+        'Sorterar tabellen på id',
+      ],
+      explain:
+        'En INTEGER PRIMARY KEY är radens id. Utan värde får raden nästa nummer.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: "CREATE TABLE t (id INTEGER PRIMARY KEY, namn TEXT);\nINSERT INTO t (namn) VALUES ('a'), ('b'), ('c');\nSELECT MAX(id) FROM t;",
+      db: 'butik',
+      options: ['3', '1', 'NULL', '0'],
+      explain: 'Raderna fick id 1, 2 och 3 av sig själva.',
+    },
+    {
+      question: 'Vad betyder NOT NULL?',
+      options: [
+        'Kolumnen måste ha ett värde',
+        'Kolumnen får inte vara 0',
+        'Kolumnen är alltid tom',
+        'Kolumnen måste vara unik',
+      ],
+      explain: 'NOT NULL stoppar rader där värdet saknas. Unik är UNIQUE.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'CREATE TABLE t (betyg INTEGER CHECK (betyg <= 5));\nINSERT OR IGNORE INTO t VALUES (3), (9), (5);\nSELECT COUNT(*) FROM t;',
+      db: 'butik',
+      options: ['2', '3', '1', '0'],
+      explain:
+        '9 bryter mot CHECK och hoppas över (OR IGNORE). 3 och 5 sparas.',
+    },
+  ],
 };

@@ -198,4 +198,129 @@ export const BOSSES = {
       },
     ],
   },
+  saknas: {
+    id: 'saknas-boss',
+    track: 'saknas',
+    db: 'bibliotek',
+    title: 'Boss: Låntagarlistan',
+    isBoss: true,
+    xp: 50,
+    description:
+      BOSS_INTRO +
+      'Biblioteket vill se alla låntagare: hur mycket de lånat och hur mycket de har hemma just nu. Även de som aldrig lånat något.',
+    task: `Uppgift: Gör låntagarlistan.
+  1. Alla låntagare, även de utan lån.
+  2. Visa \`namn\`, antal lån som \`lan\` och antal lån som inte är återlämnade som \`hemma\`, i den ordningen.
+  3. Flest lån först, och i bokstavsordning efter namn om två har lika många.`,
+    starterCode: START,
+    solution:
+      'SELECT lt.namn,\n  COUNT(l.id) AS lan,\n  COUNT(l.id) - COUNT(l.aterlamnad) AS hemma\nFROM lantagare lt\nLEFT JOIN lan l ON l.lantagare_id = lt.id\nGROUP BY lt.namn\nORDER BY lan DESC, lt.namn;\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Alla låntagare, flest lån först',
+        check: 'rows',
+        ordered: true,
+        expected: [
+          ['Amira Said', 3, 2],
+          ['Malik Osman', 3, 2],
+          ['Tove Ek', 3, 1],
+          ['Erik Sand', 2, 1],
+          ['Lisa Holm', 1, 1],
+          ['Per Lind', 0, 0],
+        ],
+      },
+      {
+        description: 'Kolumnerna är namn, lan och hemma',
+        check: 'columns',
+        expected: ['namn', 'lan', 'hemma'],
+      },
+    ],
+  },
+  andra: {
+    id: 'andra-boss',
+    track: 'andra',
+    db: 'butik',
+    title: 'Boss: Nya ordern',
+    isBoss: true,
+    xp: 50,
+    description:
+      BOSS_INTRO +
+      'Clara Ek (kund 3) ringer och beställer idag, 2026-06-15. Allt ska in i databasen, och lagret ska stämma efteråt.',
+    task: `Uppgift: Registrera ordern.
+  1. En ny order för kund 3, daterad \`'2026-06-15'\` med status \`'skickad'\`. Den får id 16.
+  2. Orderns rader: 1 st Espresso Bönor (produkt 2) och 3 st Chokladboll (produkt 8).
+  3. Minska \`lager\` för de två produkterna med lika många som beställdes.`,
+    starterCode: '-- Skriv din kod här\n',
+    solution:
+      "INSERT INTO ordrar (kund_id, datum, status) VALUES (3, '2026-06-15', 'skickad');\nINSERT INTO orderrader (order_id, produkt_id, antal) VALUES (16, 2, 1), (16, 8, 3);\nUPDATE produkter SET lager = lager - 1 WHERE id = 2;\nUPDATE produkter SET lager = lager - 3 WHERE id = 8;\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Order 16 finns',
+        query: 'SELECT id, kund_id, datum, status FROM ordrar WHERE id = 16',
+        expected: [[16, 3, '2026-06-15', 'skickad']],
+      },
+      {
+        description: 'Orderns två rader',
+        query: 'SELECT produkt_id, antal FROM orderrader WHERE order_id = 16',
+        expected: [
+          [2, 1],
+          [8, 3],
+        ],
+      },
+      {
+        description: 'Lagret stämmer',
+        query: 'SELECT id, lager FROM produkter',
+      },
+    ],
+  },
+  skapa: {
+    id: 'skapa-boss',
+    track: 'skapa',
+    db: null,
+    title: 'Boss: Bokcirkeln',
+    isBoss: true,
+    xp: 60,
+    description:
+      BOSS_INTRO +
+      'En bokcirkel vill hålla koll på medlemmarna, träffarna och vem som kom. Det blir tre tabeller.',
+    task: `Uppgift: Bygg bokcirkelns databas.
+  1. \`medlemmar\`: \`id INTEGER PRIMARY KEY\`, \`namn TEXT NOT NULL\` och \`epost TEXT UNIQUE\` (två får inte ha samma).
+  2. \`traffar\`: \`id INTEGER PRIMARY KEY\`, \`datum TEXT NOT NULL\` och \`bok TEXT NOT NULL\`.
+  3. \`narvaro\`: \`medlem_id\` som pekar på \`medlemmar (id)\` och \`traff_id\` som pekar på \`traffar (id)\`, båda \`INTEGER NOT NULL\`.
+  4. Medlemmarna Ada (ada@exempel.se) och Bo (bo@exempel.se), träffen 2026-05-20 om \`Utvandrarna\` och 2026-06-10 om \`Björnstad\`. Ada kom till båda, Bo bara till den första.`,
+    starterCode: '-- Skriv din kod här\n',
+    solution:
+      "CREATE TABLE medlemmar (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL,\n  epost TEXT UNIQUE\n);\nCREATE TABLE traffar (\n  id INTEGER PRIMARY KEY,\n  datum TEXT NOT NULL,\n  bok TEXT NOT NULL\n);\nCREATE TABLE narvaro (\n  medlem_id INTEGER NOT NULL REFERENCES medlemmar (id),\n  traff_id INTEGER NOT NULL REFERENCES traffar (id)\n);\nINSERT INTO medlemmar (namn, epost) VALUES ('Ada', 'ada@exempel.se'), ('Bo', 'bo@exempel.se');\nINSERT INTO traffar (datum, bok) VALUES ('2026-05-20', 'Utvandrarna'), ('2026-06-10', 'Björnstad');\nINSERT INTO narvaro (medlem_id, traff_id) VALUES (1, 1), (1, 2), (2, 1);\n",
+    hints: [],
+    tests: [
+      {
+        description: 'narvaro pekar på medlemmar och traffar',
+        query:
+          'SELECT "table", "from", "to" FROM pragma_foreign_key_list(\'narvaro\') ORDER BY "from"',
+        ordered: true,
+        expected: [
+          ['medlemmar', 'medlem_id', 'id'],
+          ['traffar', 'traff_id', 'id'],
+        ],
+      },
+      {
+        description: 'Två medlemmar får inte ha samma e-post',
+        query:
+          "INSERT OR IGNORE INTO medlemmar (namn, epost) VALUES ('Kopia', 'ada@exempel.se'); SELECT COUNT(*) FROM medlemmar",
+        expected: [[2]],
+      },
+      {
+        description: 'Vem kom till vilken träff',
+        query:
+          'SELECT m.namn, t.bok FROM narvaro n JOIN medlemmar m ON n.medlem_id = m.id JOIN traffar t ON n.traff_id = t.id',
+        expected: [
+          ['Ada', 'Utvandrarna'],
+          ['Ada', 'Björnstad'],
+          ['Bo', 'Utvandrarna'],
+        ],
+      },
+    ],
+  },
 };

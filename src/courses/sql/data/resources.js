@@ -97,4 +97,45 @@ export const RESOURCES = {
       video: 'primary key foreign key explained',
     },
   ],
+  saknas: [
+    {
+      topic: 'LEFT JOIN',
+      read: `${TUTORIAL}sqlite-left-join/`,
+      video: 'sql left join explained',
+    },
+    {
+      topic: 'NULL och COALESCE',
+      read: `${TUTORIAL}sqlite-is-null/`,
+      video: 'sql null coalesce explained',
+    },
+  ],
+  andra: [
+    {
+      topic: 'INSERT',
+      read: `${TUTORIAL}sqlite-insert/`,
+      video: 'sql insert into tutorial',
+    },
+    {
+      topic: 'UPDATE och DELETE',
+      read: `${TUTORIAL}sqlite-update/`,
+      video: 'sql update delete where',
+    },
+  ],
+  skapa: [
+    {
+      topic: 'CREATE TABLE',
+      read: `${TUTORIAL}sqlite-create-table/`,
+      video: 'sql create table beginners',
+    },
+    {
+      topic: 'Nycklar och regler',
+      read: `${TUTORIAL}sqlite-foreign-key/`,
+      video: 'database design primary key foreign key',
+    },
+    {
+      topic: 'Databasdesign',
+      read: `${TUTORIAL}sqlite-primary-key/`,
+      video: 'databasdesign normalisering nybörjare',
+    },
+  ],
 };

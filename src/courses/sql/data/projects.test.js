@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { evaluate } from '../runner/evaluate';
 import { nodeRunLesson } from '../test/nodeSql';
 import { conceptsTooEarly } from '../test/concepts';
+import { DATABASES } from './databases';
 import { PROJECT_STEPS, PROJECTS } from './projects';
 import { TRACKS } from './tracks';
 
@@ -24,11 +25,11 @@ describe.each(PROJECT_STEPS.map(step => [step.id, step]))('%s', (_, step) => {
     expect(conceptsTooEarly(step.solution, step.track)).toEqual([]);
   });
 
-  it('har why, tre ledtrådar, xp och databasen', () => {
+  it('har why, tre ledtrådar, xp och en databas (null är tom)', () => {
     expect(step.why.length).toBeGreaterThan(20);
     expect(step.hints).toHaveLength(3);
     expect(step.xp).toBeGreaterThan(0);
-    expect(step.db).toBeTruthy();
+    expect(step.db === null || step.db in DATABASES).toBe(true);
   });
 });
 

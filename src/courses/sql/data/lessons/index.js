@@ -1,8 +1,11 @@
+import { ANDRA } from './andra';
 import { BOSSES } from './bossar';
 import { FILTRERA } from './filtrera';
 import { GRUPPERA } from './gruppera';
 import { JOIN } from './join';
 import { OMVANDLA } from './omvandla';
+import { SAKNAS } from './saknas';
+import { SKAPA } from './skapa';
 import { SELECT } from './select';
 import { SORTERA } from './sortera';
 
@@ -21,4 +24,10 @@ export const LESSONS = [
   BOSSES.omvandla,
   ...JOIN,
   BOSSES.join,
+  ...SAKNAS,
+  BOSSES.saknas,
+  ...ANDRA,
+  BOSSES.andra,
+  ...SKAPA,
+  BOSSES.skapa,
 ];

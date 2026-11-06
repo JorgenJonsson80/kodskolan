@@ -12,12 +12,12 @@ describe('idéer och resurser', () => {
     }
   });
 
-  it('varje bana har tre idéer med en databas', () => {
+  it('varje bana har tre idéer med en databas (null är tom)', () => {
     for (const track of TRACKS) {
       const ideas = IDEAS.filter(idea => idea.track === track.id);
       expect(ideas, track.id).toHaveLength(3);
       for (const idea of ideas) {
-        expect(idea.db in DATABASES || Boolean(idea.setup)).toBe(true);
+        expect(idea.db === null || idea.db in DATABASES).toBe(true);
       }
     }
   });

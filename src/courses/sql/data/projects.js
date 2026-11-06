@@ -1247,6 +1247,696 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-aterkomst',
+    track: 'saknas',
+    db: 'butik',
+    title: 'Vi saknar dig',
+    reward: { emoji: '💌', name: 'Brev' },
+    summary: 'Hitta kunderna som handlat lite eller inget, för ett utskick.',
+    steps: [
+      {
+        title: 'Alla kunder',
+        why: 'LEFT JOIN och COUNT(o.id) ger alla kunder, även de med noll ordrar. Det är de som utskicket handlar om.',
+        xp: 15,
+        description:
+          'Butiken vill skicka "Vi saknar dig" till kunder som sällan handlar.',
+        task: 'Uppgift: Visa varje kunds `namn` och antal ordrar som `ordrar`, med 0 för dem som aldrig handlat.',
+        starterCode: '-- Steg 1: alla kunder\n',
+        solution:
+          'SELECT k.namn, COUNT(o.id) AS ordrar\nFROM kunder k\nLEFT JOIN ordrar o ON o.kund_id = k.id\nGROUP BY k.namn;\n',
+        hints: [
+          'LEFT JOIN ordrar o ON o.kund_id = k.id',
+          'COUNT(o.id), så blir det 0 och inte 1.',
+          'GROUP BY k.namn',
+        ],
+        tests: [{ description: 'Alla kunder med antal', check: 'rows' }],
+      },
+      {
+        title: 'Senaste besöket',
+        why: 'MAX på datum ger det senaste. COALESCE gör NULL till något läsbart för dem som aldrig handlat.',
+        xp: 15,
+        description: 'Utskicket ska säga när kunden senast handlade.',
+        task: 'Uppgift: Lägg till datumet för senaste ordern som `senast`, med `aldrig` för dem som inte handlat.',
+        solution:
+          "SELECT k.namn, COUNT(o.id) AS ordrar, COALESCE(MAX(o.datum), 'aldrig') AS senast\nFROM kunder k\nLEFT JOIN ordrar o ON o.kund_id = k.id\nGROUP BY k.namn;\n",
+        hints: [
+          'MAX(o.datum) är den senaste ordern.',
+          "COALESCE( … , 'aldrig')",
+          "COALESCE(MAX(o.datum), 'aldrig') AS senast",
+        ],
+        tests: [{ description: 'Senaste ordern', check: 'rows' }],
+      },
+      {
+        title: 'Mottagarna',
+        why: 'HAVING väljer ut dem med högst en order. De får brevet, i bokstavsordning så att det är lätt att bocka av.',
+        xp: 20,
+        description: 'Brevet går till kunderna med högst en order.',
+        task: 'Uppgift: Behåll bara kunderna med högst 1 order, i bokstavsordning efter namn.',
+        solution:
+          "SELECT k.namn, COUNT(o.id) AS ordrar, COALESCE(MAX(o.datum), 'aldrig') AS senast\nFROM kunder k\nLEFT JOIN ordrar o ON o.kund_id = k.id\nGROUP BY k.namn\nHAVING COUNT(o.id) <= 1\nORDER BY k.namn;\n",
+        hints: [
+          'HAVING COUNT(o.id) <= 1',
+          'ORDER BY k.namn',
+          'HAVING före ORDER BY.',
+        ],
+        tests: [
+          {
+            description: 'Mottagarna av brevet',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['Clara Ek', 1, '2026-03-03'],
+              ['Filip Holm', 1, '2026-04-05'],
+              ['Greta Nyström', 0, 'aldrig'],
+              ['Ida Karlsson', 1, '2026-05-02'],
+              ['Jonas Åberg', 0, 'aldrig'],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-hyllan',
+    track: 'saknas',
+    db: 'bibliotek',
+    title: 'Hyllinventeringen',
+    reward: { emoji: '🗃️', name: 'Kortlåda' },
+    summary: 'Alla böcker, hur ofta de lånas och om de står på hyllan nu.',
+    steps: [
+      {
+        title: 'Hur ofta?',
+        why: 'Alla böcker ska med, även de som aldrig lånats, så det blir LEFT JOIN och COUNT(l.id).',
+        xp: 15,
+        description: 'Biblioteket inventerar hyllorna.',
+        task: 'Uppgift: Visa varje boks `titel` och antal lån som `lan`, med 0 för dem som aldrig lånats.',
+        starterCode: '-- Steg 1: hur ofta?\n',
+        solution:
+          'SELECT b.titel, COUNT(l.id) AS lan\nFROM bocker b\nLEFT JOIN lan l ON l.bok_id = b.id\nGROUP BY b.titel;\n',
+        hints: [
+          'FROM bocker b LEFT JOIN lan l ON l.bok_id = b.id',
+          'COUNT(l.id) AS lan',
+          'GROUP BY b.titel',
+        ],
+        tests: [{ description: 'Antal lån per bok', check: 'rows' }],
+      },
+      {
+        title: 'Utlånad nu?',
+        why: 'COUNT(l.aterlamnad) räknar de återlämnade. Skillnaden mot alla lån är de som är ute just nu.',
+        xp: 20,
+        description: 'Står boken på hyllan, eller är den utlånad?',
+        task: 'Uppgift: Lägg till hur många lån av boken som inte är återlämnade som `ute`.',
+        solution:
+          'SELECT b.titel, COUNT(l.id) AS lan, COUNT(l.id) - COUNT(l.aterlamnad) AS ute\nFROM bocker b\nLEFT JOIN lan l ON l.bok_id = b.id\nGROUP BY b.titel;\n',
+        hints: [
+          'COUNT(l.aterlamnad) räknar bara de återlämnade.',
+          'Alla lån minus de återlämnade.',
+          'COUNT(l.id) - COUNT(l.aterlamnad) AS ute',
+        ],
+        tests: [{ description: 'Hur många som är ute', check: 'rows' }],
+      },
+      {
+        title: 'Mest lånade först',
+        why: 'Sorterat på lån syns både de populära och hyllvärmarna. Titeln gör ordningen bestämd när antalet är lika.',
+        xp: 15,
+        description: 'Gör listan lätt att läsa.',
+        task: 'Uppgift: Sortera med flest lån först, och i bokstavsordning efter titel om två har lika många.',
+        solution:
+          'SELECT b.titel, COUNT(l.id) AS lan, COUNT(l.id) - COUNT(l.aterlamnad) AS ute\nFROM bocker b\nLEFT JOIN lan l ON l.bok_id = b.id\nGROUP BY b.titel\nORDER BY lan DESC, b.titel;\n',
+        hints: [
+          'ORDER BY lan DESC',
+          'Sedan b.titel.',
+          'ORDER BY lan DESC, b.titel',
+        ],
+        tests: [
+          { description: 'Mest lånade först', check: 'rows', ordered: true },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-filmguiden',
+    track: 'saknas',
+    db: 'filmer',
+    title: 'Filmguiden',
+    reward: { emoji: '📺', name: 'TV' },
+    summary:
+      'En guide med alla filmer, även de som saknar regissör eller recensioner.',
+    steps: [
+      {
+        title: 'Alla filmer',
+        why: 'LEFT JOIN behåller kortfilmen, och COALESCE skriver något vettigt där regissören saknas.',
+        xp: 15,
+        description: 'Filmguiden ska ha med varje film.',
+        task: 'Uppgift: Visa `titel` och regissörens namn som `regissor` för alla filmer, med `okänd` där regissören saknas.',
+        starterCode: '-- Steg 1: alla filmer\n',
+        solution:
+          "SELECT f.titel, COALESCE(r.namn, 'okänd') AS regissor\nFROM filmer f\nLEFT JOIN regissorer r ON f.regissor_id = r.id;\n",
+        hints: [
+          'LEFT JOIN regissorer r ON f.regissor_id = r.id',
+          "COALESCE(r.namn, 'okänd')",
+          'AS regissor',
+        ],
+        tests: [{ description: 'Alla filmer med regissör', check: 'rows' }],
+      },
+      {
+        title: 'Antal recensioner',
+        why: 'En LEFT JOIN till ger recensionerna. Med två JOIN blir det en rad per recension, så det behövs GROUP BY.',
+        xp: 20,
+        description: 'Guiden ska visa hur många som recenserat filmen.',
+        task: 'Uppgift: Lägg till antalet recensioner som `recensioner`, med 0 för filmer utan.',
+        solution:
+          "SELECT f.titel, COALESCE(r.namn, 'okänd') AS regissor, COUNT(re.id) AS recensioner\nFROM filmer f\nLEFT JOIN regissorer r ON f.regissor_id = r.id\nLEFT JOIN recensioner re ON re.film_id = f.id\nGROUP BY f.titel, r.namn;\n",
+        hints: [
+          'LEFT JOIN recensioner re ON re.film_id = f.id',
+          'COUNT(re.id) AS recensioner',
+          'GROUP BY f.titel, r.namn',
+        ],
+        tests: [{ description: 'Antal recensioner', check: 'rows' }],
+      },
+      {
+        title: 'Betyget',
+        why: 'AVG av inga betyg blir NULL. Med COALESCE blir det 0, så att guiden kan sortera alla filmer.',
+        xp: 20,
+        description: 'Till sist snittbetyget, och de bästa först.',
+        task: 'Uppgift: Lägg till snittbetyget med en decimal som `snitt` (0 om det saknas), och sortera med högst snitt först och titel vid lika.',
+        solution:
+          "SELECT f.titel, COALESCE(r.namn, 'okänd') AS regissor, COUNT(re.id) AS recensioner,\n  COALESCE(ROUND(AVG(re.betyg), 1), 0) AS snitt\nFROM filmer f\nLEFT JOIN regissorer r ON f.regissor_id = r.id\nLEFT JOIN recensioner re ON re.film_id = f.id\nGROUP BY f.titel, r.namn\nORDER BY snitt DESC, f.titel;\n",
+        hints: [
+          'ROUND(AVG(re.betyg), 1)',
+          'COALESCE( … , 0) AS snitt',
+          'ORDER BY snitt DESC, f.titel',
+        ],
+        tests: [
+          { description: 'Guiden, bäst först', check: 'rows', ordered: true },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-leveransen',
+    track: 'andra',
+    db: 'butik',
+    title: 'Leveransen',
+    reward: { emoji: '🚚', name: 'Lastbil' },
+    summary: 'En leverans kommer: en ny vara, påfyllt lager och nya priser.',
+    steps: [
+      {
+        title: 'En ny vara',
+        why: 'INSERT med kolumnerna utskrivna: id sköter sig självt, och ordningen syns i koden.',
+        xp: 15,
+        description: 'Leveransen har med något nytt: havrekakor.',
+        task: 'Uppgift: Lägg till `Havrekaka` i kategorin `Bakverk`, för 22 kr, med 40 i lager.',
+        starterCode: '-- Steg 1: en ny vara\n',
+        solution:
+          "INSERT INTO produkter (namn, kategori, pris, lager)\nVALUES ('Havrekaka', 'Bakverk', 22, 40);\n",
+        hints: [
+          'INSERT INTO produkter (namn, kategori, pris, lager)',
+          'VALUES med fyra värden.',
+          "VALUES ('Havrekaka', 'Bakverk', 22, 40);",
+        ],
+        tests: [
+          {
+            description: 'Havrekakan finns',
+            query:
+              'SELECT id, namn, kategori, pris, lager FROM produkter WHERE id = 13',
+            expected: [[13, 'Havrekaka', 'Bakverk', 22, 40]],
+          },
+        ],
+      },
+      {
+        title: 'Påfyllt',
+        why: 'Två UPDATE med var sitt WHERE id, så att bara de två varorna som var slut får nytt lager.',
+        xp: 15,
+        description: 'De två varorna som var slut kom också med leveransen.',
+        task: 'Uppgift: Sätt `lager` till 30 för Kaffe Ljusrost (`id` 3) och till 25 för Rooibos (`id` 6).',
+        solution:
+          "INSERT INTO produkter (namn, kategori, pris, lager)\nVALUES ('Havrekaka', 'Bakverk', 22, 40);\nUPDATE produkter SET lager = 30 WHERE id = 3;\nUPDATE produkter SET lager = 25 WHERE id = 6;\n",
+        hints: [
+          'Två UPDATE, en per vara.',
+          'UPDATE produkter SET lager = 30 WHERE id = 3;',
+          'UPDATE produkter SET lager = 25 WHERE id = 6;',
+        ],
+        tests: [
+          {
+            description: 'Lagret efter leveransen',
+            query: 'SELECT id, lager FROM produkter',
+          },
+        ],
+      },
+      {
+        title: 'Dyrare kaffe',
+        why: 'Priset räknas fram från det gamla, och WHERE på kategorin gör att bara kaffet ändras.',
+        xp: 20,
+        description: 'Kaffebönorna har blivit dyrare att köpa in.',
+        task: 'Uppgift: Höj priset med 5 kr på allt i kategorin `Kaffe`.',
+        solution:
+          "INSERT INTO produkter (namn, kategori, pris, lager)\nVALUES ('Havrekaka', 'Bakverk', 22, 40);\nUPDATE produkter SET lager = 30 WHERE id = 3;\nUPDATE produkter SET lager = 25 WHERE id = 6;\nUPDATE produkter SET pris = pris + 5 WHERE kategori = 'Kaffe';\n",
+        hints: [
+          'SET pris = pris + 5',
+          "WHERE kategori = 'Kaffe'",
+          "UPDATE produkter SET pris = pris + 5 WHERE kategori = 'Kaffe';",
+        ],
+        tests: [
+          {
+            description: 'Allt efter leveransen',
+            query: 'SELECT id, namn, pris, lager FROM produkter',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-disken',
+    track: 'andra',
+    db: 'bibliotek',
+    title: 'Lånedisken',
+    reward: { emoji: '🛎️', name: 'Ringklocka' },
+    summary:
+      'En dag i lånedisken: ett nytt lån, en återlämning och en förlängning.',
+    steps: [
+      {
+        title: 'Ett nytt lån',
+        why: 'Ett lån är en ny rad i lan. Lånetiden är fyra veckor, så forfaller är 28 dagar efter lanad.',
+        xp: 15,
+        description:
+          'Per Lind (låntagare 6) lånar Mio, min Mio (bok 2) idag, 2026-06-15.',
+        task: "Uppgift: Lägg till lånet med `bok_id` 2, `lantagare_id` 6, `lanad` `'2026-06-15'` och `forfaller` `'2026-07-13'`.",
+        starterCode: '-- Steg 1: ett nytt lån\n',
+        solution:
+          "INSERT INTO lan (bok_id, lantagare_id, lanad, forfaller)\nVALUES (2, 6, '2026-06-15', '2026-07-13');\n",
+        hints: [
+          'INSERT INTO lan (bok_id, lantagare_id, lanad, forfaller)',
+          'aterlamnad nämns inte, så den blir NULL.',
+          "VALUES (2, 6, '2026-06-15', '2026-07-13');",
+        ],
+        tests: [
+          {
+            description: 'Lån 13 finns',
+            query:
+              'SELECT id, bok_id, lantagare_id, lanad, forfaller, aterlamnad FROM lan WHERE id = 13',
+            expected: [[13, 2, 6, '2026-06-15', '2026-07-13', null]],
+          },
+        ],
+      },
+      {
+        title: 'Återlämnat',
+        why: 'Att lämna tillbaka är att sätta ett datum i aterlamnad. Raden finns kvar, så historiken inte försvinner.',
+        xp: 15,
+        description: 'Amira lämnar tillbaka Sagan om ringen (lån 5).',
+        task: "Uppgift: Sätt `aterlamnad` till `'2026-06-15'` för lån 5.",
+        solution:
+          "INSERT INTO lan (bok_id, lantagare_id, lanad, forfaller)\nVALUES (2, 6, '2026-06-15', '2026-07-13');\nUPDATE lan SET aterlamnad = '2026-06-15' WHERE id = 5;\n",
+        hints: [
+          'UPDATE lan SET aterlamnad = …',
+          "'2026-06-15'",
+          'WHERE id = 5',
+        ],
+        tests: [
+          {
+            description: 'Lånen efteråt',
+            query: 'SELECT id, aterlamnad FROM lan',
+          },
+        ],
+      },
+      {
+        title: 'Förlängt',
+        why: 'En förlängning ändrar bara forfaller. Lånet och dess historia är detsamma.',
+        xp: 15,
+        description: 'Lisa vill förlänga Hobbiten (lån 10) två veckor.',
+        task: "Uppgift: Sätt `forfaller` till `'2026-07-13'` för lån 10.",
+        solution:
+          "INSERT INTO lan (bok_id, lantagare_id, lanad, forfaller)\nVALUES (2, 6, '2026-06-15', '2026-07-13');\nUPDATE lan SET aterlamnad = '2026-06-15' WHERE id = 5;\nUPDATE lan SET forfaller = '2026-07-13' WHERE id = 10;\n",
+        hints: [
+          'UPDATE lan SET forfaller = …',
+          "'2026-07-13'",
+          'WHERE id = 10',
+        ],
+        tests: [
+          {
+            description: 'Alla lån efter dagen',
+            query:
+              'SELECT id, bok_id, lantagare_id, forfaller, aterlamnad FROM lan',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-omrattningen',
+    track: 'andra',
+    db: 'skola',
+    title: 'Omrättningen',
+    reward: { emoji: '🖍️', name: 'Krita' },
+    summary:
+      'Rätta resultaten efter provperioden: ändra, lägg till och ta bort.',
+    steps: [
+      {
+        title: 'Rättat',
+        why: 'Ett resultat pekas ut av två kolumner, elev och kurs, så WHERE behöver båda.',
+        xp: 15,
+        description:
+          'Liams matteprov (elev 4, kurs 1) har rättats om och fick 52 poäng.',
+        task: 'Uppgift: Ändra `poang` till 52 för elev 4 i kurs 1.',
+        starterCode: '-- Steg 1: rättat\n',
+        solution:
+          'UPDATE resultat SET poang = 52 WHERE elev_id = 4 AND kurs_id = 1;\n',
+        hints: [
+          'UPDATE resultat SET poang = 52',
+          'WHERE elev_id = 4 AND kurs_id = 1',
+          'Båda villkoren behövs, annars ändras alla Liams prov.',
+        ],
+        tests: [
+          {
+            description: 'Liam har 52 i matte',
+            query:
+              'SELECT poang FROM resultat WHERE elev_id = 4 AND kurs_id = 1',
+            expected: [[52]],
+          },
+          {
+            description: 'Inget annat ändrades',
+            query: 'SELECT elev_id, kurs_id, poang FROM resultat',
+          },
+        ],
+      },
+      {
+        title: 'Det saknade provet',
+        why: 'Hugo skrev engelskaprovet men resultatet kom aldrig in. INSERT lägger till det som saknas.',
+        xp: 15,
+        description:
+          'Hugo (elev 6) fick 70 på engelskaprovet (kurs 3), men det registrerades aldrig.',
+        task: 'Uppgift: Lägg till resultatet 70 för elev 6 i kurs 3.',
+        solution:
+          'UPDATE resultat SET poang = 52 WHERE elev_id = 4 AND kurs_id = 1;\nINSERT INTO resultat (elev_id, kurs_id, poang) VALUES (6, 3, 70);\n',
+        hints: [
+          'INSERT INTO resultat (elev_id, kurs_id, poang)',
+          'VALUES (6, 3, 70)',
+          'Semikolon mellan UPDATE och INSERT.',
+        ],
+        tests: [
+          {
+            description: 'Alla resultat',
+            query: 'SELECT elev_id, kurs_id, poang FROM resultat',
+          },
+        ],
+      },
+      {
+        title: 'Fel kurs',
+        why: 'DELETE med båda villkoren tar bara bort det felaktiga resultatet, inte Noahs andra prov.',
+        xp: 15,
+        description:
+          'Noah (elev 12) läste aldrig engelska – resultatet i kurs 3 kom in av misstag.',
+        task: 'Uppgift: Ta bort resultatet för elev 12 i kurs 3.',
+        solution:
+          'UPDATE resultat SET poang = 52 WHERE elev_id = 4 AND kurs_id = 1;\nINSERT INTO resultat (elev_id, kurs_id, poang) VALUES (6, 3, 70);\nDELETE FROM resultat WHERE elev_id = 12 AND kurs_id = 3;\n',
+        hints: [
+          'DELETE FROM resultat',
+          'WHERE elev_id = 12 AND kurs_id = 3',
+          'Utan kurs_id försvinner alla Noahs resultat.',
+        ],
+        tests: [
+          {
+            description: 'Alla resultat efter omrättningen',
+            query: 'SELECT elev_id, kurs_id, poang FROM resultat',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-receptboken',
+    track: 'skapa',
+    db: null,
+    title: 'Receptboken',
+    reward: { emoji: '🍳', name: 'Stekpanna' },
+    summary: 'En databas för recept och deras ingredienser.',
+    steps: [
+      {
+        title: 'Recepten',
+        why: 'Varje recept får ett id, så att ingredienserna kan peka på det. CHECK hindrar ett recept som tar noll minuter.',
+        xp: 15,
+        description: 'Du bygger en receptbok. Först en tabell för recepten.',
+        task: 'Uppgift: Skapa `recept` med `id INTEGER PRIMARY KEY`, `namn TEXT NOT NULL` och `minuter INTEGER` som måste vara större än 0.',
+        starterCode: '-- Steg 1: recepten\n',
+        solution:
+          'CREATE TABLE recept (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL,\n  minuter INTEGER CHECK (minuter > 0)\n);\n',
+        hints: [
+          'CREATE TABLE recept ( … );',
+          'minuter INTEGER CHECK (minuter > 0)',
+          'namn TEXT NOT NULL',
+        ],
+        tests: [
+          {
+            description: 'recept har id, namn och minuter',
+            query:
+              'SELECT name, type, "notnull" FROM pragma_table_info(\'recept\')',
+            ordered: true,
+            expected: [
+              ['id', 'INTEGER', 0],
+              ['namn', 'TEXT', 1],
+              ['minuter', 'INTEGER', 0],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Ingredienserna',
+        why: 'Ingredienserna har en egen tabell eftersom ett recept har många. recept_id visar vilket recept de hör till.',
+        xp: 20,
+        description: 'Ett recept har många ingredienser.',
+        task: 'Uppgift: Skapa `ingredienser` med `id INTEGER PRIMARY KEY`, `recept_id INTEGER NOT NULL` som pekar på `recept (id)`, `namn TEXT NOT NULL` och `mangd TEXT`.',
+        solution:
+          'CREATE TABLE recept (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL,\n  minuter INTEGER CHECK (minuter > 0)\n);\nCREATE TABLE ingredienser (\n  id INTEGER PRIMARY KEY,\n  recept_id INTEGER NOT NULL REFERENCES recept (id),\n  namn TEXT NOT NULL,\n  mangd TEXT\n);\n',
+        hints: [
+          'CREATE TABLE ingredienser ( … );',
+          'recept_id INTEGER NOT NULL REFERENCES recept (id)',
+          'namn TEXT NOT NULL, mangd TEXT',
+        ],
+        tests: [
+          {
+            description: 'recept_id pekar på recept.id',
+            query:
+              'SELECT "table", "from", "to" FROM pragma_foreign_key_list(\'ingredienser\')',
+            expected: [['recept', 'recept_id', 'id']],
+          },
+        ],
+      },
+      {
+        title: 'Pannkakor',
+        why: 'Receptet läggs in först, så att det får id 1 som ingredienserna kan peka på. JOIN sätter ihop dem igen.',
+        xp: 20,
+        description: 'Det första receptet: pannkakor.',
+        task: 'Uppgift: Lägg in `Pannkakor` (30 minuter) och ingredienserna `Mjöl` (2,5 dl), `Mjölk` (6 dl) och `Ägg` (3 st). Visa sist receptets namn och varje ingrediens namn och mängd.',
+        solution:
+          "CREATE TABLE recept (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL,\n  minuter INTEGER CHECK (minuter > 0)\n);\nCREATE TABLE ingredienser (\n  id INTEGER PRIMARY KEY,\n  recept_id INTEGER NOT NULL REFERENCES recept (id),\n  namn TEXT NOT NULL,\n  mangd TEXT\n);\nINSERT INTO recept (namn, minuter) VALUES ('Pannkakor', 30);\nINSERT INTO ingredienser (recept_id, namn, mangd)\nVALUES (1, 'Mjöl', '2,5 dl'), (1, 'Mjölk', '6 dl'), (1, 'Ägg', '3 st');\nSELECT r.namn, i.namn, i.mangd\nFROM ingredienser i\nJOIN recept r ON i.recept_id = r.id;\n",
+        hints: [
+          "INSERT INTO recept (namn, minuter) VALUES ('Pannkakor', 30);",
+          "Ingredienserna har recept_id 1: (1, 'Mjöl', '2,5 dl') …",
+          'Sist en SELECT med JOIN mellan ingredienser och recept.',
+        ],
+        tests: [
+          {
+            description: 'Pannkakor med tre ingredienser',
+            check: 'rows',
+            expected: [
+              ['Pannkakor', 'Mjöl', '2,5 dl'],
+              ['Pannkakor', 'Mjölk', '6 dl'],
+              ['Pannkakor', 'Ägg', '3 st'],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-traningen',
+    track: 'skapa',
+    db: null,
+    title: 'Träningsdagboken',
+    reward: { emoji: '🏃', name: 'Löparskor' },
+    summary:
+      'En egen tabell för träningspassen, och en sammanställning per sport.',
+    steps: [
+      {
+        title: 'Tabellen',
+        why: 'Datum och typ måste alltid finnas, och ett pass på noll minuter är ingen träning. Reglerna håller dagboken ren.',
+        xp: 15,
+        description: 'Du ska föra träningsdagbok i en databas.',
+        task: 'Uppgift: Skapa `pass` med `id INTEGER PRIMARY KEY`, `datum TEXT NOT NULL`, `typ TEXT NOT NULL` och `minuter INTEGER` som måste vara större än 0.',
+        starterCode: '-- Steg 1: tabellen\n',
+        solution:
+          'CREATE TABLE pass (\n  id INTEGER PRIMARY KEY,\n  datum TEXT NOT NULL,\n  typ TEXT NOT NULL,\n  minuter INTEGER CHECK (minuter > 0)\n);\n',
+        hints: [
+          'CREATE TABLE pass ( … );',
+          'datum TEXT NOT NULL, typ TEXT NOT NULL',
+          'minuter INTEGER CHECK (minuter > 0)',
+        ],
+        tests: [
+          {
+            description: 'pass har rätt kolumner',
+            query:
+              'SELECT name, type, "notnull" FROM pragma_table_info(\'pass\')',
+            ordered: true,
+            expected: [
+              ['id', 'INTEGER', 0],
+              ['datum', 'TEXT', 1],
+              ['typ', 'TEXT', 1],
+              ['minuter', 'INTEGER', 0],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'En vecka',
+        why: 'Fyra pass räcker för att sammanställningen ska bli intressant: två sporter, olika långa pass.',
+        xp: 15,
+        description: 'Fyll i veckans träning.',
+        task: 'Uppgift: Lägg in fyra pass: 2026-06-08 löpning 30 min, 2026-06-10 simning 45 min, 2026-06-12 löpning 40 min och 2026-06-14 simning 30 min.',
+        solution:
+          "CREATE TABLE pass (\n  id INTEGER PRIMARY KEY,\n  datum TEXT NOT NULL,\n  typ TEXT NOT NULL,\n  minuter INTEGER CHECK (minuter > 0)\n);\nINSERT INTO pass (datum, typ, minuter) VALUES\n  ('2026-06-08', 'löpning', 30),\n  ('2026-06-10', 'simning', 45),\n  ('2026-06-12', 'löpning', 40),\n  ('2026-06-14', 'simning', 30);\n",
+        hints: [
+          'INSERT INTO pass (datum, typ, minuter) VALUES …',
+          'Fyra parenteser med kommatecken mellan.',
+          "('2026-06-08', 'löpning', 30), …",
+        ],
+        tests: [
+          {
+            description: 'Fyra pass',
+            query: 'SELECT datum, typ, minuter FROM pass',
+            expected: [
+              ['2026-06-08', 'löpning', 30],
+              ['2026-06-10', 'simning', 45],
+              ['2026-06-12', 'löpning', 40],
+              ['2026-06-14', 'simning', 30],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Veckan i siffror',
+        why: 'Allt från banorna innan fungerar på din egen tabell: gruppera, räkna och sortera.',
+        xp: 20,
+        description: 'Hur mycket tränade du av varje sport?',
+        task: 'Uppgift: Visa varje `typ`, antal pass som `antal` och minuter totalt som `minuter`, i bokstavsordning.',
+        solution:
+          "CREATE TABLE pass (\n  id INTEGER PRIMARY KEY,\n  datum TEXT NOT NULL,\n  typ TEXT NOT NULL,\n  minuter INTEGER CHECK (minuter > 0)\n);\nINSERT INTO pass (datum, typ, minuter) VALUES\n  ('2026-06-08', 'löpning', 30),\n  ('2026-06-10', 'simning', 45),\n  ('2026-06-12', 'löpning', 40),\n  ('2026-06-14', 'simning', 30);\nSELECT typ, COUNT(*) AS antal, SUM(minuter) AS minuter\nFROM pass\nGROUP BY typ\nORDER BY typ;\n",
+        hints: [
+          'GROUP BY typ',
+          'COUNT(*) AS antal, SUM(minuter) AS minuter',
+          'ORDER BY typ',
+        ],
+        tests: [
+          {
+            description: 'Löpning och simning',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['löpning', 2, 70],
+              ['simning', 2, 75],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-skivorna',
+    track: 'skapa',
+    db: null,
+    title: 'Skivsamlingen',
+    reward: { emoji: '💿', name: 'Skiva' },
+    summary: 'Artister och deras skivor i två tabeller som hör ihop.',
+    steps: [
+      {
+        title: 'Artisterna',
+        why: 'Artisten får en egen tabell, så att namnet bara står på ett ställe även om artisten har många skivor.',
+        xp: 15,
+        description: 'Du katalogiserar en skivsamling.',
+        task: 'Uppgift: Skapa `artister` med `id INTEGER PRIMARY KEY` och `namn TEXT NOT NULL UNIQUE`, och lägg in `ABBA` och `Robyn`.',
+        starterCode: '-- Steg 1: artisterna\n',
+        solution:
+          "CREATE TABLE artister (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL UNIQUE\n);\nINSERT INTO artister (namn) VALUES ('ABBA'), ('Robyn');\n",
+        hints: [
+          'namn TEXT NOT NULL UNIQUE',
+          "INSERT INTO artister (namn) VALUES ('ABBA'), ('Robyn');",
+          'id får 1 och 2 av sig själva.',
+        ],
+        tests: [
+          {
+            description: 'ABBA och Robyn',
+            query: 'SELECT id, namn FROM artister',
+            expected: [
+              [1, 'ABBA'],
+              [2, 'Robyn'],
+            ],
+          },
+          {
+            description: 'Samma artist kan inte läggas in två gånger',
+            query:
+              "INSERT OR IGNORE INTO artister (namn) VALUES ('ABBA'); SELECT COUNT(*) FROM artister",
+            expected: [[2]],
+          },
+        ],
+      },
+      {
+        title: 'Skivorna',
+        why: 'artist_id pekar på artisten, så att en skiva aldrig kan höra till en artist som inte finns.',
+        xp: 20,
+        description: 'Nu skivorna.',
+        task: 'Uppgift: Skapa `skivor` med `id INTEGER PRIMARY KEY`, `titel TEXT NOT NULL`, `ar INTEGER` och `artist_id INTEGER NOT NULL` som pekar på `artister (id)`. Lägg in `Arrival` (1976) och `Gold` (1992) av ABBA och `Body Talk` (2010) av Robyn.',
+        solution:
+          "CREATE TABLE artister (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL UNIQUE\n);\nINSERT INTO artister (namn) VALUES ('ABBA'), ('Robyn');\nCREATE TABLE skivor (\n  id INTEGER PRIMARY KEY,\n  titel TEXT NOT NULL,\n  ar INTEGER,\n  artist_id INTEGER NOT NULL REFERENCES artister (id)\n);\nINSERT INTO skivor (titel, ar, artist_id) VALUES\n  ('Arrival', 1976, 1),\n  ('Gold', 1992, 1),\n  ('Body Talk', 2010, 2);\n",
+        hints: [
+          'artist_id INTEGER NOT NULL REFERENCES artister (id)',
+          'ABBA har id 1 och Robyn id 2.',
+          "('Arrival', 1976, 1), ('Gold', 1992, 1), ('Body Talk', 2010, 2)",
+        ],
+        tests: [
+          {
+            description: 'artist_id pekar på artister.id',
+            query:
+              'SELECT "table", "from", "to" FROM pragma_foreign_key_list(\'skivor\')',
+            expected: [['artister', 'artist_id', 'id']],
+          },
+          {
+            description: 'Tre skivor',
+            query: 'SELECT titel, ar, artist_id FROM skivor',
+            expected: [
+              ['Arrival', 1976, 1],
+              ['Gold', 1992, 1],
+              ['Body Talk', 2010, 2],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Katalogen',
+        why: 'JOIN sätter ihop tabellerna igen, och GROUP BY räknar skivorna per artist – samma frågor som i de färdiga databaserna.',
+        xp: 20,
+        description: 'Hur många skivor har du av varje artist?',
+        task: 'Uppgift: Visa artistens `namn` och antal skivor som `skivor`, i bokstavsordning.',
+        solution:
+          "CREATE TABLE artister (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL UNIQUE\n);\nINSERT INTO artister (namn) VALUES ('ABBA'), ('Robyn');\nCREATE TABLE skivor (\n  id INTEGER PRIMARY KEY,\n  titel TEXT NOT NULL,\n  ar INTEGER,\n  artist_id INTEGER NOT NULL REFERENCES artister (id)\n);\nINSERT INTO skivor (titel, ar, artist_id) VALUES\n  ('Arrival', 1976, 1),\n  ('Gold', 1992, 1),\n  ('Body Talk', 2010, 2);\nSELECT a.namn, COUNT(*) AS skivor\nFROM skivor s\nJOIN artister a ON s.artist_id = a.id\nGROUP BY a.namn\nORDER BY a.namn;\n",
+        hints: [
+          'FROM skivor s JOIN artister a ON s.artist_id = a.id',
+          'GROUP BY a.namn',
+          'COUNT(*) AS skivor, ORDER BY a.namn',
+        ],
+        tests: [
+          {
+            description: 'Skivor per artist',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['ABBA', 2],
+              ['Robyn', 1],
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // Stegen som vanliga övningar, så att samma editor och rättning kan
