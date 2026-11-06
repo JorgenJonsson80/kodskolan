@@ -78,4 +78,44 @@ export const TRACKS = [
       { title: 'HAVING', url: `${TUTORIAL}sqlite-having/` },
     ],
   },
+  {
+    id: 'omvandla',
+    title: 'Räkna och omvandla',
+    teaches: [
+      'ROUND',
+      'UPPER',
+      'LENGTH',
+      'SUBSTR',
+      '||',
+      'strftime',
+      'julianday',
+      'CASE WHEN',
+    ],
+    reward: { emoji: '🪄', name: 'Trollstav' },
+    canBuild:
+      'en lista där värdena blir begripliga: avrundade, ihopsatta, per månad och med egna etiketter',
+    docs: [
+      {
+        title: 'Funktioner för text',
+        url: `${TUTORIAL}sqlite-string-functions/`,
+      },
+      {
+        title: 'Datum',
+        url: `${TUTORIAL}sqlite-date-functions/sqlite-strftime-function/`,
+      },
+      { title: 'CASE', url: `${TUTORIAL}sqlite-case/` },
+    ],
+  },
+  {
+    id: 'join',
+    title: 'Flera tabeller',
+    teaches: ['nycklar', 'JOIN … ON', 'alias för tabeller', 'flera JOIN'],
+    reward: { emoji: '🧩', name: 'Pusselbit' },
+    canBuild:
+      'rapporter som hämtar från flera tabeller, som vem som köpt vad och för hur mycket',
+    docs: [
+      { title: 'JOIN', url: `${TUTORIAL}sqlite-inner-join/` },
+      { title: 'Nycklar', url: `${TUTORIAL}sqlite-foreign-key/` },
+    ],
+  },
 ];

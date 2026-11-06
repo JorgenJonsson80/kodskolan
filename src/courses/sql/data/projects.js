@@ -830,6 +830,423 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-namnlappar',
+    track: 'omvandla',
+    db: 'skola',
+    title: 'Namnlapparna',
+    reward: { emoji: '🏷', name: 'Namnlapp' },
+    summary: 'Namnlappar till skolans öppna hus, med namn, initialer och sal.',
+    steps: [
+      {
+        title: 'Hela namnet',
+        why: '|| sätter ihop för- och efternamn till en text, så att lappen kan skrivas ut som den är.',
+        xp: 15,
+        description: 'Skolan har öppet hus och alla elever ska ha namnlappar.',
+        task: 'Uppgift: Visa hela namnet (förnamn, mellanslag, efternamn) som `namn`, och `klass`.',
+        starterCode: '-- Steg 1: hela namnet\n',
+        solution:
+          "SELECT fornamn || ' ' || efternamn AS namn, klass FROM elever;\n",
+        hints: [
+          "fornamn || ' ' || efternamn",
+          'AS namn efter uträkningen.',
+          "SELECT fornamn || ' ' || efternamn AS namn, klass FROM elever;",
+        ],
+        tests: [{ description: 'Namn och klass', check: 'rows' }],
+      },
+      {
+        title: 'Initialerna',
+        why: 'Initialerna står stort i hörnet på lappen, så att man ser dem på håll.',
+        xp: 15,
+        description: 'Lappen ska ha initialerna i hörnet.',
+        task: 'Uppgift: Lägg till initialerna (första bokstaven i förnamnet och efternamnet) som `initialer` sist.',
+        solution:
+          "SELECT fornamn || ' ' || efternamn AS namn, klass,\n  SUBSTR(fornamn, 1, 1) || SUBSTR(efternamn, 1, 1) AS initialer\nFROM elever;\n",
+        hints: [
+          'SUBSTR(fornamn, 1, 1) är första bokstaven.',
+          'Två SUBSTR med || mellan.',
+          'SUBSTR(fornamn, 1, 1) || SUBSTR(efternamn, 1, 1) AS initialer',
+        ],
+        tests: [
+          {
+            description: 'Kolumnerna är namn, klass och initialer',
+            check: 'columns',
+            expected: ['namn', 'klass', 'initialer'],
+          },
+          { description: 'Initialerna', check: 'rows' },
+        ],
+      },
+      {
+        title: 'Vilken sal?',
+        why: 'CASE gör om klassen till en sal. Byter en klass sal behöver bara frågan ändras, inte tabellen.',
+        xp: 20,
+        description: '9A visar upp sig i sal 101 och 9B i sal 102.',
+        task: 'Uppgift: Lägg till `sal` sist: `Sal 101` för 9A och `Sal 102` för alla andra.',
+        solution:
+          "SELECT fornamn || ' ' || efternamn AS namn, klass,\n  SUBSTR(fornamn, 1, 1) || SUBSTR(efternamn, 1, 1) AS initialer,\n  CASE WHEN klass = '9A' THEN 'Sal 101' ELSE 'Sal 102' END AS sal\nFROM elever;\n",
+        hints: [
+          "CASE WHEN klass = '9A' THEN … ELSE … END",
+          'AS sal efter END.',
+          "CASE WHEN klass = '9A' THEN 'Sal 101' ELSE 'Sal 102' END AS sal",
+        ],
+        tests: [{ description: 'Namnlapparna med sal', check: 'rows' }],
+      },
+    ],
+  },
+  {
+    id: 'proj-manadsrapport',
+    track: 'omvandla',
+    db: 'butik',
+    title: 'Månadsrapporten',
+    reward: { emoji: '🗓️', name: 'Kalender' },
+    summary: 'Hur många ordrar kom in varje månad, och vilken var bäst?',
+    steps: [
+      {
+        title: 'Per månad',
+        why: 'Datumet är för detaljerat för en rapport. Månaden ur strftime gör att ordrarna kan grupperas.',
+        xp: 15,
+        description: 'Chefen vill se hur försäljningen går månad för månad.',
+        task: 'Uppgift: Visa varje månad som `manad` och antalet ordrar som `antal`.',
+        starterCode: '-- Steg 1: per månad\n',
+        solution:
+          "SELECT strftime('%m', datum) AS manad, COUNT(*) AS antal\nFROM ordrar\nGROUP BY manad;\n",
+        hints: [
+          "strftime('%m', datum) AS manad",
+          'GROUP BY manad',
+          'COUNT(*) AS antal',
+        ],
+        tests: [{ description: 'Ordrar per månad', check: 'rows' }],
+      },
+      {
+        title: 'Bara det som gick fram',
+        why: 'En avbruten order gav inga pengar. WHERE tar bort den innan något räknas.',
+        xp: 15,
+        description: 'Den avbrutna ordern ska inte räknas.',
+        task: 'Uppgift: Räkna bara ordrar vars status inte är `avbruten`.',
+        solution:
+          "SELECT strftime('%m', datum) AS manad, COUNT(*) AS antal\nFROM ordrar\nWHERE status <> 'avbruten'\nGROUP BY manad;\n",
+        hints: [
+          'WHERE före GROUP BY.',
+          "WHERE status <> 'avbruten'",
+          'Resten är som förut.',
+        ],
+        tests: [
+          {
+            description: 'Februari har en order mindre',
+            check: 'rows',
+            expected: [
+              ['01', 2],
+              ['02', 2],
+              ['03', 3],
+              ['04', 2],
+              ['05', 3],
+              ['06', 2],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Månadens namn',
+        why: 'Rapporten läses av människor. CASE gör om 03 till mars, och sorteringen på manad håller ordningen rätt.',
+        xp: 20,
+        description: 'Rapporten blir lättare att läsa med namnen på månaderna.',
+        task: "Uppgift: Lägg till `namn` sist med månadens namn (`januari` för `'01'` … `juni` för `'06'`), och sortera på `manad`.",
+        solution:
+          "SELECT strftime('%m', datum) AS manad, COUNT(*) AS antal,\n  CASE strftime('%m', datum)\n    WHEN '01' THEN 'januari'\n    WHEN '02' THEN 'februari'\n    WHEN '03' THEN 'mars'\n    WHEN '04' THEN 'april'\n    WHEN '05' THEN 'maj'\n    ELSE 'juni'\n  END AS namn\nFROM ordrar\nWHERE status <> 'avbruten'\nGROUP BY manad\nORDER BY manad;\n",
+        hints: [
+          "CASE strftime('%m', datum) WHEN '01' THEN 'januari' … END",
+          'Med CASE värde WHEN … jämförs värdet med varje WHEN.',
+          'ORDER BY manad sist.',
+        ],
+        tests: [
+          {
+            description: 'Månaderna med namn, i ordning',
+            check: 'rows',
+            ordered: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-bokstavsbetyg',
+    track: 'omvandla',
+    db: 'skola',
+    title: 'Bokstavsbetygen',
+    reward: { emoji: '🅰️', name: 'Betyget A' },
+    summary: 'Gör om poängen på matteprovet till betyg från A till F.',
+    steps: [
+      {
+        title: 'Från poäng till betyg',
+        why: 'CASE prövar villkoren uppifrån. Därför räcker det att skriva >= 80 för B – allt på 90 och mer har redan blivit A.',
+        xp: 20,
+        description: 'Matteprovet (kurs_id 1) ska få bokstavsbetyg.',
+        task: 'Uppgift: Visa `elev_id`, `poang` och `betyg` för resultaten i kurs 1: A från 90, B från 80, C från 70, D från 60, E från 50 och annars F.',
+        starterCode: '-- Steg 1: från poäng till betyg\n',
+        solution:
+          "SELECT elev_id, poang,\n  CASE\n    WHEN poang >= 90 THEN 'A'\n    WHEN poang >= 80 THEN 'B'\n    WHEN poang >= 70 THEN 'C'\n    WHEN poang >= 60 THEN 'D'\n    WHEN poang >= 50 THEN 'E'\n    ELSE 'F'\n  END AS betyg\nFROM resultat\nWHERE kurs_id = 1;\n",
+        hints: [
+          'Ett CASE med fem WHEN och ett ELSE.',
+          "Börja med WHEN poang >= 90 THEN 'A'.",
+          'END AS betyg, och WHERE kurs_id = 1.',
+        ],
+        tests: [{ description: 'Betyget för varje resultat', check: 'rows' }],
+      },
+      {
+        title: 'Hur många av varje?',
+        why: 'Ett CASE går att gruppera på. Då blir det en rad per betyg i stället för en per elev.',
+        xp: 15,
+        description: 'Läraren vill veta hur betygen fördelar sig.',
+        task: 'Uppgift: Gör om frågan så att den visar `betyg` och antalet som `antal`, en rad per betyg.',
+        solution:
+          "SELECT\n  CASE\n    WHEN poang >= 90 THEN 'A'\n    WHEN poang >= 80 THEN 'B'\n    WHEN poang >= 70 THEN 'C'\n    WHEN poang >= 60 THEN 'D'\n    WHEN poang >= 50 THEN 'E'\n    ELSE 'F'\n  END AS betyg,\n  COUNT(*) AS antal\nFROM resultat\nWHERE kurs_id = 1\nGROUP BY betyg;\n",
+        hints: [
+          'Ta bort elev_id och poang ur SELECT.',
+          'COUNT(*) AS antal efter betyg.',
+          'GROUP BY betyg',
+        ],
+        tests: [
+          {
+            description: 'Antal per betyg',
+            check: 'rows',
+            expected: [
+              ['A', 3],
+              ['B', 3],
+              ['C', 2],
+              ['D', 2],
+              ['E', 1],
+              ['F', 1],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'De vanligaste',
+        why: 'HAVING filtrerar grupperna efter att de räknats. Här blir bara betygen som minst två elever fick kvar.',
+        xp: 15,
+        description: 'Läraren vill bara se betygen som fler än en elev fick.',
+        task: 'Uppgift: Behåll bara betygen som minst 2 resultat fick.',
+        solution:
+          "SELECT\n  CASE\n    WHEN poang >= 90 THEN 'A'\n    WHEN poang >= 80 THEN 'B'\n    WHEN poang >= 70 THEN 'C'\n    WHEN poang >= 60 THEN 'D'\n    WHEN poang >= 50 THEN 'E'\n    ELSE 'F'\n  END AS betyg,\n  COUNT(*) AS antal\nFROM resultat\nWHERE kurs_id = 1\nGROUP BY betyg\nHAVING COUNT(*) >= 2;\n",
+        hints: [
+          'HAVING efter GROUP BY.',
+          'Räkna med COUNT(*) i HAVING.',
+          'HAVING COUNT(*) >= 2',
+        ],
+        tests: [
+          {
+            description: 'A, B, C och D',
+            check: 'rows',
+            expected: [
+              ['A', 3],
+              ['B', 3],
+              ['C', 2],
+              ['D', 2],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-kvittot',
+    track: 'join',
+    db: 'butik',
+    title: 'Kvittot',
+    reward: { emoji: '🧾', name: 'Kvitto' },
+    summary: 'Skriv ut kvittot för en order, rad för rad och med summan.',
+    steps: [
+      {
+        title: 'Vad köptes?',
+        why: 'orderrader vet vad som köptes men inte vad det heter. JOIN mot produkter ger namnet och priset.',
+        xp: 15,
+        description: 'Kunden med order 6 vill ha ett kvitto.',
+        task: 'Uppgift: Visa produktens `namn`, `antal` och `pris` för raderna i order 6.',
+        starterCode: '-- Steg 1: vad köptes?\n',
+        solution:
+          'SELECT p.namn, r.antal, p.pris\nFROM orderrader r\nJOIN produkter p ON r.produkt_id = p.id\nWHERE r.order_id = 6;\n',
+        hints: [
+          'FROM orderrader r JOIN produkter p ON r.produkt_id = p.id',
+          'WHERE r.order_id = 6',
+          'SELECT p.namn, r.antal, p.pris …',
+        ],
+        tests: [
+          {
+            description: 'Tre rader på kvittot',
+            check: 'rows',
+            expected: [
+              ['Bryggkaffe Mörk', 1, 89],
+              ['Earl Grey', 2, 65],
+              ['Morotskaka', 1, 45],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Radsumman',
+        why: 'Varje rad på ett kvitto visar vad den kostar. Uträkningen görs per rad, med kolumner från båda tabellerna.',
+        xp: 15,
+        description: 'Varje rad ska visa vad den kostar.',
+        task: 'Uppgift: Lägg till `antal * pris` som `summa` sist.',
+        solution:
+          'SELECT p.namn, r.antal, p.pris, r.antal * p.pris AS summa\nFROM orderrader r\nJOIN produkter p ON r.produkt_id = p.id\nWHERE r.order_id = 6;\n',
+        hints: ['r.antal * p.pris', 'AS summa', 'Sist i SELECT, efter p.pris.'],
+        tests: [{ description: 'Radsummorna', check: 'rows' }],
+      },
+      {
+        title: 'Att betala',
+        why: 'Summan räknas med SUM i en egen fråga, så att kvittot kan visa raderna och totalen var för sig.',
+        xp: 20,
+        description: 'Längst ner på kvittot: att betala.',
+        task: 'Uppgift: Skriv en ny fråga under som räknar ut hela orderns summa som `att_betala`.',
+        solution:
+          'SELECT p.namn, r.antal, p.pris, r.antal * p.pris AS summa\nFROM orderrader r\nJOIN produkter p ON r.produkt_id = p.id\nWHERE r.order_id = 6;\n\nSELECT SUM(r.antal * p.pris) AS att_betala\nFROM orderrader r\nJOIN produkter p ON r.produkt_id = p.id\nWHERE r.order_id = 6;\n',
+        hints: [
+          'Samma FROM, JOIN och WHERE i den nya frågan.',
+          'SUM(r.antal * p.pris)',
+          'AS att_betala',
+        ],
+        tests: [
+          { description: '264 kronor', check: 'rows', expected: [[264]] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-regissorerna',
+    track: 'join',
+    db: 'filmer',
+    title: 'Regissörerna',
+    reward: { emoji: '🎬', name: 'Klappa' },
+    summary: 'Vilka regissörer gör de längsta filmerna?',
+    steps: [
+      {
+        title: 'Vem gjorde vad?',
+        why: 'JOIN ger regissörens namn och land till varje film, så att det går att gruppera på dem.',
+        xp: 15,
+        description: 'Filmklubben ska ha ett tema om regissörer.',
+        task: 'Uppgift: Visa regissörens `namn` och `land`, och filmens `titel` och `langd`.',
+        starterCode: '-- Steg 1: vem gjorde vad?\n',
+        solution:
+          'SELECT r.namn, r.land, f.titel, f.langd\nFROM filmer f\nJOIN regissorer r ON f.regissor_id = r.id;\n',
+        hints: [
+          'FROM filmer f JOIN regissorer r ON f.regissor_id = r.id',
+          'Fyra kolumner från två tabeller.',
+          'SELECT r.namn, r.land, f.titel, f.langd …',
+        ],
+        tests: [{ description: 'Filmerna med regissör', check: 'rows' }],
+      },
+      {
+        title: 'Per regissör',
+        why: 'En rad per regissör: hur många filmer och hur långa de är i snitt.',
+        xp: 15,
+        description: 'Nu en rad per regissör.',
+        task: 'Uppgift: Gör om frågan till en rad per regissör med `namn`, `land`, antalet filmer som `filmer` och snittlängden avrundad till heltal som `snitt`.',
+        solution:
+          'SELECT r.namn, r.land, COUNT(*) AS filmer, ROUND(AVG(f.langd)) AS snitt\nFROM filmer f\nJOIN regissorer r ON f.regissor_id = r.id\nGROUP BY r.namn, r.land;\n',
+        hints: [
+          'GROUP BY r.namn, r.land',
+          'COUNT(*) AS filmer, ROUND(AVG(f.langd)) AS snitt',
+          'ROUND utan decimaler avrundar till heltal.',
+        ],
+        tests: [{ description: 'En rad per regissör', check: 'rows' }],
+      },
+      {
+        title: 'De långa',
+        why: 'HAVING plockar ut regissörerna vars filmer i snitt är över två timmar, och sorteringen sätter den längsta först.',
+        xp: 20,
+        description: 'Temat blir "Långa filmer".',
+        task: 'Uppgift: Behåll bara regissörerna med en snittlängd över 120 minuter, längst först.',
+        solution:
+          'SELECT r.namn, r.land, COUNT(*) AS filmer, ROUND(AVG(f.langd)) AS snitt\nFROM filmer f\nJOIN regissorer r ON f.regissor_id = r.id\nGROUP BY r.namn, r.land\nHAVING AVG(f.langd) > 120\nORDER BY snitt DESC;\n',
+        hints: [
+          'HAVING AVG(f.langd) > 120',
+          'ORDER BY snitt DESC',
+          'HAVING före ORDER BY.',
+        ],
+        tests: [
+          {
+            description: 'De långa, längst först',
+            check: 'rows',
+            ordered: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-betygskortet',
+    track: 'join',
+    db: 'skola',
+    title: 'Betygskortet',
+    reward: { emoji: '📜', name: 'Diplom' },
+    summary: 'Ett kort med en elevs resultat, med kursernas och lärarnas namn.',
+    steps: [
+      {
+        title: 'Alvas resultat',
+        why: 'resultat har bara kurs_id. JOIN mot kurser ger kursens namn, som är det eleven vill läsa.',
+        xp: 15,
+        description: 'Alva Lindqvist (elev_id 1) vill se sina resultat.',
+        task: 'Uppgift: Visa kursens namn som `kurs` och `poang` för elev 1.',
+        starterCode: '-- Steg 1: Alvas resultat\n',
+        solution:
+          'SELECT k.namn AS kurs, r.poang\nFROM resultat r\nJOIN kurser k ON r.kurs_id = k.id\nWHERE r.elev_id = 1;\n',
+        hints: [
+          'FROM resultat r JOIN kurser k ON r.kurs_id = k.id',
+          'WHERE r.elev_id = 1',
+          'k.namn AS kurs',
+        ],
+        tests: [
+          {
+            description: 'Alvas fyra resultat',
+            check: 'rows',
+            expected: [
+              ['Matematik', 92],
+              ['Svenska', 85],
+              ['Engelska', 78],
+              ['Programmering', 95],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Läraren',
+        why: 'Läraren står redan i kurser, så den kommer med i samma JOIN utan något nytt.',
+        xp: 15,
+        description: 'Kortet ska också visa vem som var lärare.',
+        task: 'Uppgift: Lägg till `larare` sist, och sortera på kursens namn.',
+        solution:
+          'SELECT k.namn AS kurs, r.poang, k.larare\nFROM resultat r\nJOIN kurser k ON r.kurs_id = k.id\nWHERE r.elev_id = 1\nORDER BY kurs;\n',
+        hints: [
+          'k.larare finns i kurser.',
+          'ORDER BY kurs sist.',
+          'SELECT k.namn AS kurs, r.poang, k.larare …',
+        ],
+        tests: [
+          {
+            description: 'Med lärare, i ordning',
+            check: 'rows',
+            ordered: true,
+          },
+        ],
+      },
+      {
+        title: 'Hela klassen',
+        why: 'Med elever som tredje tabell går det att välja på klass i stället för id, och samma fråga ger alla kort på en gång.',
+        xp: 20,
+        description: 'Nu ska alla i 9A få sina kort.',
+        task: 'Uppgift: Byt `WHERE r.elev_id = 1` mot alla elever i klass `9A`, lägg till elevens `fornamn` först och sortera på förnamn och sedan kurs.',
+        solution:
+          "SELECT e.fornamn, k.namn AS kurs, r.poang, k.larare\nFROM resultat r\nJOIN kurser k ON r.kurs_id = k.id\nJOIN elever e ON r.elev_id = e.id\nWHERE e.klass = '9A'\nORDER BY e.fornamn, kurs;\n",
+        hints: [
+          'JOIN elever e ON r.elev_id = e.id',
+          "WHERE e.klass = '9A'",
+          'ORDER BY e.fornamn, kurs',
+        ],
+        tests: [{ description: 'Korten för 9A', check: 'rows', ordered: true }],
+      },
+    ],
+  },
 ];
 
 // Stegen som vanliga övningar, så att samma editor och rättning kan

@@ -1,6 +1,8 @@
 import { BOSSES } from './bossar';
 import { FILTRERA } from './filtrera';
 import { GRUPPERA } from './gruppera';
+import { JOIN } from './join';
+import { OMVANDLA } from './omvandla';
 import { SELECT } from './select';
 import { SORTERA } from './sortera';
 
@@ -15,4 +17,8 @@ export const LESSONS = [
   BOSSES.sortera,
   ...GRUPPERA,
   BOSSES.gruppera,
+  ...OMVANDLA,
+  BOSSES.omvandla,
+  ...JOIN,
+  BOSSES.join,
 ];

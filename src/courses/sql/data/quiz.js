@@ -156,4 +156,77 @@ export const QUIZ = {
         'Rader filtreras, grupperas, grupperna filtreras och sist sorteras svaret.',
     },
   ],
+  omvandla: [
+    {
+      question: 'Vad blir svaret?',
+      code: 'SELECT ROUND(3.456, 1);',
+      db: 'butik',
+      options: ['3.5', '3.4', '3', '3.46'],
+      explain:
+        'ROUND avrundar till så många decimaler som siffran efter kommatecknet säger.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: "SELECT 'Hej' || ' ' || 'då';",
+      db: 'butik',
+      options: ['Hej då', 'Hejdå', "'Hej' 'då'", 'Ett fel'],
+      explain: '|| sätter ihop text. Mellanslaget i mitten är en egen text.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: "SELECT CASE WHEN 5 > 3 THEN 'ja' WHEN 5 > 1 THEN 'kanske' ELSE 'nej' END;",
+      db: 'butik',
+      options: ['ja', 'kanske', 'nej', 'ja och kanske'],
+      explain:
+        'Det första villkoret som stämmer vinner, även om fler skulle stämma.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: "SELECT strftime('%m', '2026-03-14');",
+      db: 'butik',
+      options: ['03', '14', '2026', 'mars'],
+      explain: "'%m' plockar ut månaden som text med två siffror.",
+    },
+  ],
+  join: [
+    {
+      question: 'Vad står efter ON i en JOIN?',
+      options: [
+        'Villkoret som säger vilka rader som hör ihop',
+        'Tabellen som ska kopplas på',
+        'Kolumnerna som ska visas',
+        'Hur svaret ska sorteras',
+      ],
+      explain:
+        'ON f.regissor_id = r.id säger att en film hör ihop med regissören vars id den har.',
+    },
+    {
+      question: 'Hur många rader ger frågan?',
+      code: 'SELECT f.titel FROM filmer f JOIN regissorer r ON f.regissor_id = r.id;',
+      db: 'filmer',
+      check: 'rows',
+      options: ['15', '16', '7', '112'],
+      explain:
+        'Kortfilmen saknar regissör (NULL), så den har ingen match och försvinner med en vanlig JOIN.',
+    },
+    {
+      question: 'Vad betyder felet ambiguous column name: id?',
+      options: [
+        'id finns i flera av tabellerna',
+        'id är felstavat',
+        'id saknas i alla tabeller',
+        'id får inte vara NULL',
+      ],
+      explain:
+        'Skriv tabellen eller aliaset framför, som f.id, så att SQL vet vilket id du menar.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: "SELECT r.namn FROM filmer f JOIN regissorer r ON f.regissor_id = r.id WHERE f.titel = 'Barbie';",
+      db: 'filmer',
+      options: ['Greta Gerwig', 'Christopher Nolan', '6', 'Barbie'],
+      explain:
+        'Barbie har regissor_id 6, och i regissorer har Greta Gerwig id 6.',
+    },
+  ],
 };

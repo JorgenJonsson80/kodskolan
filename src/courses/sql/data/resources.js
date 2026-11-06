@@ -68,4 +68,33 @@ export const RESOURCES = {
       video: 'sql having vs where',
     },
   ],
+  omvandla: [
+    {
+      topic: 'Text och ||',
+      read: `${TUTORIAL}sqlite-string-functions/`,
+      video: 'sql string functions concatenate upper substr',
+    },
+    {
+      topic: 'Datum med strftime',
+      read: `${TUTORIAL}sqlite-date-functions/sqlite-strftime-function/`,
+      video: 'sqlite strftime date functions',
+    },
+    {
+      topic: 'CASE WHEN',
+      read: `${TUTORIAL}sqlite-case/`,
+      video: 'sql case when explained',
+    },
+  ],
+  join: [
+    {
+      topic: 'JOIN',
+      read: `${TUTORIAL}sqlite-inner-join/`,
+      video: 'sql join förklaring nybörjare',
+    },
+    {
+      topic: 'Nycklar mellan tabeller',
+      read: `${TUTORIAL}sqlite-foreign-key/`,
+      video: 'primary key foreign key explained',
+    },
+  ],
 };

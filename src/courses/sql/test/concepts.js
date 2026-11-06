@@ -20,7 +20,7 @@ const RULES = [
     track: 'omvandla',
     name: 'funktioner och CASE',
     pattern:
-      /\b(CASE|ROUND|UPPER|LOWER|LENGTH|SUBSTR|strftime|date)\s*\(?|\|\|/i,
+      /\b(CASE|ROUND|UPPER|LOWER|LENGTH|SUBSTR|strftime|julianday|date)\s*\(?|\|\|/i,
   },
   { track: 'join', name: 'JOIN', pattern: /\bJOIN\b/i },
   {
