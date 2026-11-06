@@ -89,6 +89,92 @@ export const IDEAS = [
     ],
     extra: 'Eleverna i 9B som är födda 2010.',
   },
+  {
+    id: 'idea-rekord',
+    track: 'sortera',
+    db: 'filmer',
+    emoji: '🏅',
+    title: 'Rekordboken',
+    summary: 'Hitta filmdatabasens rekord: äldst, nyast, längst och kortast.',
+    goals: [
+      'De tre äldsta filmerna.',
+      'Den längsta filmen från efter 2000.',
+      'Snittlängden för alla dramer.',
+    ],
+    extra:
+      'Hur många år skiljer den äldsta och den nyaste filmen? (`MAX(ar) - MIN(ar)`)',
+  },
+  {
+    id: 'idea-butiksfakta',
+    track: 'sortera',
+    db: 'butik',
+    emoji: '🧾',
+    title: 'Butiken i siffror',
+    summary: 'Fem siffror som säger något om butiken.',
+    goals: [
+      'Hur många produkter finns det?',
+      'Vad kostar en vara i snitt?',
+      'Hur många varor har sålts totalt? (`SUM(antal)` i `orderrader`)',
+    ],
+    extra:
+      'Vilken var den första och den senaste ordern? (`MIN` och `MAX` på datum)',
+  },
+  {
+    id: 'idea-bokhyllan',
+    track: 'sortera',
+    db: 'bibliotek',
+    emoji: '📚',
+    title: 'Bokhyllan',
+    summary: 'Ställ biblioteket i ordning på olika sätt.',
+    goals: [
+      'Böckerna från tjockast till tunnast.',
+      'Alla genrer, en gång var.',
+      'Hur många sidor har alla Astrid Lindgrens böcker tillsammans?',
+    ],
+    extra: 'Sortera på författare och sedan på år.',
+  },
+  {
+    id: 'idea-decennier',
+    track: 'gruppera',
+    db: 'filmer',
+    emoji: '📼',
+    title: 'Filmernas årtionden',
+    summary: 'Hur många filmer finns det från varje årtionde?',
+    goals: [
+      'Räkna ut årtiondet med `ar / 10 * 10` (heltal delat ger heltal!).',
+      'Gruppera på årtiondet och räkna filmerna.',
+      'Visa bara årtionden med fler än en film.',
+    ],
+    extra: 'Lägg till snittlängden för varje årtionde.',
+  },
+  {
+    id: 'idea-lanstatistik',
+    track: 'gruppera',
+    db: 'bibliotek',
+    emoji: '📊',
+    title: 'Lånestatistiken',
+    summary: 'Vilka lånar mest, och vad?',
+    goals: [
+      'Antal lån per låntagare.',
+      'Antal lån som inte är återlämnade, per låntagare.',
+      'Låntagarna med fler än två lån.',
+    ],
+    extra: 'Antal böcker per genre och snittet av sidor.',
+  },
+  {
+    id: 'idea-klasserna',
+    track: 'gruppera',
+    db: 'skola',
+    emoji: '🏫',
+    title: 'Klasserna',
+    summary: 'Jämför klasserna och kurserna.',
+    goals: [
+      'Antal elever i varje klass.',
+      'Varje elevs bästa och sämsta resultat.',
+      'Eleverna som skrivit alla fyra proven.',
+    ],
+    extra: 'Hur många resultat finns det på över 90 i varje kurs?',
+  },
 ];
 
 const goalLines = idea =>

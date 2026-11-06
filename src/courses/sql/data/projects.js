@@ -411,6 +411,425 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-topplistan',
+    track: 'sortera',
+    db: 'filmer',
+    title: 'Längdrekorden',
+    reward: { emoji: '🥇', name: 'Guldmedalj' },
+    summary:
+      'Filmerna sorterade efter längd, och en topplista över de längsta.',
+    steps: [
+      {
+        title: 'Kortast först',
+        why: 'Sorteringen gör listan läsbar: man ser direkt var gränsen går för en film man hinner med på en kväll.',
+        xp: 15,
+        description: 'Filmklubben vill se filmerna efter längd.',
+        task: 'Uppgift: Visa `titel` och `langd` för alla filmer, med den kortaste först.',
+        starterCode: '-- Steg 1: kortast först\n',
+        solution: 'SELECT titel, langd FROM filmer ORDER BY langd;\n',
+        hints: [
+          'ORDER BY sist i frågan.',
+          'Sortera på langd.',
+          'SELECT titel, langd FROM filmer ORDER BY langd;',
+        ],
+        tests: [{ description: 'Kortast först', check: 'rows', ordered: true }],
+      },
+      {
+        title: 'Längst först',
+        why: 'En topplista har det största överst. DESC vänder på sorteringen utan att något annat ändras.',
+        xp: 15,
+        description: 'Nu ska det bli en topplista över maratonfilmerna.',
+        task: 'Uppgift: Vänd på sorteringen så att den längsta filmen kommer först.',
+        solution: 'SELECT titel, langd FROM filmer ORDER BY langd DESC;\n',
+        hints: [
+          'DESC efter kolumnen i ORDER BY.',
+          'ORDER BY langd DESC',
+          'Resten av frågan är som förut.',
+        ],
+        tests: [{ description: 'Längst först', check: 'rows', ordered: true }],
+      },
+      {
+        title: 'Pallen',
+        why: 'LIMIT efter ORDER BY ger topplistan. Med alias blir kolumnerna begripliga för den som läser listan på väggen.',
+        xp: 20,
+        description: 'Bara de tre längsta får plats på pallen.',
+        task: 'Uppgift: Visa bara de 3 längsta, och döp kolumnerna till `film` och `minuter`.',
+        solution:
+          'SELECT titel AS film, langd AS minuter\nFROM filmer\nORDER BY langd DESC\nLIMIT 3;\n',
+        hints: [
+          'titel AS film, langd AS minuter',
+          'LIMIT 3 står sist.',
+          'SELECT titel AS film, langd AS minuter FROM filmer ORDER BY langd DESC LIMIT 3;',
+        ],
+        tests: [
+          {
+            description: 'De tre längsta filmerna',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['Fanny och Alexander', 188],
+              ['Oppenheimer', 180],
+              ['Interstellar', 169],
+            ],
+          },
+          {
+            description: 'Kolumnerna är film och minuter',
+            check: 'columns',
+            expected: ['film', 'minuter'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-lagerkollen',
+    track: 'sortera',
+    db: 'butik',
+    title: 'Lagerkollen',
+    reward: { emoji: '📦', name: 'Låda' },
+    summary: 'Hitta varorna som håller på att ta slut, och räkna dem.',
+    steps: [
+      {
+        title: 'Minst i lager först',
+        why: 'Det som är nära slut ska synas först. Två varor kan ha lika många kvar, så namnet bestämmer ordningen mellan dem.',
+        xp: 15,
+        description:
+          'Butiken ska beställa varor. Det som snart tar slut är viktigast.',
+        task: 'Uppgift: Visa `namn` och `lager` för alla produkter, sorterat på lager (minst först) och sedan namn.',
+        starterCode: '-- Steg 1: minst i lager först\n',
+        solution: 'SELECT namn, lager FROM produkter ORDER BY lager, namn;\n',
+        hints: [
+          'Två kolumner i ORDER BY.',
+          'lager först, sedan namn.',
+          'ORDER BY lager, namn',
+        ],
+        tests: [
+          { description: 'Minst i lager först', check: 'rows', ordered: true },
+        ],
+      },
+      {
+        title: 'Snart slut',
+        why: 'WHERE tar bort det som räcker länge. Det som är kvar är beställningslistan.',
+        xp: 15,
+        description: 'Allt med 20 eller fler i lager räcker ett tag.',
+        task: 'Uppgift: Behåll bara produkterna med färre än 20 i lager.',
+        solution:
+          'SELECT namn, lager FROM produkter WHERE lager < 20 ORDER BY lager, namn;\n',
+        hints: [
+          'WHERE står före ORDER BY.',
+          'Färre än 20 skrivs < 20.',
+          'WHERE lager < 20 ORDER BY lager, namn',
+        ],
+        tests: [
+          {
+            description: 'Det som snart tar slut',
+            check: 'rows',
+            ordered: true,
+          },
+        ],
+      },
+      {
+        title: 'Hur många?',
+        why: 'Chefen vill bara ha en siffra. COUNT räknar raderna som blev kvar efter WHERE.',
+        xp: 20,
+        description: 'Chefen vill veta hur många varor som ska beställas.',
+        task: 'Uppgift: Skriv en ny fråga under som räknar produkterna med färre än 20 i lager. Kalla kolumnen `att_bestalla`.',
+        solution:
+          'SELECT namn, lager FROM produkter WHERE lager < 20 ORDER BY lager, namn;\n\nSELECT COUNT(*) AS att_bestalla FROM produkter WHERE lager < 20;\n',
+        hints: [
+          'En ny fråga efter semikolon.',
+          'COUNT(*) räknar raderna.',
+          'SELECT COUNT(*) AS att_bestalla FROM produkter WHERE lager < 20;',
+        ],
+        tests: [
+          { description: 'Sex varor', check: 'rows', expected: [[6]] },
+          {
+            description: 'Kolumnen heter att_bestalla',
+            check: 'columns',
+            expected: ['att_bestalla'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-provet',
+    track: 'sortera',
+    db: 'skola',
+    title: 'Mattenprovet',
+    reward: { emoji: '📈', name: 'Diagram' },
+    summary: 'Statistik om slutprovet i matte: antal, snitt, lägst och högst.',
+    steps: [
+      {
+        title: 'Hur många skrev?',
+        why: 'Antalet först, så att man vet hur många resultat snittet bygger på.',
+        xp: 15,
+        description:
+          'Matteläraren vill ha statistik om slutprovet. Matematik har kurs_id 1.',
+        task: 'Uppgift: Räkna hur många resultat det finns i Matematik (`kurs_id` 1), som `antal`.',
+        starterCode: '-- Steg 1: hur många skrev?\n',
+        solution: 'SELECT COUNT(*) AS antal FROM resultat WHERE kurs_id = 1;\n',
+        hints: [
+          'COUNT(*) räknar raderna.',
+          'WHERE kurs_id = 1',
+          'SELECT COUNT(*) AS antal FROM resultat WHERE kurs_id = 1;',
+        ],
+        tests: [
+          { description: 'Tolv resultat', check: 'rows', expected: [[12]] },
+        ],
+      },
+      {
+        title: 'Snitt, lägst och högst',
+        why: 'Flera funktioner i samma SELECT ger en rad med hela statistiken, i stället för fyra frågor.',
+        xp: 15,
+        description: 'Nu vill läraren se hur det gick.',
+        task: 'Uppgift: Lägg till snittet som `snitt`, det lägsta som `lagst` och det högsta som `hogst`, efter `antal`.',
+        solution:
+          'SELECT COUNT(*) AS antal, AVG(poang) AS snitt, MIN(poang) AS lagst, MAX(poang) AS hogst\nFROM resultat\nWHERE kurs_id = 1;\n',
+        hints: [
+          'AVG, MIN och MAX av poang.',
+          'Varje får sitt namn med AS.',
+          'COUNT(*) AS antal, AVG(poang) AS snitt, MIN(poang) AS lagst, MAX(poang) AS hogst',
+        ],
+        tests: [
+          {
+            description: 'Kolumnerna är antal, snitt, lagst och hogst',
+            check: 'columns',
+            expected: ['antal', 'snitt', 'lagst', 'hogst'],
+          },
+          { description: 'Rätt statistik', check: 'rows' },
+        ],
+      },
+      {
+        title: 'De som klarade det',
+        why: 'Med ett villkor till räknas allt bara för dem som fick minst 60. Funktionerna räknar alltid det som är kvar efter WHERE.',
+        xp: 20,
+        description:
+          'Gränsen för godkänt är 60 poäng. Hur ser det ut bland dem som klarade provet?',
+        task: 'Uppgift: Räkna bara med resultaten som är minst 60 poäng.',
+        solution:
+          'SELECT COUNT(*) AS antal, AVG(poang) AS snitt, MIN(poang) AS lagst, MAX(poang) AS hogst\nFROM resultat\nWHERE kurs_id = 1 AND poang >= 60;\n',
+        hints: [
+          'Lägg till ett villkor med AND.',
+          'Minst 60 skrivs >= 60.',
+          'WHERE kurs_id = 1 AND poang >= 60',
+        ],
+        tests: [{ description: 'Statistiken för de godkända', check: 'rows' }],
+      },
+    ],
+  },
+  {
+    id: 'proj-recensenterna',
+    track: 'gruppera',
+    db: 'filmer',
+    title: 'Recensenterna',
+    reward: { emoji: '🌟', name: 'Stjärna' },
+    summary: 'Vem är snällast av filmklubbens fyra recensenter?',
+    steps: [
+      {
+        title: 'Hur många?',
+        why: 'En rad per recensent: grupperingen gör om 28 recensioner till fyra rader.',
+        xp: 15,
+        description:
+          'Filmklubben har fyra recensenter. Hur många recensioner har var och en skrivit?',
+        task: 'Uppgift: Visa varje `recensent` och antal recensioner som `antal`.',
+        starterCode: '-- Steg 1: hur många?\n',
+        solution:
+          'SELECT recensent, COUNT(*) AS antal FROM recensioner GROUP BY recensent;\n',
+        hints: [
+          'Gruppera på recensent.',
+          'COUNT(*) AS antal',
+          'SELECT recensent, COUNT(*) AS antal FROM recensioner GROUP BY recensent;',
+        ],
+        tests: [{ description: 'Antal per recensent', check: 'rows' }],
+      },
+      {
+        title: 'Snittbetyget',
+        why: 'Alla har skrivit lika många, så snittet går att jämföra rakt av.',
+        xp: 15,
+        description: 'Vem ger högst betyg i snitt?',
+        task: 'Uppgift: Lägg till snittbetyget som `snitt`.',
+        solution:
+          'SELECT recensent, COUNT(*) AS antal, AVG(betyg) AS snitt\nFROM recensioner\nGROUP BY recensent;\n',
+        hints: [
+          'AVG(betyg) ger snittet.',
+          'AVG(betyg) AS snitt efter antal.',
+          'SELECT recensent, COUNT(*) AS antal, AVG(betyg) AS snitt …',
+        ],
+        tests: [{ description: 'Snittet per recensent', check: 'rows' }],
+      },
+      {
+        title: 'Snällast först',
+        why: 'Sorterat blir svaret en topplista. Två har samma snitt, och då avgör namnet så att ordningen alltid blir densamma.',
+        xp: 20,
+        description: 'Gör det till en topplista.',
+        task: 'Uppgift: Sortera med högst snitt först, och i bokstavsordning om två har samma snitt.',
+        solution:
+          'SELECT recensent, COUNT(*) AS antal, AVG(betyg) AS snitt\nFROM recensioner\nGROUP BY recensent\nORDER BY snitt DESC, recensent;\n',
+        hints: [
+          'ORDER BY efter GROUP BY.',
+          'snitt DESC, sedan recensent.',
+          'ORDER BY snitt DESC, recensent',
+        ],
+        tests: [
+          { description: 'Snällast först', check: 'rows', ordered: true },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-stamkunderna',
+    track: 'gruppera',
+    db: 'butik',
+    title: 'Stamkunderna',
+    reward: { emoji: '💰', name: 'Pengapåse' },
+    summary: 'Hitta kunderna som kommer tillbaka, för ett lojalitetsprogram.',
+    steps: [
+      {
+        title: 'Ordrarnas status',
+        why: 'Först en överblick: hur många ordrar har varje status? Då vet man om de avbrutna är många nog att bry sig om.',
+        xp: 15,
+        description:
+          'Butiken vill starta ett program för stamkunder. Först en överblick.',
+        task: 'Uppgift: Visa varje `status` och hur många ordrar som har den, som `antal`.',
+        starterCode: '-- Steg 1: ordrarnas status\n',
+        solution:
+          'SELECT status, COUNT(*) AS antal FROM ordrar GROUP BY status;\n',
+        hints: [
+          'Gruppera ordrar på status.',
+          'COUNT(*) AS antal',
+          'SELECT status, COUNT(*) AS antal FROM ordrar GROUP BY status;',
+        ],
+        tests: [
+          {
+            description: 'Antal per status',
+            check: 'rows',
+            expected: [
+              ['avbruten', 1],
+              ['levererad', 11],
+              ['skickad', 3],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Per kund',
+        why: 'En avbruten order räknas inte som ett köp, så den tas bort med WHERE innan grupperingen.',
+        xp: 15,
+        description: 'Nu per kund, men bara ordrar som inte avbrutits.',
+        task: 'Uppgift: Byt till en rad per `kund_id` med antal ordrar som `antal`, och räkna bara ordrar vars status inte är `avbruten`.',
+        solution:
+          "SELECT kund_id, COUNT(*) AS antal\nFROM ordrar\nWHERE status <> 'avbruten'\nGROUP BY kund_id;\n",
+        hints: [
+          "WHERE status <> 'avbruten' före GROUP BY.",
+          'Gruppera på kund_id i stället för status.',
+          "SELECT kund_id, COUNT(*) AS antal FROM ordrar WHERE status <> 'avbruten' GROUP BY kund_id;",
+        ],
+        tests: [{ description: 'Ordrar per kund', check: 'rows' }],
+      },
+      {
+        title: 'Stamkunderna',
+        why: 'HAVING behåller bara grupperna med minst två köp. Sorteringen sätter de trognaste överst.',
+        xp: 20,
+        description: 'En stamkund har handlat minst två gånger.',
+        task: 'Uppgift: Behåll bara kunderna med minst 2 ordrar, med flest först och lägst `kund_id` först om de har lika många.',
+        solution:
+          "SELECT kund_id, COUNT(*) AS antal\nFROM ordrar\nWHERE status <> 'avbruten'\nGROUP BY kund_id\nHAVING COUNT(*) >= 2\nORDER BY antal DESC, kund_id;\n",
+        hints: [
+          'HAVING COUNT(*) >= 2 efter GROUP BY.',
+          'ORDER BY antal DESC, kund_id',
+          'HAVING står före ORDER BY.',
+        ],
+        tests: [
+          {
+            description: 'Stamkunderna, flest först',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              [1, 3],
+              [2, 3],
+              [4, 2],
+              [8, 2],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-kurserna',
+    track: 'gruppera',
+    db: 'skola',
+    title: 'Kursrapporten',
+    reward: { emoji: '🎓', name: 'Studentmössa' },
+    summary: 'Rektorns rapport: hur gick det i varje kurs?',
+    steps: [
+      {
+        title: 'Hur många skrev?',
+        why: 'En rad per kurs. Programmering har färre elever, och det är bra att veta när man jämför snitten.',
+        xp: 15,
+        description: 'Rektorn vill ha en rapport med en rad per kurs.',
+        task: 'Uppgift: Visa varje `kurs_id` och antalet resultat som `antal`.',
+        starterCode: '-- Steg 1: hur många skrev?\n',
+        solution:
+          'SELECT kurs_id, COUNT(*) AS antal FROM resultat GROUP BY kurs_id;\n',
+        hints: [
+          'Gruppera resultat på kurs_id.',
+          'COUNT(*) AS antal',
+          'SELECT kurs_id, COUNT(*) AS antal FROM resultat GROUP BY kurs_id;',
+        ],
+        tests: [
+          {
+            description: 'Antal per kurs',
+            check: 'rows',
+            expected: [
+              [1, 12],
+              [2, 11],
+              [3, 11],
+              [4, 5],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Snitt och bästa',
+        why: 'Snittet visar hur det gick för de flesta, och det bästa resultatet visar vad som var möjligt.',
+        xp: 15,
+        description: 'Hur gick det i varje kurs?',
+        task: 'Uppgift: Lägg till snittet som `snitt` och det bästa resultatet som `bast`.',
+        solution:
+          'SELECT kurs_id, COUNT(*) AS antal, AVG(poang) AS snitt, MAX(poang) AS bast\nFROM resultat\nGROUP BY kurs_id;\n',
+        hints: [
+          'AVG(poang) AS snitt, MAX(poang) AS bast',
+          'Efter antal, med kommatecken.',
+          'SELECT kurs_id, COUNT(*) AS antal, AVG(poang) AS snitt, MAX(poang) AS bast …',
+        ],
+        tests: [{ description: 'Snitt och bästa per kurs', check: 'rows' }],
+      },
+      {
+        title: 'De starkaste kurserna',
+        why: 'HAVING plockar ut kurserna där snittet är över 78. Sorterat ser rektorn direkt vilken som gick bäst.',
+        xp: 20,
+        description: 'Rektorn vill lyfta fram kurserna där det gått bäst.',
+        task: 'Uppgift: Behåll bara kurserna med ett snitt över 78, med högst snitt först.',
+        solution:
+          'SELECT kurs_id, COUNT(*) AS antal, AVG(poang) AS snitt, MAX(poang) AS bast\nFROM resultat\nGROUP BY kurs_id\nHAVING AVG(poang) > 78\nORDER BY snitt DESC;\n',
+        hints: [
+          'HAVING AVG(poang) > 78',
+          'ORDER BY snitt DESC',
+          'HAVING står efter GROUP BY och före ORDER BY.',
+        ],
+        tests: [
+          {
+            description: 'Kurserna med snitt över 78',
+            check: 'rows',
+            ordered: true,
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // Stegen som vanliga övningar, så att samma editor och rättning kan

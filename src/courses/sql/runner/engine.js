@@ -15,6 +15,25 @@
 
 const MAX_ROWS = 200;
 
+// Kör satserna en i taget, så att en SELECT utan rader ändå ger sina
+// kolumner (exec() svarar inte alls då).
+function runStatements(database, code) {
+  const results = [];
+  let changes = 0;
+  for (const statement of database.iterateStatements(code)) {
+    const columns = statement.getColumnNames();
+    const values = [];
+    while (statement.step()) values.push(statement.get());
+    if (columns.length > 0) {
+      results.push({ columns, values });
+      changes = 0;
+    } else {
+      changes = database.getRowsModified();
+    }
+  }
+  return { results, changes };
+}
+
 function execute(SQL, setup, code, queries) {
   const database = new SQL.Database();
   try {
@@ -24,14 +43,18 @@ function execute(SQL, setup, code, queries) {
     let error = null;
     let changes = 0;
     try {
-      results = database.exec(code);
-      changes = database.getRowsModified();
+      ({ results, changes } = runStatements(database, code));
     } catch (thrown) {
       error = { message: String(thrown.message ?? thrown) };
     }
     const after = queries.map(query => {
       try {
-        return { ...(database.exec(query)[0] ?? { columns: [], values: [] }) };
+        return (
+          runStatements(database, query).results.at(-1) ?? {
+            columns: [],
+            values: [],
+          }
+        );
       } catch (thrown) {
         return { error: String(thrown.message ?? thrown) };
       }

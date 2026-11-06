@@ -17,6 +17,14 @@ describe('runSql', () => {
     });
   });
 
+  it('ger kolumnerna även när inga rader matchar', () => {
+    expect(run("SELECT namn FROM kunder WHERE stad = 'Paris'").table).toEqual({
+      columns: ['namn'],
+      rows: [],
+      total: 0,
+    });
+  });
+
   it('säger hur många rader som ändrades när det inte finns någon tabell', () => {
     const result = run("UPDATE produkter SET pris = 1 WHERE kategori = 'Te'");
     expect(result.table).toBeNull();

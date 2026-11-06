@@ -41,4 +41,41 @@ export const TRACKS = [
       { title: 'IS NULL', url: `${TUTORIAL}sqlite-is-null/` },
     ],
   },
+  {
+    id: 'sortera',
+    title: 'Sortera och räkna',
+    teaches: [
+      'ORDER BY',
+      'DESC',
+      'DISTINCT',
+      'AS',
+      'COUNT',
+      'SUM',
+      'AVG',
+      'MIN',
+      'MAX',
+    ],
+    reward: { emoji: '🏆', name: 'Pokal' },
+    canBuild: 'en topplista, och svaret på hur många, hur mycket och i snitt',
+    docs: [
+      { title: 'ORDER BY', url: `${TUTORIAL}sqlite-order-by/` },
+      { title: 'DISTINCT', url: `${TUTORIAL}sqlite-distinct/` },
+      {
+        title: 'COUNT, SUM och de andra',
+        url: `${TUTORIAL}sqlite-aggregate-functions/`,
+      },
+    ],
+  },
+  {
+    id: 'gruppera',
+    title: 'Gruppera',
+    teaches: ['GROUP BY', 'HAVING', 'COUNT per grupp', 'WHERE före GROUP BY'],
+    reward: { emoji: '🧺', name: 'Korg' },
+    canBuild:
+      'en rapport med en rad per stad, kategori eller kund, som försäljningen per vara',
+    docs: [
+      { title: 'GROUP BY', url: `${TUTORIAL}sqlite-group-by/` },
+      { title: 'HAVING', url: `${TUTORIAL}sqlite-having/` },
+    ],
+  },
 ];

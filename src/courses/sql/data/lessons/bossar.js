@@ -67,4 +67,77 @@ export const BOSSES = {
       },
     ],
   },
+  sortera: {
+    id: 'sortera-boss',
+    track: 'sortera',
+    db: 'skola',
+    title: 'Boss: Topplistan i matte',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Matteläraren vill sätta upp en topplista på väggen. Du behöver WHERE, ORDER BY, LIMIT och AS. Matematik har kurs_id 1.',
+    task: `Uppgift: Gör topplistan.
+  1. Bara resultaten i Matematik (\`kurs_id\` 1).
+  2. Visa \`elev_id\` som \`elev\` och \`poang\` som \`resultat\`, i den ordningen.
+  3. Högst resultat först, och bara de 3 bästa.`,
+    starterCode: START,
+    solution:
+      'SELECT elev_id AS elev, poang AS resultat\nFROM resultat\nWHERE kurs_id = 1\nORDER BY poang DESC\nLIMIT 3;\n',
+    hints: [],
+    tests: [
+      {
+        description: 'De tre bästa, bäst först',
+        check: 'rows',
+        ordered: true,
+        expected: [
+          [7, 98],
+          [1, 92],
+          [11, 90],
+        ],
+      },
+      {
+        description: 'Kolumnerna är elev och resultat',
+        check: 'columns',
+        expected: ['elev', 'resultat'],
+      },
+    ],
+  },
+  gruppera: {
+    id: 'gruppera-boss',
+    track: 'gruppera',
+    db: 'butik',
+    title: 'Boss: Bästsäljarna',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Butiken ska beställa nytt och vill veta vad som säljer. Varje rad i orderrader är en vara i en order, och antal är hur många.',
+    task: `Uppgift: Hitta bästsäljarna.
+  1. Visa \`produkt_id\` och hur många som sålts totalt, som \`salda\`.
+  2. Bara produkterna som sålts i minst 5 exemplar.
+  3. Mest såld först.`,
+    starterCode: START,
+    solution:
+      'SELECT produkt_id, SUM(antal) AS salda\nFROM orderrader\nGROUP BY produkt_id\nHAVING SUM(antal) >= 5\nORDER BY salda DESC;\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Bästsäljarna, mest såld först',
+        check: 'rows',
+        ordered: true,
+        expected: [
+          [7, 24],
+          [8, 12],
+          [1, 8],
+          [9, 6],
+        ],
+      },
+      {
+        description: 'Kolumnerna är produkt_id och salda',
+        check: 'columns',
+        expected: ['produkt_id', 'salda'],
+      },
+    ],
+  },
 };

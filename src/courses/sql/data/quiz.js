@@ -79,4 +79,81 @@ export const QUIZ = {
         '% betyder vad som helst, så %ring% är titlar som innehåller ring någonstans: Sagan om ringen, men också Hundraåringen.',
     },
   ],
+  sortera: [
+    {
+      question: 'Vad ger ORDER BY pris DESC?',
+      options: [
+        'Dyrast först',
+        'Billigast först',
+        'Bara den dyraste',
+        'Raderna i tabellens ordning',
+      ],
+      explain:
+        'DESC betyder fallande: störst först. Utan DESC blir det minst först.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'SELECT COUNT(*) FROM kunder WHERE epost IS NULL;',
+      db: 'butik',
+      options: ['2', '10', '8', '0'],
+      explain:
+        'Två kunder saknar e-post. COUNT(*) räknar raderna som är kvar efter WHERE.',
+    },
+    {
+      question: 'Hur många rader ger frågan?',
+      code: 'SELECT DISTINCT genre FROM filmer;',
+      db: 'filmer',
+      check: 'rows',
+      options: ['4', '16', '1', '7'],
+      explain:
+        'DISTINCT visar varje genre en gång: Drama, Komedi, Animerat och Sci-fi.',
+    },
+    {
+      question: 'Vad gör AS i SELECT pris * 2 AS dubbelt?',
+      options: [
+        'Ger kolumnen namnet dubbelt',
+        'Sparar en ny kolumn i tabellen',
+        'Sorterar på dubbelt',
+        'Räknar bara ut den om pris finns',
+      ],
+      explain: 'AS ger kolumnen ett namn i svaret. Tabellen ändras inte.',
+    },
+  ],
+  gruppera: [
+    {
+      question: 'Hur många rader ger frågan?',
+      code: 'SELECT stad, COUNT(*) FROM kunder GROUP BY stad;',
+      db: 'butik',
+      check: 'rows',
+      options: ['5', '10', '1', '3'],
+      explain:
+        'En rad per grupp, alltså en per stad. Kunderna bor i fem städer.',
+    },
+    {
+      question: 'Var skriver man villkoret COUNT(*) >= 2?',
+      options: ['I HAVING', 'I WHERE', 'I ORDER BY', 'I GROUP BY'],
+      explain:
+        'WHERE tittar på en rad i taget, före grupperingen. Villkor om grupper står i HAVING.',
+    },
+    {
+      question: 'Hur många rader ger frågan?',
+      code: 'SELECT kategori, COUNT(*) FROM produkter GROUP BY kategori HAVING COUNT(*) > 3;',
+      db: 'butik',
+      check: 'rows',
+      options: ['0', '4', '1', '3'],
+      explain:
+        'Varje kategori har exakt tre produkter, och 3 > 3 är falskt. Ingen grupp blir kvar.',
+    },
+    {
+      question: 'I vilken ordning står delarna?',
+      options: [
+        'WHERE, GROUP BY, HAVING, ORDER BY',
+        'GROUP BY, WHERE, ORDER BY, HAVING',
+        'HAVING, WHERE, GROUP BY, ORDER BY',
+        'WHERE, HAVING, ORDER BY, GROUP BY',
+      ],
+      explain:
+        'Rader filtreras, grupperas, grupperna filtreras och sist sorteras svaret.',
+    },
+  ],
 };

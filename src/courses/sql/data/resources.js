@@ -39,4 +39,33 @@ export const RESOURCES = {
       video: 'sql like is null explained',
     },
   ],
+  sortera: [
+    {
+      topic: 'ORDER BY',
+      read: `${TUTORIAL}sqlite-order-by/`,
+      video: 'sql order by asc desc beginners',
+    },
+    {
+      topic: 'COUNT, SUM och AVG',
+      read: `${TUTORIAL}sqlite-aggregate-functions/`,
+      video: 'sql aggregate functions count sum avg',
+    },
+    {
+      topic: 'AS och alias',
+      read: `${TUTORIAL}sqlite-select/`,
+      video: 'sql alias as explained',
+    },
+  ],
+  gruppera: [
+    {
+      topic: 'GROUP BY',
+      read: `${TUTORIAL}sqlite-group-by/`,
+      video: 'sql group by förklaring',
+    },
+    {
+      topic: 'HAVING eller WHERE?',
+      read: `${TUTORIAL}sqlite-having/`,
+      video: 'sql having vs where',
+    },
+  ],
 };
