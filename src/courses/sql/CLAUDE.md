@@ -37,7 +37,12 @@ Den första kursen som byggdes direkt i Kodskolan. Kursens SPEC
   `lessons/` (en fil per bana, `bossar.js`, `index.js`), `projects.js`
   (`db` på projektet gäller alla steg), `ideas.js` (med `db`),
   `quiz.js` (en fråga med `db` körs i `quiz.test.js`) och
-  `resources.js`.
+  `resources.js`. `db: null` är en tom databas (banorna 9 och 13, och
+  idéer där eleven bygger själv). Ett projekt kan ha `setup`, som följer
+  med till alla steg.
+- Sortering rättas med `ordered: true`. Se till att det sorteras på
+  värden utan dubbletter (lägg till en kolumn till i `ORDER BY` och i
+  uppgiften), annars kan ett rätt svar underkännas.
 - `test/nodeSql.js` – sql.js i Node, `test/concepts.js` – vad facit
   inte får använda före sin bana.
 

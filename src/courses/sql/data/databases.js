@@ -274,6 +274,75 @@ INSERT INTO lan VALUES
   (12, 11, 5, '2026-06-10', '2026-07-08', NULL);
 `;
 
+// Hundpensionatet i slutprojektet. Banan bygger tabellerna själv först,
+// så de står här en och en (PENSIONAT_TABLES) och ihop med data.
+export const PENSIONAT_TABLES = {
+  agare: `
+CREATE TABLE agare (
+  id INTEGER PRIMARY KEY,
+  namn TEXT NOT NULL,
+  telefon TEXT
+);`,
+  hundar: `
+CREATE TABLE hundar (
+  id INTEGER PRIMARY KEY,
+  namn TEXT NOT NULL,
+  ras TEXT,
+  fodd INTEGER,
+  agare_id INTEGER NOT NULL REFERENCES agare (id)
+);`,
+  rum: `
+CREATE TABLE rum (
+  id INTEGER PRIMARY KEY,
+  namn TEXT NOT NULL,
+  storlek TEXT NOT NULL,
+  pris_per_natt INTEGER NOT NULL
+);`,
+  vistelser: `
+CREATE TABLE vistelser (
+  id INTEGER PRIMARY KEY,
+  hund_id INTEGER NOT NULL REFERENCES hundar (id),
+  rum_id INTEGER NOT NULL REFERENCES rum (id),
+  incheckning TEXT NOT NULL,
+  utcheckning TEXT NOT NULL,
+  CHECK (utcheckning > incheckning)
+);`,
+};
+
+const PENSIONAT = `
+${PENSIONAT_TABLES.agare}
+INSERT INTO agare VALUES
+  (1, 'Sara Lind', '070-100 10 10'),
+  (2, 'Omar Ali', '070-200 20 20'),
+  (3, 'Eva Nord', '070-300 30 30'),
+  (4, 'Jens Holm', NULL);
+${PENSIONAT_TABLES.hundar}
+INSERT INTO hundar VALUES
+  (1, 'Bamse', 'Golden retriever', 2019, 1),
+  (2, 'Selma', 'Tax', 2021, 1),
+  (3, 'Rocky', 'Boxer', 2018, 2),
+  (4, 'Luna', 'Border collie', 2022, 3),
+  (5, 'Pixie', 'Chihuahua', 2020, 4),
+  (6, 'Ludde', 'Labrador', 2023, 2);
+${PENSIONAT_TABLES.rum}
+INSERT INTO rum VALUES
+  (1, 'Rum 1', 'stor', 350),
+  (2, 'Rum 2', 'stor', 350),
+  (3, 'Rum 3', 'liten', 250);
+${PENSIONAT_TABLES.vistelser}
+INSERT INTO vistelser VALUES
+  (1, 1, 1, '2026-03-01', '2026-03-08'),
+  (2, 3, 2, '2026-03-05', '2026-03-07'),
+  (3, 4, 3, '2026-04-10', '2026-04-14'),
+  (4, 2, 3, '2026-04-18', '2026-04-21'),
+  (5, 1, 1, '2026-05-01', '2026-05-04'),
+  (6, 5, 3, '2026-05-12', '2026-05-19'),
+  (7, 3, 2, '2026-06-10', '2026-06-17'),
+  (8, 6, 1, '2026-06-13', '2026-06-16'),
+  (9, 2, 3, '2026-06-14', '2026-06-15'),
+  (10, 4, 3, '2026-06-20', '2026-06-25');
+`;
+
 export const DATABASES = {
   butik: {
     name: '🛒 Butiken',
@@ -296,6 +365,12 @@ export const DATABASES = {
     about:
       'Böcker, låntagare och lån. aterlamnad är tom så länge boken är utlånad.',
     sql: BIBLIOTEK,
+  },
+  pensionat: {
+    name: '🐕 Hundpensionatet',
+    about:
+      'Ägare, deras hundar, rummen och hundarnas vistelser. En vistelse varar från incheckning till utcheckning.',
+    sql: PENSIONAT,
   },
 };
 

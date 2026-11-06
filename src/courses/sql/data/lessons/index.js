@@ -2,12 +2,14 @@ import { ANDRA } from './andra';
 import { BOSSES } from './bossar';
 import { DELFRAGOR } from './delfragor';
 import { FELSOK } from './felsok';
+import { FONSTER } from './fonster';
 import { FILTRERA } from './filtrera';
 import { GRUPPERA } from './gruppera';
 import { JOIN } from './join';
 import { OMVANDLA } from './omvandla';
 import { SAKNAS } from './saknas';
 import { SKAPA } from './skapa';
+import { SLUTPROJEKT } from './slutprojekt';
 import { SELECT } from './select';
 import { SORTERA } from './sortera';
 
@@ -36,4 +38,8 @@ export const LESSONS = [
   BOSSES.delfragor,
   ...FELSOK,
   BOSSES.felsok,
+  ...FONSTER,
+  BOSSES.fonster,
+  ...SLUTPROJEKT,
+  BOSSES.slutprojekt,
 ];

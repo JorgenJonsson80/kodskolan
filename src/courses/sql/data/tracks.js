@@ -216,4 +216,50 @@ export const TRACKS = [
       { title: 'SELECT steg för steg', url: `${TUTORIAL}sqlite-select/` },
     ],
   },
+  {
+    id: 'fonster',
+    title: 'Fönsterfunktioner',
+    teaches: [
+      'ROW_NUMBER',
+      'RANK',
+      'DENSE_RANK',
+      'PARTITION BY',
+      'SUM och AVG med OVER',
+      'LAG',
+      'topp N per grupp',
+    ],
+    reward: { emoji: '🪟', name: 'Fönster' },
+    canBuild:
+      'topplistor per grupp, löpande summor och jämförelser med raden före – det dataanalytiker gör varje dag',
+    docs: [
+      {
+        title: 'Fönsterfunktioner',
+        url: `${TUTORIAL}sqlite-window-functions/`,
+      },
+      {
+        title: 'Fönsterfunktioner i SQLite',
+        url: 'https://www.sqlite.org/windowfunctions.html',
+      },
+    ],
+  },
+  {
+    id: 'slutprojekt',
+    title: 'Slutprojektet',
+    teaches: [
+      'databasdesign',
+      'egna tabeller',
+      'rapporter',
+      'allt från kursen',
+    ],
+    reward: { emoji: '🏁', name: 'Målflagga' },
+    canBuild:
+      'en hel databas för ett riktigt företag, från tomma tabeller till rapporterna chefen vill ha',
+    docs: [
+      { title: 'Databasdesign', url: `${TUTORIAL}sqlite-foreign-key/` },
+      {
+        title: 'SQLite-dokumentationen',
+        url: 'https://www.sqlite.org/lang.html',
+      },
+    ],
+  },
 ];

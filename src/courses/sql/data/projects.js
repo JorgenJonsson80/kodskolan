@@ -2333,15 +2333,494 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-kursligan',
+    track: 'fonster',
+    db: 'skola',
+    title: 'Kursligan',
+    reward: { emoji: '🏅', name: 'Medalj' },
+    summary: 'Topplistor i varje kurs, med namn och plats.',
+    steps: [
+      {
+        title: 'Plats i kursen',
+        why: 'PARTITION BY kurs_id gör att placeringen börjar om i varje kurs.',
+        xp: 20,
+        description: 'Varje kurs ska få sin egen topplista.',
+        task: 'Uppgift: Visa `kurs_id`, `elev_id`, `poang` och platsen i kursen som `plats` (högst poäng är 1), med `RANK`.',
+        starterCode: '-- Steg 1: plats i kursen\n',
+        solution:
+          'SELECT kurs_id, elev_id, poang,\n  RANK() OVER (PARTITION BY kurs_id ORDER BY poang DESC) AS plats\nFROM resultat;\n',
+        hints: [
+          'RANK() OVER (PARTITION BY … ORDER BY …)',
+          'PARTITION BY kurs_id',
+          'ORDER BY poang DESC inom OVER.',
+        ],
+        tests: [{ description: 'Platsen i varje kurs', check: 'rows' }],
+      },
+      {
+        title: 'Med namn',
+        why: 'JOIN mot elever och kurser ger namnen. Fönsterfunktionen fungerar likadant efter en JOIN.',
+        xp: 20,
+        description: 'Siffror är svåra att läsa. Byt till namn.',
+        task: 'Uppgift: Visa kursens namn som `kurs`, elevens `fornamn`, `poang` och `plats`.',
+        solution:
+          'SELECT k.namn AS kurs, e.fornamn, r.poang,\n  RANK() OVER (PARTITION BY r.kurs_id ORDER BY r.poang DESC) AS plats\nFROM resultat r\nJOIN elever e ON r.elev_id = e.id\nJOIN kurser k ON r.kurs_id = k.id;\n',
+        hints: [
+          'JOIN elever e och kurser k.',
+          'k.namn AS kurs, e.fornamn',
+          'PARTITION BY r.kurs_id ORDER BY r.poang DESC',
+        ],
+        tests: [{ description: 'Med namn', check: 'rows' }],
+      },
+      {
+        title: 'Vinnarna',
+        why: 'Fönsterfunktionen kan inte stå i WHERE, så frågan läggs i en WITH och filtreras på plats.',
+        xp: 25,
+        description: 'Prisutdelningen: vem vann varje kurs?',
+        task: 'Uppgift: Visa bara den som har plats 1 i varje kurs (`kurs`, `fornamn`, `poang`), sorterat på kurs.',
+        solution:
+          'WITH liga AS (\n  SELECT k.namn AS kurs, e.fornamn, r.poang,\n    RANK() OVER (PARTITION BY r.kurs_id ORDER BY r.poang DESC) AS plats\n  FROM resultat r\n  JOIN elever e ON r.elev_id = e.id\n  JOIN kurser k ON r.kurs_id = k.id\n)\nSELECT kurs, fornamn, poang\nFROM liga\nWHERE plats = 1\nORDER BY kurs;\n',
+        hints: ['WITH liga AS ( … )', 'WHERE plats = 1', 'ORDER BY kurs'],
+        tests: [
+          {
+            description: 'Vinnaren i varje kurs',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['Engelska', 'Maja', 95],
+              ['Matematik', 'Saga', 98],
+              ['Programmering', 'Saga', 99],
+              ['Svenska', 'Nora', 94],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-kassaboken',
+    track: 'fonster',
+    db: 'butik',
+    title: 'Kassaboken',
+    reward: { emoji: '📒', name: 'Kassabok' },
+    summary: 'Butikens försäljning order för order, med löpande summa.',
+    steps: [
+      {
+        title: 'Varje order',
+        why: 'Ordersumman behövs flera gånger, så den räknas ut en gång i en WITH.',
+        xp: 20,
+        description: 'Butiken vill ha en kassabok.',
+        task: 'Uppgift: Räkna ut varje orders `id`, `datum` och summa som `summa` i en `WITH` som heter `summor`, och visa allt i den.',
+        starterCode: '-- Steg 1: varje order\n',
+        solution:
+          'WITH summor AS (\n  SELECT o.id, o.datum, SUM(r.antal * p.pris) AS summa\n  FROM ordrar o\n  JOIN orderrader r ON r.order_id = o.id\n  JOIN produkter p ON r.produkt_id = p.id\n  GROUP BY o.id, o.datum\n)\nSELECT * FROM summor;\n',
+        hints: [
+          'JOIN orderrader och produkter.',
+          'GROUP BY o.id, o.datum',
+          'WITH summor AS ( … ) SELECT * FROM summor;',
+        ],
+        tests: [{ description: 'Summan för varje order', check: 'rows' }],
+      },
+      {
+        title: 'Löpande',
+        why: 'SUM med ORDER BY i OVER lägger ihop allt fram till raden, som saldot i en kassabok.',
+        xp: 20,
+        description: 'Hur mycket hade butiken sålt för efter varje order?',
+        task: 'Uppgift: Lägg till den löpande summan i datumordning som `hittills`.',
+        solution:
+          'WITH summor AS (\n  SELECT o.id, o.datum, SUM(r.antal * p.pris) AS summa\n  FROM ordrar o\n  JOIN orderrader r ON r.order_id = o.id\n  JOIN produkter p ON r.produkt_id = p.id\n  GROUP BY o.id, o.datum\n)\nSELECT id, datum, summa, SUM(summa) OVER (ORDER BY datum) AS hittills\nFROM summor;\n',
+        hints: [
+          'SUM(summa) OVER (ORDER BY datum)',
+          'AS hittills',
+          'Lägg den efter summa i SELECT.',
+        ],
+        tests: [{ description: 'Den löpande summan', check: 'rows' }],
+      },
+      {
+        title: 'Upp eller ner?',
+        why: 'LAG ger förra orderns summa. Skillnaden visar om försäljningen gick upp eller ner.',
+        xp: 25,
+        description: 'Var ordern större eller mindre än den förra?',
+        task: 'Uppgift: Lägg till skillnaden mot förra orderns summa som `andring` (NULL för den första), och sortera på datum.',
+        solution:
+          'WITH summor AS (\n  SELECT o.id, o.datum, SUM(r.antal * p.pris) AS summa\n  FROM ordrar o\n  JOIN orderrader r ON r.order_id = o.id\n  JOIN produkter p ON r.produkt_id = p.id\n  GROUP BY o.id, o.datum\n)\nSELECT id, datum, summa,\n  SUM(summa) OVER (ORDER BY datum) AS hittills,\n  summa - LAG(summa) OVER (ORDER BY datum) AS andring\nFROM summor\nORDER BY datum;\n',
+        hints: [
+          'LAG(summa) OVER (ORDER BY datum)',
+          'summa - LAG( … ) AS andring',
+          'ORDER BY datum sist.',
+        ],
+        tests: [{ description: 'Kassaboken', check: 'rows', ordered: true }],
+      },
+    ],
+  },
+  {
+    id: 'proj-lanerytmen',
+    track: 'fonster',
+    db: 'bibliotek',
+    title: 'Lånerytmen',
+    reward: { emoji: '🥁', name: 'Trumma' },
+    summary: 'Hur ofta kommer varje låntagare tillbaka till biblioteket?',
+    steps: [
+      {
+        title: 'Lån nummer …',
+        why: 'ROW_NUMBER med PARTITION BY numrerar varje låntagares lån för sig.',
+        xp: 20,
+        description: 'Biblioteket vill förstå hur ofta folk lånar.',
+        task: 'Uppgift: Visa `lantagare_id`, `lanad` och vilket lån i ordningen det var för låntagaren som `nr`.',
+        starterCode: '-- Steg 1: lån nummer …\n',
+        solution:
+          'SELECT lantagare_id, lanad,\n  ROW_NUMBER() OVER (PARTITION BY lantagare_id ORDER BY lanad) AS nr\nFROM lan;\n',
+        hints: [
+          'ROW_NUMBER() OVER (PARTITION BY lantagare_id ORDER BY lanad)',
+          'AS nr',
+          'FROM lan',
+        ],
+        tests: [
+          { description: 'Varje låntagares lån numrerade', check: 'rows' },
+        ],
+      },
+      {
+        title: 'Förra lånet',
+        why: 'LAG med samma PARTITION BY tittar bara på låntagarens eget förra lån.',
+        xp: 20,
+        description: 'När lånade de förra gången?',
+        task: 'Uppgift: Lägg till datumet för låntagarens förra lån som `forra`.',
+        solution:
+          'SELECT lantagare_id, lanad,\n  ROW_NUMBER() OVER (PARTITION BY lantagare_id ORDER BY lanad) AS nr,\n  LAG(lanad) OVER (PARTITION BY lantagare_id ORDER BY lanad) AS forra\nFROM lan;\n',
+        hints: [
+          'LAG(lanad) OVER ( … )',
+          'Samma PARTITION BY och ORDER BY som för nr.',
+          'AS forra',
+        ],
+        tests: [{ description: 'Förra lånet', check: 'rows' }],
+      },
+      {
+        title: 'Dagar emellan',
+        why: 'julianday gör om datumen till dagar. Raderna utan förra lån tas bort, eftersom de inte har något att jämföra med.',
+        xp: 25,
+        description: 'Hur många dagar gick det mellan lånen?',
+        task: 'Uppgift: Lägg frågan i en `WITH` och visa låntagarens `namn`, `lanad` och dagarna sedan förra lånet som `dagar`, bara för lånen som har ett förra lån.',
+        solution:
+          'WITH rytm AS (\n  SELECT lantagare_id, lanad,\n    ROW_NUMBER() OVER (PARTITION BY lantagare_id ORDER BY lanad) AS nr,\n    LAG(lanad) OVER (PARTITION BY lantagare_id ORDER BY lanad) AS forra\n  FROM lan\n)\nSELECT lt.namn, r.lanad, julianday(r.lanad) - julianday(r.forra) AS dagar\nFROM rytm r\nJOIN lantagare lt ON r.lantagare_id = lt.id\nWHERE r.forra IS NOT NULL;\n',
+        hints: [
+          'WITH rytm AS ( … )',
+          'julianday(r.lanad) - julianday(r.forra) AS dagar',
+          'WHERE r.forra IS NOT NULL',
+        ],
+        tests: [{ description: 'Dagar mellan lånen', check: 'rows' }],
+      },
+    ],
+  },
+  {
+    id: 'proj-ligan',
+    track: 'slutprojekt',
+    db: null,
+    setup: `CREATE TABLE matcher (
+  id INTEGER PRIMARY KEY,
+  hemma TEXT NOT NULL,
+  borta TEXT NOT NULL,
+  hemmamal INTEGER NOT NULL,
+  bortamal INTEGER NOT NULL
+);
+INSERT INTO matcher (hemma, borta, hemmamal, bortamal) VALUES
+  ('Blå', 'Röd', 2, 1),
+  ('Gul', 'Grön', 0, 0),
+  ('Röd', 'Gul', 3, 1),
+  ('Grön', 'Blå', 1, 1),
+  ('Blå', 'Gul', 0, 2),
+  ('Röd', 'Grön', 2, 2);`,
+    title: 'Ligatabellen',
+    reward: { emoji: '⚽', name: 'Fotboll' },
+    summary: 'Gör en riktig ligatabell från matchresultaten.',
+    steps: [
+      {
+        title: 'Varje lags matcher',
+        why: 'Ett lag kan spela hemma eller borta. UNION ALL lägger ihop båda frågorna, så att varje lag får en rad per match.',
+        xp: 25,
+        description:
+          'Tabellen matcher har resultaten från fyra lags säsong. Varje match är en rad, men en ligatabell behöver en rad per lag.',
+        task: 'Uppgift: Gör en `WITH` som heter `rader` med en rad per lag och match: `lag`, `gjorda` och `inslappta`. Hemmalagets rad tar `hemma`, `hemmamal` och `bortamal`, och bortalagets tvärtom. Sätt ihop dem med `UNION ALL` och visa allt.',
+        starterCode: '-- Steg 1: varje lags matcher\n',
+        solution:
+          'WITH rader AS (\n  SELECT hemma AS lag, hemmamal AS gjorda, bortamal AS inslappta FROM matcher\n  UNION ALL\n  SELECT borta, bortamal, hemmamal FROM matcher\n)\nSELECT * FROM rader;\n',
+        hints: [
+          'SELECT hemma AS lag, hemmamal AS gjorda, bortamal AS inslappta FROM matcher',
+          'UNION ALL och sedan samma sak för bortalaget.',
+          'Kolumnnamnen kommer från den första frågan.',
+        ],
+        tests: [{ description: 'Tolv rader, två per match', check: 'rows' }],
+      },
+      {
+        title: 'Poängen',
+        why: 'CASE ger 3 poäng för vinst och 1 för oavgjort. Sedan räknas allt ihop per lag med GROUP BY.',
+        xp: 25,
+        description: 'Vinst ger 3 poäng, oavgjort 1 och förlust 0.',
+        task: 'Uppgift: Visa varje `lag` med antal matcher som `matcher`, målskillnaden (gjorda minus insläppta) som `malskillnad` och poängen som `poang`.',
+        solution:
+          'WITH rader AS (\n  SELECT hemma AS lag, hemmamal AS gjorda, bortamal AS inslappta FROM matcher\n  UNION ALL\n  SELECT borta, bortamal, hemmamal FROM matcher\n)\nSELECT lag,\n  COUNT(*) AS matcher,\n  SUM(gjorda - inslappta) AS malskillnad,\n  SUM(CASE WHEN gjorda > inslappta THEN 3 WHEN gjorda = inslappta THEN 1 ELSE 0 END) AS poang\nFROM rader\nGROUP BY lag;\n',
+        hints: [
+          'GROUP BY lag',
+          'SUM(gjorda - inslappta) AS malskillnad',
+          'SUM(CASE WHEN gjorda > inslappta THEN 3 WHEN gjorda = inslappta THEN 1 ELSE 0 END)',
+        ],
+        tests: [
+          {
+            description: 'Poäng och målskillnad',
+            check: 'rows',
+            expected: [
+              ['Blå', 3, -1, 4],
+              ['Grön', 3, 0, 3],
+              ['Gul', 3, 0, 4],
+              ['Röd', 3, 1, 4],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Tabellen',
+        why: 'RANK med två kolumner i ORDER BY: poängen först, och målskillnaden när poängen är lika – precis som i en riktig liga.',
+        xp: 25,
+        description: 'Till sist placeringen.',
+        task: 'Uppgift: Lägg till `plats` först, efter poäng och sedan målskillnad (högst först), och sortera på plats och lag.',
+        solution:
+          'WITH rader AS (\n  SELECT hemma AS lag, hemmamal AS gjorda, bortamal AS inslappta FROM matcher\n  UNION ALL\n  SELECT borta, bortamal, hemmamal FROM matcher\n)\nSELECT\n  RANK() OVER (ORDER BY SUM(CASE WHEN gjorda > inslappta THEN 3 WHEN gjorda = inslappta THEN 1 ELSE 0 END) DESC, SUM(gjorda - inslappta) DESC) AS plats,\n  lag,\n  COUNT(*) AS matcher,\n  SUM(gjorda - inslappta) AS malskillnad,\n  SUM(CASE WHEN gjorda > inslappta THEN 3 WHEN gjorda = inslappta THEN 1 ELSE 0 END) AS poang\nFROM rader\nGROUP BY lag\nORDER BY plats, lag;\n',
+        hints: [
+          'RANK() OVER (ORDER BY … DESC, … DESC) AS plats',
+          'Samma SUM som för poang och malskillnad, inne i OVER.',
+          'ORDER BY plats, lag',
+        ],
+        tests: [
+          {
+            description: 'Ligatabellen',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              [1, 'Röd', 3, 1, 4],
+              [2, 'Gul', 3, 0, 4],
+              [3, 'Blå', 3, -1, 4],
+              [4, 'Grön', 3, 0, 3],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-wrapped',
+    track: 'slutprojekt',
+    db: null,
+    setup: `CREATE TABLE lyssningar (
+  id INTEGER PRIMARY KEY,
+  datum TEXT NOT NULL,
+  artist TEXT NOT NULL,
+  latt TEXT NOT NULL,
+  sekunder INTEGER NOT NULL
+);
+INSERT INTO lyssningar (datum, artist, latt, sekunder) VALUES
+  ('2026-01-03', 'Robyn', 'Dancing On My Own', 280),
+  ('2026-01-03', 'Robyn', 'Dancing On My Own', 280),
+  ('2026-01-10', 'ABBA', 'Dancing Queen', 230),
+  ('2026-02-01', 'Veronica Maggio', 'Jag kommer', 200),
+  ('2026-02-02', 'Robyn', 'Call Your Girlfriend', 230),
+  ('2026-02-14', 'ABBA', 'Dancing Queen', 230),
+  ('2026-02-14', 'ABBA', 'Mamma Mia', 210),
+  ('2026-03-05', 'Veronica Maggio', 'Jag kommer', 200),
+  ('2026-03-05', 'Veronica Maggio', 'Satan i gatan', 190),
+  ('2026-03-20', 'Veronica Maggio', 'Jag kommer', 200),
+  ('2026-03-21', 'Robyn', 'Dancing On My Own', 280),
+  ('2026-03-22', 'ABBA', 'Mamma Mia', 210);`,
+    title: 'Mitt Wrapped',
+    reward: { emoji: '🎧', name: 'Hörlurar' },
+    summary: 'Gör en egen årssammanfattning av en lyssningslogg.',
+    steps: [
+      {
+        title: 'Mest lyssnade artist',
+        why: 'Sekunderna summeras per artist och görs om till minuter. Det är så de flesta "Wrapped"-listor räknas.',
+        xp: 25,
+        description: 'Tabellen lyssningar är en logg över allt som spelats.',
+        task: 'Uppgift: Visa varje `artist` och hur många minuter du lyssnat som `minuter` (sekunderna delat med 60.0, avrundat till en decimal), mest först.',
+        starterCode: '-- Steg 1: mest lyssnade artist\n',
+        solution:
+          'SELECT artist, ROUND(SUM(sekunder) / 60.0, 1) AS minuter\nFROM lyssningar\nGROUP BY artist\nORDER BY minuter DESC;\n',
+        hints: [
+          'GROUP BY artist',
+          'ROUND(SUM(sekunder) / 60.0, 1) AS minuter',
+          'ORDER BY minuter DESC',
+        ],
+        tests: [
+          {
+            description: 'Robyn först',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['Robyn', 17.8],
+              ['ABBA', 14.7],
+              ['Veronica Maggio', 13.2],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Varje artists favoritlåt',
+        why: 'Topp N per grupp: räkna spelningarna per låt, numrera dem per artist och behåll nummer 1.',
+        xp: 25,
+        description: 'Vilken låt spelade du mest av varje artist?',
+        task: 'Uppgift: Visa varje `artist`, den låt som spelats flest gånger som `latt` och antalet som `spelningar`, sorterat på artist. Har två låtar lika många spelningar vinner den som kommer först i bokstavsordning.',
+        solution:
+          'WITH spel AS (\n  SELECT artist, latt, COUNT(*) AS spelningar,\n    ROW_NUMBER() OVER (PARTITION BY artist ORDER BY COUNT(*) DESC, latt) AS nr\n  FROM lyssningar\n  GROUP BY artist, latt\n)\nSELECT artist, latt, spelningar\nFROM spel\nWHERE nr = 1\nORDER BY artist;\n',
+        hints: [
+          'GROUP BY artist, latt och COUNT(*) AS spelningar',
+          'ROW_NUMBER() OVER (PARTITION BY artist ORDER BY COUNT(*) DESC, latt) AS nr',
+          'Lägg det i en WITH och behåll WHERE nr = 1.',
+        ],
+        tests: [
+          {
+            description: 'Favoritlåtarna',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['ABBA', 'Dancing Queen', 2],
+              ['Robyn', 'Dancing On My Own', 3],
+              ['Veronica Maggio', 'Jag kommer', 3],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Månadens artist',
+        why: 'Samma mönster en gång till, men per månad. strftime ger månaden, och RANK delar plats om två artister är lika.',
+        xp: 25,
+        description: 'Vem var månadens artist?',
+        task: "Uppgift: Visa varje månad som `manad` (`strftime('%m', datum)`) och artisten med flest spelningar den månaden som `artist`. Är två lika ska båda med. Sortera på månad och artist.",
+        solution:
+          "WITH manader AS (\n  SELECT strftime('%m', datum) AS manad, artist,\n    RANK() OVER (PARTITION BY strftime('%m', datum) ORDER BY COUNT(*) DESC) AS plats\n  FROM lyssningar\n  GROUP BY manad, artist\n)\nSELECT manad, artist\nFROM manader\nWHERE plats = 1\nORDER BY manad, artist;\n",
+        hints: [
+          "GROUP BY strftime('%m', datum) och artist",
+          "RANK() OVER (PARTITION BY strftime('%m', datum) ORDER BY COUNT(*) DESC)",
+          'WHERE plats = 1, i en WITH.',
+        ],
+        tests: [
+          {
+            description: 'Månadens artister',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['01', 'Robyn'],
+              ['02', 'ABBA'],
+              ['03', 'Veronica Maggio'],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-kafeet',
+    track: 'slutprojekt',
+    db: null,
+    title: 'Kaféet från noll',
+    reward: { emoji: '🧁', name: 'Muffin' },
+    summary:
+      'Bygg ett litet kafés databas och dess första rapport, helt själv.',
+    steps: [
+      {
+        title: 'Tabellerna',
+        why: 'Menyn och försäljningen är två saker, så de får två tabeller. Varje köp pekar på det som köptes.',
+        xp: 25,
+        description: 'Ett nytt kafé behöver en databas.',
+        task: 'Uppgift: Skapa `meny` med `id INTEGER PRIMARY KEY`, `namn TEXT NOT NULL` och `pris INTEGER NOT NULL` som måste vara större än 0, och `kop` med `id INTEGER PRIMARY KEY`, `meny_id INTEGER NOT NULL` som pekar på `meny (id)`, `datum TEXT NOT NULL` och `antal INTEGER NOT NULL`.',
+        starterCode: '-- Steg 1: tabellerna\n',
+        solution:
+          'CREATE TABLE meny (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL,\n  pris INTEGER NOT NULL CHECK (pris > 0)\n);\nCREATE TABLE kop (\n  id INTEGER PRIMARY KEY,\n  meny_id INTEGER NOT NULL REFERENCES meny (id),\n  datum TEXT NOT NULL,\n  antal INTEGER NOT NULL\n);\n',
+        hints: [
+          'Skapa meny först.',
+          'pris INTEGER NOT NULL CHECK (pris > 0)',
+          'meny_id INTEGER NOT NULL REFERENCES meny (id)',
+        ],
+        tests: [
+          {
+            description: 'kop pekar på meny',
+            query:
+              'SELECT "table", "from", "to" FROM pragma_foreign_key_list(\'kop\')',
+            expected: [['meny', 'meny_id', 'id']],
+          },
+          {
+            description: 'Ett pris på 0 stoppas',
+            query:
+              "INSERT OR IGNORE INTO meny (namn, pris) VALUES ('Gratis', 0); SELECT COUNT(*) FROM meny",
+            expected: [[0]],
+          },
+        ],
+      },
+      {
+        title: 'Första veckan',
+        why: 'Menyn läggs in först, så att köpen har något att peka på.',
+        xp: 20,
+        description: 'Menyn och första veckans försäljning.',
+        task: 'Uppgift: Lägg in `Kaffe` (30 kr) och `Bulle` (25 kr), och köpen: 2026-06-01 4 kaffe och 2 bullar, 2026-06-02 6 kaffe och 2026-06-03 3 kaffe och 5 bullar.',
+        solution:
+          "CREATE TABLE meny (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL,\n  pris INTEGER NOT NULL CHECK (pris > 0)\n);\nCREATE TABLE kop (\n  id INTEGER PRIMARY KEY,\n  meny_id INTEGER NOT NULL REFERENCES meny (id),\n  datum TEXT NOT NULL,\n  antal INTEGER NOT NULL\n);\nINSERT INTO meny (namn, pris) VALUES ('Kaffe', 30), ('Bulle', 25);\nINSERT INTO kop (meny_id, datum, antal) VALUES\n  (1, '2026-06-01', 4),\n  (2, '2026-06-01', 2),\n  (1, '2026-06-02', 6),\n  (1, '2026-06-03', 3),\n  (2, '2026-06-03', 5);\n",
+        hints: [
+          "INSERT INTO meny (namn, pris) VALUES ('Kaffe', 30), ('Bulle', 25);",
+          'Kaffe får id 1 och Bulle id 2.',
+          "INSERT INTO kop (meny_id, datum, antal) VALUES (1, '2026-06-01', 4), …",
+        ],
+        tests: [
+          {
+            description: 'Köpen med namn',
+            query:
+              'SELECT k.datum, m.namn, k.antal FROM kop k JOIN meny m ON k.meny_id = m.id',
+            expected: [
+              ['2026-06-01', 'Kaffe', 4],
+              ['2026-06-01', 'Bulle', 2],
+              ['2026-06-02', 'Kaffe', 6],
+              ['2026-06-03', 'Kaffe', 3],
+              ['2026-06-03', 'Bulle', 5],
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Dagskassan',
+        why: 'Försäljningen per dag med en löpande summa: GROUP BY för dagen och en fönsterfunktion för veckan hittills.',
+        xp: 25,
+        description: 'Hur mycket kom in varje dag, och hur mycket hittills?',
+        task: 'Uppgift: Visa `datum`, dagens försäljning som `kassa` och den löpande summan som `hittills`, i datumordning.',
+        solution:
+          "CREATE TABLE meny (\n  id INTEGER PRIMARY KEY,\n  namn TEXT NOT NULL,\n  pris INTEGER NOT NULL CHECK (pris > 0)\n);\nCREATE TABLE kop (\n  id INTEGER PRIMARY KEY,\n  meny_id INTEGER NOT NULL REFERENCES meny (id),\n  datum TEXT NOT NULL,\n  antal INTEGER NOT NULL\n);\nINSERT INTO meny (namn, pris) VALUES ('Kaffe', 30), ('Bulle', 25);\nINSERT INTO kop (meny_id, datum, antal) VALUES\n  (1, '2026-06-01', 4),\n  (2, '2026-06-01', 2),\n  (1, '2026-06-02', 6),\n  (1, '2026-06-03', 3),\n  (2, '2026-06-03', 5);\nSELECT k.datum,\n  SUM(k.antal * m.pris) AS kassa,\n  SUM(SUM(k.antal * m.pris)) OVER (ORDER BY k.datum) AS hittills\nFROM kop k\nJOIN meny m ON k.meny_id = m.id\nGROUP BY k.datum\nORDER BY k.datum;\n",
+        hints: [
+          'GROUP BY k.datum och SUM(k.antal * m.pris) AS kassa',
+          'Den löpande summan: SUM(SUM( … )) OVER (ORDER BY k.datum)',
+          'ORDER BY k.datum',
+        ],
+        tests: [
+          {
+            description: 'Dagskassan',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['2026-06-01', 170, 170],
+              ['2026-06-02', 180, 350],
+              ['2026-06-03', 215, 565],
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // Stegen som vanliga övningar, så att samma editor och rättning kan
 // användas. Ett steg utan egen startkod börjar med förra stegets facit.
-// db följer med från projektet till varje steg.
+// db och setup följer med från projektet till varje steg.
 export const PROJECT_STEPS = projectSteps(
   PROJECTS.map(project => ({
     ...project,
-    steps: project.steps.map(step => ({ db: project.db, ...step })),
+    steps: project.steps.map(step => ({
+      db: project.db,
+      setup: project.setup,
+      ...step,
+    })),
   })),
   text => `-- ${text}`,
 );

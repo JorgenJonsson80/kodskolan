@@ -412,4 +412,82 @@ export const QUIZ = {
         'AND räknas före OR: allt te (3) eller kaffe under 60 (inget). Med parenteser hade det blivit 2.',
     },
   ],
+  fonster: [
+    {
+      question: 'Vad skiljer RANK från ROW_NUMBER?',
+      options: [
+        'RANK ger samma plats när värdena är lika',
+        'RANK slår ihop raderna',
+        'RANK räknar från 0',
+        'Ingenting, de är samma',
+      ],
+      explain:
+        'ROW_NUMBER ger alltid 1, 2, 3 … RANK ger 1, 2, 2, 4 när två är lika.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: "SELECT plats FROM (SELECT namn, RANK() OVER (ORDER BY pris DESC) AS plats FROM produkter) WHERE namn = 'Kaffekopp';",
+      db: 'butik',
+      options: ['2', '1', '3', '10'],
+      explain: 'Bara Termos är dyrare än Kaffekoppen, så den får plats 2.',
+    },
+    {
+      question:
+        'Varför går det inte att skriva WHERE ROW_NUMBER() OVER (…) <= 3?',
+      options: [
+        'WHERE körs innan fönsterfunktionerna räknas ut',
+        'ROW_NUMBER kan bara stå i ORDER BY',
+        'Det går, men bara i SQLite',
+        'Fönsterfunktioner ger alltid text',
+      ],
+      explain:
+        'Lägg fönsterfunktionen i en WITH, och filtrera på den i nästa fråga.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'SELECT MAX(lopande) FROM (SELECT SUM(antal) OVER (ORDER BY order_id, produkt_id) AS lopande FROM orderrader);',
+      db: 'butik',
+      options: ['69', '27', '24', '10'],
+      explain: 'En löpande summa slutar på summan av allt: 69 sålda varor.',
+    },
+  ],
+  slutprojekt: [
+    {
+      question: 'En ägare kan ha flera hundar. Var står nyckeln?',
+      options: [
+        'Hos hunden: agare_id',
+        'Hos ägaren: hund_id',
+        'I båda tabellerna',
+        'I en tredje tabell',
+      ],
+      explain:
+        'Nyckeln står på "många"-sidan. Varje hund har en ägare, så hunden pekar på ägaren.',
+    },
+    {
+      question: 'Hur många hundar bor på pensionatet idag?',
+      code: "SELECT COUNT(*) FROM vistelser WHERE incheckning <= '2026-06-15' AND utcheckning > '2026-06-15';",
+      db: 'pensionat',
+      options: ['2', '3', '1', '0'],
+      explain: 'Rocky och Ludde. Selma checkar ut idag och räknas inte.',
+    },
+    {
+      question: 'I vilken ordning skapas tabellerna?',
+      options: [
+        'Det som pekas på först, sedan det som pekar',
+        'Det som pekar först',
+        'I bokstavsordning',
+        'Ordningen spelar ingen roll',
+      ],
+      explain:
+        'Med PRAGMA foreign_keys på kan en nyckel bara peka på något som redan finns.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'SELECT COUNT(DISTINCT hund_id) FROM vistelser;',
+      db: 'pensionat',
+      options: ['6', '10', '4', '3'],
+      explain:
+        'COUNT(DISTINCT …) räknar olika värden. Alla sex hundar har bott här.',
+    },
+  ],
 };

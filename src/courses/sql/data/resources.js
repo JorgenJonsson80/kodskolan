@@ -167,4 +167,33 @@ export const RESOURCES = {
       video: 'sql and or precedence parentheses',
     },
   ],
+  fonster: [
+    {
+      topic: 'Fönsterfunktioner',
+      read: `${TUTORIAL}sqlite-window-functions/`,
+      video: 'sql window functions explained',
+    },
+    {
+      topic: 'ROW_NUMBER, RANK och DENSE_RANK',
+      read: 'https://www.sqlite.org/windowfunctions.html',
+      video: 'row_number rank dense_rank difference',
+    },
+    {
+      topic: 'Topp N per grupp',
+      read: 'https://www.sqlite.org/windowfunctions.html',
+      video: 'sql top n per group window function',
+    },
+  ],
+  slutprojekt: [
+    {
+      topic: 'Databasdesign',
+      read: `${TUTORIAL}sqlite-foreign-key/`,
+      video: 'database design for beginners',
+    },
+    {
+      topic: 'Rapporter med WITH',
+      read: `${TUTORIAL}sqlite-cte/`,
+      video: 'sql reporting queries cte',
+    },
+  ],
 };

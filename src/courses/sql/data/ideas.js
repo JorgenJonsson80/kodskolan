@@ -474,6 +474,92 @@ export const IDEAS = [
     ],
     extra: 'Ge den till någon annan och se om de förstår den.',
   },
+  {
+    id: 'idea-topplistor',
+    track: 'fonster',
+    db: 'filmer',
+    emoji: '🥇',
+    title: 'Topplistorna',
+    summary: 'Topplistor per grupp, på flera sätt.',
+    goals: [
+      'De två längsta filmerna i varje genre.',
+      'Varje regissörs bästa film (högst snittbetyg).',
+      'Recensenterna rankade efter hur snälla de är.',
+    ],
+    extra: 'Jämför ROW_NUMBER, RANK och DENSE_RANK på samma lista.',
+  },
+  {
+    id: 'idea-trender',
+    track: 'fonster',
+    db: 'butik',
+    emoji: '📉',
+    title: 'Trenderna',
+    summary: 'Hur går det för butiken över tid?',
+    goals: [
+      'Löpande antal kunder som handlat sin första gång.',
+      'Varje kunds ordrar numrerade i tidsordning.',
+      'Dagar mellan varje kunds ordrar (LAG).',
+    ],
+    extra:
+      'Glidande snitt: AVG över de tre senaste ordrarna (ROWS BETWEEN 2 PRECEDING AND CURRENT ROW).',
+  },
+  {
+    id: 'idea-provanalys',
+    track: 'fonster',
+    db: 'skola',
+    emoji: '🔬',
+    title: 'Provanalysen',
+    summary: 'Hur står sig varje elev?',
+    goals: [
+      'Varje resultat med kursens högsta och lägsta bredvid.',
+      'Varje elevs bästa kurs (topp 1 per elev).',
+      'Hur långt från klassens bästa varje elev är i matte.',
+    ],
+    extra: 'Dela in resultaten i fyra lika stora grupper med NTILE(4).',
+  },
+  {
+    id: 'idea-pensionatet',
+    track: 'slutprojekt',
+    db: 'pensionat',
+    emoji: '🐕',
+    title: 'Pensionatets rapporter',
+    summary: 'Fler rapporter till hundpensionatet.',
+    goals: [
+      'Vilka rum är lediga 2026-06-20?',
+      'Varje hunds ålder i år och hur många gånger den bott här.',
+      'Överlappar några bokningar i samma rum?',
+    ],
+    extra:
+      'Lägg till en tabell för extratjänster (bad, promenad) och räkna in dem på fakturan.',
+  },
+  {
+    id: 'idea-egen-databas',
+    track: 'slutprojekt',
+    db: null,
+    emoji: '🏗️',
+    title: 'Din egen databas',
+    summary: 'Välj en verksamhet och bygg dess databas från grunden.',
+    goals: [
+      'Minst tre tabeller som hänger ihop med nycklar.',
+      'Regler som håller datan hel: NOT NULL, CHECK, UNIQUE.',
+      'Fem rapportfrågor som chefen skulle vilja ha.',
+    ],
+    extra: 'Förslag: frisörsalong, gym, foodtruck, hockeyklubb, restaurang.',
+  },
+  {
+    id: 'idea-wrapped',
+    track: 'slutprojekt',
+    db: null,
+    emoji: '🎶',
+    title: 'Ditt eget Wrapped',
+    summary: 'Gör en lyssningslogg med din egen musik och sammanfatta den.',
+    goals: [
+      'En tabell för lyssningar, med dina egna låtar.',
+      'Minst 15 rader över flera månader.',
+      'Din topplista, månadens artist och din favoritlåt per artist.',
+    ],
+    extra: 'Vilken veckodag lyssnar du mest?',
+  },
 ];
 
 const goalLines = idea =>

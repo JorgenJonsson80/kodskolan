@@ -20,6 +20,9 @@ WebAssembly, `sql.js`), så det gör inget om eleven råkar radera allt.
 - **skola** – `elever` (9A och 9B), `kurser`, `resultat` (0–100)
 - **bibliotek** – `bocker`, `lantagare`, `lan` (`aterlamnad` är NULL så
   länge boken är utlånad)
+- **pensionat** – slutprojektets hundpensionat: `agare`, `hundar`, `rum`,
+  `vistelser`. Tabellerna finns också en och en i `PENSIONAT_TABLES`,
+  eftersom banan bygger dem själv först
 
 Ändras en databas kan många övningar få nya svar. Kör alla tester.
 
@@ -42,7 +45,15 @@ WebAssembly, `sql.js`), så det gör inget om eleven råkar radera allt.
 | 13 | `slutprojekt` | Slutprojektet       | en egen databas med rapportfrågor                             |
 
 Varje bana: 9 övningar och en boss, tre projekt med tre steg, tre idéer
-till Lekplatsen, fyra quizfrågor och minst två länkar i Fastnat?.
+till Lekplatsen, fyra quizfrågor och minst två länkar i Fastnat?. Alla
+13 banor är klara: 130 övningar, 39 projekt med 117 steg, 39 idéer och
+52 quizfrågor.
+
+I Felsökning (bana 11) är startkoden trasig, och projektstegen där har
+egen `starterCode` med ett nytt fel i varje steg. Ett projekt kan ha
+`setup` med egna tabeller (Ligatabellen, Mitt Wrapped), som följer med
+till varje steg precis som `db`. Ligatabellen använder `UNION ALL`, som
+inte har någon egen övning.
 
 ## En övning
 

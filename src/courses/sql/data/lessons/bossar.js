@@ -388,4 +388,75 @@ export const BOSSES = {
       },
     ],
   },
+  fonster: {
+    id: 'fonster-boss',
+    track: 'fonster',
+    db: 'skola',
+    title: 'Boss: Klassernas topp 3',
+    isBoss: true,
+    xp: 60,
+    description:
+      BOSS_INTRO +
+      'Matteläraren vill ha en topplista per klass till prisutdelningen. Det är "topp N per grupp", med namn.',
+    task: `Uppgift: Gör klassernas topplistor i Matematik (\`kurs_id\` 1).
+  1. Visa \`klass\`, \`plats\`, \`fornamn\` och \`poang\`, i den ordningen.
+  2. \`plats\` börjar om på 1 i varje klass, med högst poäng först.
+  3. Bara de tre bästa i varje klass, sorterat på klass och plats.`,
+    starterCode: START,
+    solution:
+      'WITH rankade AS (\n  SELECT e.klass, e.fornamn, r.poang,\n    ROW_NUMBER() OVER (PARTITION BY e.klass ORDER BY r.poang DESC) AS plats\n  FROM resultat r\n  JOIN elever e ON r.elev_id = e.id\n  WHERE r.kurs_id = 1\n)\nSELECT klass, plats, fornamn, poang\nFROM rankade\nWHERE plats <= 3\nORDER BY klass, plats;\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Tre bästa i varje klass',
+        check: 'rows',
+        ordered: true,
+        expected: [
+          ['9A', 1, 'Alva', 92],
+          ['9A', 2, 'Wilma', 88],
+          ['9A', 3, 'Nora', 81],
+          ['9B', 1, 'Saga', 98],
+          ['9B', 2, 'Maja', 90],
+          ['9B', 3, 'Ella', 84],
+        ],
+      },
+    ],
+  },
+  slutprojekt: {
+    id: 'slutprojekt-boss',
+    track: 'slutprojekt',
+    db: 'pensionat',
+    title: 'Boss: Fakturan',
+    isBoss: true,
+    xp: 80,
+    description:
+      BOSS_INTRO +
+      'Sista uppgiften: pensionatets årsfaktura per ägare. Den använder nästan allt i kursen: JOIN, GROUP BY, datum, WITH och fönsterfunktioner.',
+    task: `Uppgift: Gör fakturan.
+  1. En rad per ägare med \`namn\`, antal olika hundar som bott här som \`hundar\`, antal nätter som \`natter\` och vad ägaren ska betala som \`att_betala\`.
+  2. \`plats\` sist: ägaren som betalar mest har plats 1.
+  3. Sortera på plats.`,
+    starterCode: START,
+    solution:
+      'WITH vistelse AS (\n  SELECT h.agare_id, v.hund_id,\n    julianday(v.utcheckning) - julianday(v.incheckning) AS natter,\n    r.pris_per_natt\n  FROM vistelser v\n  JOIN hundar h ON v.hund_id = h.id\n  JOIN rum r ON v.rum_id = r.id\n)\nSELECT a.namn,\n  COUNT(DISTINCT s.hund_id) AS hundar,\n  SUM(s.natter) AS natter,\n  SUM(s.natter * s.pris_per_natt) AS att_betala,\n  RANK() OVER (ORDER BY SUM(s.natter * s.pris_per_natt) DESC) AS plats\nFROM vistelse s\nJOIN agare a ON s.agare_id = a.id\nGROUP BY a.namn\nORDER BY plats;\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Fakturan per ägare',
+        check: 'rows',
+        ordered: true,
+        expected: [
+          ['Sara Lind', 2, 14, 4500, 1],
+          ['Omar Ali', 2, 12, 4200, 2],
+          ['Eva Nord', 1, 9, 2250, 3],
+          ['Jens Holm', 1, 7, 1750, 4],
+        ],
+      },
+      {
+        description: 'Kolumnerna är namn, hundar, natter, att_betala och plats',
+        check: 'columns',
+        expected: ['namn', 'hundar', 'natter', 'att_betala', 'plats'],
+      },
+    ],
+  },
 };
