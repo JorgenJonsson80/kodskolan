@@ -5,10 +5,13 @@ En ny kurs är en ny mapp i `src/courses/` och en rad i
 Behöver den det, lägg till det i kontraktet i `SPEC.md` så att nästa
 kurs slipper, i stället för att lösa det med ett specialfall.
 
-Tre kurser att utgå från: `python` (en körning som startas, Kör rad
+Fyra kurser att utgå från: `python` (en körning som startas, Kör rad
 för rad, Streamlit), `html` (rättas direkt i webbläsaren, ingen
-Kör-knapp) och `js` (en worker per körning, React-förhandsvisning,
-Prettier). Välj den som liknar det nya språket mest.
+Kör-knapp), `js` (en worker per körning, React-förhandsvisning,
+Prettier) och `sql` (en varm worker med WebAssembly, rättning mot
+facit, editorn får övningens tabeller via `editor.context`). Välj den
+som liknar det nya språket mest. `sql` är den minsta och den första som
+byggdes direkt i Kodskolan.
 
 ## Mappen
 
@@ -93,18 +96,9 @@ Användaren testar efter varje steg.
 - Övningar kan rättas på typerna: "den här koden ska ge typfel" är ett
   test som går att skriva.
 
-### SQL – mest nytta för minst jobb
+### SQL – klar som fjärde kurs
 
-- **Körning:** [sql.js](https://github.com/sql-js/sql.js) (SQLite i
-  WebAssembly, ungefär 1 MB) i en worker.
-- **Varje övning** får fältet `setup` med SQL som skapar tabellerna.
-  Databasen skapas på nytt vid varje körning.
-- **Tester:** `test.code` är en SQL-fråga, `expected` raderna som en
-  lista med listor. Jämför utan hänsyn till ordningen, utom vid
-  `ORDER BY`.
-- **Visning:** resultatet som en tabell (`ResultPreview`).
-- **Editor:** `@codemirror/lang-sql` kan föreslå tabell- och
-  kolumnnamn från `setup`.
+Se `src/courses/sql/CLAUDE.md` och `docs/kurser/sql.md`.
 
 ### Mindre lämpligt
 

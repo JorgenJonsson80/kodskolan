@@ -16,7 +16,12 @@ import {
   indentOnInput,
   syntaxHighlighting,
 } from '@codemirror/language';
-import { EditorState, StateEffect, StateField } from '@codemirror/state';
+import {
+  Compartment,
+  EditorState,
+  StateEffect,
+  StateField,
+} from '@codemirror/state';
 import {
   Decoration,
   drawSelection,
@@ -250,6 +255,8 @@ const editorTheme = EditorView.theme(
 
 // activeLine: raden som markeras i Kör rad för rad, eller null.
 // stepNote: { line, text } på raden som just kördes, eller null.
+// context: det kursens språk behöver veta om övningen (SQL: tabellerna),
+// skickas till editor.extensions(context). Byts det, byts språket ut.
 export default function CodeEditor({
   code,
   onCodeChange,
@@ -257,9 +264,11 @@ export default function CodeEditor({
   activeLine = null,
   stepNote = null,
   fileName = null,
+  context = null,
 }) {
   const { editor } = useCourse();
   const hostRef = useRef(null);
+  const language = useRef(new Compartment());
   const viewRef = useRef(null);
   const callbacks = useRef({ onCodeChange, onRun });
   const [formatError, setFormatError] = useState(false);
@@ -281,7 +290,7 @@ export default function CodeEditor({
           indentOnInput(),
           bracketMatching(),
           closeBrackets(),
-          editor.extensions(),
+          language.current.of(editor.extensions(context)),
           autocompletion(),
           codeHover(editor.describeAt),
           stepLineField,
@@ -333,6 +342,12 @@ export default function CodeEditor({
     // Editorn skapas en gång; ny kod utifrån hanteras i effekten nedan.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    viewRef.current?.dispatch({
+      effects: language.current.reconfigure(editor.extensions(context)),
+    });
+  }, [editor, context]);
 
   // När koden ändras utifrån (ny övning, återställ) byts innehållet ut.
   useEffect(() => {

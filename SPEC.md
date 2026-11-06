@@ -77,7 +77,7 @@ export default {
     warmUp, onStatus, statusText, timeoutMs, // valfria: bara det som
   },                                         // behöver startas (Python)
   editor: {
-    extensions,   // () => CodeMirror-tillägg: språk, indrag, förslag
+    extensions,   // context => CodeMirror-tillägg: språk, indrag, förslag
     describeAt,   // hover: (state, pos, side) => { from, to, title, body }
     comment,      // text => en kommentar i språket (projektsteg, Lekplatsen)
     codeFence,    // språket i AI-frågans kodblock (eller en funktion)
@@ -126,10 +126,14 @@ editor, beforeEditor, afterEditor, actions, panels }`: `runOptions`
 skickas med till `run` (t.ex. svaren till input() på Lekplatsen),
 `editor` går till CodeEditor (markerad rad och lapp), `actions` är
 knappar bredvid Kolla lösning och `panels` visas under knapparna.
-`editor` kan också ha `fileName`, som visas i editorns rubrik. Python
-har Kör rad för rad, svaren till input() och Streamlit där, HTML
-förhandsvisningen och JS filerna, Kör rad för rad och vad som ska
-förhandsvisas.
+`editor` kan också ha `fileName`, som visas i editorns rubrik, och
+`context`, som skickas till `editor.extensions(context)`. Ändras
+`context` byts språket ut i editorn (SQL: övningens tabeller, till
+förslagen och hovern). `beforeEditor` visas ovanför editorn både i
+övningarna och på Lekplatsen. Python har Kör rad för rad, svaren till
+input() och Streamlit där, HTML förhandsvisningen, JS filerna, Kör rad
+för rad och vad som ska förhandsvisas, och SQL databasen (📋 Tabellerna
+och databasvalet på Lekplatsen).
 
 ## Data och konton
 
@@ -184,3 +188,7 @@ Användaren testar efter varje etapp.
 6. **Lärarvyn.** Klasser, inbjudningslänk, elevernas framsteg.
 7. **TypeScript som ny kurs.** Bevisar att en ny kurs bara är en ny
    mapp.
+
+SQL kom före etapp 4–7 som fjärde kurs (`src/courses/sql`, SPEC i
+`docs/kurser/sql.md`). Kärnan behövde bara två saker: `editor.context`
+och `beforeEditor` på Lekplatsen.

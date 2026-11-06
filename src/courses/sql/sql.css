@@ -1,0 +1,80 @@
+/* SQL-kursen: tabellerna och svaret. */
+
+.sql-result,
+.sql-tables {
+  margin: 12px 0;
+}
+
+.sql-result figcaption {
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.sql-table-scroll {
+  max-height: 360px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.sql-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.85rem;
+}
+
+.sql-table th,
+.sql-table td {
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sql-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface-sunken);
+}
+
+.sql-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.sql-null {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.sql-tables summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.sql-table-info h3 {
+  margin: 14px 0 6px;
+  font-size: 1rem;
+}
+
+.sql-more,
+.sql-tables-loading,
+.sql-tables-empty {
+  margin: 6px 0;
+  font-size: 0.85rem;
+}
+
+.sql-db-choice {
+  display: inline-block;
+  margin: 8px 0;
+  font-weight: 700;
+}
+
+.sql-db-choice select {
+  padding: 4px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface-sunken);
+  color: var(--text);
+  font: inherit;
+}

@@ -140,6 +140,7 @@ export default function Playground({ ideas, ideaId, onSelectIdea, onBack }) {
         </aside>
       )}
 
+      {workbench.beforeEditor}
       <CodeEditor
         code={code}
         onCodeChange={handleCodeChange}
