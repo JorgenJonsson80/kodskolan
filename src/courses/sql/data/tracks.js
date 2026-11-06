@@ -177,4 +177,43 @@ export const TRACKS = [
       { title: 'FOREIGN KEY', url: `${TUTORIAL}sqlite-foreign-key/` },
     ],
   },
+  {
+    id: 'delfragor',
+    title: 'Frågor i frågor',
+    teaches: [
+      'delfrågor',
+      'IN (SELECT …)',
+      'NOT IN',
+      'korrelerade delfrågor',
+      'WITH',
+      'EXISTS',
+    ],
+    reward: { emoji: '🪆', name: 'Babusjka' },
+    canBuild: 'svar i flera steg, som kunderna som handlat mer än snittkunden',
+    docs: [
+      { title: 'Delfrågor', url: `${TUTORIAL}sqlite-subquery/` },
+      { title: 'EXISTS', url: `${TUTORIAL}sqlite-exists/` },
+    ],
+  },
+  {
+    id: 'felsok',
+    title: 'Felsökning',
+    teaches: [
+      'läsa felmeddelanden',
+      'fel utan felmeddelande',
+      'AND och OR',
+      'heltal',
+      'fel nyckel',
+    ],
+    reward: { emoji: '🩺', name: 'Stetoskop' },
+    canBuild:
+      'att hitta felet i någon annans fråga, även när den inte ger något felmeddelande',
+    docs: [
+      {
+        title: 'Operatorernas ordning',
+        url: 'https://www.sqlite.org/lang_expr.html',
+      },
+      { title: 'SELECT steg för steg', url: `${TUTORIAL}sqlite-select/` },
+    ],
+  },
 ];

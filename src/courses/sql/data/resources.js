@@ -138,4 +138,33 @@ export const RESOURCES = {
       video: 'databasdesign normalisering nybörjare',
     },
   ],
+  delfragor: [
+    {
+      topic: 'Delfrågor',
+      read: `${TUTORIAL}sqlite-subquery/`,
+      video: 'sql subquery explained beginners',
+    },
+    {
+      topic: 'WITH (CTE)',
+      read: `${TUTORIAL}sqlite-cte/`,
+      video: 'sql cte with clause explained',
+    },
+    {
+      topic: 'EXISTS',
+      read: `${TUTORIAL}sqlite-exists/`,
+      video: 'sql exists vs in',
+    },
+  ],
+  felsok: [
+    {
+      topic: 'Vanliga fel i SQL',
+      read: `${TUTORIAL}sqlite-select/`,
+      video: 'common sql mistakes beginners',
+    },
+    {
+      topic: 'AND, OR och parenteser',
+      read: 'https://www.sqlite.org/lang_expr.html',
+      video: 'sql and or precedence parentheses',
+    },
+  ],
 };

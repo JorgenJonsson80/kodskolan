@@ -1937,6 +1937,402 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-forsta-kunden',
+    track: 'delfragor',
+    db: 'butik',
+    title: 'Första och senaste',
+    reward: { emoji: '⏳', name: 'Timglas' },
+    summary:
+      'Varje kunds första och senaste order, och hur länge de varit kunder.',
+    steps: [
+      {
+        title: 'Första ordern',
+        why: 'MIN på datum per kund ger den första ordern. Den räknas ut i en WITH, så att resten av frågan blir lätt att läsa.',
+        xp: 15,
+        description: 'Butiken vill se när varje kund började handla.',
+        task: 'Uppgift: Räkna ut varje kunds första orderdatum som `forsta` i en `WITH` som heter `kundtid`, och visa allt i den.',
+        starterCode: '-- Steg 1: första ordern\n',
+        solution:
+          'WITH kundtid AS (\n  SELECT kund_id, MIN(datum) AS forsta\n  FROM ordrar\n  GROUP BY kund_id\n)\nSELECT * FROM kundtid;\n',
+        hints: [
+          'WITH kundtid AS ( … )',
+          'SELECT kund_id, MIN(datum) AS forsta FROM ordrar GROUP BY kund_id',
+          'Sist: SELECT * FROM kundtid;',
+        ],
+        tests: [{ description: 'Första ordern per kund', check: 'rows' }],
+      },
+      {
+        title: 'Senaste och namnet',
+        why: 'Med namnet från kunder blir det läsbart. WITH-tabellen kopplas med JOIN som vilken tabell som helst.',
+        xp: 15,
+        description: 'Lägg till senaste ordern och kundens namn.',
+        task: 'Uppgift: Lägg till `MAX(datum) AS senaste` i `kundtid`, och visa kundens `namn`, `forsta` och `senaste`.',
+        solution:
+          'WITH kundtid AS (\n  SELECT kund_id, MIN(datum) AS forsta, MAX(datum) AS senaste\n  FROM ordrar\n  GROUP BY kund_id\n)\nSELECT k.namn, t.forsta, t.senaste\nFROM kundtid t\nJOIN kunder k ON t.kund_id = k.id;\n',
+        hints: [
+          'MAX(datum) AS senaste i WITH-frågan.',
+          'FROM kundtid t JOIN kunder k ON t.kund_id = k.id',
+          'SELECT k.namn, t.forsta, t.senaste',
+        ],
+        tests: [{ description: 'Namn, första och senaste', check: 'rows' }],
+      },
+      {
+        title: 'Hur länge?',
+        why: 'julianday räknar dagarna mellan första och senaste. De som handlat mer än en gång har fler än noll dagar.',
+        xp: 20,
+        description: 'Hur många dagar har varje kund handlat hos butiken?',
+        task: 'Uppgift: Lägg till dagarna mellan första och senaste ordern som `dagar`, och visa bara kunderna med fler än 0 dagar, flest först.',
+        solution:
+          'WITH kundtid AS (\n  SELECT kund_id, MIN(datum) AS forsta, MAX(datum) AS senaste\n  FROM ordrar\n  GROUP BY kund_id\n)\nSELECT k.namn, t.forsta, t.senaste,\n  julianday(t.senaste) - julianday(t.forsta) AS dagar\nFROM kundtid t\nJOIN kunder k ON t.kund_id = k.id\nWHERE dagar > 0\nORDER BY dagar DESC;\n',
+        hints: [
+          'julianday(t.senaste) - julianday(t.forsta) AS dagar',
+          'WHERE dagar > 0',
+          'ORDER BY dagar DESC',
+        ],
+        tests: [
+          {
+            description: 'De återkommande kunderna',
+            check: 'rows',
+            ordered: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-genrerna',
+    track: 'delfragor',
+    db: 'filmer',
+    title: 'Genrernas bästa',
+    reward: { emoji: '🎭', name: 'Teatermasker' },
+    summary: 'Hitta den högst betygsatta filmen i varje genre.',
+    steps: [
+      {
+        title: 'Filmernas snitt',
+        why: 'Snittet per film behövs flera gånger, så det får ett eget namn i WITH.',
+        xp: 15,
+        description:
+          'Vilken är bästa filmen i varje genre? Först snittet per film.',
+        task: 'Uppgift: Räkna ut `titel`, `genre` och snittbetyget som `snitt` för varje film i en `WITH` som heter `filmsnitt`, och visa allt i den.',
+        starterCode: '-- Steg 1: filmernas snitt\n',
+        solution:
+          'WITH filmsnitt AS (\n  SELECT f.titel, f.genre, AVG(re.betyg) AS snitt\n  FROM filmer f\n  JOIN recensioner re ON re.film_id = f.id\n  GROUP BY f.titel, f.genre\n)\nSELECT * FROM filmsnitt;\n',
+        hints: [
+          'JOIN recensioner re ON re.film_id = f.id',
+          'GROUP BY f.titel, f.genre',
+          'WITH filmsnitt AS ( … ) SELECT * FROM filmsnitt;',
+        ],
+        tests: [{ description: 'Snittet per film', check: 'rows' }],
+      },
+      {
+        title: 'Genrens bästa snitt',
+        why: 'En korrelerad delfråga räknar ut det högsta snittet i just radens genre.',
+        xp: 20,
+        description: 'Vad är det högsta snittet i varje film-genre?',
+        task: 'Uppgift: Behåll bara filmerna vars snitt är det högsta i sin genre.',
+        solution:
+          'WITH filmsnitt AS (\n  SELECT f.titel, f.genre, AVG(re.betyg) AS snitt\n  FROM filmer f\n  JOIN recensioner re ON re.film_id = f.id\n  GROUP BY f.titel, f.genre\n)\nSELECT * FROM filmsnitt a\nWHERE snitt = (SELECT MAX(snitt) FROM filmsnitt b WHERE b.genre = a.genre);\n',
+        hints: [
+          'FROM filmsnitt a',
+          'SELECT MAX(snitt) FROM filmsnitt b WHERE b.genre = a.genre',
+          'WHERE snitt = ( … )',
+        ],
+        tests: [{ description: 'Bästa filmen per genre', check: 'rows' }],
+      },
+      {
+        title: 'Snyggt',
+        why: 'Avrundat och sorterat på genre blir det en lista att sätta upp på väggen.',
+        xp: 15,
+        description: 'Gör listan snygg.',
+        task: 'Uppgift: Visa `genre`, `titel` och snittet med en decimal som `snitt`, sorterat på genre och sedan titel.',
+        solution:
+          'WITH filmsnitt AS (\n  SELECT f.titel, f.genre, AVG(re.betyg) AS snitt\n  FROM filmer f\n  JOIN recensioner re ON re.film_id = f.id\n  GROUP BY f.titel, f.genre\n)\nSELECT a.genre, a.titel, ROUND(a.snitt, 1) AS snitt\nFROM filmsnitt a\nWHERE a.snitt = (SELECT MAX(snitt) FROM filmsnitt b WHERE b.genre = a.genre)\nORDER BY a.genre, a.titel;\n',
+        hints: [
+          'SELECT a.genre, a.titel, ROUND(a.snitt, 1) AS snitt',
+          'Skriv a.snitt i WHERE, så att det är det oavrundade.',
+          'ORDER BY a.genre, a.titel',
+        ],
+        tests: [
+          { description: 'Väggen med de bästa', check: 'rows', ordered: true },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-stjarneleverna',
+    track: 'delfragor',
+    db: 'skola',
+    title: 'Stjärneleverna',
+    reward: { emoji: '🌠', name: 'Stjärnfall' },
+    summary: 'Eleverna som är bäst i sin klass i matte.',
+    steps: [
+      {
+        title: 'Klassens snitt',
+        why: 'Klassens snitt räknas med JOIN mellan resultat och elever, eftersom klassen står hos eleven.',
+        xp: 15,
+        description: 'Hur gick matteprovet (kurs 1) i varje klass?',
+        task: 'Uppgift: Visa `klass` och matteprovets snitt i klassen som `snitt`.',
+        starterCode: '-- Steg 1: klassens snitt\n',
+        solution:
+          'SELECT e.klass, AVG(r.poang) AS snitt\nFROM resultat r\nJOIN elever e ON r.elev_id = e.id\nWHERE r.kurs_id = 1\nGROUP BY e.klass;\n',
+        hints: [
+          'JOIN elever e ON r.elev_id = e.id',
+          'WHERE r.kurs_id = 1',
+          'GROUP BY e.klass',
+        ],
+        tests: [{ description: 'Snittet i 9A och 9B', check: 'rows' }],
+      },
+      {
+        title: 'Över klassens snitt',
+        why: 'Klassens snitt får ett namn i WITH. Sedan jämförs varje elev med sin egen klass.',
+        xp: 20,
+        description: 'Vilka fick mer än sin klass snitt?',
+        task: 'Uppgift: Lägg frågan i en `WITH` som heter `klassnitt`, och visa `fornamn`, `klass` och `poang` för eleverna med mer än sin klass snitt i matte.',
+        solution:
+          'WITH klassnitt AS (\n  SELECT e.klass, AVG(r.poang) AS snitt\n  FROM resultat r\n  JOIN elever e ON r.elev_id = e.id\n  WHERE r.kurs_id = 1\n  GROUP BY e.klass\n)\nSELECT e.fornamn, e.klass, r.poang\nFROM resultat r\nJOIN elever e ON r.elev_id = e.id\nJOIN klassnitt k ON k.klass = e.klass\nWHERE r.kurs_id = 1 AND r.poang > k.snitt;\n',
+        hints: [
+          'WITH klassnitt AS ( … )',
+          'JOIN klassnitt k ON k.klass = e.klass',
+          'WHERE r.kurs_id = 1 AND r.poang > k.snitt',
+        ],
+        tests: [{ description: 'Eleverna över klassens snitt', check: 'rows' }],
+      },
+      {
+        title: 'Klassens bästa',
+        why: 'EXISTS frågar om någon i klassen fick mer. Finns ingen sådan är eleven bäst i klassen.',
+        xp: 20,
+        description: 'Vem är bäst i varje klass?',
+        task: 'Uppgift: Byt villkoret så att bara den som är bäst i sin klass blir kvar: ingen annan i samma klass fick mer (`NOT EXISTS`). Sortera på klass.',
+        solution:
+          'WITH klassnitt AS (\n  SELECT e.klass, AVG(r.poang) AS snitt\n  FROM resultat r\n  JOIN elever e ON r.elev_id = e.id\n  WHERE r.kurs_id = 1\n  GROUP BY e.klass\n)\nSELECT e.fornamn, e.klass, r.poang\nFROM resultat r\nJOIN elever e ON r.elev_id = e.id\nJOIN klassnitt k ON k.klass = e.klass\nWHERE r.kurs_id = 1\n  AND NOT EXISTS (\n    SELECT 1\n    FROM resultat r2\n    JOIN elever e2 ON r2.elev_id = e2.id\n    WHERE r2.kurs_id = 1 AND e2.klass = e.klass AND r2.poang > r.poang\n  )\nORDER BY e.klass;\n',
+        hints: [
+          'NOT EXISTS (SELECT 1 FROM resultat r2 JOIN elever e2 …)',
+          'I delfrågan: samma kurs, samma klass och högre poäng.',
+          'ORDER BY e.klass',
+        ],
+        tests: [
+          {
+            description: 'Bäst i 9A och 9B',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['Alva', '9A', 92],
+              ['Saga', '9B', 98],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-kategorifix',
+    track: 'felsok',
+    db: 'butik',
+    title: 'Kategorirapporten',
+    reward: { emoji: '🔧', name: 'Skiftnyckel' },
+    summary: 'En kollegas rapport, med ett nytt fel i varje steg.',
+    steps: [
+      {
+        title: 'En rad per kategori',
+        why: 'Utan GROUP BY räknar COUNT hela tabellen och SQLite väljer en kategori på måfå. Rapporten ser rimlig ut men är fel.',
+        xp: 15,
+        description:
+          'Rapporten ska ha en rad per kategori, men den har bara en rad.',
+        task: 'Uppgift: Laga frågan så att den visar `kategori` och antal produkter som `antal`, en rad per kategori.',
+        starterCode: 'SELECT kategori, COUNT(*) AS antal\nFROM produkter;\n',
+        solution:
+          'SELECT kategori, COUNT(*) AS antal\nFROM produkter\nGROUP BY kategori;\n',
+        hints: [
+          'Hur många rader borde det bli?',
+          'COUNT räknar per grupp bara om det finns grupper.',
+          'GROUP BY kategori',
+        ],
+        tests: [{ description: 'En rad per kategori', check: 'rows' }],
+      },
+      {
+        title: 'Snittpriset',
+        why: 'Parenteserna bestämmer vad som hör till vilken funktion. ROUND tar två värden, AVG bara ett.',
+        xp: 15,
+        description: 'Kollegan lade till snittpriset, och nu kommer ett fel.',
+        task: 'Uppgift: Laga frågan så att den också visar snittpriset med en decimal som `snitt`.',
+        starterCode:
+          'SELECT kategori, COUNT(*) AS antal, ROUND(AVG(pris, 1)) AS snitt\nFROM produkter\nGROUP BY kategori;\n',
+        solution:
+          'SELECT kategori, COUNT(*) AS antal, ROUND(AVG(pris), 1) AS snitt\nFROM produkter\nGROUP BY kategori;\n',
+        hints: [
+          'Läs felet: vilken funktion fick fel antal värden?',
+          'Ettan hör till ROUND, inte till AVG.',
+          'ROUND(AVG(pris), 1)',
+        ],
+        tests: [{ description: 'Antal och snitt per kategori', check: 'rows' }],
+      },
+      {
+        title: 'De dyra kategorierna',
+        why: 'snitt är ett alias för AVG, och AVG kan bara stå efter grupperingen. Därför HAVING och inte WHERE.',
+        xp: 20,
+        description:
+          'Till sist ska bara kategorierna med ett snitt över 50 visas, dyrast först.',
+        task: 'Uppgift: Laga frågan.',
+        starterCode:
+          'SELECT kategori, COUNT(*) AS antal, ROUND(AVG(pris), 1) AS snitt\nFROM produkter\nWHERE snitt > 50\nGROUP BY kategori\nORDER BY snitt;\n',
+        solution:
+          'SELECT kategori, COUNT(*) AS antal, ROUND(AVG(pris), 1) AS snitt\nFROM produkter\nGROUP BY kategori\nHAVING AVG(pris) > 50\nORDER BY snitt DESC;\n',
+        hints: [
+          'Två fel: ett med felmeddelande och ett utan.',
+          'Villkor om AVG står i HAVING.',
+          'Dyrast först: DESC.',
+        ],
+        tests: [
+          {
+            description: 'Tillbehör, Kaffe och Te',
+            check: 'rows',
+            ordered: true,
+            expected: [
+              ['Tillbehör', 3, 161],
+              ['Kaffe', 3, 99],
+              ['Te', 3, 59.7],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-lanefix',
+    track: 'felsok',
+    db: 'bibliotek',
+    title: 'Lindgrenlistan',
+    reward: { emoji: '🧰', name: 'Verktygslåda' },
+    summary:
+      'En lista över Astrid Lindgrens böcker och hur de lånas, med ett fel per steg.',
+    steps: [
+      {
+        title: 'Böckerna',
+        why: '= jämför hela texten. Författaren heter Astrid Lindgren, så bara LIKE med % hittar efternamnet.',
+        xp: 15,
+        description:
+          'Frågan ska visa Astrid Lindgrens böcker, men svaret är tomt.',
+        task: 'Uppgift: Laga frågan så att den visar `titel` för böckerna där författaren slutar på `Lindgren`.',
+        starterCode:
+          "SELECT titel FROM bocker WHERE forfattare = 'Lindgren';\n",
+        solution:
+          "SELECT titel FROM bocker WHERE forfattare LIKE '%Lindgren';\n",
+        hints: [
+          'Vad heter författaren exakt i tabellen?',
+          '= kräver att hela texten stämmer.',
+          "WHERE forfattare LIKE '%Lindgren'",
+        ],
+        tests: [{ description: 'Lindgrens fyra böcker', check: 'rows' }],
+      },
+      {
+        title: 'Lånen',
+        why: 'Både lan och bocker har en kolumn som heter id. Med aliaset framför vet SQL vilken som menas.',
+        xp: 15,
+        description: 'Nu lånen av böckerna, men det blir ett fel.',
+        task: 'Uppgift: Laga frågan så att den visar lånets `id`, bokens `titel` och `lanad` för lånen av Lindgrens böcker.',
+        starterCode:
+          "SELECT id, b.titel, l.lanad\nFROM lan l\nJOIN bocker b ON l.bok_id = b.id\nWHERE b.forfattare LIKE '%Lindgren';\n",
+        solution:
+          "SELECT l.id, b.titel, l.lanad\nFROM lan l\nJOIN bocker b ON l.bok_id = b.id\nWHERE b.forfattare LIKE '%Lindgren';\n",
+        hints: [
+          'Läs felet: ambiguous column name.',
+          'Vilka tabeller har en kolumn som heter id?',
+          'l.id',
+        ],
+        tests: [{ description: 'Lånen av Lindgrens böcker', check: 'rows' }],
+      },
+      {
+        title: 'Hur ofta?',
+        why: 'COUNT(*) räknar raden med NULL som en. COUNT(l.id) räknar bara riktiga lån.',
+        xp: 20,
+        description:
+          'Hur många gånger har varje bok lånats? Mio, min Mio har aldrig lånats, men står med 1.',
+        task: 'Uppgift: Laga frågan så att den visar rätt antal lån som `lan` för varje Lindgren-bok.',
+        starterCode:
+          "SELECT b.titel, COUNT(*) AS lan\nFROM bocker b\nLEFT JOIN lan l ON l.bok_id = b.id\nWHERE b.forfattare LIKE '%Lindgren'\nGROUP BY b.titel;\n",
+        solution:
+          "SELECT b.titel, COUNT(l.id) AS lan\nFROM bocker b\nLEFT JOIN lan l ON l.bok_id = b.id\nWHERE b.forfattare LIKE '%Lindgren'\nGROUP BY b.titel;\n",
+        hints: [
+          'Vad räknar COUNT(*) för en bok utan lån?',
+          'Räkna en kolumn från lan i stället.',
+          'COUNT(l.id)',
+        ],
+        tests: [
+          {
+            description: 'Rätt antal lån',
+            check: 'rows',
+            expected: [
+              ['Bröderna Lejonhjärta', 1],
+              ['Mio, min Mio', 0],
+              ['Pippi Långstrump', 2],
+              ['Ronja Rövardotter', 1],
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-elevfix',
+    track: 'felsok',
+    db: 'skola',
+    title: 'Elevlistan',
+    reward: { emoji: '🪛', name: 'Skruvmejsel' },
+    summary: 'Lärarens lista över de bästa eleverna, lagad steg för steg.',
+    steps: [
+      {
+        title: 'Namnen',
+        why: '|| sätter ihop exakt det man ger den. Mellanslaget måste vara en egen text.',
+        xp: 15,
+        description: 'Namnen ser ut som AlvaLindqvist.',
+        task: 'Uppgift: Laga frågan så att namnen får ett mellanslag: `Alva Lindqvist`.',
+        starterCode: 'SELECT fornamn || efternamn AS namn FROM elever;\n',
+        solution: "SELECT fornamn || ' ' || efternamn AS namn FROM elever;\n",
+        hints: [
+          'Vad saknas mellan förnamn och efternamn?',
+          "Mellanslaget är en egen text: ' '.",
+          "fornamn || ' ' || efternamn",
+        ],
+        tests: [{ description: 'Namn med mellanslag', check: 'rows' }],
+      },
+      {
+        title: 'Snittet',
+        why: 'resultat har ingen kolumn som heter id. Det är elev_id som pekar på eleven.',
+        xp: 15,
+        description: 'Nu varje elevs snitt, men det blir ett fel.',
+        task: 'Uppgift: Laga frågan så att den visar namnet och snittet som `snitt` för varje elev.',
+        starterCode:
+          "SELECT e.fornamn || ' ' || e.efternamn AS namn, AVG(r.poang) AS snitt\nFROM elever e\nJOIN resultat r ON r.id = e.id\nGROUP BY namn;\n",
+        solution:
+          "SELECT e.fornamn || ' ' || e.efternamn AS namn, AVG(r.poang) AS snitt\nFROM elever e\nJOIN resultat r ON r.elev_id = e.id\nGROUP BY namn;\n",
+        hints: [
+          'Läs felet: vilken kolumn finns inte?',
+          'Titta i 📋 Tabellerna på kolumnerna i resultat.',
+          'ON r.elev_id = e.id',
+        ],
+        tests: [{ description: 'Snittet per elev', check: 'rows' }],
+      },
+      {
+        title: 'Topplistan',
+        why: 'Minst 85 är >= 85, och bäst först är DESC. Två fel utan felmeddelande – bara fel svar.',
+        xp: 20,
+        description:
+          'Listan ska visa eleverna med minst 85 i snitt, bäst först. Men flera elever saknas och ordningen är bakvänd.',
+        task: 'Uppgift: Laga frågan.',
+        starterCode:
+          "SELECT e.fornamn || ' ' || e.efternamn AS namn, AVG(r.poang) AS snitt\nFROM elever e\nJOIN resultat r ON r.elev_id = e.id\nGROUP BY namn\nHAVING AVG(r.poang) > 87.5\nORDER BY snitt;\n",
+        solution:
+          "SELECT e.fornamn || ' ' || e.efternamn AS namn, AVG(r.poang) AS snitt\nFROM elever e\nJOIN resultat r ON r.elev_id = e.id\nGROUP BY namn\nHAVING AVG(r.poang) >= 85\nORDER BY snitt DESC, namn;\n",
+        hints: [
+          'Vilken gräns står i HAVING? Vilken ska det vara?',
+          'Minst 85 är >= 85.',
+          'Bäst först: ORDER BY snitt DESC, och namn om två är lika.',
+        ],
+        tests: [{ description: 'Topplistan', check: 'rows', ordered: true }],
+      },
+    ],
+  },
 ];
 
 // Stegen som vanliga övningar, så att samma editor och rättning kan

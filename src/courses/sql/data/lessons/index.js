@@ -1,5 +1,7 @@
 import { ANDRA } from './andra';
 import { BOSSES } from './bossar';
+import { DELFRAGOR } from './delfragor';
+import { FELSOK } from './felsok';
 import { FILTRERA } from './filtrera';
 import { GRUPPERA } from './gruppera';
 import { JOIN } from './join';
@@ -30,4 +32,8 @@ export const LESSONS = [
   BOSSES.andra,
   ...SKAPA,
   BOSSES.skapa,
+  ...DELFRAGOR,
+  BOSSES.delfragor,
+  ...FELSOK,
+  BOSSES.felsok,
 ];

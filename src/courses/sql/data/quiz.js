@@ -336,4 +336,80 @@ export const QUIZ = {
         '9 bryter mot CHECK och hoppas över (OR IGNORE). 3 och 5 sparas.',
     },
   ],
+  delfragor: [
+    {
+      question: 'Vad blir svaret?',
+      code: 'SELECT COUNT(*) FROM produkter WHERE pris > (SELECT AVG(pris) FROM produkter);',
+      db: 'butik',
+      options: ['4', '12', '1', '6'],
+      explain: 'Snittpriset är ungefär 87 kr, och fyra produkter är dyrare.',
+    },
+    {
+      question: 'Vad gör WITH summor AS (…) först i en fråga?',
+      options: [
+        'Ger en fråga ett namn som kan användas som en tabell',
+        'Skapar en ny tabell i databasen',
+        'Sparar svaret till nästa gång',
+        'Gör frågan snabbare',
+      ],
+      explain: 'Namnet finns bara medan frågan körs. Ingen tabell skapas.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'SELECT COUNT(*) FROM kunder WHERE id NOT IN (SELECT kund_id FROM ordrar);',
+      db: 'butik',
+      options: ['2', '8', '0', '10'],
+      explain: 'Två kunder har aldrig lagt någon order.',
+    },
+    {
+      question: 'När är EXISTS (SELECT …) sant?',
+      options: [
+        'När delfrågan ger minst en rad',
+        'När delfrågan ger exakt en rad',
+        'När delfrågan ger värdet 1',
+        'När tabellen i delfrågan finns',
+      ],
+      explain:
+        'EXISTS bryr sig bara om att det finns rader, inte vad de innehåller.',
+    },
+  ],
+  felsok: [
+    {
+      question: 'Vad ger SELECT namn stad FROM kunder?',
+      options: [
+        'En kolumn med namnen, som heter stad',
+        'Två kolumner, namn och stad',
+        'Ett felmeddelande',
+        'Bara städerna',
+      ],
+      explain:
+        'Utan kommatecken blir stad ett alias för namn. Inget fel, bara fel svar.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: 'SELECT 10 / 4;',
+      db: 'butik',
+      options: ['2', '2.5', '3', '2.0'],
+      explain: 'Två heltal ger ett heltal. Skriv 10 / 4.0 för att få 2.5.',
+    },
+    {
+      question: 'Felet är near "FROM": syntax error. Var letar du först?',
+      options: [
+        'Precis före FROM',
+        'Precis efter FROM',
+        'I tabellens namn',
+        'Sist i frågan',
+      ],
+      explain:
+        'SQL blev förvirrad när den kom till FROM, så felet står oftast precis före.',
+    },
+    {
+      question: 'Vad blir svaret?',
+      code: "SELECT COUNT(*) FROM produkter WHERE kategori = 'Te' OR kategori = 'Kaffe' AND pris < 60;",
+      db: 'butik',
+      options: ['3', '2', '6', '0'],
+      explain:
+        'AND räknas före OR: allt te (3) eller kaffe under 60 (inget). Med parenteser hade det blivit 2.',
+    },
+  ],
 };

@@ -323,4 +323,69 @@ export const BOSSES = {
       },
     ],
   },
+  delfragor: {
+    id: 'delfragor-boss',
+    track: 'delfragor',
+    db: 'butik',
+    title: 'Boss: De bästa kunderna',
+    isBoss: true,
+    xp: 50,
+    description:
+      BOSS_INTRO +
+      'Butiken vill belöna kunderna som handlat för mer än snittkunden. Det kräver två steg: först varje kunds totala summa, sedan snittet av dem.',
+    task: `Uppgift: Hitta de bästa kunderna.
+  1. Räkna ut hur mycket varje kund handlat för totalt i en \`WITH\` (kunder, ordrar, orderrader och produkter).
+  2. Visa kundens \`namn\` och summan som \`totalt\` för kunderna som handlat för mer än snittet av alla kunders summor.
+  3. Mest först.`,
+    starterCode: START,
+    solution:
+      'WITH kundsumma AS (\n  SELECT k.namn, SUM(r.antal * p.pris) AS totalt\n  FROM kunder k\n  JOIN ordrar o ON o.kund_id = k.id\n  JOIN orderrader r ON r.order_id = o.id\n  JOIN produkter p ON r.produkt_id = p.id\n  GROUP BY k.namn\n)\nSELECT namn, totalt\nFROM kundsumma\nWHERE totalt > (SELECT AVG(totalt) FROM kundsumma)\nORDER BY totalt DESC;\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Kunderna över snittet, mest först',
+        check: 'rows',
+        ordered: true,
+      },
+      {
+        description: 'Kolumnerna är namn och totalt',
+        check: 'columns',
+        expected: ['namn', 'totalt'],
+      },
+    ],
+    sourceChecks: [
+      { description: 'Frågan använder WITH', pattern: /\bWITH\b/i },
+    ],
+  },
+  felsok: {
+    id: 'felsok-boss',
+    track: 'felsok',
+    db: 'butik',
+    title: 'Boss: Junirapporten',
+    isBoss: true,
+    xp: 50,
+    description:
+      BOSS_INTRO +
+      'Kollegan har skrivit en rapport över junis försäljning per kategori, men den ger inga rader. Det finns tre fel – och bara ett av dem syns direkt när de andra är lagade.',
+    task: `Uppgift: Laga rapporten.
+  1. Den ska visa varje \`kategori\` och vad som sålts för i juni som \`summa\`.
+  2. Störst summa först.`,
+    starterCode:
+      "SELECT p.kategori, SUM(r.antal * p.pris) AS summa\nFROM orderrader r\nJOIN produkter p ON r.order_id = p.id\nJOIN ordrar o ON r.order_id = o.id\nWHERE strftime('%m', o.datum) = 6\nGROUP BY p.kategori\nORDER BY summa;\n",
+    solution:
+      "SELECT p.kategori, SUM(r.antal * p.pris) AS summa\nFROM orderrader r\nJOIN produkter p ON r.produkt_id = p.id\nJOIN ordrar o ON r.order_id = o.id\nWHERE strftime('%m', o.datum) = '06'\nGROUP BY p.kategori\nORDER BY summa DESC;\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Junis försäljning, störst först',
+        check: 'rows',
+        ordered: true,
+        expected: [
+          ['Kaffe', 178],
+          ['Bakverk', 135],
+          ['Tillbehör', 35],
+        ],
+      },
+    ],
+  },
 };
