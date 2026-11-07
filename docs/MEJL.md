@@ -4,6 +4,33 @@ Supabases inbyggda mejl skickar bara ett par mejl i timmen och hamnar
 ofta i skräpposten. Före lansering kopplas en riktig mejltjänst in. Inget
 i koden behöver ändras – det görs i Supabase.
 
+## Tills det finns en domän: Gmail
+
+Spärren märks direkt: efter ett par inloggningar i timmen säger
+kontorutan att för många mejl har skickats. Utan egen domän går det att
+skicka från en Gmail-adress så länge.
+
+1. Slå på tvåstegsverifiering på Google-kontot.
+2. Skapa ett applösenord på https://myaccount.google.com/apppasswords
+   (döp det till "Kodskolan") och kopiera de 16 tecknen.
+3. I Supabase, **Project Settings → Authentication → SMTP Settings →
+   Enable custom SMTP**:
+
+   | Fält         | Värde            |
+   | ------------ | ---------------- |
+   | Sender email | Gmail-adressen   |
+   | Sender name  | `Kodskolan`      |
+   | Host         | `smtp.gmail.com` |
+   | Port         | `465`            |
+   | Username     | Gmail-adressen   |
+   | Password     | applösenordet    |
+
+4. Höj **Authentication → Rate Limits → Emails sent per hour** till t.ex. 100.
+
+Gmail klarar runt 500 mejl om dagen. Eleverna ser den privata adressen
+som avsändare, och Gmail kan stoppa utskicket om det blir många. Byt till
+Resend (nedan) före lansering.
+
 ## 1. Skaffa en mejltjänst (Resend)
 
 1. Skapa ett konto på https://resend.com (gratis upp till 3 000 mejl i
