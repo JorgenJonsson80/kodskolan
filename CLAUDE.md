@@ -23,6 +23,12 @@ Supabase-projekt som de gamla akademierna. Framstegen ligger i
 och körs sedan av användaren i Supabase innan koden som behöver den
 pushas.
 
+Diplom och spår: `src/app/paths.js` (spåren), `PathsPage.jsx` (`/spar`),
+`DiplomaPage.jsx` (`/diplom/<kod>`), `core/lib/completion.js` (om en kurs
+är klar), `core/lib/diplomas.js` och `core/components/DiplomaDialog.jsx`.
+Varje kurs har `summary.js` med bara banorna och övningarna, så att
+spåren kan räkna utan att ladda kurserna.
+
 ## Kommandon
 
 - `npm run dev` – utvecklingsserver

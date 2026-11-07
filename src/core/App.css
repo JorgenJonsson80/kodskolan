@@ -2048,3 +2048,221 @@
   font-weight: 700;
   overflow-wrap: anywhere;
 }
+
+/* Diplom: knappen i kursen, dialogen, Mina diplom och diplomsidan. */
+
+.diploma-button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.diploma-dialog label {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+  font-weight: 600;
+}
+
+.diploma-dialog input {
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+}
+
+.diploma-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.diploma-page {
+  min-height: 100vh;
+  padding: 24px 16px 48px;
+}
+
+.diploma-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.diploma-message {
+  text-align: center;
+}
+
+/* Diplomet ser ut som papper i både mörkt och ljust läge. */
+.diploma {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 56px 32px;
+  color: #1f2937;
+  text-align: center;
+  background: #fffdf7;
+  border: 10px double #7c3aed;
+  border-radius: 6px;
+  box-shadow: 0 20px 50px rgb(0 0 0 / 35%);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.diploma-school {
+  margin: 0;
+  color: #6d28d9;
+  font-family: system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.diploma h1 {
+  margin: 8px 0 16px;
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.diploma-lead {
+  margin: 6px 0;
+  font-style: italic;
+}
+
+.diploma-name {
+  margin: 8px auto;
+  max-width: 80%;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #c4b5fd;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700;
+}
+
+.diploma-subject {
+  margin: 8px 0 16px;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  color: #4c1d95;
+}
+
+.diploma-figure {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.diploma-parts {
+  margin: 16px auto 0;
+  max-width: 90%;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.diploma-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+@media (max-width: 600px) {
+  .diploma {
+    padding: 28px 18px 20px;
+    border-width: 6px;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .diploma-page {
+    min-height: 0;
+    padding: 0;
+  }
+
+  .diploma-actions {
+    display: none;
+  }
+
+  .diploma {
+    max-width: none;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Spåren. */
+
+.path-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.path-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  scroll-margin-top: 80px;
+}
+
+.path-card h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.path-card p {
+  margin: 0;
+}
+
+.path-courses {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.path-courses li::marker {
+  color: var(--muted);
+}
+
+.path-courses li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  justify-content: space-between;
+}
+
+.path-next {
+  margin-top: auto;
+}

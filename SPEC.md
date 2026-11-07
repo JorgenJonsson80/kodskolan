@@ -142,6 +142,7 @@ och databasvalet på Lekplatsen).
 | ------------------ | ----- | ------------------------------------------------ |
 | `py_progress` m.fl.| 1–2   | akademiernas egna, används inte längre           |
 | `course_progress`  | 3     | user_id, course_id, klara id:n, utkast, lägen    |
+| `diplomas`         | –     | kod, user_id, kurs eller spår, namn, innehåll    |
 | `entitlements`     | 5     | user_id, course_id, giltig till, källa           |
 | `lesson_content`   | 5     | betalbanornas övningar, läses bara med tillgång  |
 | `schools` …        | 6     | skolor, klasser, medlemmar                       |
@@ -152,10 +153,17 @@ kopierade över akademiernas tabeller, som ligger kvar orörda.
 `supabase/migrations.test.js` kör alla migrationer i PGlite (Postgres i
 Node) och kollar flytten och RLS. Användaren kör SQL:en själv i Supabase.
 
+Diplomen (`diplomas`) skapas med funktionen `issue_diploma` och läses av
+vem som helst med koden via `diploma(kod)`. Ingen kan lista andras
+diplom. Appen kollar att kursen är klar innan diplomet skapas, men
+databasen kan inte göra det förrän innehållet finns där (etapp 5).
+
 Gratisbanorna ligger kvar i appen. Betalbanorna hämtas från
 `lesson_content`, och RLS bestämmer vem som får läsa dem.
 
 ## Adresser
+
+`/diplom/<kod>` visar ett diplom och `/spar` spåren (`src/app/Page.jsx`).
 
 GitHub Pages under `/kodskolan/`. `/` är startsidan med kurserna,
 `/python` en kurs. Bygget kopierar `index.html` till `404.html` så att

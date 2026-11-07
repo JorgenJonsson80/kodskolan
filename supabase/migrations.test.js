@@ -7,11 +7,12 @@ import { beforeEach, describe, expect, it } from 'vitest';
 // authenticated. Användaren kör SQL:en själv i Supabase, så den ska vara
 // rätt innan dess.
 const dir = new URL('./migrations/', import.meta.url);
-const migrations = readdirSync(dir)
+const files = readdirSync(dir)
   .filter(name => name.endsWith('.sql'))
-  .sort()
-  .map(name => readFileSync(new URL(name, dir), 'utf8'));
-const courseProgress = migrations.at(-1);
+  .sort();
+const migrations = files.map(name => readFileSync(new URL(name, dir), 'utf8'));
+const indexOf = suffix => files.findIndex(name => name.endsWith(suffix));
+const courseProgress = migrations[indexOf('_course_progress.sql')];
 
 const SUPABASE = `
   create schema auth;
@@ -19,9 +20,10 @@ const SUPABASE = `
   create function auth.uid() returns uuid language sql stable as
     $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
   create role authenticated;
-  grant usage on schema public, auth to authenticated;
+  create role anon;
+  grant usage on schema public, auth to authenticated, anon;
   alter default privileges in schema public
-    grant select, insert, update on tables to authenticated;
+    grant select, insert, update on tables to authenticated, anon;
 `;
 
 const ANNA = '00000000-0000-0000-0000-00000000000a';
@@ -35,7 +37,12 @@ async function withOldRows(sql) {
   db = new PGlite();
   await db.exec(SUPABASE);
   await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
-  for (const migration of migrations.slice(0, -1)) await db.exec(migration);
+  for (const migration of migrations.slice(
+    0,
+    indexOf('_course_progress.sql'),
+  )) {
+    await db.exec(migration);
+  }
   await db.exec(sql);
   await db.exec(courseProgress);
 }
@@ -122,5 +129,76 @@ describe('course_progress', () => {
       `update course_progress set completed_ids = '{}' where user_id = '${ANNA}' returning 1`,
     );
     expect(changed.rows).toEqual([]);
+  });
+});
+
+describe('diplomas', () => {
+  beforeEach(async () => {
+    db = new PGlite();
+    await db.exec(SUPABASE);
+    await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
+    for (const migration of migrations) await db.exec(migration);
+  });
+
+  const as = user =>
+    db.exec(
+      `reset role; set role authenticated; set request.jwt.claim.sub = '${user}'`,
+    );
+
+  const issue = async (subject, name) =>
+    (
+      await db.query(
+        `select public.issue_diploma('course', '${subject}', '${name}', '{"tracks": 13}') as code`,
+      )
+    ).rows[0].code;
+
+  it('ger ett diplom med en kod som vem som helst kan slå upp', async () => {
+    await as(ANNA);
+    const code = await issue('sql', ' Anna Andersson ');
+    expect(code).toMatch(/^[0-9A-F]{10}$/);
+    await db.exec('reset role; set role anon');
+    const { rows } = await db.query(
+      `select kind, subject, name, details from public.diploma('${code.toLowerCase()}')`,
+    );
+    expect(rows).toEqual([
+      {
+        kind: 'course',
+        subject: 'sql',
+        name: 'Anna Andersson',
+        details: { tracks: 13 },
+      },
+    ]);
+  });
+
+  it('behåller koden när namnet ändras', async () => {
+    await as(ANNA);
+    const first = await issue('sql', 'Anna');
+    const again = await issue('sql', 'Anna Andersson');
+    expect(again).toBe(first);
+  });
+
+  it('låter ingen lista eller skapa andras diplom', async () => {
+    await as(ANNA);
+    await issue('sql', 'Anna');
+    await as(BO);
+    await issue('flask', 'Bo');
+    const seen = await db.query('select subject from diplomas');
+    expect(seen.rows).toEqual([{ subject: 'flask' }]);
+    await expect(
+      db.exec(
+        `insert into diplomas (user_id, kind, subject, name) values ('${BO}', 'course', 'ts', 'Bo')`,
+      ),
+    ).rejects.toThrow();
+    await db.exec('reset role; set role anon');
+    // Som i Supabase får anon läsa tabellen, men RLS visar inga rader.
+    expect((await db.query('select * from diplomas')).rows).toEqual([]);
+    await expect(
+      db.query(`select public.issue_diploma('course', 'js', 'X')`),
+    ).rejects.toThrow();
+  });
+
+  it('kräver ett namn', async () => {
+    await as(ANNA);
+    await expect(issue('sql', '  ')).rejects.toThrow();
   });
 });

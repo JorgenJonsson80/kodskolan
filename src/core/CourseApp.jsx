@@ -5,6 +5,7 @@ import Collection from './components/Collection';
 import HelpDialog from './components/HelpDialog';
 import HeroCard from './components/HeroCard';
 import LessonPanel from './components/LessonPanel';
+import DiplomaDialog from './components/DiplomaDialog';
 import LevelUp from './components/LevelUp';
 import Playground from './components/Playground';
 import Quiz from './components/Quiz';
@@ -23,6 +24,7 @@ import { useCloudProgress } from './lib/useCloudProgress';
 import { isProjectComplete, noHintsBonusXp, noHintsId } from './projects';
 import { passedId, passedTrackIdsFrom } from './quiz';
 import { getGrowth, trackProgress } from './stages';
+import { courseCompletion, courseDiplomaDetails } from './lib/completion';
 
 const isModeMap = value =>
   isStringMap(value) &&
@@ -91,6 +93,7 @@ function Academy({ course }) {
   // null när inget test visas, annars { trackId } för Testa dig förbi
   // eller {} för nivåtestet.
   const [activeQuiz, setActiveQuiz] = useState(null);
+  const [showDiploma, setShowDiploma] = useState(false);
 
   useEffect(
     () => writeJson(KEYS.completed, completedIds),
@@ -152,6 +155,7 @@ function Academy({ course }) {
   // Banor man testat sig förbi. De sparas bland de klara id:na.
   const passedTrackIds = passedTrackIdsFrom(completedIds, TRACKS);
   const growth = getGrowth(TRACKS, LESSONS, completedIds, passedTrackIds);
+  const completion = courseCompletion(TRACKS, LESSONS, completedIds);
   const statusFor = (ids, passed) =>
     Object.fromEntries(
       TRACKS.map(item => [item.id, trackProgress(item, LESSONS, ids, passed)]),
@@ -423,6 +427,15 @@ function Academy({ course }) {
             >
               Fortsätt träna →
             </button>
+            {completion.isComplete && (
+              <button
+                className="primary-button diploma-button"
+                type="button"
+                onClick={() => setShowDiploma(true)}
+              >
+                🎓 Hämta ditt diplom
+              </button>
+            )}
             {!trackStatusById[TRACKS[0].id].isComplete && (
               <button
                 className="quiz-start"
@@ -539,6 +552,16 @@ function Academy({ course }) {
           }
           onFinish={handleQuizFinish}
           onClose={handleQuizClose}
+        />
+      )}
+      {showDiploma && (
+        <DiplomaDialog
+          kind="course"
+          subject={course.id}
+          title={`kursen ${course.name}`}
+          details={courseDiplomaDetails(course, completion)}
+          account={account}
+          onClose={() => setShowDiploma(false)}
         />
       )}
       {celebration && !activeQuiz && (

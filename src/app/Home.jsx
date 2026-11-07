@@ -7,9 +7,12 @@ import {
   readJson,
   writeJson,
 } from '../core/lib/storage';
+import { fetchMyDiplomas } from '../core/lib/diplomas';
 import { supabase } from '../core/lib/supabase';
 import { useAccount } from '../core/lib/useAccount';
 import { COURSES } from './courses';
+import { PATHS } from './paths';
+import { useCloudCompleted } from './useCloudCompleted';
 
 // Klara övningar i en kurs. Klarade tester för en bana (…-testad) och
 // projektbonusar räknas inte som övningar.
@@ -19,31 +22,21 @@ const lessonCount = ids =>
 const localIds = course =>
   readJson(progressKeys(course.storagePrefix).completed, [], isStringList);
 
-// Klara id:n per kurs i kontot ({ python: […] }), eller null tills de
-// hämtats. Utan inloggning finns inget att hämta.
-function useCloudCompleted(userId) {
-  const [saved, setSaved] = useState({ userId: null, byCourse: {} });
-
+// Diplomen i kontot, eller [] utan inloggning.
+function useMyDiplomas(userId) {
+  const [saved, setSaved] = useState({ userId: null, diplomas: [] });
   useEffect(() => {
     if (!supabase || !userId) return;
     let ignore = false;
-    supabase
-      .from('course_progress')
-      .select('course_id, completed_ids')
-      .eq('user_id', userId)
-      .then(({ data, error }) => {
-        if (ignore) return;
-        const byCourse = Object.fromEntries(
-          (error ? [] : data).map(row => [row.course_id, row.completed_ids]),
-        );
-        setSaved({ userId, byCourse, error: Boolean(error) });
-      });
+    fetchMyDiplomas().then(
+      diplomas => !ignore && setSaved({ userId, diplomas }),
+      () => !ignore && setSaved({ userId, diplomas: [] }),
+    );
     return () => {
       ignore = true;
     };
   }, [userId]);
-
-  return saved.userId === userId ? saved : null;
+  return saved.userId === userId ? saved.diplomas : [];
 }
 
 function CourseCard({ course, done }) {
@@ -73,6 +66,7 @@ function CourseCard({ course, done }) {
 export default function Home() {
   const account = useAccount();
   const cloud = useCloudCompleted(account.user?.id ?? null);
+  const diplomas = useMyDiplomas(account.user?.id ?? null);
   // Ökar vid utloggning, så att räkningen läses om från webbläsaren
   // efter att den tömts.
   const [, setSignOuts] = useState(0);
@@ -144,6 +138,40 @@ export default function Home() {
             </ul>
           </section>
         )}
+        {diplomas.length > 0 && (
+          <section aria-labelledby="diplomas-title">
+            <h2 id="diplomas-title">Mina diplom</h2>
+            <ul className="diploma-links">
+              {diplomas.map(diploma => (
+                <li key={`diploma-${diploma.id}`}>
+                  <a href={`${import.meta.env.BASE_URL}diplom/${diploma.id}`}>
+                    🎓 {diploma.details.icon} {diploma.details.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        <section aria-labelledby="paths-title">
+          <h2 id="paths-title">Spår</h2>
+          <ul className="course-cards">
+            {PATHS.map(path => (
+              <li key={`path-${path.id}`}>
+                <a
+                  className="course-card"
+                  href={`${import.meta.env.BASE_URL}spar#${path.id}`}
+                >
+                  <span className="course-icon" aria-hidden="true">
+                    {path.icon}
+                  </span>
+                  <strong>{path.title}</strong>
+                  <span className="muted">{path.summary}</span>
+                  <span className="course-progress">Se spåret →</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
         {more.length > 0 && (
           <section aria-labelledby="more-title">
             {mine.length > 0 && <h2 id="more-title">Fler kurser</h2>}

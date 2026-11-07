@@ -1,7 +1,7 @@
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { courseFromPath } from './courses';
-import Home from './Home';
+import { courseFromPath, pathParts } from './courses';
+import Page from './Page';
 import '../core/index.css';
 import '../core/App.css';
 
@@ -10,6 +10,10 @@ import '../core/App.css';
 // ingen router. Kursen och kärnan laddas först när en kurs öppnas, så
 // att startsidan går snabbt.
 const entry = courseFromPath(window.location.pathname);
+const [page, code] = pathParts(window.location.pathname);
+
+const TITLES = { diplom: 'Diplom – Kodskolan', spar: 'Spår – Kodskolan' };
+if (!entry && TITLES[page]) document.title = TITLES[page];
 
 const Course =
   entry &&
@@ -30,7 +34,9 @@ createRoot(document.getElementById('root')).render(
         <Course />
       </Suspense>
     ) : (
-      <Home />
+      <Suspense fallback={<p className="course-loading">Laddar…</p>}>
+        <Page page={page} code={code} />
+      </Suspense>
     )}
   </StrictMode>,
 );
