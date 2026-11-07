@@ -43,4 +43,62 @@ export const QUIZ = {
         'Två lika namn ger AssertionError: View function mapping is overwriting …',
     },
   ],
+  vagar: [
+    {
+      question:
+        "Vad får parametern namn för värde vid anrop till /hej/Ada med @app.get('/hej/<namn>')?",
+      options: ["'Ada'", "'/hej/Ada'", "'<namn>'", 'None'],
+      explain: 'Det som står på variabelns plats i adressen blir parametern.',
+    },
+    {
+      question: 'Vad svarar appen på /dubbla/fyra?',
+      code: "from flask import Flask\n\napp = Flask(__name__)\n\n@app.get('/dubbla/<int:tal>')\ndef dubbla(tal):\n    return str(tal * 2)",
+      check: "__get('/dubbla/fyra').status",
+      options: ['404', '200', '500', '400'],
+      explain: 'fyra är inget heltal, så vägen matchar inte.',
+    },
+    {
+      question: "Vad ger url_for('hund', nr=2) om vägen är /hund/<int:nr>?",
+      options: ["'/hund/2'", "'hund'", "'/hund/<int:nr>'", "'2'"],
+      explain: 'url_for bygger adressen utifrån funktionens namn och värdena.',
+    },
+    {
+      question: 'Vad svarar appen?',
+      code: "from flask import Flask\n\napp = Flask(__name__)\n\n@app.get('/hej')\n@app.get('/hej/<namn>')\ndef hej(namn='du'):\n    return f'Hej {namn}!'",
+      check: "__get('/hej').text",
+      options: ['Hej du!', 'Hej namn!', 'Hej !', '404'],
+      explain: 'Utan namn i adressen används standardvärdet.',
+    },
+  ],
+  json: [
+    {
+      question: 'Vad blir svaret om vägfunktionen returnerar en dictionary?',
+      options: ['JSON', 'HTML', 'Text med Pythons utskrift', 'Ett fel'],
+      explain: 'Flask gör om dict och list till JSON själv.',
+    },
+    {
+      question: 'Vilken statuskod får svaret?',
+      code: "from flask import Flask\n\napp = Flask(__name__)\n\n@app.get('/')\ndef start():\n    return {'fel': 'Finns inte'}, 404",
+      check: "__get('/').status",
+      options: ['404', '200', '500', '201'],
+      explain: 'Det andra värdet efter kommat är statuskoden.',
+    },
+    {
+      question: 'Vad händer om en vägfunktion inte returnerar något?',
+      options: [
+        'Flask kraschar: did not return a valid response',
+        'Svaret blir tomt med 200',
+        'Svaret blir 404',
+        'Flask returnerar None som JSON',
+      ],
+      explain: 'Python returnerar None, och det kan Flask inte skicka.',
+    },
+    {
+      question: 'Vad är typen på svaret?',
+      code: "from flask import Flask\n\napp = Flask(__name__)\n\n@app.get('/')\ndef start():\n    return ['a', 'b']",
+      check: "__get('/').typ",
+      options: ['application/json', 'text/html', 'text/plain', 'list'],
+      explain: 'En lista blir också JSON.',
+    },
+  ],
 };

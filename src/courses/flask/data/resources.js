@@ -17,4 +17,28 @@ export const RESOURCES = {
       video: 'http status codes explained',
     },
   ],
+  vagar: [
+    {
+      topic: 'Variabler i adressen',
+      read: `${QUICK}#variable-rules`,
+      video: 'flask url variables routes tutorial',
+    },
+    {
+      topic: 'url_for',
+      read: `${QUICK}#url-building`,
+      video: 'flask url_for explained',
+    },
+  ],
+  json: [
+    {
+      topic: 'API:er med JSON',
+      read: `${QUICK}#apis-with-json`,
+      video: 'flask json api tutorial',
+    },
+    {
+      topic: 'Vad är JSON?',
+      read: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON',
+      video: 'vad är json',
+    },
+  ],
 };
