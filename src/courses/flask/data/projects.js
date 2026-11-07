@@ -743,6 +743,546 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-bokhandel',
+    track: 'fragor',
+    title: 'Bokhandelns sök',
+    reward: { emoji: '📚', name: 'Bokhög' },
+    summary: 'Sök bland böckerna på författare och pris.',
+    steps: [
+      {
+        title: 'Författare',
+        why: 'None betyder att frågan saknas. Då kommer alla böcker med.',
+        xp: 15,
+        description: 'Sök på författare.',
+        task: 'Uppgift: Skapa `/bocker` som svarar med titlarna, bara för `?forfattare=` om den finns.',
+        starterCode:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nbocker = [\n    {'titel': 'Mio min Mio', 'forfattare': 'Lindgren', 'pris': 129},\n    {'titel': 'Ronja Rövardotter', 'forfattare': 'Lindgren', 'pris': 149},\n    {'titel': 'Mumintrollet', 'forfattare': 'Jansson', 'pris': 99},\n    {'titel': 'Röda rummet', 'forfattare': 'Strindberg', 'pris': 79},\n]\n",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nbocker = [\n    {'titel': 'Mio min Mio', 'forfattare': 'Lindgren', 'pris': 129},\n    {'titel': 'Ronja Rövardotter', 'forfattare': 'Lindgren', 'pris': 149},\n    {'titel': 'Mumintrollet', 'forfattare': 'Jansson', 'pris': 99},\n    {'titel': 'Röda rummet', 'forfattare': 'Strindberg', 'pris': 79},\n]\n\n\n@app.get('/bocker')\ndef sok():\n    forfattare = request.args.get('forfattare')\n    urval = [b for b in bocker if forfattare is None or b['forfattare'] == forfattare]\n    return [b['titel'] for b in urval]\n",
+        hints: [
+          "forfattare = request.args.get('forfattare')",
+          "forfattare is None or b['forfattare'] == forfattare",
+          "return [b['titel'] for b in urval]",
+        ],
+        tests: [
+          {
+            description: 'Lindgren',
+            code: "__get('/bocker?forfattare=Lindgren').json",
+            expected: ['Mio min Mio', 'Ronja Rövardotter'],
+          },
+          {
+            description: 'Alla',
+            code: "len(__get('/bocker').json)",
+            expected: 4,
+          },
+        ],
+        request: { path: '/bocker?forfattare=Lindgren' },
+      },
+      {
+        title: 'Maxpris',
+        why: 'type=int gör om priset till ett tal. Ett stort standardvärde gör att alla böcker kommer med när frågan saknas.',
+        xp: 15,
+        description: 'Inget dyrare än …',
+        task: 'Uppgift: Lägg till `?maxpris=` (heltal) så att bara böcker som kostar högst så mycket kommer med.',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nbocker = [\n    {'titel': 'Mio min Mio', 'forfattare': 'Lindgren', 'pris': 129},\n    {'titel': 'Ronja Rövardotter', 'forfattare': 'Lindgren', 'pris': 149},\n    {'titel': 'Mumintrollet', 'forfattare': 'Jansson', 'pris': 99},\n    {'titel': 'Röda rummet', 'forfattare': 'Strindberg', 'pris': 79},\n]\n\n\n@app.get('/bocker')\ndef sok():\n    forfattare = request.args.get('forfattare')\n    maxpris = request.args.get('maxpris', 10000, type=int)\n    urval = [b for b in bocker if (forfattare is None or b['forfattare'] == forfattare) and b['pris'] <= maxpris]\n    return [b['titel'] for b in urval]\n",
+        hints: [
+          "request.args.get('maxpris', 10000, type=int)",
+          "and b['pris'] <= maxpris",
+          'Båda villkoren i samma comprehension.',
+        ],
+        tests: [
+          {
+            description: 'Under 100',
+            code: "__get('/bocker?maxpris=100').json",
+            expected: ['Mumintrollet', 'Röda rummet'],
+          },
+          {
+            description: 'Lindgren under 140',
+            code: "__get('/bocker?forfattare=Lindgren&maxpris=140').json",
+            expected: ['Mio min Mio'],
+          },
+        ],
+        request: { path: '/bocker?maxpris=100' },
+      },
+      {
+        title: 'Sortering',
+        why: '400 säger att anropet är fel, och felmeddelandet säger vad som är tillåtet.',
+        xp: 20,
+        description: 'Sortera på titel eller pris.',
+        task: "Uppgift: Lägg till `?sortera=` (`'titel'` som standard, eller `'pris'`). Annat ger `{'fel': 'Sortera på titel eller pris'}` med 400.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nbocker = [\n    {'titel': 'Mio min Mio', 'forfattare': 'Lindgren', 'pris': 129},\n    {'titel': 'Ronja Rövardotter', 'forfattare': 'Lindgren', 'pris': 149},\n    {'titel': 'Mumintrollet', 'forfattare': 'Jansson', 'pris': 99},\n    {'titel': 'Röda rummet', 'forfattare': 'Strindberg', 'pris': 79},\n]\n\n\n@app.get('/bocker')\ndef sok():\n    forfattare = request.args.get('forfattare')\n    maxpris = request.args.get('maxpris', 10000, type=int)\n    urval = [b for b in bocker if (forfattare is None or b['forfattare'] == forfattare) and b['pris'] <= maxpris]\n    falt = request.args.get('sortera', 'titel')\n    if falt not in ('titel', 'pris'):\n        return {'fel': 'Sortera på titel eller pris'}, 400\n    return [b['titel'] for b in sorted(urval, key=lambda b: b[falt])]\n",
+        hints: [
+          "falt = request.args.get('sortera', 'titel')",
+          "if falt not in ('titel', 'pris'):",
+          'sorted(urval, key=lambda b: b[falt])',
+        ],
+        tests: [
+          {
+            description: 'Efter pris',
+            code: "__get('/bocker?sortera=pris').json",
+            expected: [
+              'Röda rummet',
+              'Mumintrollet',
+              'Mio min Mio',
+              'Ronja Rövardotter',
+            ],
+          },
+          {
+            description: 'Efter år',
+            code: "__get('/bocker?sortera=ar').status",
+            expected: 400,
+          },
+        ],
+        request: { path: '/bocker?sortera=pris' },
+      },
+    ],
+  },
+  {
+    id: 'proj-receptsok',
+    track: 'fragor',
+    title: 'Receptsöket',
+    reward: { emoji: '🥞', name: 'Pannkaka' },
+    summary: 'Hitta recept på det som finns i kylen.',
+    steps: [
+      {
+        title: 'Ingrediens',
+        why: 'in kollar om ingrediensen finns i receptets lista.',
+        xp: 15,
+        description: 'Vad kan jag laga med ägg?',
+        task: 'Uppgift: Skapa `/recept` som svarar med namnen på recepten som har `?ingrediens=`, eller alla.',
+        starterCode:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nrecept = [\n    {'namn': 'Pannkakor', 'ingredienser': ['mjöl', 'mjölk', 'ägg'], 'vego': True},\n    {'namn': 'Köttbullar', 'ingredienser': ['färs', 'ägg', 'lök'], 'vego': False},\n    {'namn': 'Tomatsoppa', 'ingredienser': ['tomat', 'lök'], 'vego': True},\n]\n",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nrecept = [\n    {'namn': 'Pannkakor', 'ingredienser': ['mjöl', 'mjölk', 'ägg'], 'vego': True},\n    {'namn': 'Köttbullar', 'ingredienser': ['färs', 'ägg', 'lök'], 'vego': False},\n    {'namn': 'Tomatsoppa', 'ingredienser': ['tomat', 'lök'], 'vego': True},\n]\n\n\n@app.get('/recept')\ndef sok():\n    ingrediens = request.args.get('ingrediens')\n    urval = [r for r in recept if ingrediens is None or ingrediens in r['ingredienser']]\n    return [r['namn'] for r in urval]\n",
+        hints: [
+          "request.args.get('ingrediens')",
+          "ingrediens in r['ingredienser']",
+          "return [r['namn'] for r in urval]",
+        ],
+        tests: [
+          {
+            description: 'Ägg',
+            code: "__get('/recept?ingrediens=ägg').json",
+            expected: ['Pannkakor', 'Köttbullar'],
+          },
+          {
+            description: 'Alla',
+            code: "len(__get('/recept').json)",
+            expected: 3,
+          },
+        ],
+        request: { path: '/recept?ingrediens=lök' },
+      },
+      {
+        title: 'Vegetariskt',
+        why: '?vego=1 är ett vanligt sätt att skicka sant eller falskt i en adress.',
+        xp: 15,
+        description: 'Bara vegetariskt.',
+        task: 'Uppgift: Med `?vego=1` ska bara vegetariska recept komma med.',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nrecept = [\n    {'namn': 'Pannkakor', 'ingredienser': ['mjöl', 'mjölk', 'ägg'], 'vego': True},\n    {'namn': 'Köttbullar', 'ingredienser': ['färs', 'ägg', 'lök'], 'vego': False},\n    {'namn': 'Tomatsoppa', 'ingredienser': ['tomat', 'lök'], 'vego': True},\n]\n\n\n@app.get('/recept')\ndef sok():\n    ingrediens = request.args.get('ingrediens')\n    urval = [r for r in recept if ingrediens is None or ingrediens in r['ingredienser']]\n    if request.args.get('vego', 0, type=int) == 1:\n        urval = [r for r in urval if r['vego']]\n    return [r['namn'] for r in urval]\n",
+        hints: [
+          "request.args.get('vego', 0, type=int)",
+          '== 1',
+          "urval = [r for r in urval if r['vego']]",
+        ],
+        tests: [
+          {
+            description: 'Lök och vego',
+            code: "__get('/recept?ingrediens=lök&vego=1').json",
+            expected: ['Tomatsoppa'],
+          },
+        ],
+        request: { path: '/recept?vego=1' },
+      },
+      {
+        title: 'Antal',
+        why: 'antal räknas ut efter filtren, så standardvärdet är så många som blev kvar.',
+        xp: 15,
+        description: 'Bara några förslag.',
+        task: 'Uppgift: Lägg till `?antal=` som begränsar svaret.',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nrecept = [\n    {'namn': 'Pannkakor', 'ingredienser': ['mjöl', 'mjölk', 'ägg'], 'vego': True},\n    {'namn': 'Köttbullar', 'ingredienser': ['färs', 'ägg', 'lök'], 'vego': False},\n    {'namn': 'Tomatsoppa', 'ingredienser': ['tomat', 'lök'], 'vego': True},\n]\n\n\n@app.get('/recept')\ndef sok():\n    ingrediens = request.args.get('ingrediens')\n    urval = [r for r in recept if ingrediens is None or ingrediens in r['ingredienser']]\n    if request.args.get('vego', 0, type=int) == 1:\n        urval = [r for r in urval if r['vego']]\n    antal = request.args.get('antal', len(urval), type=int)\n    return [r['namn'] for r in urval[:antal]]\n",
+        hints: [
+          "request.args.get('antal', len(urval), type=int)",
+          'urval[:antal]',
+          "return [r['namn'] for r in urval[:antal]]",
+        ],
+        tests: [
+          {
+            description: 'Ett',
+            code: "__get('/recept?antal=1').json",
+            expected: ['Pannkakor'],
+          },
+        ],
+        request: { path: '/recept?antal=2' },
+      },
+    ],
+  },
+  {
+    id: 'proj-sidnumrering',
+    track: 'fragor',
+    title: 'Sidnumreringen',
+    reward: { emoji: '📄', name: 'Pappersark' },
+    summary: 'Dela upp en lång lista i sidor, som riktiga API:er gör.',
+    steps: [
+      {
+        title: 'En sida',
+        why: '?sida=2&storlek=10 är så nästan alla API:er delar upp stora listor.',
+        xp: 15,
+        description: 'Talen 1–50, en sida i taget.',
+        task: 'Uppgift: Skapa `/tal` med `?sida=` (standard 1) och `?storlek=` (standard 10) som svarar med talen på sidan.',
+        starterCode:
+          'from flask import Flask, request\n\napp = Flask(__name__)\n\ntal = list(range(1, 51))\n',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\ntal = list(range(1, 51))\n\n\n@app.get('/tal')\ndef sida():\n    nr = request.args.get('sida', 1, type=int)\n    storlek = request.args.get('storlek', 10, type=int)\n    start = (nr - 1) * storlek\n    return tal[start:start + storlek]\n",
+        hints: [
+          "request.args.get('sida', 1, type=int)",
+          'start = (nr - 1) * storlek',
+          'return tal[start:start + storlek]',
+        ],
+        tests: [
+          {
+            description: 'Sida 2',
+            code: "__get('/tal?sida=2&storlek=5').json",
+            expected: [6, 7, 8, 9, 10],
+          },
+          {
+            description: 'Standard',
+            code: "__get('/tal').json",
+            expected: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          },
+        ],
+        request: { path: '/tal?sida=2&storlek=5' },
+      },
+      {
+        title: 'Hur många sidor?',
+        why: 'Med antalet sidor i svaret vet appen när den ska sluta visa en Nästa-knapp.',
+        xp: 15,
+        description: 'Svaret säger också hur många sidor det finns.',
+        task: "Uppgift: Svara med `{'sida': …, 'av': …, 'tal': […]}`.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\ntal = list(range(1, 51))\n\n\n@app.get('/tal')\ndef sida():\n    nr = request.args.get('sida', 1, type=int)\n    storlek = request.args.get('storlek', 10, type=int)\n    start = (nr - 1) * storlek\n    antal_sidor = (len(tal) + storlek - 1) // storlek\n    return {'sida': nr, 'av': antal_sidor, 'tal': tal[start:start + storlek]}\n",
+        hints: [
+          '(len(tal) + storlek - 1) // storlek avrundar uppåt.',
+          "{'sida': nr, 'av': antal_sidor, 'tal': …}",
+          'Returnera dictionaryn.',
+        ],
+        tests: [
+          {
+            description: 'Sida 1 av 7',
+            code: "__get('/tal?storlek=8').json['av']",
+            expected: 7,
+          },
+        ],
+        request: { path: '/tal?storlek=8' },
+      },
+      {
+        title: 'Ogiltig sida',
+        why: 'Sidan 0 eller storleken 0 är ett fel i anropet, inte i appen. Därför 400.',
+        xp: 15,
+        description: 'Sidan 0 finns inte.',
+        task: "Uppgift: `sida` eller `storlek` under 1 ger `{'fel': 'sida och storlek ska vara minst 1'}` med 400.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\ntal = list(range(1, 51))\n\n\n@app.get('/tal')\ndef sida():\n    nr = request.args.get('sida', 1, type=int)\n    storlek = request.args.get('storlek', 10, type=int)\n    if nr < 1 or storlek < 1:\n        return {'fel': 'sida och storlek ska vara minst 1'}, 400\n    start = (nr - 1) * storlek\n    antal_sidor = (len(tal) + storlek - 1) // storlek\n    return {'sida': nr, 'av': antal_sidor, 'tal': tal[start:start + storlek]}\n",
+        hints: [
+          'Kolla innan du räknar.',
+          'if nr < 1 or storlek < 1:',
+          "return {'fel': …}, 400",
+        ],
+        tests: [
+          {
+            description: 'Sida 0',
+            code: "__get('/tal?sida=0').status",
+            expected: 400,
+          },
+          {
+            description: 'Storlek 0',
+            code: "__get('/tal?storlek=0').status",
+            expected: 400,
+          },
+        ],
+        request: { path: '/tal?sida=0' },
+      },
+    ],
+  },
+  {
+    id: 'proj-gastbok',
+    track: 'skicka',
+    title: 'Gästboken',
+    reward: { emoji: '📖', name: 'Gästbok' },
+    summary: 'En gästbok där besökare lämnar ett meddelande.',
+    steps: [
+      {
+        title: 'Skriv',
+        why: 'POST skapar något nytt, och 201 med det nya inlägget säger att det gick.',
+        xp: 15,
+        description: 'Lämna ett inlägg.',
+        task: "Uppgift: Skapa `@app.post('/inlagg')` som sparar `{'id', 'namn', 'text'}` och svarar med det och 201.",
+        starterCode:
+          'from flask import Flask, request\n\napp = Flask(__name__)\n\ninlagg = []\n',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\ninlagg = []\n\n\n@app.post('/inlagg')\ndef skriv():\n    data = request.get_json()\n    nytt = {'id': len(inlagg) + 1, 'namn': data['namn'], 'text': data['text']}\n    inlagg.append(nytt)\n    return nytt, 201\n",
+        hints: [
+          'data = request.get_json()',
+          "nytt = {'id': len(inlagg) + 1, 'namn': data['namn'], 'text': data['text']}",
+          'inlagg.append(nytt)\n    return nytt, 201',
+        ],
+        tests: [
+          {
+            description: 'Ett inlägg',
+            code: "__post('/inlagg', {'namn': 'Ada', 'text': 'Hej!'}).json",
+            expected: { id: 1, namn: 'Ada', text: 'Hej!' },
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/inlagg',
+          body: '{"namn": "Ada", "text": "Hej!"}',
+        },
+      },
+      {
+        title: 'Läs',
+        why: 'Samma adress med GET läser det som POST har sparat.',
+        xp: 15,
+        description: 'Visa alla inlägg.',
+        task: "Uppgift: Skapa `@app.get('/inlagg')`.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\ninlagg = []\n\n\n@app.post('/inlagg')\ndef skriv():\n    data = request.get_json()\n    nytt = {'id': len(inlagg) + 1, 'namn': data['namn'], 'text': data['text']}\n    inlagg.append(nytt)\n    return nytt, 201\n\n\n@app.get('/inlagg')\ndef las():\n    return inlagg\n",
+        hints: ["@app.get('/inlagg')", 'Returnera listan.', 'return inlagg'],
+        tests: [
+          {
+            description: 'Skriv och läs',
+            code: "(__post('/inlagg', {'namn': 'Bo', 'text': 'Kul'}), len(__get('/inlagg').json))[-1]",
+            expected: 1,
+            inputs: [],
+          },
+        ],
+        request: { path: '/inlagg' },
+      },
+      {
+        title: 'Max 140 tecken',
+        why: 'En gräns gör att ingen kan fylla gästboken med en roman. Kontrollen sker innan något sparas.',
+        xp: 20,
+        description: 'Inlägg ska vara korta.',
+        task: "Uppgift: En text som saknas, är tom eller längre än 140 tecken ger `{'fel': 'text ska vara 1–140 tecken'}` med 400.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\ninlagg = []\n\n\n@app.post('/inlagg')\ndef skriv():\n    data = request.get_json()\n    text = data.get('text', '')\n    if not text or len(text) > 140:\n        return {'fel': 'text ska vara 1–140 tecken'}, 400\n    nytt = {'id': len(inlagg) + 1, 'namn': data['namn'], 'text': data['text']}\n    inlagg.append(nytt)\n    return nytt, 201\n\n\n@app.get('/inlagg')\ndef las():\n    return inlagg\n",
+        hints: [
+          "text = data.get('text', '')",
+          'if not text or len(text) > 140:',
+          "return {'fel': 'text ska vara 1–140 tecken'}, 400",
+        ],
+        tests: [
+          {
+            description: 'För långt',
+            code: "__post('/inlagg', {'namn': 'A', 'text': 'x' * 141}).status",
+            expected: 400,
+            inputs: [],
+          },
+          {
+            description: 'Tomt',
+            code: "__post('/inlagg', {'namn': 'A', 'text': ''}).status",
+            expected: 400,
+            inputs: [],
+          },
+          {
+            description: 'Inget sparas',
+            code: "(__post('/inlagg', {'namn': 'A'}), len(inlagg))[-1]",
+            expected: 0,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/inlagg',
+          body: '{"namn": "Ada", "text": ""}',
+        },
+      },
+    ],
+  },
+  {
+    id: 'proj-omrostning',
+    track: 'skicka',
+    title: 'Omröstningen',
+    reward: { emoji: '🗳️', name: 'Valurna' },
+    summary: 'Rösta på kaféets nya dryck.',
+    steps: [
+      {
+        title: 'Rösta',
+        why: 'Bara de tre alternativen räknas. Ett okänt val är ett fel i anropet, så 400.',
+        xp: 15,
+        description: 'Ta emot en röst.',
+        task: "Uppgift: Skapa `@app.post('/rosta')` som tar `{'val': 'te'}`, räknar rösten och svarar `{'tack': 'te'}`. Okända val ger `{'fel': 'Okänt val'}` med 400.",
+        starterCode:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nroster = {'kaffe': 0, 'te': 0, 'choklad': 0}\n",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nroster = {'kaffe': 0, 'te': 0, 'choklad': 0}\n\n\n@app.post('/rosta')\ndef rosta():\n    val = request.get_json().get('val')\n    if val not in roster:\n        return {'fel': 'Okänt val'}, 400\n    roster[val] += 1\n    return {'tack': val}\n",
+        hints: [
+          "val = request.get_json().get('val')",
+          'if val not in roster:',
+          'roster[val] += 1',
+        ],
+        tests: [
+          {
+            description: 'En röst',
+            code: "__post('/rosta', {'val': 'te'}).json",
+            expected: { tack: 'te' },
+            inputs: [],
+          },
+          {
+            description: 'Okänt',
+            code: "__post('/rosta', {'val': 'öl'}).status",
+            expected: 400,
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/rosta', body: '{"val": "te"}' },
+      },
+      {
+        title: 'Resultatet',
+        why: 'GET läser det POST har ändrat. Rösterna finns kvar så länge appen kör.',
+        xp: 10,
+        description: 'Visa rösterna.',
+        task: "Uppgift: Skapa `@app.get('/resultat')`.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nroster = {'kaffe': 0, 'te': 0, 'choklad': 0}\n\n\n@app.post('/rosta')\ndef rosta():\n    val = request.get_json().get('val')\n    if val not in roster:\n        return {'fel': 'Okänt val'}, 400\n    roster[val] += 1\n    return {'tack': val}\n\n\n@app.get('/resultat')\ndef resultat():\n    return roster\n",
+        hints: ["@app.get('/resultat')", 'Returnera roster.', 'return roster'],
+        tests: [
+          {
+            description: 'Två för te',
+            code: "(__post('/rosta', {'val': 'te'}), __post('/rosta', {'val': 'te'}), __get('/resultat').json['te'])[-1]",
+            expected: 2,
+            inputs: [],
+          },
+        ],
+        request: { path: '/resultat' },
+      },
+      {
+        title: 'Vinnaren',
+        why: 'max med key=roster.get ger nyckeln med flest röster.',
+        xp: 15,
+        description: 'Vem leder?',
+        task: "Uppgift: Skapa `@app.get('/vinnare')` som svarar `{'vinnare': …}`.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nroster = {'kaffe': 0, 'te': 0, 'choklad': 0}\n\n\n@app.post('/rosta')\ndef rosta():\n    val = request.get_json().get('val')\n    if val not in roster:\n        return {'fel': 'Okänt val'}, 400\n    roster[val] += 1\n    return {'tack': val}\n\n\n@app.get('/resultat')\ndef resultat():\n    return roster\n\n\n@app.get('/vinnare')\ndef vinnare():\n    return {'vinnare': max(roster, key=roster.get)}\n",
+        hints: [
+          'max(roster, key=roster.get)',
+          "@app.get('/vinnare')",
+          "return {'vinnare': max(roster, key=roster.get)}",
+        ],
+        tests: [
+          {
+            description: 'Choklad vinner',
+            code: "(__post('/rosta', {'val': 'choklad'}), __get('/vinnare').json)[-1]",
+            expected: { vinnare: 'choklad' },
+            inputs: [],
+          },
+        ],
+        request: { path: '/vinnare' },
+      },
+    ],
+  },
+  {
+    id: 'proj-attgora',
+    track: 'skicka',
+    title: 'Att göra-listan',
+    reward: { emoji: '✅', name: 'Bock' },
+    summary: 'Ett API för en att göra-lista.',
+    steps: [
+      {
+        title: 'Ny uppgift',
+        why: 'Den nya uppgiften är aldrig klar, så klar sätts av appen och inte av den som skickar.',
+        xp: 15,
+        description: 'Lägg till en uppgift.',
+        task: "Uppgift: Skapa `@app.post('/uppgifter')` som tar `{'text': …}`, sparar `{'id', 'text', 'klar': False}` och svarar med 201. Saknas text: `{'fel': 'text saknas'}` med 400.",
+        starterCode:
+          'from flask import Flask, request\n\napp = Flask(__name__)\n\nuppgifter = []\n',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nuppgifter = []\n\n\n@app.post('/uppgifter')\ndef ny():\n    text = request.get_json().get('text')\n    if not text:\n        return {'fel': 'text saknas'}, 400\n    uppgift = {'id': len(uppgifter) + 1, 'text': text, 'klar': False}\n    uppgifter.append(uppgift)\n    return uppgift, 201\n",
+        hints: [
+          "text = request.get_json().get('text')",
+          "{'id': len(uppgifter) + 1, 'text': text, 'klar': False}",
+          'return uppgift, 201',
+        ],
+        tests: [
+          {
+            description: 'Ny',
+            code: "__post('/uppgifter', {'text': 'Handla'}).json",
+            expected: { id: 1, text: 'Handla', klar: false },
+            inputs: [],
+          },
+          {
+            description: 'Utan text',
+            code: "__post('/uppgifter', {}).status",
+            expected: 400,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/uppgifter',
+          body: '{"text": "Handla"}',
+        },
+      },
+      {
+        title: 'Listan',
+        why: 'Alla uppgifter, klara och oklara, med samma adress som POST.',
+        xp: 10,
+        description: 'Visa listan.',
+        task: "Uppgift: Skapa `@app.get('/uppgifter')`.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nuppgifter = []\n\n\n@app.post('/uppgifter')\ndef ny():\n    text = request.get_json().get('text')\n    if not text:\n        return {'fel': 'text saknas'}, 400\n    uppgift = {'id': len(uppgifter) + 1, 'text': text, 'klar': False}\n    uppgifter.append(uppgift)\n    return uppgift, 201\n\n\n@app.get('/uppgifter')\ndef lista():\n    return uppgifter\n",
+        hints: [
+          "@app.get('/uppgifter')",
+          'Returnera listan.',
+          'return uppgifter',
+        ],
+        tests: [
+          {
+            description: 'En uppgift',
+            code: "(__post('/uppgifter', {'text': 'Städa'}), len(__get('/uppgifter').json))[-1]",
+            expected: 1,
+            inputs: [],
+          },
+        ],
+        request: { path: '/uppgifter' },
+      },
+      {
+        title: 'Klar',
+        why: 'Att markera något som klart ändrar data, så det är en POST. 404 när id:t inte finns.',
+        xp: 20,
+        description: 'Bocka av en uppgift.',
+        task: "Uppgift: Skapa `@app.post('/uppgifter/<int:id>/klar')` som sätter `klar` till True och svarar med uppgiften, eller 404.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nuppgifter = []\n\n\n@app.post('/uppgifter')\ndef ny():\n    text = request.get_json().get('text')\n    if not text:\n        return {'fel': 'text saknas'}, 400\n    uppgift = {'id': len(uppgifter) + 1, 'text': text, 'klar': False}\n    uppgifter.append(uppgift)\n    return uppgift, 201\n\n\n@app.get('/uppgifter')\ndef lista():\n    return uppgifter\n\n\n@app.post('/uppgifter/<int:id>/klar')\ndef klar(id):\n    for uppgift in uppgifter:\n        if uppgift['id'] == id:\n            uppgift['klar'] = True\n            return uppgift\n    return {'fel': 'Finns inte'}, 404\n",
+        hints: [
+          "@app.post('/uppgifter/<int:id>/klar')",
+          "uppgift['klar'] = True",
+          "return {'fel': 'Finns inte'}, 404",
+        ],
+        tests: [
+          {
+            description: 'Klar',
+            code: "(__post('/uppgifter', {'text': 'Diska'}), __post('/uppgifter/1/klar').json['klar'])[-1]",
+            expected: true,
+            inputs: [],
+          },
+          {
+            description: 'Finns inte',
+            code: "__post('/uppgifter/9/klar').status",
+            expected: 404,
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/uppgifter/1/klar' },
+      },
+    ],
+  },
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `# ${text}`);

@@ -101,4 +101,74 @@ export const QUIZ = {
       explain: 'En lista blir också JSON.',
     },
   ],
+  fragor: [
+    {
+      question: 'Vad är q i adressen /sok?q=ada?',
+      options: [
+        'En fråga till appen, som läses med request.args',
+        'En del av vägen',
+        'Ett fel',
+        'Ett id',
+      ],
+      explain: 'Allt efter ? är frågor: namn och värden, åtskilda med &.',
+    },
+    {
+      question: "Vad ger request.args.get('nr', 1, type=int) för /sida?nr=x?",
+      code: "from flask import Flask, request\n\napp = Flask(__name__)\n\n@app.get('/sida')\ndef sida():\n    return str(request.args.get('nr', 1, type=int))",
+      check: "__get('/sida?nr=x').text",
+      options: ['1', 'x', '0', 'Ett fel'],
+      explain:
+        'Går värdet inte att göra om till ett tal blir det standardvärdet.',
+    },
+    {
+      question: 'Vad betyder statuskoden 400?',
+      options: [
+        'Att anropet är fel',
+        'Att sidan inte finns',
+        'Att appen kraschade',
+        'Att allt gick bra',
+      ],
+      explain:
+        '400 Bad Request: den som frågar har skickat något appen inte kan använda.',
+    },
+    {
+      question: 'Vad svarar appen på /sok utan ?q=?',
+      code: "from flask import Flask, request\n\napp = Flask(__name__)\n\n@app.get('/sok')\ndef sok():\n    return request.args['q']",
+      check: "__get('/sok').status",
+      options: ['400', '200', '404', '500'],
+      explain: 'request.args[…] med hakparenteser kräver att frågan finns.',
+    },
+  ],
+  skicka: [
+    {
+      question:
+        'Vilken metod använder man för att skicka något nytt till ett API?',
+      options: ['POST', 'GET', 'DELETE', 'HEAD'],
+      explain: 'GET hämtar, POST skickar.',
+    },
+    {
+      question: 'Vilken statuskod är vanlig när något nytt har skapats?',
+      options: ['201', '200', '204', '302'],
+      explain: '201 Created, och svaret innehåller det nya.',
+    },
+    {
+      question: 'Vad svarar appen när den får ett formulär i stället för JSON?',
+      code: "from flask import Flask, request\n\napp = Flask(__name__)\n\n@app.post('/')\ndef ta_emot():\n    return request.get_json()",
+      check: "__post('/', form={'a': '1'}).status",
+      options: ['415', '400', '200', '500'],
+      explain:
+        'get_json vägrar läsa något som inte är JSON. Med silent=True blir det None i stället.',
+    },
+    {
+      question: 'Varför ska appen ge id:t och inte den som skickar?',
+      options: [
+        'Den som skickar vet inte vilka id:n som är tagna',
+        'JSON kan inte innehålla id',
+        'Det går fortare',
+        'Det spelar ingen roll',
+      ],
+      explain:
+        'Bara appen vet vad som finns, så bara den kan ge ett id som säkert är nytt.',
+    },
+  ],
 };

@@ -151,4 +151,114 @@ export const BOSSES = {
     ],
     request: { path: '/vader/Lund' },
   },
+
+  fragor: {
+    id: 'fragor-boss',
+    track: 'fragor',
+    title: 'Boss: Hundsöket',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Pensionatets app vill söka bland hundarna på flera sätt samtidigt.',
+    task: "Uppgift: Skapa `/hundar` med frågorna:\n  1. `?ras=` – bara den rasen.\n  2. `?min=` – bara hundar som är minst så gamla (heltal, standard 0).\n  3. `?sortera=` – `'namn'` eller `'alder'` (standard `'id'`). Annat ger `{'fel': 'Kan inte sortera på det'}` med 400.\n  4. `?antal=` – bara så många (standard alla).\nSvaret är en lista med namn.",
+    starterCode:
+      "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'ras': 'berner', 'alder': 4},\n    {'id': 2, 'namn': 'Saga', 'ras': 'tax', 'alder': 2},\n    {'id': 3, 'namn': 'Rufus', 'ras': 'pudel', 'alder': 7},\n    {'id': 4, 'namn': 'Sixten', 'ras': 'tax', 'alder': 5},\n]\n",
+    solution:
+      "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'ras': 'berner', 'alder': 4},\n    {'id': 2, 'namn': 'Saga', 'ras': 'tax', 'alder': 2},\n    {'id': 3, 'namn': 'Rufus', 'ras': 'pudel', 'alder': 7},\n    {'id': 4, 'namn': 'Sixten', 'ras': 'tax', 'alder': 5},\n]\n\n\n@app.get('/hundar')\ndef lista():\n    ras = request.args.get('ras')\n    minst = request.args.get('min', 0, type=int)\n    falt = request.args.get('sortera', 'id')\n    antal = request.args.get('antal', len(hundar), type=int)\n    if falt not in ('id', 'namn', 'alder'):\n        return {'fel': 'Kan inte sortera på det'}, 400\n    urval = [h for h in hundar if h['alder'] >= minst and (ras is None or h['ras'] == ras)]\n    urval = sorted(urval, key=lambda h: h[falt])\n    return [h['namn'] for h in urval[:antal]]\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Alla',
+        code: "__get('/hundar').json",
+        expected: ['Bamse', 'Saga', 'Rufus', 'Sixten'],
+      },
+      {
+        description: 'Taxar',
+        code: "__get('/hundar?ras=tax').json",
+        expected: ['Saga', 'Sixten'],
+      },
+      {
+        description: 'Minst 5',
+        code: "__get('/hundar?min=5').json",
+        expected: ['Rufus', 'Sixten'],
+      },
+      {
+        description: 'Sorterat och begränsat',
+        code: "__get('/hundar?sortera=alder&antal=2').json",
+        expected: ['Saga', 'Bamse'],
+      },
+      {
+        description: 'Allt på en gång',
+        code: "__get('/hundar?ras=tax&min=3&sortera=namn').json",
+        expected: ['Sixten'],
+      },
+      {
+        description: 'Fel sortering',
+        code: "__get('/hundar?sortera=ras').status",
+        expected: 400,
+      },
+    ],
+    request: { path: '/hundar?ras=tax&sortera=namn' },
+  },
+
+  skicka: {
+    id: 'skicka-boss',
+    track: 'skicka',
+    title: 'Boss: Anmälan',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Hundkursen tar emot anmälningar. Allt som skickas in ska kontrolleras.',
+    task: "Uppgift:\n  1. `@app.post('/anmalan')`: kontrollera att `namn` är en text som inte är tom, att `alder` är ett heltal och minst 13, och att `epost` innehåller `@`. Det första felet ger `{'fel': …}` med 400: `'namn saknas'`, `'alder ska vara ett heltal'`, `'För ung'` eller `'Ogiltig e-post'`.\n  2. En godkänd anmälan sparas i `anmalningar` med ett id (det högsta + 1) och svaras med 201.\n  3. `@app.get('/anmalan')` svarar med alla anmälningar.",
+    starterCode:
+      'from flask import Flask, request\n\napp = Flask(__name__)\n\nanmalningar = []\n',
+    solution:
+      "from flask import Flask, request\n\napp = Flask(__name__)\n\nanmalningar = []\n\n\n@app.get('/anmalan')\ndef alla():\n    return anmalningar\n\n\n@app.post('/anmalan')\ndef anmal():\n    data = request.get_json(silent=True) or {}\n    namn = data.get('namn')\n    alder = data.get('alder')\n    epost = data.get('epost', '')\n    if not isinstance(namn, str) or not namn:\n        return {'fel': 'namn saknas'}, 400\n    if not isinstance(alder, int):\n        return {'fel': 'alder ska vara ett heltal'}, 400\n    if alder < 13:\n        return {'fel': 'För ung'}, 400\n    if '@' not in epost:\n        return {'fel': 'Ogiltig e-post'}, 400\n    nytt_id = max((a['id'] for a in anmalningar), default=0) + 1\n    anmalan = {'id': nytt_id, 'namn': namn, 'alder': alder, 'epost': epost}\n    anmalningar.append(anmalan)\n    return anmalan, 201\n",
+    hints: [],
+    tests: [
+      {
+        description: 'En godkänd',
+        code: "__post('/anmalan', {'namn': 'Ada', 'alder': 15, 'epost': 'a@b.se'}).json",
+        expected: { id: 1, namn: 'Ada', alder: 15, epost: 'a@b.se' },
+        inputs: [],
+      },
+      {
+        description: 'Utan namn',
+        code: "__post('/anmalan', {'alder': 15, 'epost': 'a@b.se'}).json",
+        expected: { fel: 'namn saknas' },
+        inputs: [],
+      },
+      {
+        description: 'Fel ålder',
+        code: "__post('/anmalan', {'namn': 'Bo', 'alder': 'tolv', 'epost': 'a@b.se'}).json",
+        expected: { fel: 'alder ska vara ett heltal' },
+        inputs: [],
+      },
+      {
+        description: 'För ung',
+        code: "__post('/anmalan', {'namn': 'Bo', 'alder': 9, 'epost': 'a@b.se'}).status",
+        expected: 400,
+        inputs: [],
+      },
+      {
+        description: 'Fel e-post',
+        code: "__post('/anmalan', {'namn': 'Bo', 'alder': 20, 'epost': 'bo'}).json",
+        expected: { fel: 'Ogiltig e-post' },
+        inputs: [],
+      },
+      {
+        description: 'Två sparas',
+        code: "(__post('/anmalan', {'namn': 'A', 'alder': 20, 'epost': 'a@b'}), __post('/anmalan', {'namn': 'B', 'alder': 30, 'epost': 'b@b'}), [a['id'] for a in __get('/anmalan').json])[-1]",
+        expected: [1, 2],
+        inputs: [],
+      },
+    ],
+    request: {
+      method: 'POST',
+      path: '/anmalan',
+      body: '{"namn": "Ada", "alder": 15, "epost": "ada@exempel.se"}',
+    },
+  },
 };

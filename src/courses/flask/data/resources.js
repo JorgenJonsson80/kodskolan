@@ -41,4 +41,28 @@ export const RESOURCES = {
       video: 'vad är json',
     },
   ],
+  fragor: [
+    {
+      topic: 'request.args',
+      read: `${QUICK}#the-request-object`,
+      video: 'flask request args query parameters',
+    },
+    {
+      topic: 'Query string',
+      read: 'https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Web_mechanics/What_is_a_URL',
+      video: 'what is a query string url',
+    },
+  ],
+  skicka: [
+    {
+      topic: 'POST och JSON',
+      read: `${QUICK}#http-methods`,
+      video: 'flask post request json tutorial',
+    },
+    {
+      topic: 'Statuskoder 201 och 400',
+      read: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status',
+      video: 'http status codes 201 400 explained',
+    },
+  ],
 };
