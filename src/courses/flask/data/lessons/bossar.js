@@ -549,7 +549,7 @@ export const BOSSES = {
     sourceChecks: [
       {
         description: 'Ingen f-sträng i SQL',
-        pattern: /execute\(\s*f["\']/,
+        pattern: /execute\(\s*f["']/,
         forbidden: true,
       },
     ],
