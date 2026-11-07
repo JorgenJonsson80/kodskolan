@@ -6,6 +6,7 @@ import ast
 import builtins
 import difflib
 import json
+import os
 import sys
 import traceback
 import types
@@ -15,6 +16,9 @@ TEST_FILE = '<test>'
 # En loop som skriver ut i all evighet ska inte fylla minnet innan
 # timeouten i JavaScript hinner stoppa den.
 MAX_CHARS = 200_000
+# Andra kurser kan ge testerna fler hjälpare, t.ex. Flask-kursens __get.
+# Varje funktion får elevens namespace och svarar med ett dict.
+TEST_GLOBALS = []
 
 
 class _Capture:
@@ -531,6 +535,8 @@ class _Run:
                     # Det en Streamlit-app visade, t.ex. __shown('title').
                     self.namespace['__app'] = [[e['type'], e['text']] for e in self.app.elements]
                     self.namespace['__shown'] = self.shown
+                    for extra in TEST_GLOBALS:
+                        self.namespace.update(extra(self.namespace))
                     actual = eval(compile(test['code'], TEST_FILE, 'eval'), self.namespace)
                 entry['passed'] = _same(actual, test['expected'])
                 entry['actual'] = _jsonable(actual)
@@ -599,6 +605,8 @@ def _write_files(files_json):
     # Datafiler som övningen behöver, t.ex. en CSV till pandas. De skrivs
     # om vid varje körning, så att eleven inte kan förstöra dem.
     for name, text in json.loads(files_json or '{}').items():
+        # Flask läser mallarna från mappen templates/.
+        os.makedirs(os.path.dirname(name) or '.', exist_ok=True)
         with open(name, 'w', encoding='utf-8') as file:
             file.write(text)
 

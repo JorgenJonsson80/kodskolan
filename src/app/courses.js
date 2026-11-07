@@ -1,3 +1,4 @@
+import { meta as flask } from '../courses/flask/meta';
 import { meta as html } from '../courses/html/meta';
 import { meta as js } from '../courses/js/meta';
 import { meta as python } from '../courses/python/meta';
@@ -13,6 +14,7 @@ export const COURSES = [
   { ...js, load: () => import('../courses/js') },
   { ...sql, load: () => import('../courses/sql') },
   { ...ts, load: () => import('../courses/ts') },
+  { ...flask, load: () => import('../courses/flask') },
 ];
 
 // Kursen som adressen pekar på, t.ex. /kodskolan/python, eller null för

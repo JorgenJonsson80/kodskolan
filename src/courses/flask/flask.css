@@ -1,0 +1,132 @@
+/* Flask-kursen: 📮 Anropa och svaret. */
+
+.request-bar {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-sunken);
+}
+
+.request-bar legend {
+  padding: 0 4px;
+  font-weight: 700;
+}
+
+.request-line {
+  display: flex;
+  gap: 8px;
+}
+
+.request-line select,
+.request-line input,
+.request-body textarea {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.request-line input {
+  flex: 1;
+  min-width: 0;
+}
+
+.request-body {
+  margin-top: 8px;
+}
+
+.request-kind {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.request-body textarea {
+  width: 100%;
+  height: 5.5em;
+  min-height: 0;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.response-view {
+  margin: 12px 0;
+}
+
+.response-view h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.response-status code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.status {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 1px solid currentColor;
+}
+
+.status-2xx {
+  color: var(--success);
+}
+
+.status-3xx {
+  color: var(--accent);
+}
+
+.status-4xx {
+  color: var(--xp);
+}
+
+.status-5xx,
+.response-error {
+  color: var(--error);
+}
+
+.response-json,
+.response-text,
+.flask-files pre {
+  max-height: 320px;
+  overflow: auto;
+  margin: 6px 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-sunken);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.response-html {
+  width: 100%;
+  height: 240px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.response-routes {
+  font-size: 0.85rem;
+}
+
+.flask-files {
+  margin: 8px 0;
+}
+
+.flask-files summary {
+  cursor: pointer;
+  font-weight: 700;
+}
