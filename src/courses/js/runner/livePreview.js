@@ -40,7 +40,7 @@ function showError(container, error) {
 // onRenderEvent får veta varför komponenterna renderar, se renderTracker.
 export function startLivePreview(
   container,
-  { code, fileName, files, preview },
+  { code, fileName, files, preview, fetch },
   onRenderEvent,
 ) {
   const timers = new Set();
@@ -53,7 +53,8 @@ export function startLivePreview(
       __React: StudentReact,
       localStorage: createStorage(),
       document: { title: '' },
-      fetch: createFetch({ delay: 600 }),
+      // fetch kan bytas ut, t.ex. mot en riktig Flask-app (fullstack).
+      fetch: fetch ?? createFetch({ delay: 600 }),
       setTimeout: (callback, ms) => {
         const id = setTimeout(callback, ms);
         timers.add(id);

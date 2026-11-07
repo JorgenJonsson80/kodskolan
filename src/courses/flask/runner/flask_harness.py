@@ -191,3 +191,35 @@ def run_flask(code, tests_json, inputs_json, files_json, request_json=None):
         entry = result['tests'].pop()
         result['response'] = {'error': entry['error']} if 'error' in entry else entry.get('actual')
     return json.dumps(result)
+
+
+# --- En app som kör hela tiden (fullstack) ---
+# React-sidan i fullstack-projektet anropar appen med fetch, och appen
+# ska komma ihåg det som skickats till den mellan anropen. Därför körs
+# elevens kod en gång, och anropen går sedan till samma namespace.
+
+_served = None
+
+
+def serve_start(code, files_json='{}'):
+    global _served
+    _write_files(files_json)
+    try:
+        compiled = compile(code, STUDENT_FILE, 'exec')
+    except SyntaxError as error:
+        _served = None
+        return json.dumps({'error': _error_info(error, STUDENT_FILE)})
+    _served = _Run(compiled, [])
+    return json.dumps({'error': _served.error})
+
+
+def serve_request(request_json):
+    if _served is None or _served.error is not None:
+        return json.dumps({'status': 503, 'type': 'text/plain', 'text': 'Flask-appen kör inte'})
+    with _served:
+        try:
+            result = _anropa(_served.namespace, request_json)
+        except BaseException as error:
+            result = {'status': 500, 'type': 'text/plain', 'text': str(error),
+                      'error': _error_info(error, STUDENT_FILE, _served.namespace)}
+    return json.dumps(result, default=str)

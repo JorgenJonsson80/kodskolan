@@ -112,7 +112,10 @@ export function createPythonRunner(makeWorker) {
     return enqueue({ ...job, kind: 'step' }, timeout);
   }
 
-  return { onStatus, warmUp, runPython, stepPython };
+  // runJob: ett jobb med egen kind, som workern känner till (Flask: serve).
+  const runJob = (job, timeout = TIMEOUT_MS) => enqueue(job, timeout);
+
+  return { onStatus, warmUp, runPython, stepPython, runJob };
 }
 
 const python = createPythonRunner(

@@ -22,7 +22,11 @@ const ready = (async () => {
   wheels.forEach(wheel => pyodide.unpackArchive(wheel, 'wheel'));
   pyodide.runPython(harness);
   pyodide.runPython(flaskHarness);
-  return pyodide.globals.get('run_flask');
+  return {
+    run: pyodide.globals.get('run_flask'),
+    serveStart: pyodide.globals.get('serve_start'),
+    serveRequest: pyodide.globals.get('serve_request'),
+  };
 })();
 
 ready.then(
@@ -30,14 +34,26 @@ ready.then(
   error => postMessage({ type: 'failed', message: String(error) }),
 );
 
-onmessage = async ({ data }) => {
-  const run = await ready;
-  const json = run(
+// Fullstack: appen startas en gång och tar sedan emot anrop från
+// React-sidan (serveStart och serveRequest i flask_harness.py).
+function handle(python, data) {
+  if (data.kind === 'serveStart') {
+    return python.serveStart(data.code, JSON.stringify(data.files ?? {}));
+  }
+  if (data.kind === 'serveRequest') {
+    return python.serveRequest(JSON.stringify(data.request));
+  }
+  return python.run(
     data.code,
     JSON.stringify(data.tests ?? []),
     JSON.stringify(data.inputs ?? []),
     JSON.stringify(data.files ?? {}),
     data.request ? JSON.stringify(data.request) : null,
   );
+}
+
+onmessage = async ({ data }) => {
+  const python = await ready;
+  const json = handle(python, data);
   postMessage({ type: 'result', id: data.id, result: JSON.parse(json) });
 };
