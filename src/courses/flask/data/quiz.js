@@ -315,4 +315,84 @@ export const QUIZ = {
       explain: "Därför kollar man med 'namn' in request.form.",
     },
   ],
+  databas: [
+    {
+      question: 'Varför ska värden skickas med ? i stället för en f-sträng?',
+      options: [
+        'Så att ingen kan ändra SQL-frågan – det skyddar mot SQL-injektion',
+        'Det går fortare att skriva',
+        'f-strängar fungerar inte i Python',
+        'Databasen kräver det',
+      ],
+      explain:
+        'Med ? skickas värdet separat och kan aldrig bli en del av SQL-koden.',
+    },
+    {
+      question: 'Vad ger cur.lastrowid efter en INSERT?',
+      options: [
+        'Id:t den nya raden fick',
+        'Antalet rader',
+        'Den sista raden i tabellen',
+        'None',
+      ],
+      explain: 'Databasen ger id:t själv, och lastrowid berättar vilket.',
+    },
+    {
+      question: 'Vad är rowcount efter en UPDATE som inte hittade något?',
+      code: "import sqlite3\n\ndb = sqlite3.connect(':memory:')\ndb.execute('CREATE TABLE t (id INTEGER PRIMARY KEY, x)')\ncur = db.execute('UPDATE t SET x = 1 WHERE id = 9')",
+      check: 'cur.rowcount',
+      options: ['0', '1', '-1', 'None'],
+      explain: 'Inga rader ändrades. Det är ett enkelt sätt att svara 404.',
+    },
+    {
+      question: "Vad är fel i execute('… WHERE id = ?', (id))?",
+      options: [
+        '(id) är ingen tupel – det ska vara (id,)',
+        'Frågetecknet ska vara %s',
+        'id ska stå i citattecken',
+        'Inget',
+      ],
+      explain: 'En tupel med ett värde behöver ett komma.',
+    },
+  ],
+  felsok: [
+    {
+      question: 'Vad är det första du ska kolla när ett anrop går fel?',
+      options: [
+        'Statuskoden',
+        'Färgen på sidan',
+        'Antalet rader i koden',
+        'Pythonversionen',
+      ],
+      explain:
+        'Statuskoden säger vilken sorts fel det är: 404, 405, 400 eller 500.',
+    },
+    {
+      question: 'Vad betyder 405?',
+      options: [
+        'Vägen finns, men inte för den metoden',
+        'Vägen finns inte',
+        'Appen kraschade',
+        'Fel data skickades',
+      ],
+      explain: 'Kolla om dekoratorn är get eller post.',
+    },
+    {
+      question: 'Vilken statuskod får anropet?',
+      code: "from flask import Flask\n\napp = Flask(__name__)\n\n@app.get('/hund/<id>')\ndef hund(id):\n    return 'ja' if id == 1 else ('nej', 404)",
+      check: "__get('/hund/1').status",
+      options: ['404', '200', '500', '400'],
+      explain: "Utan int: är id texten '1', och '1' == 1 är falskt.",
+    },
+    {
+      question: 'Varför visar Jinja inget när en variabel saknas?',
+      options: [
+        'En variabel som inte skickats med blir en tom text',
+        'Jinja kraschar alltid',
+        'Variabeln får värdet None som text',
+        'Sidan blir 404',
+      ],
+      explain: 'Det kraschar inte – därför syns felet bara som en tom plats.',
+    },
+  ],
 };

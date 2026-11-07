@@ -93,6 +93,25 @@ describe('flask_harness', () => {
     expect(result.response.routes).toContainEqual(['GET POST', '/hundar']);
   });
 
+  it('hashar lösenord fast Pyodide saknar OpenSSL', () => {
+    const result = run({
+      code: `import hashlib
+from werkzeug.security import generate_password_hash, check_password_hash
+h = generate_password_hash('hemligt123')
+`,
+      tests: [
+        { code: "check_password_hash(h, 'hemligt123')", expected: true },
+        { code: "check_password_hash(h, 'fel')", expected: false },
+        {
+          code: "hashlib.pbkdf2_hmac('sha256', b'password', b'salt', 2).hex()",
+          expected:
+            'ae4d0c95af6b46d32d0adff928f06dd02a303f8ef3c251dfd6e2d85a95474c43',
+        },
+      ],
+    });
+    expect(result.tests.map(entry => entry.passed)).toEqual([true, true, true]);
+  });
+
   it('säger till om appen saknas', () => {
     const result = run({ code: 'x = 1\n', tests: [test("__get('/')")] });
     expect(result.tests[0].error.message).toMatch(/Flask-app/);

@@ -1,6 +1,8 @@
 import { API } from './api';
 import { BOSSES } from './bossar';
+import { DATABAS } from './databas';
 import { FEL } from './fel';
+import { FELSOK } from './felsok';
 import { FORMULAR } from './formular';
 import { FORSTA } from './forsta';
 import { FRAGOR } from './fragor';
@@ -30,4 +32,8 @@ export const LESSONS = [
   BOSSES.mallar,
   ...FORMULAR,
   BOSSES.formular,
+  ...DATABAS,
+  BOSSES.databas,
+  ...FELSOK,
+  BOSSES.felsok,
 ];

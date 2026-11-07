@@ -113,4 +113,28 @@ export const RESOURCES = {
       video: 'flask redirect url_for post redirect get',
     },
   ],
+  databas: [
+    {
+      topic: 'SQLite med Flask',
+      read: 'https://flask.palletsprojects.com/en/stable/patterns/sqlite3/',
+      video: 'flask sqlite3 tutorial',
+    },
+    {
+      topic: 'SQL-injektion',
+      read: 'https://docs.python.org/3/library/sqlite3.html#sqlite3-placeholders',
+      video: 'sql injection explained',
+    },
+  ],
+  felsok: [
+    {
+      topic: 'Felsöka en Flask-app',
+      read: 'https://flask.palletsprojects.com/en/stable/debugging/',
+      video: 'flask debugging tutorial',
+    },
+    {
+      topic: 'Statuskoder',
+      read: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status',
+      video: 'http status codes explained',
+    },
+  ],
 };

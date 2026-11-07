@@ -1,10 +1,50 @@
 # Körs efter Python-kursens harness.py (samma Pyodide). Elevens Flask-app
 # körs aldrig som en server. Testerna och 📮 Anropa skickar anropen direkt
 # till appen med Flasks testklient, så allt sker i webbläsaren.
+import hashlib
+import hmac
 import json
 
 import flask
+import werkzeug.security
 from werkzeug.exceptions import HTTPException
+
+# Pyodide saknar OpenSSL, och därmed hashlib.scrypt och pbkdf2_hmac som
+# Werkzeug hashar lösenord med. pbkdf2 skrivs här i ren Python, och
+# generate_password_hash använder det med färre varv, så att en inloggning
+# hinner inom tidsgränsen. Eleven skriver samma kod som i en riktig app.
+def _pbkdf2_hmac(hash_name, password, salt, iterations, dklen=None):
+    mac = hmac.new(password, digestmod=hash_name)
+    size = mac.digest_size
+    dklen = dklen or size
+    key = b''
+    block = 1
+    while len(key) < dklen:
+        first = mac.copy()
+        first.update(salt + block.to_bytes(4, 'big'))
+        u = first.digest()
+        total = int.from_bytes(u, 'big')
+        for _ in range(iterations - 1):
+            nxt = mac.copy()
+            nxt.update(u)
+            u = nxt.digest()
+            total ^= int.from_bytes(u, 'big')
+        key += total.to_bytes(size, 'big')
+        block += 1
+    return key[:dklen]
+
+
+if not hasattr(hashlib, 'pbkdf2_hmac'):
+    hashlib.pbkdf2_hmac = _pbkdf2_hmac
+
+if not hasattr(hashlib, 'scrypt'):
+    _generate_password_hash = werkzeug.security.generate_password_hash
+
+    def _generate(password, method='pbkdf2:sha256:1000', salt_length=16):
+        return _generate_password_hash(password, method, salt_length)
+
+    werkzeug.security.generate_password_hash = _generate
+
 
 # app.run() startar en riktig server, och den står och väntar för alltid.
 # Här behövs den inte, så elever som skriver den som i en riktig app ska

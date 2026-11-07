@@ -2445,6 +2445,575 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-db-gastbok',
+    track: 'databas',
+    title: 'Gästboken i databasen',
+    reward: { emoji: '🪶', name: 'Fjäderpenna' },
+    summary: 'Gästboken, men nu sparas inläggen i en tabell.',
+    steps: [
+      {
+        title: 'Tabellen och nya inlägg',
+        why: 'Tabellen skapas när appen startar. INSERT med ? sparar inlägget säkert.',
+        xp: 15,
+        description: 'Spara inlägg i databasen.',
+        task: 'Uppgift: Skapa tabellen `inlagg` (id, namn, text) och `POST /inlagg` som sparar och svarar med inlägget och 201.',
+        starterCode:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\n# Steg 1: tabellen och nya inlägg\n",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE inlagg (id INTEGER PRIMARY KEY, namn TEXT NOT NULL, text TEXT NOT NULL)')\n\n\n@app.post('/inlagg')\ndef skriv():\n    data = request.get_json()\n    cur = db.execute('INSERT INTO inlagg (namn, text) VALUES (?, ?)', (data['namn'], data['text']))\n    db.commit()\n    return {'id': cur.lastrowid, 'namn': data['namn'], 'text': data['text']}, 201\n",
+        hints: [
+          "db.execute('CREATE TABLE inlagg (id INTEGER PRIMARY KEY, namn TEXT NOT NULL, text TEXT NOT NULL)')",
+          'INSERT INTO inlagg (namn, text) VALUES (?, ?)',
+          'cur.lastrowid',
+        ],
+        tests: [
+          {
+            description: 'Ett inlägg',
+            code: "__post('/inlagg', {'namn': 'Ada', 'text': 'Hej'}).json",
+            expected: { id: 1, namn: 'Ada', text: 'Hej' },
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/inlagg',
+          body: '{"namn": "Ada", "text": "Hej"}',
+        },
+      },
+      {
+        title: 'Senaste först',
+        why: 'ORDER BY id DESC låter databasen sortera, så att Python slipper.',
+        xp: 15,
+        description: 'Visa inläggen, senaste först.',
+        task: 'Uppgift: `GET /inlagg` svarar med alla inlägg, senaste först.',
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE inlagg (id INTEGER PRIMARY KEY, namn TEXT NOT NULL, text TEXT NOT NULL)')\n\n\n@app.post('/inlagg')\ndef skriv():\n    data = request.get_json()\n    cur = db.execute('INSERT INTO inlagg (namn, text) VALUES (?, ?)', (data['namn'], data['text']))\n    db.commit()\n    return {'id': cur.lastrowid, 'namn': data['namn'], 'text': data['text']}, 201\n\n\n@app.get('/inlagg')\ndef las():\n    rader = db.execute('SELECT * FROM inlagg ORDER BY id DESC').fetchall()\n    return [dict(r) for r in rader]\n",
+        hints: [
+          'SELECT * FROM inlagg ORDER BY id DESC',
+          '[dict(r) for r in rader]',
+          "@app.get('/inlagg')",
+        ],
+        tests: [
+          {
+            description: 'Ordningen',
+            code: "(__post('/inlagg', {'namn': 'A', 'text': '1'}), __post('/inlagg', {'namn': 'B', 'text': '2'}), [i['namn'] for i in __get('/inlagg').json])[-1]",
+            expected: ['B', 'A'],
+            inputs: [],
+          },
+        ],
+        request: { path: '/inlagg' },
+      },
+      {
+        title: 'Ta bort',
+        why: 'rowcount säger om något togs bort, så 404 kommer utan en extra fråga.',
+        xp: 15,
+        description: 'Ta bort ett inlägg.',
+        task: 'Uppgift: `DELETE /inlagg/<int:id>` svarar 204 eller 404.',
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE inlagg (id INTEGER PRIMARY KEY, namn TEXT NOT NULL, text TEXT NOT NULL)')\n\n\n@app.post('/inlagg')\ndef skriv():\n    data = request.get_json()\n    cur = db.execute('INSERT INTO inlagg (namn, text) VALUES (?, ?)', (data['namn'], data['text']))\n    db.commit()\n    return {'id': cur.lastrowid, 'namn': data['namn'], 'text': data['text']}, 201\n\n\n@app.get('/inlagg')\ndef las():\n    rader = db.execute('SELECT * FROM inlagg ORDER BY id DESC').fetchall()\n    return [dict(r) for r in rader]\n\n\n@app.delete('/inlagg/<int:id>')\ndef ta_bort(id):\n    cur = db.execute('DELETE FROM inlagg WHERE id = ?', (id,))\n    db.commit()\n    if cur.rowcount == 0:\n        return {'fel': 'Finns inte'}, 404\n    return '', 204\n",
+        hints: [
+          'DELETE FROM inlagg WHERE id = ?',
+          'cur.rowcount == 0',
+          "return '', 204",
+        ],
+        tests: [
+          {
+            description: 'Ta bort',
+            code: "(__post('/inlagg', {'namn': 'A', 'text': '1'}), __delete('/inlagg/1').status)[-1]",
+            expected: 204,
+            inputs: [],
+          },
+          {
+            description: 'Saknas',
+            code: "__delete('/inlagg/5').status",
+            expected: 404,
+            inputs: [],
+          },
+        ],
+        request: { method: 'DELETE', path: '/inlagg/1' },
+      },
+    ],
+  },
+  {
+    id: 'proj-topplista',
+    track: 'databas',
+    title: 'Topplistan',
+    reward: { emoji: '🥇', name: 'Guldmedalj' },
+    summary: 'Spara resultat från ett spel och visa de bästa.',
+    steps: [
+      {
+        title: 'Spara',
+        why: 'Poängen kontrolleras innan den sparas, så att tabellen bara får tal.',
+        xp: 15,
+        description: 'Spara ett resultat.',
+        task: "Uppgift: `POST /resultat` sparar `namn` och `poang` (heltal, annars 400) och svarar `{'ok': True}` med 201.",
+        starterCode:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE resultat (id INTEGER PRIMARY KEY, namn TEXT, poang INTEGER)')\n",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE resultat (id INTEGER PRIMARY KEY, namn TEXT, poang INTEGER)')\n\n\n@app.post('/resultat')\ndef spara():\n    data = request.get_json()\n    if not isinstance(data.get('poang'), int):\n        return {'fel': 'poang ska vara ett heltal'}, 400\n    db.execute('INSERT INTO resultat (namn, poang) VALUES (?, ?)', (data['namn'], data['poang']))\n    db.commit()\n    return {'ok': True}, 201\n",
+        hints: [
+          "isinstance(data.get('poang'), int)",
+          'INSERT INTO resultat (namn, poang) VALUES (?, ?)',
+          "return {'ok': True}, 201",
+        ],
+        tests: [
+          {
+            description: 'Sparas',
+            code: "__post('/resultat', {'namn': 'Ada', 'poang': 30}).status",
+            expected: 201,
+            inputs: [],
+          },
+          {
+            description: 'Fel poäng',
+            code: "__post('/resultat', {'namn': 'Ada', 'poang': 'tre'}).status",
+            expected: 400,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/resultat',
+          body: '{"namn": "Ada", "poang": 30}',
+        },
+      },
+      {
+        title: 'Topp',
+        why: 'LIMIT ? begränsar svaret i databasen. ?antal= i adressen styr hur många.',
+        xp: 20,
+        description: 'De bästa resultaten.',
+        task: 'Uppgift: `GET /topp` svarar med de `?antal=` (standard 3) bästa resultaten, högst först.',
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE resultat (id INTEGER PRIMARY KEY, namn TEXT, poang INTEGER)')\n\n\n@app.post('/resultat')\ndef spara():\n    data = request.get_json()\n    if not isinstance(data.get('poang'), int):\n        return {'fel': 'poang ska vara ett heltal'}, 400\n    db.execute('INSERT INTO resultat (namn, poang) VALUES (?, ?)', (data['namn'], data['poang']))\n    db.commit()\n    return {'ok': True}, 201\n\n\n@app.get('/topp')\ndef topp():\n    antal = request.args.get('antal', 3, type=int)\n    rader = db.execute('SELECT namn, poang FROM resultat ORDER BY poang DESC LIMIT ?', (antal,)).fetchall()\n    return [dict(r) for r in rader]\n",
+        hints: [
+          "request.args.get('antal', 3, type=int)",
+          'ORDER BY poang DESC LIMIT ?',
+          '(antal,)',
+        ],
+        tests: [
+          {
+            description: 'Topp 2',
+            code: "((__post('/resultat', {'namn': 'Ada', 'poang': 30}), __post('/resultat', {'namn': 'Bo', 'poang': 50}), __post('/resultat', {'namn': 'Ada', 'poang': 40}), __post('/resultat', {'namn': 'Cia', 'poang': 10})), __get('/topp?antal=2').json)[-1]",
+            expected: [
+              { namn: 'Bo', poang: 50 },
+              { namn: 'Ada', poang: 40 },
+            ],
+            inputs: [],
+          },
+        ],
+        request: { path: '/topp?antal=2' },
+      },
+      {
+        title: 'En spelare',
+        why: 'MAX och COUNT räknas i databasen. COUNT 0 betyder att spelaren aldrig spelat.',
+        xp: 20,
+        description: 'Bästa resultat för en spelare.',
+        task: "Uppgift: `GET /spelare/<namn>` svarar `{'basta': …, 'spel': …}`, eller 404 med `{'fel': 'Har inte spelat'}`.",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE resultat (id INTEGER PRIMARY KEY, namn TEXT, poang INTEGER)')\n\n\n@app.post('/resultat')\ndef spara():\n    data = request.get_json()\n    if not isinstance(data.get('poang'), int):\n        return {'fel': 'poang ska vara ett heltal'}, 400\n    db.execute('INSERT INTO resultat (namn, poang) VALUES (?, ?)', (data['namn'], data['poang']))\n    db.commit()\n    return {'ok': True}, 201\n\n\n@app.get('/topp')\ndef topp():\n    antal = request.args.get('antal', 3, type=int)\n    rader = db.execute('SELECT namn, poang FROM resultat ORDER BY poang DESC LIMIT ?', (antal,)).fetchall()\n    return [dict(r) for r in rader]\n\n\n@app.get('/spelare/<namn>')\ndef spelare(namn):\n    rad = db.execute('SELECT MAX(poang) AS basta, COUNT(*) AS spel FROM resultat WHERE namn = ?', (namn,)).fetchone()\n    if rad['spel'] == 0:\n        return {'fel': 'Har inte spelat'}, 404\n    return dict(rad)\n",
+        hints: [
+          'SELECT MAX(poang) AS basta, COUNT(*) AS spel FROM resultat WHERE namn = ?',
+          "if rad['spel'] == 0:",
+          'return dict(rad)',
+        ],
+        tests: [
+          {
+            description: 'Ada',
+            code: "((__post('/resultat', {'namn': 'Ada', 'poang': 30}), __post('/resultat', {'namn': 'Bo', 'poang': 50}), __post('/resultat', {'namn': 'Ada', 'poang': 40}), __post('/resultat', {'namn': 'Cia', 'poang': 10})), __get('/spelare/Ada').json)[-1]",
+            expected: { basta: 40, spel: 2 },
+            inputs: [],
+          },
+          {
+            description: 'Dag',
+            code: "__get('/spelare/Dag').status",
+            expected: 404,
+            inputs: [],
+          },
+        ],
+        request: { path: '/spelare/Ada' },
+      },
+    ],
+  },
+  {
+    id: 'proj-utlaning',
+    track: 'databas',
+    title: 'Utlåningen',
+    reward: { emoji: '📕', name: 'Bok' },
+    summary: 'Låna och lämna tillbaka böcker, med två tabeller.',
+    steps: [
+      {
+        title: 'Är den utlånad?',
+        why: 'Om boken är utlånad räknas ut med en fråga mot lan, i stället för att sparas på två ställen.',
+        xp: 15,
+        description: 'Visa böckerna och om de är utlånade.',
+        task: "Uppgift: Skriv `utlanad(bok_id)` och `GET /bocker` som svarar med varje bok och `'utlanad': True/False`.",
+        starterCode:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE bocker (id INTEGER PRIMARY KEY, titel TEXT);\nCREATE TABLE lan (id INTEGER PRIMARY KEY, bok_id INTEGER REFERENCES bocker(id), aterlamnad INTEGER DEFAULT 0);\nINSERT INTO bocker (titel) VALUES ('Mio min Mio'), ('Ronja Rövardotter');\n''')\n",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE bocker (id INTEGER PRIMARY KEY, titel TEXT);\nCREATE TABLE lan (id INTEGER PRIMARY KEY, bok_id INTEGER REFERENCES bocker(id), aterlamnad INTEGER DEFAULT 0);\nINSERT INTO bocker (titel) VALUES ('Mio min Mio'), ('Ronja Rövardotter');\n''')\n\n\ndef utlanad(bok_id):\n    rad = db.execute('SELECT COUNT(*) FROM lan WHERE bok_id = ? AND aterlamnad = 0', (bok_id,)).fetchone()\n    return rad[0] > 0\n\n\n@app.get('/bocker')\ndef bocker():\n    rader = db.execute('SELECT * FROM bocker').fetchall()\n    return [{**dict(r), 'utlanad': utlanad(r['id'])} for r in rader]\n",
+        hints: [
+          'SELECT COUNT(*) FROM lan WHERE bok_id = ? AND aterlamnad = 0',
+          "{**dict(r), 'utlanad': utlanad(r['id'])}",
+          "@app.get('/bocker')",
+        ],
+        tests: [
+          {
+            description: 'Ingen utlånad',
+            code: "[b['utlanad'] for b in __get('/bocker').json]",
+            expected: [false, false],
+          },
+        ],
+        request: { path: '/bocker' },
+      },
+      {
+        title: 'Låna',
+        why: 'En bok kan bara vara utlånad en gång. Att låna en utlånad bok krockar, alltså 409.',
+        xp: 15,
+        description: 'Låna en bok.',
+        task: "Uppgift: `POST /lana/<int:bok_id>` skapar ett lån och svarar 201, eller 409 med `{'fel': 'Redan utlånad'}`.",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE bocker (id INTEGER PRIMARY KEY, titel TEXT);\nCREATE TABLE lan (id INTEGER PRIMARY KEY, bok_id INTEGER REFERENCES bocker(id), aterlamnad INTEGER DEFAULT 0);\nINSERT INTO bocker (titel) VALUES ('Mio min Mio'), ('Ronja Rövardotter');\n''')\n\n\ndef utlanad(bok_id):\n    rad = db.execute('SELECT COUNT(*) FROM lan WHERE bok_id = ? AND aterlamnad = 0', (bok_id,)).fetchone()\n    return rad[0] > 0\n\n\n@app.get('/bocker')\ndef bocker():\n    rader = db.execute('SELECT * FROM bocker').fetchall()\n    return [{**dict(r), 'utlanad': utlanad(r['id'])} for r in rader]\n\n\n@app.post('/lana/<int:bok_id>')\ndef lana(bok_id):\n    if utlanad(bok_id):\n        return {'fel': 'Redan utlånad'}, 409\n    cur = db.execute('INSERT INTO lan (bok_id) VALUES (?)', (bok_id,))\n    db.commit()\n    return {'lan': cur.lastrowid}, 201\n",
+        hints: [
+          'if utlanad(bok_id): … 409',
+          'INSERT INTO lan (bok_id) VALUES (?)',
+          "return {'lan': cur.lastrowid}, 201",
+        ],
+        tests: [
+          {
+            description: 'Låna',
+            code: "__post('/lana/1').status",
+            expected: 201,
+            inputs: [],
+          },
+          {
+            description: 'Två gånger',
+            code: "(__post('/lana/1'), __post('/lana/1').status)[-1]",
+            expected: 409,
+            inputs: [],
+          },
+          {
+            description: 'Syns i listan',
+            code: "(__post('/lana/2'), [b['utlanad'] for b in __get('/bocker').json])[-1]",
+            expected: [false, true],
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/lana/1' },
+      },
+      {
+        title: 'Lämna tillbaka',
+        why: 'UPDATE markerar lånet som återlämnat. Lånet finns kvar, så historiken sparas.',
+        xp: 15,
+        description: 'Lämna tillbaka.',
+        task: "Uppgift: `POST /lamna/<int:bok_id>` markerar lånet som återlämnat, eller 409 med `{'fel': 'Inte utlånad'}`.",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE bocker (id INTEGER PRIMARY KEY, titel TEXT);\nCREATE TABLE lan (id INTEGER PRIMARY KEY, bok_id INTEGER REFERENCES bocker(id), aterlamnad INTEGER DEFAULT 0);\nINSERT INTO bocker (titel) VALUES ('Mio min Mio'), ('Ronja Rövardotter');\n''')\n\n\ndef utlanad(bok_id):\n    rad = db.execute('SELECT COUNT(*) FROM lan WHERE bok_id = ? AND aterlamnad = 0', (bok_id,)).fetchone()\n    return rad[0] > 0\n\n\n@app.get('/bocker')\ndef bocker():\n    rader = db.execute('SELECT * FROM bocker').fetchall()\n    return [{**dict(r), 'utlanad': utlanad(r['id'])} for r in rader]\n\n\n@app.post('/lana/<int:bok_id>')\ndef lana(bok_id):\n    if utlanad(bok_id):\n        return {'fel': 'Redan utlånad'}, 409\n    cur = db.execute('INSERT INTO lan (bok_id) VALUES (?)', (bok_id,))\n    db.commit()\n    return {'lan': cur.lastrowid}, 201\n\n\n@app.post('/lamna/<int:bok_id>')\ndef lamna(bok_id):\n    cur = db.execute('UPDATE lan SET aterlamnad = 1 WHERE bok_id = ? AND aterlamnad = 0', (bok_id,))\n    db.commit()\n    if cur.rowcount == 0:\n        return {'fel': 'Inte utlånad'}, 409\n    return {'ok': True}\n",
+        hints: [
+          'UPDATE lan SET aterlamnad = 1 WHERE bok_id = ? AND aterlamnad = 0',
+          'cur.rowcount == 0',
+          "return {'ok': True}",
+        ],
+        tests: [
+          {
+            description: 'Låna och lämna',
+            code: "(__post('/lana/1'), __post('/lamna/1').status, __post('/lana/1').status)[1:]",
+            expected: [200, 201],
+            inputs: [],
+          },
+          {
+            description: 'Inte utlånad',
+            code: "__post('/lamna/2').status",
+            expected: 409,
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/lamna/1' },
+      },
+    ],
+  },
+  {
+    id: 'proj-felsok-meny',
+    track: 'felsok',
+    title: 'Den trasiga menyn',
+    reward: { emoji: '🧯', name: 'Brandsläckare' },
+    summary: 'Tre fel i ett meny-API, ett nytt i varje steg.',
+    steps: [
+      {
+        title: 'KeyError',
+        why: 'Ett uppslag på något som inte finns kraschar. 404 är det rätta svaret, inte 500.',
+        xp: 15,
+        description: '/pris/pizza kraschar med KeyError.',
+        task: "Uppgift: Laga så att en vara som inte finns ger `{'fel': 'Finns inte'}` med 404.",
+        starterCode:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nmeny = {'kaffe': 35, 'te': 30}\n\n\n@app.get('/pris/<vara>')\ndef pris(vara):\n    return {'pris': meny[vara]}\n",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nmeny = {'kaffe': 35, 'te': 30}\n\n\n@app.get('/pris/<vara>')\ndef pris(vara):\n    if vara not in meny:\n        return {'fel': 'Finns inte'}, 404\n    return {'pris': meny[vara]}\n",
+        hints: [
+          'Anropa /pris/pizza och läs felet.',
+          'Kolla med in först.',
+          "if vara not in meny: return {'fel': 'Finns inte'}, 404",
+        ],
+        tests: [
+          {
+            description: 'pizza',
+            code: "__get('/pris/pizza').status",
+            expected: 404,
+          },
+          {
+            description: 'te',
+            code: "__get('/pris/te').json",
+            expected: { pris: 30 },
+          },
+        ],
+        request: { path: '/pris/pizza' },
+      },
+      {
+        title: 'Fel statuskod',
+        why: 'Allt fungerar, men statuskoden säger fel sak. En app som kollar 201 tror att det misslyckades.',
+        xp: 10,
+        description: 'Nya varor svarar 200, men ska svara 201.',
+        task: 'Uppgift: Laga statuskoden.',
+        starterCode:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nmeny = {'kaffe': 35, 'te': 30}\n\n\n@app.get('/pris/<vara>')\ndef pris(vara):\n    if vara not in meny:\n        return {'fel': 'Finns inte'}, 404\n    return {'pris': meny[vara]}\n\n\n@app.post('/meny')\ndef ny():\n    data = request.get_json()\n    meny[data['vara']] = data['pris']\n    return {'ok': True}\n",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nmeny = {'kaffe': 35, 'te': 30}\n\n\n@app.get('/pris/<vara>')\ndef pris(vara):\n    if vara not in meny:\n        return {'fel': 'Finns inte'}, 404\n    return {'pris': meny[vara]}\n\n\n@app.post('/meny')\ndef ny():\n    data = request.get_json()\n    meny[data['vara']] = data['pris']\n    return {'ok': True}, 201\n",
+        hints: [
+          'Något nytt skapas.',
+          '201 Created.',
+          "return {'ok': True}, 201",
+        ],
+        tests: [
+          {
+            description: '201',
+            code: "__post('/meny', {'vara': 'bulle', 'pris': 32}).status",
+            expected: 201,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/meny',
+          body: '{"vara": "bulle", "pris": 32}',
+        },
+      },
+      {
+        title: 'Fel svar',
+        why: 'min på en dictionary jämför nycklarna, alltså bokstavsordning. key=meny.get jämför priserna.',
+        xp: 15,
+        description: "/billigast svarar 'kaffe', men te är billigast.",
+        task: 'Uppgift: Laga så att den billigaste varan svaras.',
+        starterCode:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nmeny = {'kaffe': 35, 'te': 30}\n\n\n@app.get('/pris/<vara>')\ndef pris(vara):\n    if vara not in meny:\n        return {'fel': 'Finns inte'}, 404\n    return {'pris': meny[vara]}\n\n\n@app.post('/meny')\ndef ny():\n    data = request.get_json()\n    meny[data['vara']] = data['pris']\n    return {'ok': True}, 201\n\n\n@app.get('/billigast')\ndef billigast():\n    return {'vara': min(meny)}\n",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nmeny = {'kaffe': 35, 'te': 30}\n\n\n@app.get('/pris/<vara>')\ndef pris(vara):\n    if vara not in meny:\n        return {'fel': 'Finns inte'}, 404\n    return {'pris': meny[vara]}\n\n\n@app.post('/meny')\ndef ny():\n    data = request.get_json()\n    meny[data['vara']] = data['pris']\n    return {'ok': True}, 201\n\n\n@app.get('/billigast')\ndef billigast():\n    return {'vara': min(meny, key=meny.get)}\n",
+        hints: [
+          'Vad jämför min här?',
+          'Nycklarna, i bokstavsordning.',
+          'min(meny, key=meny.get)',
+        ],
+        tests: [
+          {
+            description: 'te',
+            code: "__get('/billigast').json",
+            expected: { vara: 'te' },
+          },
+        ],
+        request: { path: '/billigast' },
+      },
+    ],
+  },
+  {
+    id: 'proj-felsok-db',
+    track: 'felsok',
+    title: 'Den trasiga databasen',
+    reward: { emoji: '🔦', name: 'Ficklampa' },
+    summary: 'Tre fel i en app med databas.',
+    steps: [
+      {
+        title: 'Rader är inte JSON',
+        why: 'sqlite3.Row ser ut som en dictionary men är det inte. dict(r) gör om den.',
+        xp: 15,
+        description:
+          '/hundar kraschar: The view function did not return a valid response.',
+        task: 'Uppgift: Laga så att `/hundar` svarar med en lista med dictionaries.',
+        starterCode:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript(\"CREATE TABLE hundar (id INTEGER PRIMARY KEY, namn TEXT); INSERT INTO hundar (namn) VALUES ('Bamse'), ('Saga');\")\n\n\n@app.get('/hundar')\ndef lista():\n    return db.execute('SELECT * FROM hundar').fetchall()\n",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript(\"CREATE TABLE hundar (id INTEGER PRIMARY KEY, namn TEXT); INSERT INTO hundar (namn) VALUES ('Bamse'), ('Saga');\")\n\n\n@app.get('/hundar')\ndef lista():\n    return [dict(r) for r in db.execute('SELECT * FROM hundar').fetchall()]\n",
+        hints: [
+          'Vad returneras?',
+          'fetchall ger Row-objekt.',
+          '[dict(r) for r in …]',
+        ],
+        tests: [
+          {
+            description: 'Alla',
+            code: "__get('/hundar').json",
+            expected: [
+              { id: 1, namn: 'Bamse' },
+              { id: 2, namn: 'Saga' },
+            ],
+          },
+        ],
+        request: { path: '/hundar' },
+      },
+      {
+        title: 'Injektionen',
+        why: 'Fungerar för vanliga namn, men en apostrof i namnet kraschar – eller ändrar frågan.',
+        xp: 15,
+        description: "/sok?namn=O'Hara kraschar.",
+        task: 'Uppgift: Laga sökningen med `?`.',
+        starterCode:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript(\"CREATE TABLE hundar (id INTEGER PRIMARY KEY, namn TEXT); INSERT INTO hundar (namn) VALUES ('Bamse'), ('Saga');\")\n\n\n@app.get('/hundar')\ndef lista():\n    return [dict(r) for r in db.execute('SELECT * FROM hundar').fetchall()]\n\n\n@app.get('/sok')\ndef sok():\n    namn = request.args.get('namn', '')\n    return [dict(r) for r in db.execute(f\"SELECT * FROM hundar WHERE namn = '{namn}'\").fetchall()]\n",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript(\"CREATE TABLE hundar (id INTEGER PRIMARY KEY, namn TEXT); INSERT INTO hundar (namn) VALUES ('Bamse'), ('Saga');\")\n\n\n@app.get('/hundar')\ndef lista():\n    return [dict(r) for r in db.execute('SELECT * FROM hundar').fetchall()]\n\n\n@app.get('/sok')\ndef sok():\n    namn = request.args.get('namn', '')\n    return [dict(r) for r in db.execute('SELECT * FROM hundar WHERE namn = ?', (namn,)).fetchall()]\n",
+        hints: [
+          "Prova /sok?namn=O'Hara.",
+          'Värden ska aldrig in i SQL-texten.',
+          'WHERE namn = ?',
+        ],
+        tests: [
+          {
+            description: 'Apostrof',
+            code: '__get("/sok?namn=O\'Hara").status',
+            expected: 200,
+          },
+          {
+            description: 'Saga',
+            code: "len(__get('/sok?namn=Saga').json)",
+            expected: 1,
+          },
+        ],
+        request: { path: "/sok?namn=O'Hara" },
+      },
+      {
+        title: 'Parametrarna',
+        why: 'En text är en följd av tecken. Utan tupel tror sqlite3 att varje bokstav är en parameter.',
+        xp: 15,
+        description:
+          'POST /hundar kraschar: Incorrect number of bindings supplied.',
+        task: 'Uppgift: Laga INSERT.',
+        starterCode:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript(\"CREATE TABLE hundar (id INTEGER PRIMARY KEY, namn TEXT); INSERT INTO hundar (namn) VALUES ('Bamse'), ('Saga');\")\n\n\n@app.get('/hundar')\ndef lista():\n    return [dict(r) for r in db.execute('SELECT * FROM hundar').fetchall()]\n\n\n@app.get('/sok')\ndef sok():\n    namn = request.args.get('namn', '')\n    return [dict(r) for r in db.execute('SELECT * FROM hundar WHERE namn = ?', (namn,)).fetchall()]\n\n\n@app.post('/hundar')\ndef ny():\n    cur = db.execute('INSERT INTO hundar (namn) VALUES (?)', request.get_json()['namn'])\n    return {'id': cur.lastrowid}, 201\n",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript(\"CREATE TABLE hundar (id INTEGER PRIMARY KEY, namn TEXT); INSERT INTO hundar (namn) VALUES ('Bamse'), ('Saga');\")\n\n\n@app.get('/hundar')\ndef lista():\n    return [dict(r) for r in db.execute('SELECT * FROM hundar').fetchall()]\n\n\n@app.get('/sok')\ndef sok():\n    namn = request.args.get('namn', '')\n    return [dict(r) for r in db.execute('SELECT * FROM hundar WHERE namn = ?', (namn,)).fetchall()]\n\n\n@app.post('/hundar')\ndef ny():\n    cur = db.execute('INSERT INTO hundar (namn) VALUES (?)', (request.get_json()['namn'],))\n    return {'id': cur.lastrowid}, 201\n",
+        hints: [
+          'Läs felet: hur många bindningar?',
+          'Parametrarna ska vara en tupel.',
+          "(request.get_json()['namn'],)",
+        ],
+        tests: [
+          {
+            description: 'Rufus',
+            code: "__post('/hundar', {'namn': 'Rufus'}).json",
+            expected: { id: 3 },
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/hundar', body: '{"namn": "Rufus"}' },
+      },
+    ],
+  },
+  {
+    id: 'proj-felsok-form',
+    track: 'felsok',
+    title: 'Det trasiga formuläret',
+    reward: { emoji: '🧩', name: 'Pusselbit' },
+    summary: 'Tre fel i en app med formulär och mall.',
+    steps: [
+      {
+        title: 'Fel adress',
+        why: 'redirect tar en adress. url_for gör om funktionens namn till rätt adress.',
+        xp: 15,
+        description:
+          'Efter formuläret skickas besökaren till /start, som inte finns.',
+        task: 'Uppgift: Laga så att besökaren skickas till startsidan `/`.',
+        starterCode:
+          "from flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\nnamn_lista = []\n\n\n@app.post('/lagg')\ndef lagg():\n    namn_lista.append(request.form['namn'])\n    return redirect('start')\n\n\n@app.get('/')\ndef start():\n    return ', '.join(namn_lista)\n",
+        solution:
+          "from flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\nnamn_lista = []\n\n\n@app.post('/lagg')\ndef lagg():\n    namn_lista.append(request.form['namn'])\n    return redirect(url_for('start'))\n\n\n@app.get('/')\ndef start():\n    return ', '.join(namn_lista)\n",
+        hints: [
+          'Titta på location under svaret.',
+          "redirect('start') betyder adressen start.",
+          "redirect(url_for('start'))",
+        ],
+        tests: [
+          {
+            description: 'Till /',
+            code: "__post('/lagg', form={'namn': 'Ada'}).location",
+            expected: '/',
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/lagg',
+          kind: 'form',
+          body: 'namn=Ada',
+        },
+      },
+      {
+        title: 'Fel värde i mallen',
+        why: 'Mallen visar exakt det den får. Här fick den hela listan i stället för antalet.',
+        xp: 10,
+        description: "Startsidan visar ['Ada'] namn i stället för 1 namn.",
+        task: 'Uppgift: Laga så att antalet visas.',
+        starterCode:
+          "from flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\nnamn_lista = []\n\n\n@app.post('/lagg')\ndef lagg():\n    namn_lista.append(request.form['namn'])\n    return redirect(url_for('start'))\n\n\n@app.get('/')\ndef start():\n    return render_template_string('<p>{{ antal }} namn</p>', antal=namn_lista)\n",
+        solution:
+          "from flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\nnamn_lista = []\n\n\n@app.post('/lagg')\ndef lagg():\n    namn_lista.append(request.form['namn'])\n    return redirect(url_for('start'))\n\n\n@app.get('/')\ndef start():\n    return render_template_string('<p>{{ antal }} namn</p>', antal=len(namn_lista))\n",
+        hints: [
+          'Vad skickas som antal?',
+          'En lista, inte ett tal.',
+          'antal=len(namn_lista)',
+        ],
+        tests: [
+          {
+            description: '1 namn',
+            code: "(__post('/lagg', form={'namn': 'Ada'}), __get('/').text)[-1]",
+            expected: '<p>1 namn</p>',
+            inputs: [],
+          },
+        ],
+      },
+      {
+        title: 'Bara mellanslag',
+        why: 'Kontrollen släppte igenom "   ". strip tar bort mellanslagen innan kontrollen.',
+        xp: 15,
+        description: 'Ett namn med bara mellanslag sparas.',
+        task: 'Uppgift: Laga så att tomma namn och namn med bara mellanslag ger 400.',
+        starterCode:
+          "from flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\nnamn_lista = []\n\n\n@app.post('/lagg')\ndef lagg():\n    if request.form.get('namn') == '':\n        return 'Skriv ett namn', 400\n    namn_lista.append(request.form['namn'])\n    return redirect(url_for('start'))\n\n\n@app.get('/')\ndef start():\n    return render_template_string('<p>{{ antal }} namn</p>', antal=len(namn_lista))\n",
+        solution:
+          "from flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\nnamn_lista = []\n\n\n@app.post('/lagg')\ndef lagg():\n    namn = request.form.get('namn', '').strip()\n    if not namn:\n        return 'Skriv ett namn', 400\n    namn_lista.append(namn)\n    return redirect(url_for('start'))\n\n\n@app.get('/')\ndef start():\n    return render_template_string('<p>{{ antal }} namn</p>', antal=len(namn_lista))\n",
+        hints: [
+          "request.form.get('namn', '').strip()",
+          'if not namn:',
+          'Spara det strippade namnet.',
+        ],
+        tests: [
+          {
+            description: 'Mellanslag',
+            code: "__post('/lagg', form={'namn': '   '}).status",
+            expected: 400,
+            inputs: [],
+          },
+          {
+            description: 'Sparas inte',
+            code: "(__post('/lagg', form={'namn': '  '}), len(namn_lista))[-1]",
+            expected: 0,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/lagg',
+          kind: 'form',
+          body: 'namn=   ',
+        },
+      },
+    ],
+  },
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `# ${text}`);

@@ -489,4 +489,111 @@ export const BOSSES = {
       body: 'agare=Ada&hund=Bamse&natter=3',
     },
   },
+
+  databas: {
+    id: 'databas-boss',
+    track: 'databas',
+    title: 'Boss: Bokhyllan i databasen',
+    isBoss: true,
+    xp: 40,
+    description: BOSS_INTRO + 'Bokhyllans API, men nu i en riktig databas.',
+    task: "Uppgift: Tabellen `bocker` (id, titel, sidor) finns. Bygg, med `?` överallt:\n  1. `GET /bocker` – alla, sorterade på titel.\n  2. `POST /bocker` – kräver `titel` (text) och `sidor` (heltal), annars 400 med `{'fel': 'titel och sidor krävs'}`. Svarar med boken och 201.\n  3. `GET /bocker/<int:id>` och `DELETE /bocker/<int:id>` – 404 med `{'fel': 'Finns inte'}` när den saknas.",
+    starterCode:
+      "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE bocker (id INTEGER PRIMARY KEY, titel TEXT NOT NULL, sidor INTEGER)')\n",
+    solution:
+      "import sqlite3\n\nfrom flask import Flask, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE bocker (id INTEGER PRIMARY KEY, titel TEXT NOT NULL, sidor INTEGER)')\n\n\n@app.get('/bocker')\ndef alla():\n    return [dict(r) for r in db.execute('SELECT * FROM bocker ORDER BY titel').fetchall()]\n\n\n@app.post('/bocker')\ndef ny():\n    data = request.get_json()\n    titel = data.get('titel')\n    sidor = data.get('sidor')\n    if not isinstance(titel, str) or not titel or not isinstance(sidor, int):\n        return {'fel': 'titel och sidor krävs'}, 400\n    cur = db.execute('INSERT INTO bocker (titel, sidor) VALUES (?, ?)', (titel, sidor))\n    db.commit()\n    return {'id': cur.lastrowid, 'titel': titel, 'sidor': sidor}, 201\n\n\n@app.get('/bocker/<int:id>')\ndef en(id):\n    rad = db.execute('SELECT * FROM bocker WHERE id = ?', (id,)).fetchone()\n    if rad is None:\n        return {'fel': 'Finns inte'}, 404\n    return dict(rad)\n\n\n@app.delete('/bocker/<int:id>')\ndef ta_bort(id):\n    cur = db.execute('DELETE FROM bocker WHERE id = ?', (id,))\n    db.commit()\n    if cur.rowcount == 0:\n        return {'fel': 'Finns inte'}, 404\n    return '', 204\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Ny bok',
+        code: "__post('/bocker', {'titel': 'Ronja', 'sidor': 240}).json",
+        expected: { id: 1, titel: 'Ronja', sidor: 240 },
+        inputs: [],
+      },
+      {
+        description: 'Sorterat',
+        code: "(__post('/bocker', {'titel': 'Ronja', 'sidor': 1}), __post('/bocker', {'titel': 'Mio', 'sidor': 1}), [b['titel'] for b in __get('/bocker').json])[-1]",
+        expected: ['Mio', 'Ronja'],
+        inputs: [],
+      },
+      {
+        description: 'Fel sidor',
+        code: "__post('/bocker', {'titel': 'X', 'sidor': 'många'}).status",
+        expected: 400,
+        inputs: [],
+      },
+      {
+        description: 'En',
+        code: "(__post('/bocker', {'titel': 'Mio', 'sidor': 176}), __get('/bocker/1').json['titel'])[-1]",
+        expected: 'Mio',
+        inputs: [],
+      },
+      {
+        description: 'Saknas',
+        code: "__get('/bocker/9').json",
+        expected: { fel: 'Finns inte' },
+        inputs: [],
+      },
+      {
+        description: 'Ta bort',
+        code: "(__post('/bocker', {'titel': 'Mio', 'sidor': 176}), __delete('/bocker/1').status, __get('/bocker/1').status)[1:]",
+        expected: [204, 404],
+        inputs: [],
+      },
+    ],
+    request: {
+      method: 'POST',
+      path: '/bocker',
+      body: '{"titel": "Ronja Rövardotter", "sidor": 240}',
+    },
+    sourceChecks: [
+      {
+        description: 'Ingen f-sträng i SQL',
+        pattern: /execute\(\s*f["\']/,
+        forbidden: true,
+      },
+    ],
+  },
+
+  felsok: {
+    id: 'felsok-boss',
+    track: 'felsok',
+    title: 'Boss: Den trasiga appen',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO + 'Pensionatets app har fyra fel. Hitta och laga alla.',
+    task: "Uppgift: Laga appen så att:\n  - `GET /hundar` ger alla hundar,\n  - `GET /hundar/<id>` ger en hund eller 404 med `{'fel': 'Finns inte'}`,\n  - `POST /hundar` sparar en ny hund (201) och kräver `namn` (400 annars).",
+    starterCode:
+      "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse'},\n    {'id': 2, 'namn': 'Saga'},\n]\n\n\n@app.get('hundar')\ndef lista():\n    return hundar\n\n\n@app.get('/hundar/<id>')\ndef en(id):\n    for hund in hundar:\n        if hund['id'] == id:\n            return hund\n    return 404, {'fel': 'Finns inte'}\n\n\n@app.post('/hundar')\ndef ny():\n    data = request.form\n    if not data.get('namn'):\n        return {'fel': 'namn saknas'}, 400\n    hund = {'id': len(hundar) + 1, 'namn': data['namn']}\n    hundar.append(hund)\n    return hund, 201\n",
+    solution:
+      "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse'},\n    {'id': 2, 'namn': 'Saga'},\n]\n\n\n@app.get('/hundar')\ndef lista():\n    return hundar\n\n\n@app.get('/hundar/<int:id>')\ndef en(id):\n    for hund in hundar:\n        if hund['id'] == id:\n            return hund\n    return {'fel': 'Finns inte'}, 404\n\n\n@app.post('/hundar')\ndef ny():\n    data = request.get_json()\n    if not data.get('namn'):\n        return {'fel': 'namn saknas'}, 400\n    hund = {'id': len(hundar) + 1, 'namn': data['namn']}\n    hundar.append(hund)\n    return hund, 201\n",
+    hints: [],
+    tests: [
+      { description: 'Alla', code: "len(__get('/hundar').json)", expected: 2 },
+      {
+        description: 'Hund 2',
+        code: "__get('/hundar/2').json['namn']",
+        expected: 'Saga',
+      },
+      {
+        description: 'Hund 9',
+        code: "__get('/hundar/9').status",
+        expected: 404,
+      },
+      {
+        description: 'Ny',
+        code: "__post('/hundar', {'namn': 'Rufus'}).json",
+        expected: { id: 3, namn: 'Rufus' },
+        inputs: [],
+      },
+      {
+        description: 'Utan namn',
+        code: "__post('/hundar', {}).status",
+        expected: 400,
+        inputs: [],
+      },
+    ],
+    request: { path: '/hundar' },
+  },
 };
