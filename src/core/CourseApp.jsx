@@ -119,6 +119,7 @@ function Academy({ course }) {
 
   const account = useCloudProgress({
     courseId: course.id,
+    storagePrefix: course.storagePrefix,
     completedIds,
     setCompletedIds,
     drafts,
@@ -131,6 +132,7 @@ function Academy({ course }) {
   // här inte får med sig dina framsteg. De finns kvar i ditt konto.
   async function handleSignOut() {
     await account.signOut();
+    writeJson(KEYS.owner, null);
     setCompletedIds([]);
     setDrafts({});
     setProjectModes({});

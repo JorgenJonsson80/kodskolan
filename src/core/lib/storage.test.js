@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { isStringList, isStringMap, readJson, writeJson } from './storage';
+import {
+  belongsTo,
+  isStringList,
+  isStringMap,
+  localOwner,
+  progressKeys,
+  readJson,
+  writeJson,
+} from './storage';
 
 const store = new Map();
 beforeEach(() => {
@@ -35,5 +43,18 @@ describe('readJson', () => {
     };
     expect(readJson('a', [], isStringList)).toEqual([]);
     expect(() => writeJson('a', [])).not.toThrow();
+  });
+});
+
+describe('belongsTo', () => {
+  it('framsteg utan ägare hör till den som loggar in', () => {
+    expect(belongsTo('x-', 'anna')).toBe(true);
+  });
+
+  it('framsteg med en annan ägare hör inte till nästa konto', () => {
+    writeJson(progressKeys('x-').owner, 'anna');
+    expect(belongsTo('x-', 'anna')).toBe(true);
+    expect(belongsTo('x-', 'bo')).toBe(false);
+    expect(localOwner('x-')).toBe('anna');
   });
 });

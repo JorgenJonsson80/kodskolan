@@ -3,6 +3,7 @@ import AccountPanel from '../core/components/AccountPanel';
 import SiteFooter from '../core/components/SiteFooter';
 import { mergeCompleted } from '../core/lib/progress';
 import {
+  belongsTo,
   isStringList,
   progressKeys,
   readJson,
@@ -20,8 +21,11 @@ import { useCloudCompleted } from './useCloudCompleted';
 const lessonCount = ids =>
   ids.filter(id => !/-(testad|utan-ledtradar)$/.test(id)).length;
 
-const localIds = course =>
-  readJson(progressKeys(course.storagePrefix).completed, [], isStringList);
+// Webbläsarens klara övningar, om de inte hör till ett annat konto.
+const localIds = (course, userId) =>
+  userId && !belongsTo(course.storagePrefix, userId)
+    ? []
+    : readJson(progressKeys(course.storagePrefix).completed, [], isStringList);
 
 // Diplomen i kontot, eller [] utan inloggning.
 function useMyDiplomas(userId) {
@@ -75,7 +79,10 @@ export default function Home() {
   const courses = COURSES.map(course => ({
     course,
     done: lessonCount(
-      mergeCompleted(localIds(course), cloud?.byCourse[course.id]),
+      mergeCompleted(
+        localIds(course, account.user?.id),
+        cloud?.byCourse[course.id],
+      ),
     ),
   }));
   const mine = courses.filter(item => item.done > 0);
@@ -90,6 +97,7 @@ export default function Home() {
       writeJson(keys.completed, []);
       writeJson(keys.drafts, {});
       writeJson(keys.projectModes, {});
+      writeJson(keys.owner, null);
     }
     setSignOuts(count => count + 1);
   }

@@ -95,6 +95,12 @@ export default function AccountPage() {
     }
   }
 
+  // Som på startsidan: nästa person här ska inte få med sig dina framsteg.
+  async function handleSignOut() {
+    await account.signOut();
+    clearLocalData();
+  }
+
   function handleClearLocal() {
     clearLocalData();
     setLocalCleared(true);
@@ -147,7 +153,7 @@ export default function AccountPage() {
               <div className="home-account">
                 <AccountPanel
                   account={{ ...account, status: 'synced' }}
-                  onSignOut={account.signOut}
+                  onSignOut={handleSignOut}
                 />
               </div>
             )}

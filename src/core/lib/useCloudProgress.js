@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { mergeCompleted, mergeDrafts } from './progress';
+import { belongsTo, progressKeys, writeJson } from './storage';
 import { supabase } from './supabase';
 import { useAccount } from './useAccount';
 
@@ -9,6 +10,7 @@ import { useAccount } from './useAccount';
 // sker hela tiden och annars får sidan att flimra.
 export function useCloudProgress({
   courseId,
+  storagePrefix,
   completedIds,
   setCompletedIds,
   drafts,
@@ -39,16 +41,31 @@ export function useCloudProgress({
           setStatus('error');
           return;
         }
-        setCompletedIds(local => mergeCompleted(local, data?.completed_ids));
-        setDrafts(local => mergeDrafts(local, data?.drafts));
-        setProjectModes(local => mergeDrafts(local, data?.project_modes));
+        // Framsteg från ett annat konto i samma webbläsare byts ut mot
+        // kontots, i stället för att slås ihop.
+        const mine = belongsTo(storagePrefix, userId);
+        setCompletedIds(local =>
+          mergeCompleted(mine ? local : [], data?.completed_ids),
+        );
+        setDrafts(local => mergeDrafts(mine ? local : {}, data?.drafts));
+        setProjectModes(local =>
+          mergeDrafts(mine ? local : {}, data?.project_modes),
+        );
+        writeJson(progressKeys(storagePrefix).owner, userId);
         setLoadedUserId(userId);
         setStatus('synced');
       });
     return () => {
       ignore = true;
     };
-  }, [courseId, userId, setCompletedIds, setDrafts, setProjectModes]);
+  }, [
+    courseId,
+    storagePrefix,
+    userId,
+    setCompletedIds,
+    setDrafts,
+    setProjectModes,
+  ]);
 
   // Spara en sekund efter senaste ändringen, så att inte varje
   // tangenttryckning skickas.

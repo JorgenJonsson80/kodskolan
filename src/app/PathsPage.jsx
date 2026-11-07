@@ -4,7 +4,12 @@ import SiteFooter from '../core/components/SiteFooter';
 import DiplomaDialog from '../core/components/DiplomaDialog';
 import { courseCompletion } from '../core/lib/completion';
 import { mergeCompleted } from '../core/lib/progress';
-import { isStringList, progressKeys, readJson } from '../core/lib/storage';
+import {
+  belongsTo,
+  isStringList,
+  progressKeys,
+  readJson,
+} from '../core/lib/storage';
 import { useAccount } from '../core/lib/useAccount';
 import { stages } from '../core/stages';
 import { COURSES } from './courses';
@@ -99,11 +104,16 @@ export default function PathsPage() {
     summaries &&
     Object.fromEntries(
       COURSES.map(course => {
-        const local = readJson(
-          progressKeys(course.storagePrefix).completed,
-          [],
-          isStringList,
-        );
+        // Framsteg från ett annat konto i webbläsaren räknas inte.
+        const userId = account.user?.id;
+        const local =
+          userId && !belongsTo(course.storagePrefix, userId)
+            ? []
+            : readJson(
+                progressKeys(course.storagePrefix).completed,
+                [],
+                isStringList,
+              );
         const ids = mergeCompleted(local, cloud?.byCourse[course.id]);
         const { tracks, lessons } = summaries[course.id];
         return [course.id, courseCompletion(tracks, lessons, ids)];

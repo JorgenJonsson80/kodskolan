@@ -33,4 +33,21 @@ export const progressKeys = prefix => ({
   current: `${prefix}current-lesson`,
   helpSeen: `${prefix}help-seen`,
   projectModes: `${prefix}project-modes`,
+  owner: `${prefix}owner`,
 });
+
+// Vems framsteg webbläsaren har för en kurs: kontots id, eller null om de
+// gjorts utan inloggning. Bara framsteg utan ägare, eller med samma ägare,
+// får slås ihop med ett konto. Annars skulle nästa konto som loggar in i
+// samma webbläsare få med sig dem.
+export const localOwner = prefix =>
+  readJson(
+    progressKeys(prefix).owner,
+    null,
+    value => typeof value === 'string',
+  );
+
+export const belongsTo = (prefix, userId) => {
+  const owner = localOwner(prefix);
+  return owner === null || owner === userId;
+};
