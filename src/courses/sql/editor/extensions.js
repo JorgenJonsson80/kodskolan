@@ -1,5 +1,5 @@
 import { SQLite, sql } from '@codemirror/lang-sql';
-import { indentUnit, syntaxTree } from '@codemirror/language';
+import { ensureSyntaxTree, indentUnit, syntaxTree } from '@codemirror/language';
 import { EditorState, Facet } from '@codemirror/state';
 import { describeToken } from './codeInfo';
 
@@ -25,7 +25,10 @@ export const sqlExtensions = (tables = []) => [
 ];
 
 export function sqlHover(state, pos, side) {
-  const node = syntaxTree(state).resolveInner(pos, side);
+  // Trädet tolkas bara en kort stund i taget. Hovern behöver det fram
+  // till ordet, även på en långsam dator.
+  const tree = ensureSyntaxTree(state, pos + 1, 200) ?? syntaxTree(state);
+  const node = tree.resolveInner(pos, side);
   if (!node || node.firstChild) return null;
   return describeToken(
     {
