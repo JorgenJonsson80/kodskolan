@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import AccountPanel from '../core/components/AccountPanel';
+import SiteFooter from '../core/components/SiteFooter';
 import { mergeCompleted } from '../core/lib/progress';
 import {
   isStringList,
@@ -187,6 +188,7 @@ export default function Home() {
           </section>
         )}
       </main>
+      <SiteFooter />
     </>
   );
 }

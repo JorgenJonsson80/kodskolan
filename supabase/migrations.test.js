@@ -202,3 +202,52 @@ describe('diplomas', () => {
     await expect(issue('sql', '  ')).rejects.toThrow();
   });
 });
+
+describe('delete_my_account', () => {
+  beforeEach(async () => {
+    db = new PGlite();
+    await db.exec(SUPABASE);
+    await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
+    for (const migration of migrations) await db.exec(migration);
+    await db.exec(`
+      insert into course_progress (user_id, course_id, completed_ids)
+        values ('${ANNA}', 'python', '{hej}'), ('${BO}', 'python', '{hej}');
+      insert into diplomas (user_id, kind, subject, name)
+        values ('${ANNA}', 'course', 'sql', 'Anna'), ('${BO}', 'course', 'sql', 'Bo');
+    `);
+  });
+
+  const count = async (table, user) =>
+    (
+      await db.query(
+        `select count(*)::int as n from ${table} where ${table === 'auth.users' ? 'id' : 'user_id'} = '${user}'`,
+      )
+    ).rows[0].n;
+
+  it('raderar den som anropar och allt som hör till kontot', async () => {
+    await db.exec(
+      `set role authenticated; set request.jwt.claim.sub = '${ANNA}'`,
+    );
+    await db.query('select public.delete_my_account()');
+    await db.exec('reset role');
+    for (const table of ['auth.users', 'course_progress', 'diplomas']) {
+      expect(await count(table, ANNA), table).toBe(0);
+      expect(await count(table, BO), table).toBe(1);
+    }
+  });
+
+  it('går inte att anropa utan inloggning', async () => {
+    await db.exec('set role anon');
+    await expect(
+      db.query('select public.delete_my_account()'),
+    ).rejects.toThrow();
+    await db.exec(
+      "reset role; set role authenticated; set request.jwt.claim.sub = ''",
+    );
+    await expect(db.query('select public.delete_my_account()')).rejects.toThrow(
+      /Inte inloggad/,
+    );
+    await db.exec('reset role');
+    expect(await count('auth.users', ANNA)).toBe(1);
+  });
+});

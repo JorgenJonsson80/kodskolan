@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import AccountPanel from './components/AccountPanel';
+import SiteFooter from './components/SiteFooter';
 import Avatar from './components/Avatar';
 import Collection from './components/Collection';
 import HelpDialog from './components/HelpDialog';
@@ -534,6 +535,7 @@ function Academy({ course }) {
           )}
         </div>
       </main>
+      <SiteFooter course={course} lesson={lesson} />
       {showHelp && (
         <HelpDialog
           onClose={() => {

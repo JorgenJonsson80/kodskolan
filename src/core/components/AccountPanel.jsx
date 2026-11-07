@@ -29,9 +29,12 @@ export default function AccountPanel({ account, onSignOut }) {
         >
           {statusText[account.status]}
         </p>
-        <button type="button" onClick={onSignOut}>
-          Logga ut
-        </button>
+        <div className="account-actions">
+          <button type="button" onClick={onSignOut}>
+            Logga ut
+          </button>
+          <a href={`${import.meta.env.BASE_URL}konto`}>Mitt konto och data</a>
+        </div>
       </section>
     );
   }

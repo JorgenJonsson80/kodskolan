@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import AccountPanel from '../core/components/AccountPanel';
+import SiteFooter from '../core/components/SiteFooter';
 import DiplomaDialog from '../core/components/DiplomaDialog';
 import { courseCompletion } from '../core/lib/completion';
 import { mergeCompleted } from '../core/lib/progress';
@@ -159,6 +160,7 @@ export default function PathsPage() {
           ))}
         </ul>
       </main>
+      <SiteFooter />
       {diploma && (
         <DiplomaDialog
           kind="path"

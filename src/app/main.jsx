@@ -12,7 +12,11 @@ import '../core/App.css';
 const entry = courseFromPath(window.location.pathname);
 const [page, code] = pathParts(window.location.pathname);
 
-const TITLES = { diplom: 'Diplom – Kodskolan', spar: 'Spår – Kodskolan' };
+const TITLES = {
+  diplom: 'Diplom – Kodskolan',
+  spar: 'Spår – Kodskolan',
+  konto: 'Mitt konto och data – Kodskolan',
+};
 if (!entry && TITLES[page]) document.title = TITLES[page];
 
 const Course =

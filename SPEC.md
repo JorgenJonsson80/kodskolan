@@ -163,7 +163,11 @@ Gratisbanorna ligger kvar i appen. Betalbanorna hämtas från
 
 ## Adresser
 
-`/diplom/<kod>` visar ett diplom och `/spar` spåren (`src/app/Page.jsx`).
+`/diplom/<kod>` visar ett diplom, `/spar` spåren och `/konto` Mitt konto
+och data: vad som sparas, ladda ner det och radera kontot
+(`delete_my_account`) eller webbläsarens framsteg (`src/app/Page.jsx`).
+Sidfoten (`SiteFooter`) har felrapport och kontakt när
+`VITE_SUPPORT_EMAIL` finns, se `docs/MEJL.md`.
 
 GitHub Pages under `/kodskolan/`. `/` är startsidan med kurserna,
 `/python` en kurs. Bygget kopierar `index.html` till `404.html` så att
