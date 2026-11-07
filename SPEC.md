@@ -79,6 +79,7 @@ export default {
   editor: {
     extensions,   // context => CodeMirror-tillägg: språk, indrag, förslag
     describeAt,   // hover: (state, pos, side) => { from, to, title, body }
+                  // eller ett Promise med det (TypeScript)
     comment,      // text => en kommentar i språket (projektsteg, Lekplatsen)
     codeFence,    // språket i AI-frågans kodblock (eller en funktion)
     normalize?,   // kod => kod utan det som bara är stil (jämförs med facit)

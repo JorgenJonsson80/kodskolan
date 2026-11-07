@@ -2,6 +2,7 @@ import { meta as html } from '../courses/html/meta';
 import { meta as js } from '../courses/js/meta';
 import { meta as python } from '../courses/python/meta';
 import { meta as sql } from '../courses/sql/meta';
+import { meta as ts } from '../courses/ts/meta';
 
 // Alla kurser i ordning. load() hämtar kursen först när den öppnas, så
 // att startsidan inte laddar Python eller något annat språk.
@@ -11,6 +12,7 @@ export const COURSES = [
   { ...html, load: () => import('../courses/html') },
   { ...js, load: () => import('../courses/js') },
   { ...sql, load: () => import('../courses/sql') },
+  { ...ts, load: () => import('../courses/ts') },
 ];
 
 // Kursen som adressen pekar på, t.ex. /kodskolan/python, eller null för

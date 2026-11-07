@@ -16,17 +16,21 @@ const lastError = output =>
 // options: fileName och files för övningar med import och export,
 // sourceChecks för hur koden är skriven. preview är JSX som renderas i
 // workern först (Lekplatsen). En övnings lessonPreview visas bara efteråt,
-// precis som i JS Academy, så att rättningen inte ändras.
-export async function runJs({
-  code,
-  tests = [],
-  sourceChecks = [],
-  fileName,
-  files,
-  preview,
-  lessonPreview,
-}) {
-  const result = await runTests(code, tests, sourceChecks, {
+// precis som i JS Academy, så att rättningen inte ändras. run är workern,
+// eller evaluate direkt i testerna i Node (TypeScript-kursen).
+export async function runJs(
+  {
+    code,
+    tests = [],
+    sourceChecks = [],
+    fileName,
+    files,
+    preview,
+    lessonPreview,
+  },
+  run = runTests,
+) {
+  const result = await run(code, tests, sourceChecks, {
     ...(fileName && { fileName }),
     ...(files && { files }),
     ...(preview && { preview }),

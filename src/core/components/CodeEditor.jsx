@@ -75,10 +75,11 @@ async function formatCode(view, format) {
   });
 }
 
-// describeAt kommer från kursen och svarar { from, to, title, body }.
+// describeAt kommer från kursen och svarar { from, to, title, body },
+// direkt eller som ett Promise (TypeScript frågar kompilatorn i en worker).
 const codeHover = describeAt =>
-  hoverTooltip((view, pos, side) => {
-    const info = describeAt(view.state, pos, side);
+  hoverTooltip(async (view, pos, side) => {
+    const info = await describeAt(view.state, pos, side);
     if (!info) return null;
     return {
       pos: info.from,
