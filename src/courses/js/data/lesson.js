@@ -1,3 +1,4 @@
+import { reactLessons } from './reactLessons';
 // Att tilldela en const igen kastar ett TypeError, det gör inte let.
 // Finns variabeln inte alls blir det ett ReferenceError, och då ska
 // testet inte gå igenom.
@@ -8744,4 +8745,5 @@ function ShoppingList() {
       },
     ],
   },
+  ...reactLessons,
 ];

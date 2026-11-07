@@ -1,8 +1,11 @@
 # JavaScript-kursen
 
 JS Academy byggdes före SPEC-mallen och har ingen egen SPEC. Banorna
-står i `src/courses/js/data/tracks.js` (19 banor: JavaScript från
-console.log till felsökning, sedan React från JSX till datahämtning).
+står i `src/courses/js/data/tracks.js` (25 banor: JavaScript från
+console.log till felsökning, sedan React från JSX till datahämtning,
+formulär, useReducer, Context, egna hooks, prestanda och ett slutprojekt).
+De sex sista React-banorna ligger i `data/reactLessons.js`, som
+`lesson.js` lägger sist. Som de andra React-banorna har de inga projekt.
 Övningarnas format och hur kursen hänger ihop står i
 `src/courses/js/CLAUDE.md`.
 

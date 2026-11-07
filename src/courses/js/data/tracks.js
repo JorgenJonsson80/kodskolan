@@ -375,4 +375,93 @@ export const tracks = [
       },
     ],
   },
+  {
+    id: 'forms',
+    title: 'React: Formulär',
+    reward: { emoji: '📝', name: 'Blankett' },
+    docs: [
+      {
+        title: 'Reagera på input med state',
+        url: 'https://react.dev/learn/reacting-to-input-with-state',
+      },
+      {
+        title: '<input>',
+        url: 'https://react.dev/reference/react-dom/components/input',
+      },
+    ],
+  },
+  {
+    id: 'reducer',
+    title: 'React: useReducer',
+    reward: { emoji: '🎛️', name: 'Mixerbord' },
+    docs: [
+      {
+        title: 'Samla state-logik i en reducer',
+        url: 'https://react.dev/learn/extracting-state-logic-into-a-reducer',
+      },
+      {
+        title: 'useReducer',
+        url: 'https://react.dev/reference/react/useReducer',
+      },
+    ],
+  },
+  {
+    id: 'context',
+    title: 'React: Context',
+    reward: { emoji: '📻', name: 'Radio' },
+    docs: [
+      {
+        title: 'Skicka data djupt med context',
+        url: 'https://react.dev/learn/passing-data-deeply-with-context',
+      },
+      {
+        title: 'Context och reducer tillsammans',
+        url: 'https://react.dev/learn/scaling-up-with-reducer-and-context',
+      },
+      {
+        title: 'useContext',
+        url: 'https://react.dev/reference/react/useContext',
+      },
+    ],
+  },
+  {
+    id: 'hooks',
+    title: 'React: Egna hooks',
+    reward: { emoji: '🪝', name: 'Krok' },
+    docs: [
+      {
+        title: 'Återanvänd logik med egna hooks',
+        url: 'https://react.dev/learn/reusing-logic-with-custom-hooks',
+      },
+      { title: 'useRef', url: 'https://react.dev/reference/react/useRef' },
+    ],
+  },
+  {
+    id: 'performance',
+    title: 'React: Prestanda',
+    reward: { emoji: '🏎️', name: 'Racerbil' },
+    docs: [
+      { title: 'memo', url: 'https://react.dev/reference/react/memo' },
+      { title: 'useMemo', url: 'https://react.dev/reference/react/useMemo' },
+      {
+        title: 'useCallback',
+        url: 'https://react.dev/reference/react/useCallback',
+      },
+      {
+        title: 'Behålla och nollställa state',
+        url: 'https://react.dev/learn/preserving-and-resetting-state',
+      },
+    ],
+  },
+  {
+    id: 'react-final',
+    title: 'React: Slutprojekt',
+    reward: { emoji: '🏆', name: 'Pokal' },
+    docs: [
+      {
+        title: 'Tänka i React',
+        url: 'https://react.dev/learn/thinking-in-react',
+      },
+    ],
+  },
 ];

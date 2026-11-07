@@ -196,4 +196,19 @@ export const resources = {
   'debug-react': [
     { topic: 'Vanliga React-buggar', video: 'common react mistakes beginners' },
   ],
+  forms: [
+    { topic: 'Formulär i React', video: 'react forms controlled inputs' },
+  ],
+  reducer: [{ topic: 'useReducer', video: 'react useReducer explained' }],
+  context: [{ topic: 'Context', video: 'react useContext tutorial' }],
+  hooks: [{ topic: 'Egna hooks', video: 'react custom hooks tutorial' }],
+  performance: [
+    {
+      topic: 'memo, useMemo och useCallback',
+      video: 'react memo usememo usecallback explained',
+    },
+  ],
+  'react-final': [
+    { topic: 'Bygga en hel app', video: 'react project tutorial beginners' },
+  ],
 };

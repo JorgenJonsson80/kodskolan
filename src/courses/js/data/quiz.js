@@ -788,4 +788,240 @@ setTodos(todos);`,
         'Returnera () => clearInterval(id), annars fortsätter intervallet efter att komponenten tagits bort.',
     },
   ],
+  forms: [
+    {
+      question: 'Vad gör ett fält kontrollerat?',
+      options: [
+        'value kommer från state och onChange sparar det nya värdet',
+        'Att det har ett name',
+        'Att det ligger i ett form',
+        'Att det har en label',
+      ],
+      explain: 'Då vet React alltid vad som står i fältet.',
+    },
+    {
+      question: 'Varför event.preventDefault() i onSubmit?',
+      options: [
+        'Annars laddar webbläsaren om sidan',
+        'Annars skickas formuläret två gånger',
+        'Annars töms fälten',
+        'Det behövs inte',
+      ],
+      explain:
+        'Ett form skickas som standard till servern, och sidan laddas om.',
+    },
+    {
+      question: 'Vad läser man från en kryssruta?',
+      options: [
+        'event.target.checked',
+        'event.target.value',
+        'event.checked',
+        'event.target.name',
+      ],
+      explain: 'En kryssruta har checked, inte ett value att läsa.',
+    },
+    {
+      question:
+        'Vad gör [event.target.name] i setForm({ ...form, [event.target.name]: event.target.value })?',
+      options: [
+        'Uppdaterar det fält som har samma name som inputen',
+        'Skapar ett nytt fält som heter name',
+        'Tar bort fältet',
+        'Ingenting',
+      ],
+      explain: 'Hakparenteserna gör nyckeln till värdet i variabeln.',
+    },
+  ],
+  reducer: [
+    {
+      question: 'Vad är en reducer?',
+      options: [
+        'En funktion (state, action) som returnerar nytt state',
+        'En komponent som minskar listor',
+        'En hook som hämtar data',
+        'Ett sätt att ta bort state',
+      ],
+      explain: 'Reducern ändrar aldrig state, den returnerar ett nytt.',
+    },
+    {
+      question: 'Vad ger useReducer?',
+      options: ['[state, dispatch]', '[state, setState]', 'state', 'dispatch'],
+      explain: 'dispatch skickar en action till reducern.',
+    },
+    {
+      question: 'Vad ska reducern göra med en action den inte känner igen?',
+      options: [
+        'Returnera samma state',
+        'Returnera null',
+        'Tömma state',
+        'Rita om',
+      ],
+      explain: 'Då händer ingenting, och inget går sönder.',
+    },
+    {
+      question: 'Vad blir resultatet?',
+      code: "function reducer(state, action) {\n  if (action.type === 'add') return state + action.amount;\n  return state;\n}\nreducer(10, { type: 'add', amount: 5 });",
+      options: ['15', '10', '5', 'undefined'],
+      explain: 'action.amount läggs till.',
+    },
+  ],
+  context: [
+    {
+      question: 'Vilket problem löser context?',
+      options: [
+        'Att skicka props genom många led som inte använder dem',
+        'Att hämta data från en server',
+        'Att göra appen snabbare',
+        'Att spara i localStorage',
+      ],
+      explain: 'Det kallas prop drilling.',
+    },
+    {
+      question: 'Vad ger useContext om det inte finns någon Provider ovanför?',
+      options: [
+        'Standardvärdet från createContext',
+        'undefined alltid',
+        'Ett fel',
+        'null alltid',
+      ],
+      explain: 'Värdet i createContext(…) är standardvärdet.',
+    },
+    {
+      question: 'Vad är en bra regel för en egen hook som useTheme?',
+      options: [
+        'Den börjar med use och använder andra hooks',
+        'Den måste returnera JSX',
+        'Den får inte ha parametrar',
+        'Den ska heta som contexten',
+      ],
+      explain: 'Namnet use… säger till React och läsaren att det är en hook.',
+    },
+    {
+      question: 'Varför passar context och useReducer ihop?',
+      options: [
+        'Reducern sköter logiken, contexten ger state och dispatch till alla',
+        'De är samma sak',
+        'Context kräver en reducer',
+        'De gör appen snabbare',
+      ],
+      explain: 'Komponenter långt ifrån varandra kan dela samma state.',
+    },
+  ],
+  hooks: [
+    {
+      question: 'Vad är en egen hook?',
+      options: [
+        'En funktion som börjar med use och använder andra hooks',
+        'En komponent utan JSX',
+        'En inbyggd React-funktion',
+        'En klass',
+      ],
+      explain: 'Den samlar logik som flera komponenter kan dela.',
+    },
+    {
+      question: 'Varför useState(() => läs()) i useLocalStorage?',
+      options: [
+        'Så att localStorage bara läses första gången',
+        'Så att värdet sparas',
+        'Så att det går fortare att skriva',
+        'Det är samma sak som useState(läs())',
+      ],
+      explain: 'Med en funktion anropas den bara när komponenten skapas.',
+    },
+    {
+      question: 'Vad är speciellt med useRef?',
+      options: [
+        'Värdet finns kvar mellan renderingar utan att rita om',
+        'Det ritar om varje gång det ändras',
+        'Det sparar i localStorage',
+        'Det fungerar bara för formulär',
+      ],
+      explain: 'ref.current kan ändras fritt utan att något ritas om.',
+    },
+    {
+      question: 'Varför har en timer-hook en städfunktion?',
+      options: [
+        'Så att timern stoppas när komponenten försvinner',
+        'Så att den går snabbare',
+        'Så att värdet sparas',
+        'Den behövs inte',
+      ],
+      explain: 'Annars fortsätter timern i bakgrunden.',
+    },
+  ],
+  performance: [
+    {
+      question: 'Vad gör memo(Komponent)?',
+      options: [
+        'Hoppar över ritningen när props är desamma',
+        'Sparar komponenten i localStorage',
+        'Gör komponenten osynlig',
+        'Ritar alltid om',
+      ],
+      explain: 'Ändras props ritas den om som vanligt.',
+    },
+    {
+      question: 'Varför bryter onClick={() => …} memo?',
+      options: [
+        'En ny funktion skapas vid varje ritning',
+        'Pilfunktioner är långsamma',
+        'memo fungerar inte med funktioner',
+        'Det gör den inte',
+      ],
+      explain: 'useCallback ger samma funktion tills beroendena ändras.',
+    },
+    {
+      question: 'Vad händer om useMemo saknar ett beroende?',
+      options: [
+        'Ett gammalt svar visas',
+        'Det kraschar',
+        'Det räknas om varje gång',
+        'Ingenting',
+      ],
+      explain: 'Det räknas bara om när något i listan ändras.',
+    },
+    {
+      question: 'Vad händer när key ändras på en komponent?',
+      options: [
+        'React ser en ny komponent, och dess state börjar om',
+        'Ingenting',
+        'Den ritas inte',
+        'Den behåller sitt state',
+      ],
+      explain: 'Ett enkelt sätt att nollställa ett formulär.',
+    },
+  ],
+  'react-final': [
+    {
+      question: 'Var hör logiken för att boka och avboka hemma i Tassen-appen?',
+      options: ['I bookingsReducer', 'I BookingList', 'I DogCard', 'I App'],
+      explain: 'Komponenterna skickar bara actions.',
+    },
+    {
+      question: 'Hur delar formuläret och listan bokningarna?',
+      options: [
+        'Med en context och useBookings',
+        'Med props genom App',
+        'Med localStorage',
+        'De delar inte',
+      ],
+      explain: 'BookingsProvider ger { bookings, dispatch } till båda.',
+    },
+    {
+      question: 'Vad gör den tredje parametern till useReducer?',
+      options: [
+        'Räknar ut startläget, t.ex. från localStorage',
+        'Sparar state',
+        'Är en extra action',
+        'Gör reducern snabbare',
+      ],
+      explain: 'Den anropas bara första gången.',
+    },
+    {
+      question: 'Vad blir nights("2026-06-10", "2026-06-13")?',
+      code: 'function nights(from, to) {\n  return (new Date(to) - new Date(from)) / 86400000;\n}',
+      options: ['3', '4', '2', '13'],
+      explain: 'Tre dygn mellan datumen.',
+    },
+  ],
 };

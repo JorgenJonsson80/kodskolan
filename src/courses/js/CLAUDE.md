@@ -29,7 +29,8 @@ webbläsaren.
 
 - `data/` – innehållet är data, inte kod:
   - `tracks.js` banorna i ordning, med `docs`-länkar och belöning
-  - `lesson.js` alla övningar, `projects.js` miniprojekten efter varje bana
+  - `lesson.js` alla övningar (de sex senaste React-banorna i
+    `reactLessons.js`), `projects.js` miniprojekten efter varje bana
   - `ideas.js` egna idéer för Lekplatsen, `resources.js` javascript.info-
     och YouTube-sökningar för Fastnat?-panelen, `quiz.js` nivåtestet
 - `runner/` – kör elevens kod:
