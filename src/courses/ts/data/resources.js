@@ -70,4 +70,28 @@ export const RESOURCES = {
       video: 'typescript narrowing typeof',
     },
   ],
+  saknas: [
+    {
+      topic: 'null och undefined',
+      read: `${HANDBOOK}2/everyday-types.html#null-and-undefined`,
+      video: 'typescript strict null checks',
+    },
+    {
+      topic: '! (non-null assertion)',
+      read: `${HANDBOOK}2/everyday-types.html#non-null-assertion-operator-postfix-`,
+      video: 'typescript non null assertion operator',
+    },
+  ],
+  fall: [
+    {
+      topic: 'Diskriminerade unioner',
+      read: `${HANDBOOK}2/narrowing.html#discriminated-unions`,
+      video: 'typescript discriminated unions',
+    },
+    {
+      topic: 'never och uttömmande kontroll',
+      read: `${HANDBOOK}2/narrowing.html#exhaustiveness-checking`,
+      video: 'typescript exhaustive switch never',
+    },
+  ],
 };

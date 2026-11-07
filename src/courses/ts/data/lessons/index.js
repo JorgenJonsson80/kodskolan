@@ -1,7 +1,9 @@
 import { BOSSES } from './bossar';
 import { EGNA } from './egna';
+import { FALL } from './fall';
 import { FUNKTIONER } from './funktioner';
 import { OBJEKT } from './objekt';
+import { SAKNAS } from './saknas';
 import { TYPER } from './typer';
 import { UNIONER } from './unioner';
 
@@ -18,4 +20,8 @@ export const LESSONS = [
   BOSSES.egna,
   ...UNIONER,
   BOSSES.unioner,
+  ...SAKNAS,
+  BOSSES.saknas,
+  ...FALL,
+  BOSSES.fall,
 ];

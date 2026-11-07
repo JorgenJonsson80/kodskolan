@@ -283,4 +283,126 @@ export const BOSSES = {
       },
     ],
   },
+  saknas: {
+    id: 'saknas-boss',
+    track: 'saknas',
+    title: 'Boss: Medlemsregistret',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Föreningens register har medlemmar utan e-post och medlemmar utan sponsor. Inget får krascha, och inget `!`.',
+    task: `Uppgift: \`medlemmar\` är given. Skriv:
+  1. \`hitta(id: number): Medlem | undefined\`.
+  2. \`kontakt(id: number): string\` – e-posten, \`'ingen e-post'\` om den saknas, eller \`'okänd medlem'\`.
+  3. \`sponsorNamn(id: number): string | null\` – namnet på medlemmens sponsor, eller \`null\` om medlemmen eller sponsorn saknas.`,
+    starterCode:
+      "type Medlem = { id: number; namn: string; epost?: string; sponsor: number | null };\n\nconst medlemmar: Medlem[] = [\n  { id: 1, namn: 'Ada', epost: 'ada@exempel.se', sponsor: null },\n  { id: 2, namn: 'Bo', sponsor: 1 },\n  { id: 3, namn: 'Cia', epost: 'cia@exempel.se', sponsor: 2 },\n];\n",
+    solution:
+      "type Medlem = { id: number; namn: string; epost?: string; sponsor: number | null };\n\nconst medlemmar: Medlem[] = [\n  { id: 1, namn: 'Ada', epost: 'ada@exempel.se', sponsor: null },\n  { id: 2, namn: 'Bo', sponsor: 1 },\n  { id: 3, namn: 'Cia', epost: 'cia@exempel.se', sponsor: 2 },\n];\n\nfunction hitta(id: number): Medlem | undefined {\n  return medlemmar.find(m => m.id === id);\n}\n\nfunction kontakt(id: number): string {\n  const medlem = hitta(id);\n  if (medlem === undefined) {\n    return 'okänd medlem';\n  }\n  return medlem.epost ?? 'ingen e-post';\n}\n\nfunction sponsorNamn(id: number): string | null {\n  const sponsor = hitta(id)?.sponsor;\n  if (sponsor === null || sponsor === undefined) {\n    return null;\n  }\n  return hitta(sponsor)?.namn ?? null;\n}\n",
+    hints: [],
+    tests: [
+      {
+        description: 'kontakt(1)',
+        code: 'kontakt(1)',
+        expected: 'ada@exempel.se',
+      },
+      {
+        description: 'kontakt(2) saknar e-post',
+        code: 'kontakt(2)',
+        expected: 'ingen e-post',
+      },
+      {
+        description: 'kontakt(9) finns inte',
+        code: 'kontakt(9)',
+        expected: 'okänd medlem',
+      },
+      {
+        description: 'Cias sponsor är Bo',
+        code: 'sponsorNamn(3)',
+        expected: 'Bo',
+      },
+      {
+        description: 'Ada har ingen sponsor',
+        code: 'sponsorNamn(1)',
+        expected: null,
+      },
+      {
+        description: 'Medlem 9 finns inte',
+        code: 'sponsorNamn(9)',
+        expected: null,
+      },
+    ],
+    typeTests: [
+      {
+        description: 'hitta kan ge undefined',
+        code: 'const m: Medlem = hitta(1);',
+        fails: true,
+      },
+      {
+        description: 'sponsorNamn kan ge null',
+        code: 'const s: string = sponsorNamn(1);',
+        fails: true,
+      },
+    ],
+    sourceChecks: [
+      {
+        description: 'Inget !',
+        pattern: /[\w)\]]!(\.|;|\)|,|\s)/,
+        forbidden: true,
+      },
+    ],
+  },
+
+  fall: {
+    id: 'fall-boss',
+    track: 'fall',
+    title: 'Boss: Kassan',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Kassan har tre sorters rader: varor som säljs styckvis, varor som vägs, och rabatter. Glömmer någon ett fall ska TypeScript säga till.',
+    task: `Uppgift:
+  1. \`radsumma(r: Rad): number\` med en \`switch\` och ett \`default\` med \`never\`. Styck: \`pris * antal\`, vikt: \`kiloPris * kilo\` avrundat med \`Math.round\`, rabatt: \`-kronor\`.
+  2. \`total(rader: Rad[]): number\` – summan av alla rader.`,
+    starterCode:
+      "type Rad =\n  | { typ: 'styck'; namn: string; pris: number; antal: number }\n  | { typ: 'vikt'; namn: string; kiloPris: number; kilo: number }\n  | { typ: 'rabatt'; kronor: number };\n",
+    solution:
+      "type Rad =\n  | { typ: 'styck'; namn: string; pris: number; antal: number }\n  | { typ: 'vikt'; namn: string; kiloPris: number; kilo: number }\n  | { typ: 'rabatt'; kronor: number };\n\nfunction radsumma(r: Rad): number {\n  switch (r.typ) {\n    case 'styck':\n      return r.pris * r.antal;\n    case 'vikt':\n      return Math.round(r.kiloPris * r.kilo);\n    case 'rabatt':\n      return -r.kronor;\n    default: {\n      const koll: never = r;\n      return koll;\n    }\n  }\n}\n\nfunction total(rader: Rad[]): number {\n  return rader.reduce((summa, r) => summa + radsumma(r), 0);\n}\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Två bullar',
+        code: "radsumma({ typ: 'styck', namn: 'Bulle', pris: 32, antal: 2 })",
+        expected: 64,
+      },
+      {
+        description: 'Äpplen',
+        code: "radsumma({ typ: 'vikt', namn: 'Äpple', kiloPris: 29.9, kilo: 1.2 })",
+        expected: 36,
+      },
+      {
+        description: 'En rabatt',
+        code: "radsumma({ typ: 'rabatt', kronor: 10 })",
+        expected: -10,
+      },
+      {
+        description: 'Hela kvittot',
+        code: "total([{ typ: 'styck', namn: 'Bulle', pris: 32, antal: 2 }, { typ: 'vikt', namn: 'Äpple', kiloPris: 29.9, kilo: 1.2 }, { typ: 'rabatt', kronor: 10 }])",
+        expected: 90,
+      },
+    ],
+    typeTests: [
+      {
+        description: 'En rabatt har inget pris',
+        code: "radsumma({ typ: 'rabatt', pris: 1 });",
+        fails: true,
+      },
+    ],
+    sourceChecks: [
+      { description: 'Har en switch', pattern: /switch\s*\(\s*\w+\.typ\s*\)/ },
+      { description: 'Har en never-koll', pattern: /:\s*never\s*=/ },
+    ],
+  },
 };

@@ -1305,6 +1305,538 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-lanekort',
+    track: 'saknas',
+    title: 'Lånekortet',
+    reward: { emoji: '🎫', name: 'Lånekort' },
+    summary: 'Lån som är återlämnade, och lån som inte är det än.',
+    steps: [
+      {
+        title: 'Lånen',
+        why: 'aterlamnad är null så länge boken är utlånad. Typen säger det, så ingen kan glömma att det kan saknas.',
+        xp: 15,
+        description: 'Lånekortet har tre lån.',
+        task: 'Uppgift: Skapa `type Lan = { titel: string; utlanad: string; aterlamnad: string | null }` och `lan: Lan[]`: Ronja (lånad 2026-05-02, tillbaka 2026-05-20), Mio (2026-06-01, inte tillbaka) och Pippi (2026-06-03, inte tillbaka).',
+        starterCode: '// Steg 1: lånen\n',
+        solution:
+          "type Lan = { titel: string; utlanad: string; aterlamnad: string | null };\n\nconst lan: Lan[] = [\n  { titel: 'Ronja', utlanad: '2026-05-02', aterlamnad: '2026-05-20' },\n  { titel: 'Mio', utlanad: '2026-06-01', aterlamnad: null },\n  { titel: 'Pippi', utlanad: '2026-06-03', aterlamnad: null },\n];\n",
+        hints: [
+          'aterlamnad: string | null',
+          'null betyder att boken inte är tillbaka.',
+          "{ titel: 'Mio', utlanad: '2026-06-01', aterlamnad: null }",
+        ],
+        tests: [
+          {
+            description: 'Mio är utlånad',
+            code: 'lan[1].aterlamnad',
+            expected: null,
+          },
+        ],
+        typeTests: [
+          {
+            description: 'aterlamnad kan inte saknas helt',
+            code: "const l: Lan = { titel: 'X', utlanad: '2026-01-01' };",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Utlånat just nu',
+        why: "=== null är den tydligaste kollen. Ett tomt datum som '' hade varit lätt att blanda ihop med ett riktigt.",
+        xp: 15,
+        description: 'Vilka böcker är inte tillbaka?',
+        task: 'Uppgift: Skriv `utlanade(lista: Lan[]): string[]` med titlarna där `aterlamnad` är `null`.',
+        solution:
+          "type Lan = { titel: string; utlanad: string; aterlamnad: string | null };\n\nconst lan: Lan[] = [\n  { titel: 'Ronja', utlanad: '2026-05-02', aterlamnad: '2026-05-20' },\n  { titel: 'Mio', utlanad: '2026-06-01', aterlamnad: null },\n  { titel: 'Pippi', utlanad: '2026-06-03', aterlamnad: null },\n];\n\nfunction utlanade(lista: Lan[]): string[] {\n  return lista.filter(l => l.aterlamnad === null).map(l => l.titel);\n}\n",
+        hints: [
+          'filter(l => l.aterlamnad === null)',
+          'map till titeln.',
+          'return lista.filter(l => l.aterlamnad === null).map(l => l.titel);',
+        ],
+        tests: [
+          {
+            description: 'Mio och Pippi',
+            code: 'utlanade(lan)',
+            expected: ['Mio', 'Pippi'],
+          },
+        ],
+      },
+      {
+        title: 'Status',
+        why: 'Två saker kan saknas: lånet och återlämningen. find ger undefined och aterlamnad kan vara null, och båda hanteras.',
+        xp: 20,
+        description: 'Slå upp en bok.',
+        task: "Uppgift: Skriv `status(titel: string): string`: datumet boken kom tillbaka, `'utlånad'` om den inte är tillbaka, eller `'aldrig lånad'`.",
+        solution:
+          "type Lan = { titel: string; utlanad: string; aterlamnad: string | null };\n\nconst lan: Lan[] = [\n  { titel: 'Ronja', utlanad: '2026-05-02', aterlamnad: '2026-05-20' },\n  { titel: 'Mio', utlanad: '2026-06-01', aterlamnad: null },\n  { titel: 'Pippi', utlanad: '2026-06-03', aterlamnad: null },\n];\n\nfunction utlanade(lista: Lan[]): string[] {\n  return lista.filter(l => l.aterlamnad === null).map(l => l.titel);\n}\n\nfunction status(titel: string): string {\n  const hittat = lan.find(l => l.titel === titel);\n  if (hittat === undefined) {\n    return 'aldrig lånad';\n  }\n  return hittat.aterlamnad ?? 'utlånad';\n}\n",
+        hints: [
+          'Börja med find.',
+          "if (hittat === undefined) return 'aldrig lånad';",
+          "return hittat.aterlamnad ?? 'utlånad';",
+        ],
+        tests: [
+          {
+            description: 'Ronja',
+            code: "status('Ronja')",
+            expected: '2026-05-20',
+          },
+          { description: 'Mio', code: "status('Mio')", expected: 'utlånad' },
+          {
+            description: 'Emil',
+            code: "status('Emil')",
+            expected: 'aldrig lånad',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-installningar',
+    track: 'saknas',
+    title: 'Inställningarna',
+    reward: { emoji: '⚙️', name: 'Kugghjul' },
+    summary: 'Inställningar där allt är valfritt och har ett standardvärde.',
+    steps: [
+      {
+        title: 'Typen',
+        why: 'Allt är valfritt, för en ny användare har inte ställt in något. Det som saknas får ett standardvärde senare.',
+        xp: 15,
+        description: 'Appen har tre inställningar.',
+        task: 'Uppgift: Skapa `type Installningar` där `tema` (`string`), `textstorlek` (`number`) och `ljud` (`boolean`) alla är valfria.',
+        starterCode: '// Steg 1: typen\n',
+        solution:
+          'type Installningar = { tema?: string; textstorlek?: number; ljud?: boolean };\n',
+        hints: [
+          'Frågetecken efter varje namn.',
+          'tema?: string',
+          'type Installningar = { tema?: string; textstorlek?: number; ljud?: boolean };',
+        ],
+        tests: [],
+        typeTests: [
+          {
+            description: 'Ett tomt objekt är okej',
+            code: 'const i: Installningar = {};',
+          },
+          {
+            description: 'ljud är en boolean',
+            code: "const i: Installningar = { ljud: 'ja' };",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Standardvärden',
+        why: 'ljud ?? true behåller false. Med || hade en användare som stängt av ljudet fått det påslaget igen.',
+        xp: 20,
+        description: 'Det som saknas får ett standardvärde.',
+        task: "Uppgift: Skriv `tema(i: Installningar): string` (standard `'ljust'`) och `ljud(i: Installningar): boolean` (standard `true`).",
+        solution:
+          "type Installningar = { tema?: string; textstorlek?: number; ljud?: boolean };\n\nfunction tema(i: Installningar): string {\n  return i.tema ?? 'ljust';\n}\n\nfunction ljud(i: Installningar): boolean {\n  return i.ljud ?? true;\n}\n",
+        hints: [
+          '?? ger standardvärdet.',
+          "return i.tema ?? 'ljust';",
+          'return i.ljud ?? true;',
+        ],
+        tests: [
+          { description: 'Inget tema', code: 'tema({})', expected: 'ljust' },
+          {
+            description: 'Mörkt tema',
+            code: "tema({ tema: 'mörkt' })",
+            expected: 'mörkt',
+          },
+          {
+            description: 'Ljud av stannar av',
+            code: 'ljud({ ljud: false })',
+            expected: false,
+          },
+          {
+            description: 'Inget val ger ljud',
+            code: 'ljud({})',
+            expected: true,
+          },
+        ],
+      },
+      {
+        title: 'Beskrivningen',
+        why: 'En användare som inte loggat in har inga inställningar alls, så parametern kan vara null. Efter if-satsen vet TypeScript att den finns.',
+        xp: 20,
+        description: 'Visa inställningarna som en rad.',
+        task: "Uppgift: Skriv `beskriv(i: Installningar | null): string`: `'standard'` för `null`, annars t.ex. `'mörkt, 18 px, ljud av'` (textstorlek standard 16).",
+        solution:
+          "type Installningar = { tema?: string; textstorlek?: number; ljud?: boolean };\n\nfunction tema(i: Installningar): string {\n  return i.tema ?? 'ljust';\n}\n\nfunction ljud(i: Installningar): boolean {\n  return i.ljud ?? true;\n}\n\nfunction beskriv(i: Installningar | null): string {\n  if (i === null) {\n    return 'standard';\n  }\n  return `${tema(i)}, ${i.textstorlek ?? 16} px, ljud ${ljud(i) ? 'på' : 'av'}`;\n}\n",
+        hints: [
+          "if (i === null) return 'standard';",
+          'i.textstorlek ?? 16',
+          "`${tema(i)}, ${i.textstorlek ?? 16} px, ljud ${ljud(i) ? 'på' : 'av'}`",
+        ],
+        tests: [
+          { description: 'null', code: 'beskriv(null)', expected: 'standard' },
+          {
+            description: 'Mörkt, 18, av',
+            code: "beskriv({ tema: 'mörkt', textstorlek: 18, ljud: false })",
+            expected: 'mörkt, 18 px, ljud av',
+          },
+          {
+            description: 'Tomt',
+            code: 'beskriv({})',
+            expected: 'ljust, 16 px, ljud på',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-sokruta',
+    track: 'saknas',
+    title: 'Sökrutan',
+    reward: { emoji: '🔎', name: 'Förstoringsglas' },
+    summary: 'En sökning som ibland hittar något och ibland inte.',
+    steps: [
+      {
+        title: 'Sök',
+        why: 'Returtypen string | undefined säger att sökningen kan misslyckas. Den som anropar sok måste hantera det.',
+        xp: 15,
+        description:
+          'Sök efter ett namn, utan att bry dig om stora och små bokstäver.',
+        task: 'Uppgift: Skriv `sok(lista: string[], ord: string): string | undefined` som ger första namnet som innehåller ordet (gör båda till små bokstäver).',
+        starterCode: '// Steg 1: sök\n',
+        solution:
+          'function sok(lista: string[], ord: string): string | undefined {\n  return lista.find(namn => namn.toLowerCase().includes(ord.toLowerCase()));\n}\n',
+        hints: [
+          'find med includes.',
+          'toLowerCase() på båda.',
+          'return lista.find(namn => namn.toLowerCase().includes(ord.toLowerCase()));',
+        ],
+        tests: [
+          {
+            description: 'Hittar Bella',
+            code: "sok(['Ada', 'Bella'], 'ELL')",
+            expected: 'Bella',
+          },
+          {
+            description: 'Hittar inget',
+            code: "sok(['Ada'], 'x')",
+            expected: undefined,
+          },
+        ],
+      },
+      {
+        title: 'Svaret',
+        why: '?? gör om undefined till en text som går att visa. Resten av appen behöver då aldrig tänka på att sökningen kan misslyckas.',
+        xp: 15,
+        description: 'Visa ett svar i sökrutan.',
+        task: "Uppgift: Skriv `svar(lista: string[], ord: string): string` som ger träffen eller `'Inga träffar'`.",
+        solution:
+          "function sok(lista: string[], ord: string): string | undefined {\n  return lista.find(namn => namn.toLowerCase().includes(ord.toLowerCase()));\n}\n\nfunction svar(lista: string[], ord: string): string {\n  return sok(lista, ord) ?? 'Inga träffar';\n}\n",
+        hints: [
+          'Använd sok.',
+          '??',
+          "return sok(lista, ord) ?? 'Inga träffar';",
+        ],
+        tests: [
+          {
+            description: 'En träff',
+            code: "svar(['Ada', 'Bo'], 'bo')",
+            expected: 'Bo',
+          },
+          {
+            description: 'Ingen träff',
+            code: "svar(['Ada'], 'q')",
+            expected: 'Inga träffar',
+          },
+        ],
+      },
+      {
+        title: 'Första bokstaven',
+        why: 'Funktionen svarar null när det inte finns något att visa. Typen gör att den som använder den inte kan glömma det.',
+        xp: 20,
+        description: 'Sökrutan visar träffens första bokstav i en cirkel.',
+        task: 'Uppgift: Skriv `forsta(lista: string[], ord: string): string | null` som ger träffens första bokstav, eller `null`.',
+        solution:
+          "function sok(lista: string[], ord: string): string | undefined {\n  return lista.find(namn => namn.toLowerCase().includes(ord.toLowerCase()));\n}\n\nfunction svar(lista: string[], ord: string): string {\n  return sok(lista, ord) ?? 'Inga träffar';\n}\n\nfunction forsta(lista: string[], ord: string): string | null {\n  const traff = sok(lista, ord);\n  if (traff === undefined) {\n    return null;\n  }\n  return traff.charAt(0);\n}\n",
+        hints: [
+          'const traff = sok(lista, ord);',
+          'if (traff === undefined) return null;',
+          'return traff.charAt(0);',
+        ],
+        tests: [
+          {
+            description: 'B',
+            code: "forsta(['Ada', 'Bo'], 'bo')",
+            expected: 'B',
+          },
+          { description: 'null', code: "forsta(['Ada'], 'q')", expected: null },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-chatt',
+    track: 'fall',
+    title: 'Chatten',
+    reward: { emoji: '💬', name: 'Pratbubbla' },
+    summary:
+      'Text, bilder och folk som går – tre sorters meddelanden i samma chatt.',
+    steps: [
+      {
+        title: 'Meddelandena',
+        why: 'Alla meddelanden har fran, men resten skiljer sig. typ säger vilket sorts meddelande det är.',
+        xp: 15,
+        description: 'Chatten har tre sorters meddelanden.',
+        task: "Uppgift: Skapa `type Meddelande` som en union: `{ typ: 'text'; fran: string; text: string }`, `{ typ: 'bild'; fran: string; url: string }` och `{ typ: 'lamnade'; fran: string }`.",
+        starterCode: '// Steg 1: meddelandena\n',
+        solution:
+          "type Meddelande =\n  | { typ: 'text'; fran: string; text: string }\n  | { typ: 'bild'; fran: string; url: string }\n  | { typ: 'lamnade'; fran: string };\n",
+        hints: [
+          'Tre objekttyper med | emellan.',
+          "{ typ: 'lamnade'; fran: string }",
+          'type Meddelande =\n  | { … }\n  | { … }\n  | { … };',
+        ],
+        tests: [],
+        typeTests: [
+          {
+            description: 'Ett textmeddelande',
+            code: "const m: Meddelande = { typ: 'text', fran: 'Ada', text: 'Hej' };",
+          },
+          {
+            description: 'En bild har ingen text',
+            code: "const m: Meddelande = { typ: 'bild', fran: 'Ada', text: 'Hej' };",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Visa',
+        why: 'never i default gör att en ny sorts meddelande, som en röstanteckning, blir ett typfel här tills den visas.',
+        xp: 20,
+        description: 'Varje sort visas på sitt sätt.',
+        task: "Uppgift: Skriv `visa(m: Meddelande): string` med en `switch` och `never`: `'Ada: Hej'`, `'Ada skickade en bild'` och `'Ada lämnade chatten'`.",
+        solution:
+          "type Meddelande =\n  | { typ: 'text'; fran: string; text: string }\n  | { typ: 'bild'; fran: string; url: string }\n  | { typ: 'lamnade'; fran: string };\n\nfunction visa(m: Meddelande): string {\n  switch (m.typ) {\n    case 'text':\n      return `${m.fran}: ${m.text}`;\n    case 'bild':\n      return `${m.fran} skickade en bild`;\n    case 'lamnade':\n      return `${m.fran} lämnade chatten`;\n    default: {\n      const koll: never = m;\n      return koll;\n    }\n  }\n}\n",
+        hints: [
+          'switch (m.typ)',
+          'default: { const koll: never = m; return koll; }',
+          "case 'text':\n      return `${m.fran}: ${m.text}`;",
+        ],
+        tests: [
+          {
+            description: 'Text',
+            code: "visa({ typ: 'text', fran: 'Ada', text: 'Hej' })",
+            expected: 'Ada: Hej',
+          },
+          {
+            description: 'Bild',
+            code: "visa({ typ: 'bild', fran: 'Bo', url: 'x.png' })",
+            expected: 'Bo skickade en bild',
+          },
+          {
+            description: 'Lämnade',
+            code: "visa({ typ: 'lamnade', fran: 'Cia' })",
+            expected: 'Cia lämnade chatten',
+          },
+        ],
+        sourceChecks: [
+          { description: 'Har en never-koll', pattern: /:\s*never\s*=/ },
+        ],
+      },
+      {
+        title: 'Alla bilder',
+        why: 'filter på typ ger bara bildmeddelanden, och TypeScript vet att de har en url.',
+        xp: 20,
+        description: 'Galleriet visar alla bilder i chatten.',
+        task: 'Uppgift: Skriv `bilder(meddelanden: Meddelande[]): string[]` med alla bilders `url`.',
+        solution:
+          "type Meddelande =\n  | { typ: 'text'; fran: string; text: string }\n  | { typ: 'bild'; fran: string; url: string }\n  | { typ: 'lamnade'; fran: string };\n\nfunction visa(m: Meddelande): string {\n  switch (m.typ) {\n    case 'text':\n      return `${m.fran}: ${m.text}`;\n    case 'bild':\n      return `${m.fran} skickade en bild`;\n    case 'lamnade':\n      return `${m.fran} lämnade chatten`;\n    default: {\n      const koll: never = m;\n      return koll;\n    }\n  }\n}\n\nfunction bilder(meddelanden: Meddelande[]): string[] {\n  return meddelanden.filter(m => m.typ === 'bild').map(m => m.url);\n}\n",
+        hints: [
+          "filter(m => m.typ === 'bild')",
+          'map(m => m.url)',
+          "return meddelanden.filter(m => m.typ === 'bild').map(m => m.url);",
+        ],
+        tests: [
+          {
+            description: 'Två bilder',
+            code: "bilder([{ typ: 'bild', fran: 'A', url: '1.png' }, { typ: 'text', fran: 'B', text: 'x' }, { typ: 'bild', fran: 'C', url: '2.png' }])",
+            expected: ['1.png', '2.png'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-lampa',
+    track: 'fall',
+    title: 'Smarta lampan',
+    reward: { emoji: '💡', name: 'Glödlampa' },
+    summary: 'En lampa som styrs med kommandon från en app.',
+    steps: [
+      {
+        title: 'Lampan och kommandona',
+        why: 'Bara dimma behöver ett värde. Med en etikett per kommando kan ingen skicka "tänd 50 %".',
+        xp: 15,
+        description: 'Lampan tar emot tre kommandon.',
+        task: "Uppgift: Skapa `type Lampa = { pa: boolean; ljus: number }` och `type Kommando`: `{ typ: 'tand' }`, `{ typ: 'slack' }` eller `{ typ: 'dimma'; procent: number }`.",
+        starterCode: '// Steg 1: lampan och kommandona\n',
+        solution:
+          "type Lampa = { pa: boolean; ljus: number };\n\ntype Kommando =\n  | { typ: 'tand' }\n  | { typ: 'slack' }\n  | { typ: 'dimma'; procent: number };\n",
+        hints: [
+          'Två typer.',
+          "{ typ: 'dimma'; procent: number }",
+          "type Kommando =\n  | { typ: 'tand' }\n  | { typ: 'slack' }\n  | { typ: 'dimma'; procent: number };",
+        ],
+        tests: [],
+        typeTests: [
+          {
+            description: 'Dimma kräver procent',
+            code: "const k: Kommando = { typ: 'dimma' };",
+            fails: true,
+          },
+          { description: 'Tänd', code: "const k: Kommando = { typ: 'tand' };" },
+        ],
+      },
+      {
+        title: 'Utför',
+        why: 'Funktionen ger en ny lampa i stället för att ändra den gamla. Så blir det lätt att visa historiken.',
+        xp: 20,
+        description: 'Ett kommando ger en ny lampa.',
+        task: 'Uppgift: Skriv `utfor(lampa: Lampa, k: Kommando): Lampa`: tänd ger 100 %, släck 0 % och dimma den procent som anges (på om den är över 0).',
+        solution:
+          "type Lampa = { pa: boolean; ljus: number };\n\ntype Kommando =\n  | { typ: 'tand' }\n  | { typ: 'slack' }\n  | { typ: 'dimma'; procent: number };\n\nfunction utfor(lampa: Lampa, k: Kommando): Lampa {\n  switch (k.typ) {\n    case 'tand':\n      return { pa: true, ljus: 100 };\n    case 'slack':\n      return { pa: false, ljus: 0 };\n    case 'dimma':\n      return { pa: k.procent > 0, ljus: k.procent };\n  }\n}\n",
+        hints: [
+          'switch (k.typ)',
+          "case 'tand':\n      return { pa: true, ljus: 100 };",
+          "case 'dimma':\n      return { pa: k.procent > 0, ljus: k.procent };",
+        ],
+        tests: [
+          {
+            description: 'Tänd',
+            code: "utfor({ pa: false, ljus: 0 }, { typ: 'tand' })",
+            expected: { pa: true, ljus: 100 },
+          },
+          {
+            description: 'Dimma 30',
+            code: "utfor({ pa: true, ljus: 100 }, { typ: 'dimma', procent: 30 })",
+            expected: { pa: true, ljus: 30 },
+          },
+        ],
+      },
+      {
+        title: 'Ett schema',
+        why: 'utfor har precis den form reduce vill ha: läget hittills och nästa sak. Därför kan den skickas in direkt.',
+        xp: 20,
+        description: 'Kör många kommandon efter varandra.',
+        task: 'Uppgift: Skriv `kor(lampa: Lampa, kommandon: Kommando[]): Lampa` med `reduce` och `utfor`.',
+        solution:
+          "type Lampa = { pa: boolean; ljus: number };\n\ntype Kommando =\n  | { typ: 'tand' }\n  | { typ: 'slack' }\n  | { typ: 'dimma'; procent: number };\n\nfunction utfor(lampa: Lampa, k: Kommando): Lampa {\n  switch (k.typ) {\n    case 'tand':\n      return { pa: true, ljus: 100 };\n    case 'slack':\n      return { pa: false, ljus: 0 };\n    case 'dimma':\n      return { pa: k.procent > 0, ljus: k.procent };\n  }\n}\n\nfunction kor(lampa: Lampa, kommandon: Kommando[]): Lampa {\n  return kommandon.reduce(utfor, lampa);\n}\n",
+        hints: [
+          'reduce med lampan som startvärde.',
+          'reduce(utfor, lampa)',
+          'return kommandon.reduce(utfor, lampa);',
+        ],
+        tests: [
+          {
+            description: 'Tänd, dimma 40, släck',
+            code: "kor({ pa: false, ljus: 0 }, [{ typ: 'tand' }, { typ: 'dimma', procent: 40 }, { typ: 'slack' }])",
+            expected: { pa: false, ljus: 0 },
+          },
+          {
+            description: 'Tänd, dimma 40',
+            code: "kor({ pa: false, ljus: 0 }, [{ typ: 'tand' }, { typ: 'dimma', procent: 40 }])",
+            expected: { pa: true, ljus: 40 },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-formular',
+    track: 'fall',
+    title: 'Formuläret',
+    reward: { emoji: '📝', name: 'Anteckningsblock' },
+    summary:
+      'Läs ett formulär där varje fält antingen är rätt ifyllt eller har ett fel.',
+    steps: [
+      {
+        title: 'Läs åldern',
+        why: 'Svaret säger själv om det gick bra. Ingen behöver fånga ett fel, och ingen kan läsa varde utan att först kolla ok.',
+        xp: 20,
+        description: 'Åldern skrivs som text.',
+        task: "Uppgift: Skapa `type Svar = { ok: true; varde: number } | { ok: false; fel: string }` och `lasAlder(text: string): Svar`: `'Inget tal'` om det inte är ett tal, `'För lågt'` om det är under 0.",
+        starterCode: '// Steg 1: läs åldern\n',
+        solution:
+          "type Svar = { ok: true; varde: number } | { ok: false; fel: string };\n\nfunction lasAlder(text: string): Svar {\n  const alder = Number(text);\n  if (Number.isNaN(alder)) {\n    return { ok: false, fel: 'Inget tal' };\n  }\n  if (alder < 0) {\n    return { ok: false, fel: 'För lågt' };\n  }\n  return { ok: true, varde: alder };\n}\n",
+        hints: [
+          'Number.isNaN(alder) kollar om det blev ett tal.',
+          "return { ok: false, fel: 'Inget tal' };",
+          'return { ok: true, varde: alder };',
+        ],
+        tests: [
+          {
+            description: "'42'",
+            code: "lasAlder('42')",
+            expected: { ok: true, varde: 42 },
+          },
+          {
+            description: "'hej'",
+            code: "lasAlder('hej')",
+            expected: { ok: false, fel: 'Inget tal' },
+          },
+          {
+            description: "'-3'",
+            code: "lasAlder('-3')",
+            expected: { ok: false, fel: 'För lågt' },
+          },
+        ],
+      },
+      {
+        title: 'Meddelandet',
+        why: 'if (s.ok) smalnar av: i den ena grenen finns varde, i den andra fel.',
+        xp: 15,
+        description: 'Visa vad som hände.',
+        task: "Uppgift: Skriv `meddelande(s: Svar): string`: `'Ålder: 42'` eller `'Fel: Inget tal'`.",
+        solution:
+          "type Svar = { ok: true; varde: number } | { ok: false; fel: string };\n\nfunction lasAlder(text: string): Svar {\n  const alder = Number(text);\n  if (Number.isNaN(alder)) {\n    return { ok: false, fel: 'Inget tal' };\n  }\n  if (alder < 0) {\n    return { ok: false, fel: 'För lågt' };\n  }\n  return { ok: true, varde: alder };\n}\n\nfunction meddelande(s: Svar): string {\n  if (s.ok) {\n    return `Ålder: ${s.varde}`;\n  }\n  return `Fel: ${s.fel}`;\n}\n",
+        hints: [
+          'if (s.ok) { … }',
+          'return `Ålder: ${s.varde}`;',
+          'return `Fel: ${s.fel}`;',
+        ],
+        tests: [
+          {
+            description: 'OK',
+            code: "meddelande(lasAlder('42'))",
+            expected: 'Ålder: 42',
+          },
+          {
+            description: 'Fel',
+            code: "meddelande(lasAlder('x'))",
+            expected: 'Fel: Inget tal',
+          },
+        ],
+      },
+      {
+        title: 'Alla fel',
+        why: 'filter(s => !s.ok) ger bara de misslyckade svaren, och TypeScript vet att de har fel.',
+        xp: 20,
+        description: 'Visa alla fel i formuläret på en gång.',
+        task: 'Uppgift: Skriv `felen(svar: Svar[]): string[]` med alla felmeddelanden.',
+        solution:
+          "type Svar = { ok: true; varde: number } | { ok: false; fel: string };\n\nfunction lasAlder(text: string): Svar {\n  const alder = Number(text);\n  if (Number.isNaN(alder)) {\n    return { ok: false, fel: 'Inget tal' };\n  }\n  if (alder < 0) {\n    return { ok: false, fel: 'För lågt' };\n  }\n  return { ok: true, varde: alder };\n}\n\nfunction meddelande(s: Svar): string {\n  if (s.ok) {\n    return `Ålder: ${s.varde}`;\n  }\n  return `Fel: ${s.fel}`;\n}\n\nfunction felen(svar: Svar[]): string[] {\n  return svar.filter(s => !s.ok).map(s => s.fel);\n}\n",
+        hints: [
+          'filter(s => !s.ok)',
+          'map(s => s.fel)',
+          'return svar.filter(s => !s.ok).map(s => s.fel);',
+        ],
+        tests: [
+          {
+            description: 'Två fel',
+            code: "felen([lasAlder('x'), lasAlder('5'), lasAlder('-1')])",
+            expected: ['Inget tal', 'För lågt'],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `// ${text}`);

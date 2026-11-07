@@ -206,4 +206,77 @@ export const QUIZ = {
       explain: 'filter behåller bara talen 1 och 3.',
     },
   ],
+  saknas: [
+    {
+      question: 'Vilken typ ger [1, 2, 3].find(x => x > 5)?',
+      options: ['number | undefined', 'number', 'undefined', 'number[]'],
+      explain: 'find hittar inte alltid något, och då blir svaret undefined.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'const n: number | undefined = 0;\nconsole.log(n ?? 5);',
+      check: 'log',
+      options: ['0', '5', 'undefined', 'null'],
+      explain: '?? ger 5 bara för null och undefined. 0 får vara kvar.',
+    },
+    {
+      question: 'Vad betyder ! i kund!.namn?',
+      options: [
+        'Ett löfte att kund inte är null eller undefined',
+        'Att kund inte får ändras',
+        'Att namn är viktigt',
+        'Att kund är falsk',
+      ],
+      explain:
+        'TypeScript litar på löftet och kontrollerar inte. Är det fel kraschar koden.',
+    },
+    {
+      question: 'Vad händer med koden?',
+      code: "const namn: string[] = ['Ada'];\nconst forsta: string = namn.find(n => n === 'Bo');",
+      check: 'typeError',
+      options: [
+        'Ett typfel: svaret kan vara undefined',
+        "forsta blir 'Bo'",
+        "forsta blir ''",
+        'Inget',
+      ],
+      explain: 'find ger string | undefined, och det passar inte en string.',
+    },
+  ],
+  fall: [
+    {
+      question: 'Vad gör kind i en union som Cirkel | Kvadrat?',
+      options: [
+        'Säger vilken sort objektet är, så att TypeScript kan smalna av',
+        'Gör objektet snabbare',
+        'Är ett reserverat ord i TypeScript',
+        'Räknar hur många det finns',
+      ],
+      explain: 'En gemensam egenskap med olika värden skiljer typerna åt.',
+    },
+    {
+      question: 'Vilken typ har f i default när alla fall är hanterade?',
+      options: ['never', 'Form', 'undefined', 'any'],
+      explain: 'Det finns inget kvar som kan nå dit, och det heter never.',
+    },
+    {
+      question: 'Vad händer med koden?',
+      code: "type Svar = { ok: true; varde: number } | { ok: false; fel: string };\nconst s: Svar = { ok: false, fel: 'x' };\nconsole.log(s.varde);",
+      check: 'typeError',
+      options: [
+        'Ett typfel: varde finns inte i alla fall',
+        'undefined',
+        'x',
+        '0',
+      ],
+      explain: 'varde finns bara när ok är true, och det har inte kollats.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: "type Form = { kind: 'cirkel'; r: number } | { kind: 'kvadrat'; s: number };\nconst former: Form[] = [{ kind: 'cirkel', r: 1 }, { kind: 'kvadrat', s: 2 }];\nconsole.log(former.filter(f => f.kind === 'cirkel').length);",
+      check: 'log',
+      options: ['1', '2', '0', 'cirkel'],
+      explain: 'Bara en av formerna är en cirkel.',
+    },
+  ],
 };
