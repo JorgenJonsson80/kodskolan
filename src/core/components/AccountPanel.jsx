@@ -6,6 +6,10 @@ const statusText = {
   error: 'Kunde inte spara. Försöker igen vid nästa ändring.',
 };
 
+// Supabase begränsar hur många mejl som skickas i timmen (429).
+const isRateLimit = error =>
+  error.status === 429 || /rate limit/i.test(error.message ?? '');
+
 // Inloggning med en länk i mejlet. Utan inloggning sparas allt bara i
 // den här webbläsaren.
 export default function AccountPanel({ account, onSignOut }) {
@@ -46,7 +50,11 @@ export default function AccountPanel({ account, onSignOut }) {
     const signInError = await account.signIn(email.trim());
     setIsSending(false);
     if (signInError) {
-      setError('Det gick inte att skicka länken. Försök igen om en stund.');
+      setError(
+        isRateLimit(signInError)
+          ? 'Just nu har det skickats för många inloggningsmejl. Vänta en stund (upp till en timme) och försök igen.'
+          : 'Det gick inte att skicka länken. Försök igen om en stund.',
+      );
     } else {
       setSentTo(email.trim());
     }
