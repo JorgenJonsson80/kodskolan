@@ -89,4 +89,28 @@ export const RESOURCES = {
       video: 'http 4xx status codes explained',
     },
   ],
+  mallar: [
+    {
+      topic: 'render_template och Jinja',
+      read: `${QUICK}#rendering-templates`,
+      video: 'flask jinja templates tutorial',
+    },
+    {
+      topic: 'Jinjas filter och extends',
+      read: 'https://jinja.palletsprojects.com/en/stable/templates/',
+      video: 'jinja2 template inheritance extends block',
+    },
+  ],
+  formular: [
+    {
+      topic: 'request.form',
+      read: `${QUICK}#the-request-object`,
+      video: 'flask forms request.form tutorial',
+    },
+    {
+      topic: 'redirect och url_for',
+      read: `${QUICK}#redirects-and-errors`,
+      video: 'flask redirect url_for post redirect get',
+    },
+  ],
 };

@@ -385,4 +385,108 @@ export const BOSSES = {
     ],
     request: { method: 'POST', path: '/hundar', body: '{"namn": "Saga"}' },
   },
+
+  mallar: {
+    id: 'mallar-boss',
+    track: 'mallar',
+    title: 'Boss: Pensionatets sajt',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Tassen vill ha en sajt med en lista över gästerna och en sida per hund.',
+    task: "Uppgift: `bas.html` finns (📁). Bygg, med mallar som bygger på den:\n  1. `/` – en `<ul>` med en `<li>` per hund: en länk till `hund` med namnet.\n  2. `/hund/<int:id>` – en `<h1>` med namnet och en `<p>` med rasen med stora bokstäver (`upper`). Saknas hunden: `'<p>Ingen sådan hund</p>'` (också i bas.html) med 404.",
+    starterCode:
+      "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'ras': 'berner'},\n    {'id': 2, 'namn': 'Saga', 'ras': 'tax'},\n]\n",
+    solution:
+      "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'ras': 'berner'},\n    {'id': 2, 'namn': 'Saga', 'ras': 'tax'},\n]\n\nLISTA = \"\"\"{% extends 'bas.html' %}{% block innehall %}<ul>{% for h in hundar %}<li><a href=\"{{ url_for('hund', id=h.id) }}\">{{ h.namn }}</a></li>{% endfor %}</ul>{% endblock %}\"\"\"\nHUND = \"\"\"{% extends 'bas.html' %}{% block innehall %}{% if hund %}<h1>{{ hund.namn }}</h1><p>{{ hund.ras|upper }}</p>{% else %}<p>Ingen sådan hund</p>{% endif %}{% endblock %}\"\"\"\n\n\n@app.get('/')\ndef start():\n    return render_template_string(LISTA, hundar=hundar)\n\n\n@app.get('/hund/<int:id>')\ndef hund(id):\n    funnen = next((h for h in hundar if h['id'] == id), None)\n    if funnen is None:\n        return render_template_string(HUND, hund=None), 404\n    return render_template_string(HUND, hund=funnen)\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Listan',
+        code: '\'<ul><li><a href="/hund/1">Bamse</a></li><li><a href="/hund/2">Saga</a></li></ul>\' in __get(\'/\').text',
+        expected: true,
+      },
+      {
+        description: 'Sidhuvudet',
+        code: "'🐾 Tassen' in __get('/hund/1').text",
+        expected: true,
+      },
+      {
+        description: 'Bamse',
+        code: "'<h1>Bamse</h1><p>BERNER</p>' in __get('/hund/1').text",
+        expected: true,
+      },
+      { description: 'Hund 9', code: "__get('/hund/9').status", expected: 404 },
+      {
+        description: 'Hund 9 text',
+        code: "'<p>Ingen sådan hund</p>' in __get('/hund/9').text",
+        expected: true,
+      },
+    ],
+    request: { path: '/hund/1' },
+    files: {
+      'templates/bas.html':
+        '<!doctype html>\n<title>Tassen</title>\n<header>🐾 Tassen</header>\n<main>{% block innehall %}{% endblock %}</main>\n',
+    },
+  },
+
+  formular: {
+    id: 'formular-boss',
+    track: 'formular',
+    title: 'Boss: Bokningsförfrågan',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Hundägare ska kunna skicka en förfrågan om plats på pensionatet.',
+    task: "Uppgift:\n  1. `GET /boka` visar `FORMULAR`.\n  2. `POST /boka` läser `agare`, `hund` och `natter` (heltal). Saknas något, eller är `natter` inte 1–14, svarar den `FORMULAR + '<p>Fyll i allt rätt</p>'` med 400.\n  3. Annars sparas `{'agare', 'hund', 'natter'}` i `forfragningar` och besökaren skickas vidare till `tack` med hundens namn: `url_for('tack', hund=…)`.\n  4. `GET /tack/<hund>` svarar `f'Tack! Vi hör av oss om {hund}.'`",
+    starterCode:
+      'from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFORMULAR = \'<form method="post"><input name="agare"><input name="hund"><input name="natter"><button>Skicka</button></form>\'\nforfragningar = []\n',
+    solution:
+      "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFORMULAR = '<form method=\"post\"><input name=\"agare\"><input name=\"hund\"><input name=\"natter\"><button>Skicka</button></form>'\nforfragningar = []\n\n\n@app.get('/boka')\ndef visa():\n    return FORMULAR\n\n\n@app.post('/boka')\ndef boka():\n    agare = request.form.get('agare', '').strip()\n    hund = request.form.get('hund', '').strip()\n    natter = request.form.get('natter', type=int)\n    if not agare or not hund or natter is None or not 1 <= natter <= 14:\n        return FORMULAR + '<p>Fyll i allt rätt</p>', 400\n    forfragningar.append({'agare': agare, 'hund': hund, 'natter': natter})\n    return redirect(url_for('tack', hund=hund))\n\n\n@app.get('/tack/<hund>')\ndef tack(hund):\n    return f'Tack! Vi hör av oss om {hund}.'\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Formuläret',
+        code: "'<form' in __get('/boka').text",
+        expected: true,
+      },
+      {
+        description: 'Skickas vidare',
+        code: "__post('/boka', form={'agare': 'Ada', 'hund': 'Bamse', 'natter': '3'}).location",
+        expected: '/tack/Bamse',
+        inputs: [],
+      },
+      {
+        description: 'Sparas',
+        code: "(__post('/boka', form={'agare': 'Ada', 'hund': 'Bamse', 'natter': '3'}), forfragningar)[-1]",
+        expected: [{ agare: 'Ada', hund: 'Bamse', natter: 3 }],
+        inputs: [],
+      },
+      {
+        description: 'Utan hund',
+        code: "__post('/boka', form={'agare': 'Ada', 'natter': '3'}).status",
+        expected: 400,
+        inputs: [],
+      },
+      {
+        description: '20 nätter',
+        code: "__post('/boka', form={'agare': 'Ada', 'hund': 'Bamse', 'natter': '20'}).status",
+        expected: 400,
+        inputs: [],
+      },
+      {
+        description: 'Tack',
+        code: "__get('/tack/Saga').text",
+        expected: 'Tack! Vi hör av oss om Saga.',
+      },
+    ],
+    request: {
+      method: 'POST',
+      path: '/boka',
+      kind: 'form',
+      body: 'agare=Ada&hund=Bamse&natter=3',
+    },
+  },
 };

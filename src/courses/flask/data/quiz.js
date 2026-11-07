@@ -241,4 +241,78 @@ export const QUIZ = {
       explain: '403 gäller även om appen vet vem du är.',
     },
   ],
+  mallar: [
+    {
+      question: 'Var lägger Flask mallfilerna?',
+      options: [
+        'I mappen templates',
+        'I mappen static',
+        'Bredvid app.run',
+        'I en databas',
+      ],
+      explain: 'render_template letar i templates/.',
+    },
+    {
+      question: 'Vad är skillnaden mellan {{ }} och {% %}?',
+      options: [
+        '{{ }} skriver ut ett värde, {% %} är kod som for och if',
+        '{{ }} är kod, {% %} skriver ut',
+        'Ingen skillnad',
+        '{% %} är kommentarer',
+      ],
+      explain: 'Utskrift med dubbla klammer, kod med procenttecken.',
+    },
+    {
+      question: 'Vad svarar appen?',
+      code: "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\n@app.get('/')\ndef start():\n    return render_template_string('{{ x }}', x='<b>')",
+      check: "__get('/').text",
+      options: ['&lt;b&gt;', '<b>', 'x', '{{ x }}'],
+      explain: 'Jinja gör om < och > så att HTML i datan visas som text.',
+    },
+    {
+      question: "Vad gör {% extends 'bas.html' %}?",
+      options: [
+        'Låter mallen bygga på bas.html och fylla dess block',
+        'Kopierar bas.html',
+        'Laddar en CSS-fil',
+        'Gör bas.html större',
+      ],
+      explain: 'Alla sidor kan dela sidhuvud och sidfot.',
+    },
+  ],
+  formular: [
+    {
+      question: 'Hur läser man fältet <input name="stad"> i Flask?',
+      options: [
+        "request.form['stad']",
+        "request.args['stad']",
+        "request.get_json()['stad']",
+        'request.stad',
+      ],
+      explain: 'Formulär skickas med POST, och fälten finns i request.form.',
+    },
+    {
+      question: 'Varför skickar man vidare med redirect efter ett formulär?',
+      options: [
+        'Så att formuläret inte skickas igen om sidan laddas om',
+        'För att det går fortare',
+        'För att Flask kräver det',
+        'För att dölja adressen',
+      ],
+      explain: 'Mönstret heter POST/Redirect/GET.',
+    },
+    {
+      question: 'Vilken statuskod ger redirect?',
+      code: "from flask import Flask, redirect\n\napp = Flask(__name__)\n\n@app.post('/')\ndef skicka():\n    return redirect('/tack')",
+      check: "__post('/').status",
+      options: ['302', '200', '301', '404'],
+      explain:
+        '302 Found säger åt webbläsaren att gå vidare till adressen i Location.',
+    },
+    {
+      question: 'Vad skickas för en kryssruta som inte är ikryssad?',
+      options: ['Ingenting', "'off'", "'false'", "''"],
+      explain: "Därför kollar man med 'namn' in request.form.",
+    },
+  ],
 };

@@ -1908,6 +1908,543 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-menysida',
+    track: 'mallar',
+    title: 'Menysidan',
+    reward: { emoji: '🍽️', name: 'Tallrik' },
+    summary: 'Kaféets meny som en riktig sida.',
+    steps: [
+      {
+        title: 'Menyn',
+        why: 'En for-loop i mallen gör en rad per rätt. Ändras listan ändras sidan.',
+        xp: 15,
+        description: 'Alla rätter i en lista.',
+        task: 'Uppgift: `/` ska visa `<ul>` med `<li>{{ r.namn }} {{ r.pris }} kr</li>` per rätt.',
+        starterCode:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nmeny = [\n    {'namn': 'Kaffe', 'pris': 35, 'slut': False},\n    {'namn': 'Te', 'pris': 30, 'slut': True},\n    {'namn': 'Bulle', 'pris': 32, 'slut': False},\n]\n",
+        solution:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nmeny = [\n    {'namn': 'Kaffe', 'pris': 35, 'slut': False},\n    {'namn': 'Te', 'pris': 30, 'slut': True},\n    {'namn': 'Bulle', 'pris': 32, 'slut': False},\n]\n\nMALL = '<ul>{% for r in meny %}<li>{{ r.namn }} {{ r.pris }} kr</li>{% endfor %}</ul>'\n\n\n@app.get('/')\ndef start():\n    return render_template_string(MALL, meny=meny)\n",
+        hints: [
+          "MALL = '<ul>{% for r in meny %}…{% endfor %}</ul>'",
+          '<li>{{ r.namn }} {{ r.pris }} kr</li>',
+          'render_template_string(MALL, meny=meny)',
+        ],
+        tests: [
+          {
+            description: 'Kaffe',
+            code: "'<li>Kaffe 35 kr</li>' in __get('/').text",
+            expected: true,
+          },
+          {
+            description: 'Tre rader',
+            code: "__get('/').text.count('<li>')",
+            expected: 3,
+          },
+        ],
+      },
+      {
+        title: 'Slut',
+        why: 'if i mallen bestämmer vad som visas. Priset för en rätt som är slut spelar ingen roll.',
+        xp: 15,
+        description: 'Visa (slut) i stället för priset.',
+        task: 'Uppgift: För rätter med `slut` visas `(slut)` i stället för priset.',
+        solution:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nmeny = [\n    {'namn': 'Kaffe', 'pris': 35, 'slut': False},\n    {'namn': 'Te', 'pris': 30, 'slut': True},\n    {'namn': 'Bulle', 'pris': 32, 'slut': False},\n]\n\nMALL = '<ul>{% for r in meny %}<li>{{ r.namn }} {% if r.slut %}(slut){% else %}{{ r.pris }} kr{% endif %}</li>{% endfor %}</ul>'\n\n\n@app.get('/')\ndef start():\n    return render_template_string(MALL, meny=meny)\n",
+        hints: [
+          '{% if r.slut %}(slut){% else %}…{% endif %}',
+          'Inne i <li>.',
+          '<li>{{ r.namn }} {% if r.slut %}(slut){% else %}{{ r.pris }} kr{% endif %}</li>',
+        ],
+        tests: [
+          {
+            description: 'Te',
+            code: "'<li>Te (slut)</li>' in __get('/').text",
+            expected: true,
+          },
+        ],
+      },
+      {
+        title: 'Antal',
+        why: 'Filter kan kedjas: selectattr väljer, list gör en lista och length räknar.',
+        xp: 20,
+        description: 'Hur många finns att köpa?',
+        task: 'Uppgift: Lägg till `<p>2 rätter finns</p>` efter listan, uträknat med filter: `meny|selectattr("slut", "false")|list|length`.',
+        solution:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nmeny = [\n    {'namn': 'Kaffe', 'pris': 35, 'slut': False},\n    {'namn': 'Te', 'pris': 30, 'slut': True},\n    {'namn': 'Bulle', 'pris': 32, 'slut': False},\n]\n\nMALL = '<ul>{% for r in meny %}<li>{{ r.namn }} {% if r.slut %}(slut){% else %}{{ r.pris }} kr{% endif %}</li>{% endfor %}</ul><p>{{ meny|selectattr(\"slut\", \"false\")|list|length }} rätter finns</p>'\n\n\n@app.get('/')\ndef start():\n    return render_template_string(MALL, meny=meny)\n",
+        hints: [
+          'selectattr("slut", "false") väljer de som inte är slut.',
+          '|list|length',
+          '<p>{{ … }} rätter finns</p>',
+        ],
+        tests: [
+          {
+            description: 'Två',
+            code: "'<p>2 rätter finns</p>' in __get('/').text",
+            expected: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-galleri',
+    track: 'mallar',
+    title: 'Hundgalleriet',
+    reward: { emoji: '📸', name: 'Kamera' },
+    summary: 'Ett galleri där alla sidor delar sidhuvud.',
+    steps: [
+      {
+        title: 'Galleriet',
+        why: 'extends gör att galleriet får sidhuvudet från bas.html utan att skriva det igen.',
+        xp: 15,
+        description: 'Alla hundar på en sida.',
+        task: 'Uppgift: `/` ska bygga på `bas.html` och visa en `<p>{{ h.bild }} {{ h.namn }}</p>` per hund.',
+        starterCode:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'bild': '🐕'},\n    {'id': 2, 'namn': 'Saga', 'bild': '🐩'},\n]\n",
+        solution:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'bild': '🐕'},\n    {'id': 2, 'namn': 'Saga', 'bild': '🐩'},\n]\n\nLISTA = \"{% extends 'bas.html' %}{% block innehall %}{% for h in hundar %}<p>{{ h.bild }} {{ h.namn }}</p>{% endfor %}{% endblock %}\"\n\n\n@app.get('/')\ndef start():\n    return render_template_string(LISTA, hundar=hundar)\n",
+        hints: [
+          "{% extends 'bas.html' %}",
+          '{% block innehall %}{% for h in hundar %}…{% endfor %}{% endblock %}',
+          'render_template_string(LISTA, hundar=hundar)',
+        ],
+        tests: [
+          {
+            description: 'Sidhuvud',
+            code: "'🐾 Tassen' in __get('/').text",
+            expected: true,
+          },
+          {
+            description: 'Saga',
+            code: "'<p>🐩 Saga</p>' in __get('/').text",
+            expected: true,
+          },
+        ],
+        files: {
+          'templates/bas.html':
+            '<!doctype html>\n<title>Tassen</title>\n<header>🐾 Tassen</header>\n<main>{% block innehall %}{% endblock %}</main>\n',
+        },
+      },
+      {
+        title: 'En hund',
+        why: 'Varje sida är en egen mall, men alla bygger på samma bas.',
+        xp: 15,
+        description: 'En sida per hund.',
+        task: 'Uppgift: `/hund/<int:id>` visar `<h1>{{ h.bild }} {{ h.namn }}</h1>` i bas.html.',
+        solution:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'bild': '🐕'},\n    {'id': 2, 'namn': 'Saga', 'bild': '🐩'},\n]\n\nLISTA = \"{% extends 'bas.html' %}{% block innehall %}{% for h in hundar %}<p>{{ h.bild }} {{ h.namn }}</p>{% endfor %}{% endblock %}\"\n\n\n@app.get('/')\ndef start():\n    return render_template_string(LISTA, hundar=hundar)\n\nHUND = \"{% extends 'bas.html' %}{% block innehall %}<h1>{{ h.bild }} {{ h.namn }}</h1>{% endblock %}\"\n\n\n@app.get('/hund/<int:id>')\ndef hund(id):\n    h = next((h for h in hundar if h['id'] == id), None)\n    return render_template_string(HUND, h=h)\n",
+        hints: [
+          'HUND = "{% extends \'bas.html\' %}…"',
+          "next((h for h in hundar if h['id'] == id), None)",
+          'render_template_string(HUND, h=h)',
+        ],
+        tests: [
+          {
+            description: 'Bamse',
+            code: "'<h1>🐕 Bamse</h1>' in __get('/hund/1').text",
+            expected: true,
+          },
+        ],
+        request: { path: '/hund/1' },
+      },
+      {
+        title: 'Saknas',
+        why: 'Även felsidan bygger på bas.html, så att besökaren inte tappar bort sig.',
+        xp: 15,
+        description: 'En snygg 404.',
+        task: 'Uppgift: En hund som saknas visar `<p>Ingen sådan hund</p>` i bas.html med 404.',
+        solution:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'bild': '🐕'},\n    {'id': 2, 'namn': 'Saga', 'bild': '🐩'},\n]\n\nLISTA = \"{% extends 'bas.html' %}{% block innehall %}{% for h in hundar %}<p>{{ h.bild }} {{ h.namn }}</p>{% endfor %}{% endblock %}\"\n\n\n@app.get('/')\ndef start():\n    return render_template_string(LISTA, hundar=hundar)\n\nSAKNAS = \"{% extends 'bas.html' %}{% block innehall %}<p>Ingen sådan hund</p>{% endblock %}\"\nHUND = \"{% extends 'bas.html' %}{% block innehall %}<h1>{{ h.bild }} {{ h.namn }}</h1>{% endblock %}\"\n\n\n@app.get('/hund/<int:id>')\ndef hund(id):\n    h = next((h for h in hundar if h['id'] == id), None)\n    if h is None:\n        return render_template_string(SAKNAS), 404\n    return render_template_string(HUND, h=h)\n",
+        hints: [
+          'SAKNAS = "{% extends \'bas.html\' %}…"',
+          'if h is None:',
+          'return render_template_string(SAKNAS), 404',
+        ],
+        tests: [
+          {
+            description: '404',
+            code: "__get('/hund/9').status",
+            expected: 404,
+          },
+          {
+            description: 'Sidhuvud',
+            code: "'🐾 Tassen' in __get('/hund/9').text",
+            expected: true,
+          },
+        ],
+        request: { path: '/hund/9' },
+      },
+    ],
+  },
+  {
+    id: 'proj-kvitto-sida',
+    track: 'mallar',
+    title: 'Kvittosidan',
+    reward: { emoji: '🧾', name: 'Kassalapp' },
+    summary: 'Ett kvitto som HTML-tabell.',
+    steps: [
+      {
+        title: 'Raderna',
+        why: 'Jinja kan räkna: {{ r.pris * r.antal }} räknas ut när sidan skapas.',
+        xp: 15,
+        description: 'En rad per vara.',
+        task: 'Uppgift: `/` visar en `<table>` med en `<tr>` per rad: vara, antal och `pris * antal`, i var sin `<td>`.',
+        starterCode:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nrader = [\n    {'vara': 'Kaffe', 'pris': 35, 'antal': 2},\n    {'vara': 'Bulle', 'pris': 32, 'antal': 1},\n]\n",
+        solution:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nrader = [\n    {'vara': 'Kaffe', 'pris': 35, 'antal': 2},\n    {'vara': 'Bulle', 'pris': 32, 'antal': 1},\n]\n\nKVITTO = '<table>{% for r in rader %}<tr><td>{{ r.vara }}</td><td>{{ r.antal }}</td><td>{{ r.pris * r.antal }}</td></tr>{% endfor %}</table>'\n\n\n@app.get('/')\ndef kvitto():\n    return render_template_string(KVITTO, rader=rader)\n",
+        hints: [
+          '{% for r in rader %}<tr>…</tr>{% endfor %}',
+          '<td>{{ r.pris * r.antal }}</td>',
+          'render_template_string(KVITTO, rader=rader)',
+        ],
+        tests: [
+          {
+            description: 'Kaffe',
+            code: "'<tr><td>Kaffe</td><td>2</td><td>70</td></tr>' in __get('/').text",
+            expected: true,
+          },
+        ],
+      },
+      {
+        title: 'Totalt',
+        why: 'Summan räknas i Python och skickas med. Mallen visar, Python räknar.',
+        xp: 15,
+        description: 'Summan under tabellen.',
+        task: 'Uppgift: Skicka med `summa` och visa `<p>Totalt: {{ summa }} kr</p>` efter tabellen.',
+        solution:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nrader = [\n    {'vara': 'Kaffe', 'pris': 35, 'antal': 2},\n    {'vara': 'Bulle', 'pris': 32, 'antal': 1},\n]\n\nKVITTO = '<table>{% for r in rader %}<tr><td>{{ r.vara }}</td><td>{{ r.antal }}</td><td>{{ r.pris * r.antal }}</td></tr>{% endfor %}</table><p>Totalt: {{ summa }} kr</p>'\n\n\n@app.get('/')\ndef kvitto():\n    return render_template_string(KVITTO, rader=rader, summa=sum(r['pris'] * r['antal'] for r in rader))\n",
+        hints: [
+          "summa=sum(r['pris'] * r['antal'] for r in rader)",
+          '<p>Totalt: {{ summa }} kr</p>',
+          'Efter </table>.',
+        ],
+        tests: [
+          {
+            description: '102 kr',
+            code: "'<p>Totalt: 102 kr</p>' in __get('/').text",
+            expected: true,
+          },
+        ],
+      },
+      {
+        title: 'Markera',
+        why: 'En klass på raden gör att CSS kan färga rader med fler än en vara.',
+        xp: 15,
+        description: 'Markera rader med fler än en.',
+        task: 'Uppgift: Rader med `antal` över 1 får `class="flera"` på `<tr>`.',
+        solution:
+          "from flask import Flask, render_template_string\n\napp = Flask(__name__)\n\nrader = [\n    {'vara': 'Kaffe', 'pris': 35, 'antal': 2},\n    {'vara': 'Bulle', 'pris': 32, 'antal': 1},\n]\n\nKVITTO = '<table>{% for r in rader %}<tr{% if r.antal > 1 %} class=\"flera\"{% endif %}><td>{{ r.vara }}</td><td>{{ r.antal }}</td><td>{{ r.pris * r.antal }}</td></tr>{% endfor %}</table><p>Totalt: {{ summa }} kr</p>'\n\n\n@app.get('/')\ndef kvitto():\n    return render_template_string(KVITTO, rader=rader, summa=sum(r['pris'] * r['antal'] for r in rader))\n",
+        hints: [
+          '{% if r.antal > 1 %} class="flera"{% endif %}',
+          'Inne i <tr …>.',
+          '<tr{% if r.antal > 1 %} class="flera"{% endif %}>',
+        ],
+        tests: [
+          {
+            description: 'Kaffe markerad',
+            code: "'<tr class=\"flera\"><td>Kaffe' in __get('/').text",
+            expected: true,
+          },
+          {
+            description: 'Bulle inte',
+            code: "'<tr><td>Bulle' in __get('/').text",
+            expected: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-kontakt',
+    track: 'formular',
+    title: 'Kontaktformuläret',
+    reward: { emoji: '✉️', name: 'Brev' },
+    summary: 'Ett kontaktformulär som kontrollerar och sparar.',
+    steps: [
+      {
+        title: 'Visa och ta emot',
+        why: 'Samma adress visar formuläret och tar emot det. Bara metoden skiljer.',
+        xp: 15,
+        description: 'Formuläret och svaret.',
+        task: "Uppgift: `GET /kontakt` visar `FORMULAR`, och `POST /kontakt` svarar `f'Tack {namn}!'`.",
+        starterCode:
+          'from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFORMULAR = \'<form method="post"><input name="namn"><input name="epost"><textarea name="text"></textarea><button>Skicka</button></form>\'\nmeddelanden = []\n',
+        solution:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFORMULAR = '<form method=\"post\"><input name=\"namn\"><input name=\"epost\"><textarea name=\"text\"></textarea><button>Skicka</button></form>'\nmeddelanden = []\n\n\n@app.get('/kontakt')\ndef visa():\n    return FORMULAR\n\n\n@app.post('/kontakt')\ndef skicka():\n    namn = request.form.get('namn', '')\n    return f'Tack {namn}!'\n",
+        hints: [
+          "@app.get('/kontakt') och @app.post('/kontakt')",
+          "request.form.get('namn', '')",
+          "return f'Tack {namn}!'",
+        ],
+        tests: [
+          {
+            description: 'GET',
+            code: "'<form' in __get('/kontakt').text",
+            expected: true,
+          },
+          {
+            description: 'POST',
+            code: "__post('/kontakt', form={'namn': 'Ada', 'epost': 'a@b'}).text",
+            expected: 'Tack Ada!',
+          },
+        ],
+        request: { path: '/kontakt' },
+      },
+      {
+        title: 'E-posten',
+        why: 'En e-post utan @ är fel. Formuläret visas igen, så att besökaren kan rätta.',
+        xp: 15,
+        description: 'Kolla e-posten.',
+        task: "Uppgift: En e-post utan `@` ger `FORMULAR + '<p>Ogiltig e-post</p>'` med 400.",
+        solution:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFORMULAR = '<form method=\"post\"><input name=\"namn\"><input name=\"epost\"><textarea name=\"text\"></textarea><button>Skicka</button></form>'\nmeddelanden = []\n\n\n@app.get('/kontakt')\ndef visa():\n    return FORMULAR\n\n\n@app.post('/kontakt')\ndef skicka():\n    namn = request.form.get('namn', '')\n    epost = request.form.get('epost', '')\n    if '@' not in epost:\n        return FORMULAR + '<p>Ogiltig e-post</p>', 400\n    return f'Tack {namn}!'\n",
+        hints: [
+          "epost = request.form.get('epost', '')",
+          "if '@' not in epost:",
+          "return FORMULAR + '<p>Ogiltig e-post</p>', 400",
+        ],
+        tests: [
+          {
+            description: 'Utan @',
+            code: "__post('/kontakt', form={'namn': 'Ada', 'epost': 'ada'}).status",
+            expected: 400,
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/kontakt',
+          kind: 'form',
+          body: 'namn=Ada&epost=ada',
+        },
+      },
+      {
+        title: 'Spara och tacka',
+        why: 'Efter POST kommer redirect, så att ett meddelande inte skickas två gånger vid omladdning.',
+        xp: 20,
+        description: 'Spara meddelandet.',
+        task: "Uppgift: Spara `{'namn', 'epost', 'text'}` i `meddelanden` och skicka vidare till `tack`, som svarar `'Tack! Vi svarar snart.'`.",
+        solution:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFORMULAR = '<form method=\"post\"><input name=\"namn\"><input name=\"epost\"><textarea name=\"text\"></textarea><button>Skicka</button></form>'\nmeddelanden = []\n\n\n@app.get('/kontakt')\ndef visa():\n    return FORMULAR\n\n\n@app.post('/kontakt')\ndef skicka():\n    namn = request.form.get('namn', '')\n    epost = request.form.get('epost', '')\n    if '@' not in epost:\n        return FORMULAR + '<p>Ogiltig e-post</p>', 400\n    meddelanden.append({'namn': namn, 'epost': epost, 'text': request.form.get('text', '')})\n    return redirect(url_for('tack'))\n\n\n@app.get('/tack')\ndef tack():\n    return 'Tack! Vi svarar snart.'\n",
+        hints: [
+          'meddelanden.append({ … })',
+          "return redirect(url_for('tack'))",
+          "@app.get('/tack')",
+        ],
+        tests: [
+          {
+            description: 'Vidare',
+            code: "__post('/kontakt', form={'namn': 'Ada', 'epost': 'a@b', 'text': 'Hej'}).location",
+            expected: '/tack',
+            inputs: [],
+          },
+          {
+            description: 'Sparas',
+            code: "(__post('/kontakt', form={'namn': 'Ada', 'epost': 'a@b', 'text': 'Hej'}), len(meddelanden))[-1]",
+            expected: 1,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/kontakt',
+          kind: 'form',
+          body: 'namn=Ada&epost=ada@exempel.se&text=Hej',
+        },
+      },
+    ],
+  },
+  {
+    id: 'proj-fragesport',
+    track: 'formular',
+    title: 'Frågesporten',
+    reward: { emoji: '🏆', name: 'Pokal' },
+    summary: 'En fråga, ett svar och en poängräknare.',
+    steps: [
+      {
+        title: 'Frågan',
+        why: 'strip och lower gör att " Oslo " och "OSLO" också räknas som rätt.',
+        xp: 15,
+        description: 'Ställ en fråga.',
+        task: "Uppgift: `GET /` visar `FRAGA`, och `POST /` svarar `'Rätt!'` om svaret är oslo (oavsett stora bokstäver och mellanslag), annars `'Fel, det var Oslo.'`.",
+        starterCode:
+          'from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFRAGA = \'<p>Vad är huvudstaden i Norge?</p><form method="post"><input name="svar"><button>Svara</button></form>\'\npoang = 0\n',
+        solution:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFRAGA = '<p>Vad är huvudstaden i Norge?</p><form method=\"post\"><input name=\"svar\"><button>Svara</button></form>'\npoang = 0\n\n\n@app.get('/')\ndef fraga():\n    return FRAGA\n\n\n@app.post('/')\ndef svara():\n    svar = request.form.get('svar', '').strip().lower()\n    if svar == 'oslo':\n        return 'Rätt!'\n    return 'Fel, det var Oslo.'\n",
+        hints: [
+          "request.form.get('svar', '').strip().lower()",
+          "if svar == 'oslo':",
+          "return 'Fel, det var Oslo.'",
+        ],
+        tests: [
+          {
+            description: 'OSLO',
+            code: "__post('/', form={'svar': ' OSLO '}).text",
+            expected: 'Rätt!',
+          },
+          {
+            description: 'Bergen',
+            code: "__post('/', form={'svar': 'Bergen'}).text",
+            expected: 'Fel, det var Oslo.',
+          },
+        ],
+        request: { method: 'POST', path: '/', kind: 'form', body: 'svar=Oslo' },
+      },
+      {
+        title: 'Poäng',
+        why: 'global gör att funktionen får ändra poängen utanför sig.',
+        xp: 15,
+        description: 'Räkna poängen.',
+        task: 'Uppgift: Öka `poang` med 1 när svaret är rätt.',
+        solution:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFRAGA = '<p>Vad är huvudstaden i Norge?</p><form method=\"post\"><input name=\"svar\"><button>Svara</button></form>'\npoang = 0\n\n\n@app.get('/')\ndef fraga():\n    return FRAGA\n\n\n@app.post('/')\ndef svara():\n    svar = request.form.get('svar', '').strip().lower()\n    global poang\n    if svar == 'oslo':\n        poang += 1\n        return 'Rätt!'\n    return 'Fel, det var Oslo.'\n",
+        hints: ['global poang', 'poang += 1', "Före return 'Rätt!'."],
+        tests: [
+          {
+            description: 'Två rätt',
+            code: "(__post('/', form={'svar': 'oslo'}), __post('/', form={'svar': 'oslo'}), poang)[-1]",
+            expected: 2,
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/', kind: 'form', body: 'svar=oslo' },
+      },
+      {
+        title: 'Resultatet',
+        why: 'Efter svaret skickas besökaren till en sida som visar poängen. Rätt eller fel syns där.',
+        xp: 15,
+        description: 'Visa resultatet.',
+        task: "Uppgift: Efter svaret ska `POST /` skicka vidare till `resultat`, som svarar `f'Du har {poang} poäng'`.",
+        solution:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nFRAGA = '<p>Vad är huvudstaden i Norge?</p><form method=\"post\"><input name=\"svar\"><button>Svara</button></form>'\npoang = 0\n\n\n@app.get('/')\ndef fraga():\n    return FRAGA\n\n\n@app.post('/')\ndef svara():\n    svar = request.form.get('svar', '').strip().lower()\n    global poang\n    if svar == 'oslo':\n        poang += 1\n    return redirect(url_for('resultat'))\n\n\n@app.get('/resultat')\ndef resultat():\n    return f'Du har {poang} poäng'\n",
+        hints: [
+          "return redirect(url_for('resultat'))",
+          "@app.get('/resultat')",
+          "return f'Du har {poang} poäng'",
+        ],
+        tests: [
+          {
+            description: 'Vidare',
+            code: "__post('/', form={'svar': 'oslo'}).location",
+            expected: '/resultat',
+            inputs: [],
+          },
+          {
+            description: 'En poäng',
+            code: "(__post('/', form={'svar': 'oslo'}), __get('/resultat').text)[-1]",
+            expected: 'Du har 1 poäng',
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/', kind: 'form', body: 'svar=oslo' },
+      },
+    ],
+  },
+  {
+    id: 'proj-kaffeorder',
+    track: 'formular',
+    title: 'Kaffebeställningen',
+    reward: { emoji: '☕', name: 'Kaffekopp' },
+    summary: 'Beställ kaffe med formulär.',
+    steps: [
+      {
+        title: 'Storleken',
+        why: 'Priserna ligger i en dictionary, och den är också listan över tillåtna storlekar.',
+        xp: 15,
+        description: 'Välj storlek.',
+        task: "Uppgift: `POST /bestall` läser `storlek`. Finns den i `PRISER` svarar den t.ex. `'mellan: 38 kr'`, annars `'Ogiltig storlek'` med 400.",
+        starterCode:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nPRISER = {'liten': 30, 'mellan': 38, 'stor': 45}\nordrar = []\n",
+        solution:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nPRISER = {'liten': 30, 'mellan': 38, 'stor': 45}\nordrar = []\n\n\n@app.post('/bestall')\ndef bestall():\n    storlek = request.form.get('storlek')\n    if storlek not in PRISER:\n        return 'Ogiltig storlek', 400\n    return f'{storlek}: {PRISER[storlek]} kr'\n",
+        hints: [
+          "storlek = request.form.get('storlek')",
+          'if storlek not in PRISER:',
+          "return f'{storlek}: {PRISER[storlek]} kr'",
+        ],
+        tests: [
+          {
+            description: 'mellan',
+            code: "__post('/bestall', form={'storlek': 'mellan'}).text",
+            expected: 'mellan: 38 kr',
+          },
+          {
+            description: 'jätte',
+            code: "__post('/bestall', form={'storlek': 'jätte'}).status",
+            expected: 400,
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/bestall',
+          kind: 'form',
+          body: 'storlek=mellan',
+        },
+      },
+      {
+        title: 'Extra shot',
+        why: 'En kryssruta finns bara i formuläret när den är ikryssad.',
+        xp: 15,
+        description: 'En extra shot kostar 6 kr.',
+        task: 'Uppgift: Med kryssrutan `extra` kostar kaffet 6 kr mer.',
+        solution:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nPRISER = {'liten': 30, 'mellan': 38, 'stor': 45}\nordrar = []\n\n\n@app.post('/bestall')\ndef bestall():\n    storlek = request.form.get('storlek')\n    if storlek not in PRISER:\n        return 'Ogiltig storlek', 400\n    pris = PRISER[storlek]\n    if 'extra' in request.form:\n        pris += 6\n    return f'{storlek}: {pris} kr'\n",
+        hints: [
+          "if 'extra' in request.form:",
+          'pris += 6',
+          "return f'{storlek}: {pris} kr'",
+        ],
+        tests: [
+          {
+            description: 'Med extra',
+            code: "__post('/bestall', form={'storlek': 'liten', 'extra': 'on'}).text",
+            expected: 'liten: 36 kr',
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/bestall',
+          kind: 'form',
+          body: 'storlek=liten&extra=on',
+        },
+      },
+      {
+        title: 'Ordern',
+        why: 'Ordern sparas och får ett nummer, och besökaren skickas till en sida för just den ordern.',
+        xp: 20,
+        description: 'Spara och visa ordern.',
+        task: "Uppgift: Spara `{'storlek', 'pris'}` i `ordrar` och skicka vidare till `order` med `nr=len(ordrar)`. `/order/<int:nr>` svarar t.ex. `'Order 1: liten, 36 kr'`.",
+        solution:
+          "from flask import Flask, redirect, request, url_for\n\napp = Flask(__name__)\n\nPRISER = {'liten': 30, 'mellan': 38, 'stor': 45}\nordrar = []\n\n\n@app.post('/bestall')\ndef bestall():\n    storlek = request.form.get('storlek')\n    if storlek not in PRISER:\n        return 'Ogiltig storlek', 400\n    pris = PRISER[storlek]\n    if 'extra' in request.form:\n        pris += 6\n    ordrar.append({'storlek': storlek, 'pris': pris})\n    return redirect(url_for('order', nr=len(ordrar)))\n\n\n@app.get('/order/<int:nr>')\ndef order(nr):\n    o = ordrar[nr - 1]\n    return f\"Order {nr}: {o['storlek']}, {o['pris']} kr\"\n",
+        hints: [
+          "ordrar.append({'storlek': storlek, 'pris': pris})",
+          "return redirect(url_for('order', nr=len(ordrar)))",
+          "@app.get('/order/<int:nr>')",
+        ],
+        tests: [
+          {
+            description: 'Vidare',
+            code: "__post('/bestall', form={'storlek': 'stor'}).location",
+            expected: '/order/1',
+            inputs: [],
+          },
+          {
+            description: 'Ordern',
+            code: "(__post('/bestall', form={'storlek': 'liten', 'extra': 'on'}), __get('/order/1').text)[-1]",
+            expected: 'Order 1: liten, 36 kr',
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/bestall',
+          kind: 'form',
+          body: 'storlek=liten&extra=on',
+        },
+      },
+    ],
+  },
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `# ${text}`);

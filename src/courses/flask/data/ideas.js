@@ -277,6 +277,86 @@ export const IDEAS = [
     ],
     extra: 'Lägg till en tid för när felet hände i varje felsvar.',
   },
+  {
+    id: 'idea-portfolio',
+    track: 'mallar',
+    emoji: '💼',
+    title: 'Portfolion',
+    summary:
+      'En sajt som visar dina projekt, med en mall som alla sidor bygger på.',
+    goals: [
+      'Skapa en lista med projekt: namn, år och beskrivning.',
+      'Gör en startsida med alla och en sida per projekt.',
+      'Låt båda bygga på samma bas med extends.',
+    ],
+    extra: 'Lägg till en sida per år med url_for-länkar.',
+  },
+  {
+    id: 'idea-schema-sida',
+    track: 'mallar',
+    emoji: '📅',
+    title: 'Veckoschemat',
+    summary: 'Ett schema som tabell, med dagens dag markerad.',
+    goals: [
+      'Skapa ett schema: en dictionary med dagar och lektioner.',
+      'Visa det som en tabell med for-loopar i mallen.',
+      'Markera dagens dag med en klass och if.',
+    ],
+    extra: 'Visa hur många lektioner det är varje dag med length.',
+  },
+  {
+    id: 'idea-xss',
+    track: 'mallar',
+    emoji: '🛡️',
+    title: 'XSS-labbet',
+    summary: 'Se med egna ögon varför mallar skyddar.',
+    goals: [
+      'Gör en väg som visar ett namn med en f-sträng, och en med en mall.',
+      'Anropa båda med HTML i namnet och jämför svaren.',
+      'Läs om filtret safe och fundera på när det är farligt.',
+    ],
+    extra: 'Läs om XSS på MDN.',
+  },
+  {
+    id: 'idea-enkat',
+    track: 'formular',
+    emoji: '📋',
+    title: 'Enkäten',
+    summary: 'En enkät med flera frågor och en sammanställning.',
+    goals: [
+      'Gör ett formulär med textfält, en rullista och kryssrutor.',
+      'Spara svaren och skicka vidare till en tacksida.',
+      'Gör en sida som räknar ihop alla svar.',
+    ],
+    extra: 'Visa felet bredvid rätt fält när något saknas.',
+  },
+  {
+    id: 'idea-inloggningsform',
+    track: 'formular',
+    emoji: '🔑',
+    title: 'Inloggningsformuläret',
+    summary:
+      'Ett formulär som kollar namn och lösenord – en förövning till bana 12.',
+    goals: [
+      'Gör ett formulär med namn och lösenord.',
+      'Jämför med en dictionary med användare.',
+      'Skicka vidare till en välkomstsida, eller visa ett fel.',
+    ],
+    extra: 'Varför ska lösenord aldrig sparas som de är? Läs om hashning.',
+  },
+  {
+    id: 'idea-recept-form',
+    track: 'formular',
+    emoji: '🧁',
+    title: 'Receptboken',
+    summary: 'Lägg till egna recept via ett formulär.',
+    goals: [
+      'Ett formulär för namn, ingredienser (en per rad) och tid i minuter.',
+      'Spara recepten och visa dem på startsidan.',
+      'Kontrollera att tiden är ett tal.',
+    ],
+    extra: 'Gör en sida per recept med url_for.',
+  },
 ];
 
 const goalLines = idea =>
