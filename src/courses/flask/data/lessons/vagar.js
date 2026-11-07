@@ -236,7 +236,7 @@ export const VAGAR = [
     example: "url_for('start')   # '/'\nurl_for('hund', nr=2)   # '/hund/2'",
     task: 'Uppgift: Skapa `/` som svarar med en länk till Ada: `f\'<a href="{url_for("hej", namn="Ada")}">Hälsa på Ada</a>\'`.',
     starterCode: `${IMPORT_URL}\n@app.get('/hej/<namn>')\ndef hej(namn):\n    return f'Hej {namn}!'\n`,
-    solution: `${IMPORT_URL}\n@app.get('/hej/<namn>')\ndef hej(namn):\n    return f'Hej {namn}!'\n\n\n@app.get('/')\ndef start():\n    adress = url_for('hej', namn='Ada')\n    return f'<a href=\"{adress}\">Hälsa på Ada</a>'\n`,
+    solution: `${IMPORT_URL}\n@app.get('/hej/<namn>')\ndef hej(namn):\n    return f'Hej {namn}!'\n\n\n@app.get('/')\ndef start():\n    adress = url_for('hej', namn='Ada')\n    return f'<a href="{adress}">Hälsa på Ada</a>'\n`,
     hints: [
       "url_for('hej', namn='Ada') ger adressen.",
       'Spara den i en variabel först.',
