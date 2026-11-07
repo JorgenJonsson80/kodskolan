@@ -279,4 +279,79 @@ export const QUIZ = {
       explain: 'Bara en av formerna är en cirkel.',
     },
   ],
+  generics: [
+    {
+      question: 'Varför <T> i stället för any?',
+      options: [
+        'T kommer ihåg typen, any glömmer den',
+        'T är snabbare när koden körs',
+        'any finns inte i TypeScript',
+        'T betyder text',
+      ],
+      explain:
+        'Med any slutar TypeScript kontrollera. Med T följer typen med från anropet till svaret.',
+    },
+    {
+      question: 'Vilken typ får x?',
+      code: 'function forsta<T>(lista: T[]): T {\n  return lista[0];\n}\nconst x = forsta([true, false]);',
+      options: ['boolean', 'T', 'any', 'boolean[]'],
+      explain: 'T blir boolean, eftersom listan innehåller booleans.',
+    },
+    {
+      question: 'Vad betyder T extends { length: number }?',
+      options: [
+        'T måste ha en length',
+        'T är ett tal',
+        'T blir längre',
+        'T ärver från Array',
+      ],
+      explain: 'extends i en typparameter är ett krav på vad T måste ha.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: "const m = new Map<string, number>();\nm.set('a', 1);\nconsole.log(m.get('b') ?? 0);",
+      check: 'log',
+      options: ['0', 'undefined', '1', 'null'],
+      explain: "Nyckeln 'b' finns inte, så get ger undefined och ?? ger 0.",
+    },
+  ],
+  verktyg: [
+    {
+      question: 'Vad gör Partial<Kund>?',
+      options: [
+        'Gör alla egenskaper i Kund valfria',
+        'Tar bort hälften av egenskaperna',
+        'Gör Kund omöjlig att ändra',
+        'Skapar en tom kund',
+      ],
+      explain: 'Partial sätter ? på varje egenskap.',
+    },
+    {
+      question: "Vad är Omit<Produkt, 'id'>?",
+      options: [
+        'Allt i Produkt utom id',
+        'Bara id från Produkt',
+        'Produkt där id är valfritt',
+        'En produkt utan värden',
+      ],
+      explain: 'Omit tar bort de egenskaper du nämner. Pick är motsatsen.',
+    },
+    {
+      question: 'Vad händer med koden?',
+      code: "type Dag = 'lör' | 'sön';\nconst oppet: Record<Dag, string> = { lör: '10–16' };",
+      check: 'typeError',
+      options: [
+        'Ett typfel: sön saknas',
+        "oppet.sön blir ''",
+        'oppet.sön blir undefined',
+        'Inget',
+      ],
+      explain: 'Record kräver ett värde för varje nyckel i unionen.',
+    },
+    {
+      question: 'Vad är keyof { x: number; y: number }?',
+      options: ["'x' | 'y'", 'number', '{ x; y }', 'string'],
+      explain: 'keyof ger namnen på egenskaperna som en union.',
+    },
+  ],
 };

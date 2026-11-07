@@ -94,4 +94,28 @@ export const RESOURCES = {
       video: 'typescript exhaustive switch never',
     },
   ],
+  generics: [
+    {
+      topic: 'Generics',
+      read: `${HANDBOOK}2/generics.html`,
+      video: 'typescript generics explained beginners',
+    },
+    {
+      topic: 'Krav med extends',
+      read: `${HANDBOOK}2/generics.html#generic-constraints`,
+      video: 'typescript generic constraints extends',
+    },
+  ],
+  verktyg: [
+    {
+      topic: 'Partial, Pick, Omit och Record',
+      read: `${HANDBOOK}utility-types.html`,
+      video: 'typescript utility types partial pick omit record',
+    },
+    {
+      topic: 'keyof och typeof',
+      read: `${HANDBOOK}2/keyof-types.html`,
+      video: 'typescript keyof typeof',
+    },
+  ],
 };

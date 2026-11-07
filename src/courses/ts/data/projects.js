@@ -1837,6 +1837,514 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-minne',
+    track: 'generics',
+    title: 'Minnet',
+    reward: { emoji: '🧠', name: 'Hjärna' },
+    summary:
+      'Spara svar som tar tid att räkna ut, för vilken typ av svar som helst.',
+    steps: [
+      {
+        title: 'Ett minne',
+        why: 'Minnet ska kunna spara tal, text eller objekt. Med <V> bestämmer den som skapar minnet vad det sparar.',
+        xp: 15,
+        description: 'Ett minne är en Map från text till ett sparat svar.',
+        task: 'Uppgift: Skriv `skapaMinne<V>(): Map<string, V>` som ger en ny, tom Map.',
+        starterCode: '// Steg 1: ett minne\n',
+        solution:
+          'function skapaMinne<V>(): Map<string, V> {\n  return new Map<string, V>();\n}\n',
+        hints: [
+          '<V> efter namnet.',
+          'new Map<string, V>()',
+          'return new Map<string, V>();',
+        ],
+        tests: [
+          {
+            description: 'Ett tomt minne',
+            code: 'skapaMinne().size',
+            expected: 0,
+          },
+        ],
+        typeTests: [
+          {
+            description: 'Ett minne för tal',
+            code: "const m = skapaMinne<number>();\nm.set('a', 1);",
+          },
+          {
+            description: 'tar inte text',
+            code: "skapaMinne<number>().set('a', 'ett');",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Hämta eller räkna',
+        why: 'hamta räknar bara när svaret inte finns sparat. rakna är en funktion som ger ett V, så svaret har alltid rätt typ.',
+        xp: 20,
+        description: 'Finns svaret redan? Annars räknas det ut och sparas.',
+        task: 'Uppgift: Skriv `hamta<V>(minne: Map<string, V>, nyckel: string, rakna: () => V): V`.',
+        solution:
+          'function skapaMinne<V>(): Map<string, V> {\n  return new Map<string, V>();\n}\n\nfunction hamta<V>(minne: Map<string, V>, nyckel: string, rakna: () => V): V {\n  const sparat = minne.get(nyckel);\n  if (sparat !== undefined) {\n    return sparat;\n  }\n  const nytt = rakna();\n  minne.set(nyckel, nytt);\n  return nytt;\n}\n',
+        hints: [
+          'const sparat = minne.get(nyckel);',
+          'if (sparat !== undefined) return sparat;',
+          'Annars: rakna(), spara med set och returnera.',
+        ],
+        tests: [
+          {
+            description: 'Räknar första gången',
+            code: "hamta(new Map(), 'a', () => 42)",
+            expected: 42,
+          },
+          {
+            description: 'Använder det sparade',
+            code: "(() => { const m = new Map([['a', 1]]); return hamta(m, 'a', () => 99); })()",
+            expected: 1,
+          },
+        ],
+      },
+      {
+        title: 'Räkna bara en gång',
+        why: 'anrop visar att den långsamma uträkningen bara görs en gång per tal. Det är hela poängen med ett minne.',
+        xp: 20,
+        description: 'Använd minnet för en långsam funktion.',
+        task: 'Uppgift: Skapa `let anrop = 0`, `minne` med `skapaMinne<number>()` och `langsamDubbla(x: number): number` som använder `hamta` och ökar `anrop` varje gång den räknar.',
+        solution:
+          'function skapaMinne<V>(): Map<string, V> {\n  return new Map<string, V>();\n}\n\nfunction hamta<V>(minne: Map<string, V>, nyckel: string, rakna: () => V): V {\n  const sparat = minne.get(nyckel);\n  if (sparat !== undefined) {\n    return sparat;\n  }\n  const nytt = rakna();\n  minne.set(nyckel, nytt);\n  return nytt;\n}\n\nlet anrop = 0;\nconst minne = skapaMinne<number>();\n\nfunction langsamDubbla(x: number): number {\n  return hamta(minne, String(x), () => {\n    anrop++;\n    return x * 2;\n  });\n}\n',
+        hints: [
+          'Nyckeln är String(x).',
+          'Funktionen till hamta ökar anrop och returnerar x * 2.',
+          'return hamta(minne, String(x), () => { anrop++; return x * 2; });',
+        ],
+        tests: [
+          { description: 'Dubblar', code: 'langsamDubbla(4)', expected: 8 },
+          {
+            description: 'Räknar en gång per tal',
+            code: '(langsamDubbla(2), langsamDubbla(2), langsamDubbla(3), anrop)',
+            expected: 2,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-sidor',
+    track: 'generics',
+    title: 'Sidorna',
+    reward: { emoji: '📖', name: 'Uppslagen bok' },
+    summary: 'Dela upp långa listor i sidor, för vilken sorts lista som helst.',
+    steps: [
+      {
+        title: 'En sida',
+        why: 'Listan kan vara produkter, kunder eller filmer. Med T ger funktionen tillbaka samma sorts element som den fick.',
+        xp: 15,
+        description: 'Visa en sida i taget.',
+        task: 'Uppgift: Skriv `sida<T>(lista: T[], nr: number, storlek: number): T[]`. Sida 1 är de första `storlek` elementen.',
+        starterCode: '// Steg 1: en sida\n',
+        solution:
+          'function sida<T>(lista: T[], nr: number, storlek: number): T[] {\n  return lista.slice((nr - 1) * storlek, nr * storlek);\n}\n',
+        hints: [
+          'slice(start, slut)',
+          'Start är (nr - 1) * storlek.',
+          'return lista.slice((nr - 1) * storlek, nr * storlek);',
+        ],
+        tests: [
+          {
+            description: 'Sida 2 med storlek 2',
+            code: 'sida([1, 2, 3, 4, 5], 2, 2)',
+            expected: [3, 4],
+          },
+          {
+            description: 'Sista sidan',
+            code: 'sida([1, 2, 3, 4, 5], 3, 2)',
+            expected: [5],
+          },
+        ],
+        typeTests: [
+          {
+            description: 'Ger samma typ',
+            code: "const s: string[] = sida(['a'], 1, 1);",
+          },
+        ],
+      },
+      {
+        title: 'Antal sidor',
+        why: 'Även en tom lista har en sida, så att appen alltid kan visa "sida 1 av 1".',
+        xp: 15,
+        description: 'Hur många sidor blir det?',
+        task: 'Uppgift: Skriv `antalSidor<T>(lista: T[], storlek: number): number` – minst 1.',
+        solution:
+          'function sida<T>(lista: T[], nr: number, storlek: number): T[] {\n  return lista.slice((nr - 1) * storlek, nr * storlek);\n}\n\nfunction antalSidor<T>(lista: T[], storlek: number): number {\n  return Math.max(1, Math.ceil(lista.length / storlek));\n}\n',
+        hints: [
+          'Math.ceil avrundar uppåt.',
+          'Math.max(1, …)',
+          'return Math.max(1, Math.ceil(lista.length / storlek));',
+        ],
+        tests: [
+          {
+            description: '5 element, 2 per sida',
+            code: 'antalSidor([1, 2, 3, 4, 5], 2)',
+            expected: 3,
+          },
+          { description: 'Tom lista', code: 'antalSidor([], 10)', expected: 1 },
+        ],
+      },
+      {
+        title: 'Sidan med allt',
+        why: 'Sida<T> samlar allt appen behöver för att visa en sida. Typen följer med: en Sida<Film> har filmer.',
+        xp: 20,
+        description:
+          'Appen vill ha sidan, numret och antalet sidor på en gång.',
+        task: 'Uppgift: Skapa `type Sida<T> = { saker: T[]; nr: number; av: number }` och `hamtaSida<T>(lista: T[], nr: number, storlek: number): Sida<T>`.',
+        solution:
+          'function sida<T>(lista: T[], nr: number, storlek: number): T[] {\n  return lista.slice((nr - 1) * storlek, nr * storlek);\n}\n\nfunction antalSidor<T>(lista: T[], storlek: number): number {\n  return Math.max(1, Math.ceil(lista.length / storlek));\n}\n\ntype Sida<T> = { saker: T[]; nr: number; av: number };\n\nfunction hamtaSida<T>(lista: T[], nr: number, storlek: number): Sida<T> {\n  return { saker: sida(lista, nr, storlek), nr, av: antalSidor(lista, storlek) };\n}\n',
+        hints: [
+          'type Sida<T> = { … };',
+          'Använd sida och antalSidor.',
+          'return { saker: sida(lista, nr, storlek), nr, av: antalSidor(lista, storlek) };',
+        ],
+        tests: [
+          {
+            description: 'Sida 2 av 3',
+            code: "hamtaSida(['a', 'b', 'c', 'd', 'e'], 2, 2)",
+            expected: { saker: ['c', 'd'], nr: 2, av: 3 },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-sorterare',
+    track: 'generics',
+    title: 'Sorteraren',
+    reward: { emoji: '🏆', name: 'Pokal' },
+    summary:
+      'Sortera vad som helst efter vad som helst, och plocka fram topplistan.',
+    steps: [
+      {
+        title: 'Efter ett tal',
+        why: 'Funktionen vet inte vad den sorterar. varde säger vilket tal som ska jämföras, och T gör att svaret har samma typ som listan.',
+        xp: 15,
+        description: 'Sortera efter ett tal i varje element.',
+        task: 'Uppgift: Skriv `sorteraEfter<T>(lista: T[], varde: (x: T) => number): T[]` med `toSorted`.',
+        starterCode: '// Steg 1: efter ett tal\n',
+        solution:
+          'function sorteraEfter<T>(lista: T[], varde: (x: T) => number): T[] {\n  return lista.toSorted((a, b) => varde(a) - varde(b));\n}\n',
+        hints: [
+          'toSorted((a, b) => …)',
+          'varde(a) - varde(b) ger stigande ordning.',
+          'return lista.toSorted((a, b) => varde(a) - varde(b));',
+        ],
+        tests: [
+          {
+            description: 'Efter längd',
+            code: "sorteraEfter(['ccc', 'a', 'bb'], s => s.length)",
+            expected: ['a', 'bb', 'ccc'],
+          },
+        ],
+      },
+      {
+        title: 'Efter text',
+        why: "localeCompare med 'sv' sorterar å, ä och ö sist, som i svenska alfabetet.",
+        xp: 15,
+        description: 'Sortera efter text, med svensk ordning.',
+        task: "Uppgift: Skriv `sorteraText<T>(lista: T[], text: (x: T) => string): T[]` med `localeCompare(…, 'sv')`.",
+        solution:
+          "function sorteraEfter<T>(lista: T[], varde: (x: T) => number): T[] {\n  return lista.toSorted((a, b) => varde(a) - varde(b));\n}\n\nfunction sorteraText<T>(lista: T[], text: (x: T) => string): T[] {\n  return lista.toSorted((a, b) => text(a).localeCompare(text(b), 'sv'));\n}\n",
+        hints: [
+          "text(a).localeCompare(text(b), 'sv')",
+          'toSorted som förut.',
+          "return lista.toSorted((a, b) => text(a).localeCompare(text(b), 'sv'));",
+        ],
+        tests: [
+          {
+            description: 'Ö sist',
+            code: "sorteraText([{ namn: 'Örjan' }, { namn: 'Ada' }, { namn: 'Zelda' }], p => p.namn).map(p => p.namn)",
+            expected: ['Ada', 'Zelda', 'Örjan'],
+          },
+        ],
+      },
+      {
+        title: 'Topplistan',
+        why: 'topp återanvänder sorteraEfter. Eftersom båda är generiska passar de ihop för alla typer.',
+        xp: 20,
+        description: 'Visa de bästa.',
+        task: 'Uppgift: Skriv `topp<T>(lista: T[], varde: (x: T) => number, antal: number): T[]` med de `antal` högsta, högst först.',
+        solution:
+          "function sorteraEfter<T>(lista: T[], varde: (x: T) => number): T[] {\n  return lista.toSorted((a, b) => varde(a) - varde(b));\n}\n\nfunction sorteraText<T>(lista: T[], text: (x: T) => string): T[] {\n  return lista.toSorted((a, b) => text(a).localeCompare(text(b), 'sv'));\n}\n\nfunction topp<T>(lista: T[], varde: (x: T) => number, antal: number): T[] {\n  return sorteraEfter(lista, varde).toReversed().slice(0, antal);\n}\n",
+        hints: [
+          'Sortera med sorteraEfter.',
+          'toReversed() vänder ordningen.',
+          'return sorteraEfter(lista, varde).toReversed().slice(0, antal);',
+        ],
+        tests: [
+          {
+            description: 'Topp 2',
+            code: "topp([{ n: 'A', p: 5 }, { n: 'B', p: 9 }, { n: 'C', p: 7 }], x => x.p, 2).map(x => x.n)",
+            expected: ['B', 'C'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-profil-andra',
+    track: 'verktyg',
+    title: 'Redigera profilen',
+    reward: { emoji: '✏️', name: 'Penna' },
+    summary:
+      'Ändra en profil utan att kunna ändra id:t, och se vad som ändrats.',
+    steps: [
+      {
+        title: 'Typerna',
+        why: 'En ändring är allt utom id, och allt är valfritt. Partial och Omit gör den av Profil, så den följer med när Profil ändras.',
+        xp: 15,
+        description: 'En profil och en ändring av den.',
+        task: "Uppgift: Skapa `type Profil = { id: number; namn: string; bio: string; stad: string }` och `type Andring = Partial<Omit<Profil, 'id'>>`.",
+        starterCode: '// Steg 1: typerna\n',
+        solution:
+          "type Profil = { id: number; namn: string; bio: string; stad: string };\n\ntype Andring = Partial<Omit<Profil, 'id'>>;\n",
+        hints: [
+          'Omit tar bort id.',
+          'Partial gör resten valfritt.',
+          "type Andring = Partial<Omit<Profil, 'id'>>;",
+        ],
+        tests: [],
+        typeTests: [
+          {
+            description: 'En ändring av bara stad',
+            code: "const a: Andring = { stad: 'Lund' };",
+          },
+          {
+            description: 'id går inte att ändra',
+            code: 'const a: Andring = { id: 2 };',
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Spara',
+        why: 'Spread skriver över det som finns i ändringen och behåller resten. id kan aldrig skrivas över, för det finns inte i Andring.',
+        xp: 15,
+        description: 'Spara en ändring.',
+        task: 'Uppgift: Skriv `spara(p: Profil, a: Andring): Profil`.',
+        solution:
+          "type Profil = { id: number; namn: string; bio: string; stad: string };\n\ntype Andring = Partial<Omit<Profil, 'id'>>;\n\nfunction spara(p: Profil, a: Andring): Profil {\n  return { ...p, ...a };\n}\n",
+        hints: ['Spread båda.', '{ ...p, ...a }', 'return { ...p, ...a };'],
+        tests: [
+          {
+            description: 'Ny stad',
+            code: "spara({ id: 1, namn: 'Ada', bio: '', stad: 'Umeå' }, { stad: 'Lund' }).stad",
+            expected: 'Lund',
+          },
+        ],
+      },
+      {
+        title: 'Vad ändrades?',
+        why: '(keyof Profil)[] är en lista med fältnamn. Med en sådan lista kan p[f] läsas för varje fält utan typfel.',
+        xp: 20,
+        description: 'Visa vilka fält som ändrades.',
+        task: 'Uppgift: Skriv `andrade(fore: Profil, efter: Profil): (keyof Profil)[]` med namnen på fälten som skiljer sig.',
+        solution:
+          "type Profil = { id: number; namn: string; bio: string; stad: string };\n\ntype Andring = Partial<Omit<Profil, 'id'>>;\n\nfunction spara(p: Profil, a: Andring): Profil {\n  return { ...p, ...a };\n}\n\nfunction andrade(fore: Profil, efter: Profil): (keyof Profil)[] {\n  const falt: (keyof Profil)[] = ['id', 'namn', 'bio', 'stad'];\n  return falt.filter(f => fore[f] !== efter[f]);\n}\n",
+        hints: [
+          "const falt: (keyof Profil)[] = ['id', 'namn', 'bio', 'stad'];",
+          'filter där fore[f] !== efter[f]',
+          'return falt.filter(f => fore[f] !== efter[f]);',
+        ],
+        tests: [
+          {
+            description: 'bio och stad',
+            code: "andrade({ id: 1, namn: 'Ada', bio: '', stad: 'Umeå' }, { id: 1, namn: 'Ada', bio: 'Hej', stad: 'Lund' })",
+            expected: ['bio', 'stad'],
+          },
+        ],
+        typeTests: [
+          {
+            description: 'Ger fältnamn',
+            code: "const f: (keyof Profil)[] = andrade({ id: 1, namn: '', bio: '', stad: '' }, { id: 1, namn: '', bio: '', stad: '' });",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-oversattning',
+    track: 'verktyg',
+    title: 'Översättningen',
+    reward: { emoji: '🌍', name: 'Jordglob' },
+    summary: 'En app på två språk, där ingen text kan glömmas bort.',
+    steps: [
+      {
+        title: 'Texterna',
+        why: 'Record kräver varje nyckel för varje språk. Glömmer någon att översätta "tack" blir det typfel.',
+        xp: 15,
+        description: 'Appen finns på svenska och engelska.',
+        task: "Uppgift: Skapa `type Sprak = 'sv' | 'en'`, `type Nyckel = 'hej' | 'hejda' | 'tack'` och `texter: Record<Sprak, Record<Nyckel, string>>` (Hej/Hello, Hej då/Goodbye, Tack/Thanks).",
+        starterCode: '// Steg 1: texterna\n',
+        solution:
+          "type Sprak = 'sv' | 'en';\ntype Nyckel = 'hej' | 'hejda' | 'tack';\n\nconst texter: Record<Sprak, Record<Nyckel, string>> = {\n  sv: { hej: 'Hej', hejda: 'Hej då', tack: 'Tack' },\n  en: { hej: 'Hello', hejda: 'Goodbye', tack: 'Thanks' },\n};\n",
+        hints: [
+          'Två unioner.',
+          'Record i Record.',
+          "sv: { hej: 'Hej', hejda: 'Hej då', tack: 'Tack' },",
+        ],
+        tests: [
+          {
+            description: 'Engelska tack',
+            code: 'texter.en.tack',
+            expected: 'Thanks',
+          },
+        ],
+        typeTests: [
+          {
+            description: 'Alla nycklar måste finnas',
+            code: "const t: Record<Nyckel, string> = { hej: 'a', tack: 'b' };",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Översätt',
+        why: "Både språk och nyckel har fasta värden. t('sv', 'hejsan') blir typfel, så en saknad text upptäcks direkt.",
+        xp: 15,
+        description: 'En funktion som hämtar en text.',
+        task: 'Uppgift: Skriv `t(sprak: Sprak, nyckel: Nyckel): string`.',
+        solution:
+          "type Sprak = 'sv' | 'en';\ntype Nyckel = 'hej' | 'hejda' | 'tack';\n\nconst texter: Record<Sprak, Record<Nyckel, string>> = {\n  sv: { hej: 'Hej', hejda: 'Hej då', tack: 'Tack' },\n  en: { hej: 'Hello', hejda: 'Goodbye', tack: 'Thanks' },\n};\n\nfunction t(sprak: Sprak, nyckel: Nyckel): string {\n  return texter[sprak][nyckel];\n}\n",
+        hints: [
+          'texter[sprak]',
+          'texter[sprak][nyckel]',
+          'return texter[sprak][nyckel];',
+        ],
+        tests: [
+          {
+            description: 'sv hejda',
+            code: "t('sv', 'hejda')",
+            expected: 'Hej då',
+          },
+          { description: 'en hej', code: "t('en', 'hej')", expected: 'Hello' },
+        ],
+        typeTests: [
+          {
+            description: "'hejsan' finns inte",
+            code: "t('sv', 'hejsan');",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Ett helt samtal',
+        why: 'Listan har typen Nyckel[], så bara riktiga nycklar kan stå i den.',
+        xp: 20,
+        description: 'Visa ett kort samtal på valt språk.',
+        task: "Uppgift: Skapa `NYCKLAR: Nyckel[] = ['hej', 'tack', 'hejda']` och `samtal(sprak: Sprak): string` som sätter ihop texterna med `' … '`.",
+        solution:
+          "type Sprak = 'sv' | 'en';\ntype Nyckel = 'hej' | 'hejda' | 'tack';\n\nconst texter: Record<Sprak, Record<Nyckel, string>> = {\n  sv: { hej: 'Hej', hejda: 'Hej då', tack: 'Tack' },\n  en: { hej: 'Hello', hejda: 'Goodbye', tack: 'Thanks' },\n};\n\nfunction t(sprak: Sprak, nyckel: Nyckel): string {\n  return texter[sprak][nyckel];\n}\n\nconst NYCKLAR: Nyckel[] = ['hej', 'tack', 'hejda'];\n\nfunction samtal(sprak: Sprak): string {\n  return NYCKLAR.map(n => t(sprak, n)).join(' … ');\n}\n",
+        hints: [
+          'NYCKLAR.map(n => t(sprak, n))',
+          "join(' … ')",
+          "return NYCKLAR.map(n => t(sprak, n)).join(' … ');",
+        ],
+        tests: [
+          {
+            description: 'Engelska',
+            code: "samtal('en')",
+            expected: 'Hello … Thanks … Goodbye',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-anmalan',
+    track: 'verktyg',
+    title: 'Anmälan',
+    reward: { emoji: '🎟️', name: 'Biljett' },
+    summary: 'Kontrollera ett formulär och visa ett fel per fält.',
+    steps: [
+      {
+        title: 'Typerna',
+        why: 'Fel har samma nycklar som Anmalan, men varje fel är en text och alla är valfria. Record och keyof gör den av Anmalan.',
+        xp: 15,
+        description: 'En anmälan och dess fel.',
+        task: 'Uppgift: Skapa `type Anmalan = { namn: string; epost: string; alder: number }` och `type Fel = Partial<Record<keyof Anmalan, string>>`.',
+        starterCode: '// Steg 1: typerna\n',
+        solution:
+          'type Anmalan = { namn: string; epost: string; alder: number };\n\ntype Fel = Partial<Record<keyof Anmalan, string>>;\n',
+        hints: [
+          'keyof Anmalan ger fältnamnen.',
+          'Record<…, string> ger en text per fält.',
+          'type Fel = Partial<Record<keyof Anmalan, string>>;',
+        ],
+        tests: [],
+        typeTests: [
+          {
+            description: 'Ett fel för namn',
+            code: "const f: Fel = { namn: 'Saknas' };",
+          },
+          {
+            description: "'telefon' är inget fält",
+            code: "const f: Fel = { telefon: 'x' };",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Kontrollera',
+        why: 'Funktionen fyller bara i felen som finns. Fel är Partial, så ett tomt objekt betyder att allt är rätt.',
+        xp: 20,
+        description: 'Hitta felen.',
+        task: "Uppgift: Skriv `kontrollera(a: Anmalan): Fel`: tomt namn ger `'Namn saknas'`, en e-post utan `@` ger `'Ogiltig e-post'` och ålder under 13 ger `'För ung'`.",
+        solution:
+          "type Anmalan = { namn: string; epost: string; alder: number };\n\ntype Fel = Partial<Record<keyof Anmalan, string>>;\n\nfunction kontrollera(a: Anmalan): Fel {\n  const fel: Fel = {};\n  if (a.namn === '') {\n    fel.namn = 'Namn saknas';\n  }\n  if (!a.epost.includes('@')) {\n    fel.epost = 'Ogiltig e-post';\n  }\n  if (a.alder < 13) {\n    fel.alder = 'För ung';\n  }\n  return fel;\n}\n",
+        hints: [
+          'const fel: Fel = {};',
+          "if (!a.epost.includes('@')) { fel.epost = 'Ogiltig e-post'; }",
+          'return fel;',
+        ],
+        tests: [
+          {
+            description: 'Två fel',
+            code: "kontrollera({ namn: '', epost: 'ada', alder: 20 })",
+            expected: { namn: 'Namn saknas', epost: 'Ogiltig e-post' },
+          },
+          {
+            description: 'Inga fel',
+            code: "kontrollera({ namn: 'Ada', epost: 'ada@x.se', alder: 20 })",
+            expected: {},
+          },
+        ],
+      },
+      {
+        title: 'Giltig?',
+        why: 'Object.keys ger fälten som har fel. Inga nycklar betyder att anmälan kan skickas.',
+        xp: 15,
+        description: 'Får anmälan skickas?',
+        task: 'Uppgift: Skriv `arGiltig(a: Anmalan): boolean`.',
+        solution:
+          "type Anmalan = { namn: string; epost: string; alder: number };\n\ntype Fel = Partial<Record<keyof Anmalan, string>>;\n\nfunction kontrollera(a: Anmalan): Fel {\n  const fel: Fel = {};\n  if (a.namn === '') {\n    fel.namn = 'Namn saknas';\n  }\n  if (!a.epost.includes('@')) {\n    fel.epost = 'Ogiltig e-post';\n  }\n  if (a.alder < 13) {\n    fel.alder = 'För ung';\n  }\n  return fel;\n}\n\nfunction arGiltig(a: Anmalan): boolean {\n  return Object.keys(kontrollera(a)).length === 0;\n}\n",
+        hints: [
+          'Object.keys(kontrollera(a))',
+          '.length === 0',
+          'return Object.keys(kontrollera(a)).length === 0;',
+        ],
+        tests: [
+          {
+            description: 'Giltig',
+            code: "arGiltig({ namn: 'Ada', epost: 'a@b.se', alder: 15 })",
+            expected: true,
+          },
+          {
+            description: 'För ung',
+            code: "arGiltig({ namn: 'Ada', epost: 'a@b.se', alder: 9 })",
+            expected: false,
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `// ${text}`);

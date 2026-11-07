@@ -405,4 +405,120 @@ export const BOSSES = {
       { description: 'Har en never-koll', pattern: /:\s*never\s*=/ },
     ],
   },
+  generics: {
+    id: 'generics-boss',
+    track: 'generics',
+    title: 'Boss: Verktygslådan',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Tre hjälpfunktioner som ska fungera för alla sorters listor, och ändå ge rätt typ tillbaka.',
+    task: `Uppgift:
+  1. \`unika<T>(lista: T[]): T[]\` – listan utan dubbletter (t.ex. med \`new Set\`).
+  2. \`storst<T>(lista: T[], varde: (x: T) => number): T | undefined\` – elementet där \`varde\` är störst.
+  3. \`gruppera<T>(lista: T[], nyckel: (x: T) => string): Map<string, T[]>\`.`,
+    starterCode: START,
+    solution:
+      'function unika<T>(lista: T[]): T[] {\n  return [...new Set(lista)];\n}\n\nfunction storst<T>(lista: T[], varde: (x: T) => number): T | undefined {\n  let basta: T | undefined = undefined;\n  for (const x of lista) {\n    if (basta === undefined || varde(x) > varde(basta)) {\n      basta = x;\n    }\n  }\n  return basta;\n}\n\nfunction gruppera<T>(lista: T[], nyckel: (x: T) => string): Map<string, T[]> {\n  const grupper = new Map<string, T[]>();\n  for (const x of lista) {\n    const k = nyckel(x);\n    grupper.set(k, [...(grupper.get(k) ?? []), x]);\n  }\n  return grupper;\n}\n',
+    hints: [],
+    tests: [
+      {
+        description: 'unika tal',
+        code: 'unika([1, 2, 1, 3, 2])',
+        expected: [1, 2, 3],
+      },
+      {
+        description: 'storst efter längd',
+        code: "storst(['kort', 'längsta', 'mellan'], s => s.length)",
+        expected: 'längsta',
+      },
+      {
+        description: 'storst av inget',
+        code: 'storst([], x => 1)',
+        expected: undefined,
+      },
+      {
+        description: 'gruppera efter första bokstaven',
+        code: "gruppera(['Ada', 'Bo', 'Alva'], s => s[0]).get('A')",
+        expected: ['Ada', 'Alva'],
+      },
+    ],
+    typeTests: [
+      {
+        description: 'unika behåller typen',
+        code: "const s: string[] = unika(['a']);",
+      },
+      {
+        description: 'storst ger elementets typ',
+        code: "const k = storst([{ namn: 'A', poang: 1 }], x => x.poang);\nconst n: string | undefined = k?.namn;",
+      },
+      {
+        description: 'gruppera ger listor av rätt typ',
+        code: 'const g: Map<string, number[]> = gruppera([1, 2], x => String(x));',
+      },
+    ],
+  },
+
+  verktyg: {
+    id: 'verktyg-boss',
+    track: 'verktyg',
+    title: 'Boss: Lagret',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Lagret behöver funktioner för att lägga till, ändra och värdera varor – utan att skriva `Vara` mer än en gång.',
+    task: `Uppgift: \`type Vara\` är given. Skriv:
+  1. \`type NyVara = Omit<Vara, 'id'>\` och \`lagg(lager: Vara[], ny: NyVara): Vara[]\` – den nya varan får id ett högre än det högsta (1 i ett tomt lager).
+  2. \`andra(lager: Vara[], id: number, andring: Partial<NyVara>): Vara[]\` – en ny lista där varan med id:t är ändrad.
+  3. \`varde(lager: Vara[]): Record<string, number>\` – varje varas namn med \`pris * antal\`.`,
+    starterCode:
+      'type Vara = { id: number; namn: string; pris: number; antal: number };\n',
+    solution:
+      "type Vara = { id: number; namn: string; pris: number; antal: number };\n\ntype NyVara = Omit<Vara, 'id'>;\n\nfunction lagg(lager: Vara[], ny: NyVara): Vara[] {\n  const id = Math.max(0, ...lager.map(v => v.id)) + 1;\n  return [...lager, { ...ny, id }];\n}\n\nfunction andra(lager: Vara[], id: number, andring: Partial<NyVara>): Vara[] {\n  return lager.map(v => (v.id === id ? { ...v, ...andring } : v));\n}\n\nfunction varde(lager: Vara[]): Record<string, number> {\n  const svar: Record<string, number> = {};\n  for (const v of lager) {\n    svar[v.namn] = v.pris * v.antal;\n  }\n  return svar;\n}\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Första varan får id 1',
+        code: "lagg([], { namn: 'Mössa', pris: 100, antal: 2 })",
+        expected: [{ namn: 'Mössa', pris: 100, antal: 2, id: 1 }],
+      },
+      {
+        description: 'Nästa får id 6',
+        code: "lagg([{ id: 5, namn: 'A', pris: 1, antal: 1 }], { namn: 'B', pris: 2, antal: 2 })[1].id",
+        expected: 6,
+      },
+      {
+        description: 'andra ändrar priset',
+        code: "andra([{ id: 1, namn: 'A', pris: 10, antal: 1 }, { id: 2, namn: 'B', pris: 20, antal: 1 }], 2, { pris: 25 })",
+        expected: [
+          { id: 1, namn: 'A', pris: 10, antal: 1 },
+          { id: 2, namn: 'B', pris: 25, antal: 1 },
+        ],
+      },
+      {
+        description: 'varde',
+        code: "varde([{ id: 1, namn: 'Mössa', pris: 100, antal: 3 }, { id: 2, namn: 'Keps', pris: 50, antal: 2 }])",
+        expected: { Mössa: 300, Keps: 100 },
+      },
+    ],
+    typeTests: [
+      {
+        description: 'En NyVara har inget id',
+        code: "lagg([], { id: 3, namn: 'a', pris: 1, antal: 1 });",
+        fails: true,
+      },
+      {
+        description: 'id går inte att ändra med andra',
+        code: 'andra([], 1, { id: 9 });',
+        fails: true,
+      },
+    ],
+    sourceChecks: [
+      { description: 'Använder Omit', pattern: /Omit\s*</ },
+      { description: 'Använder Partial', pattern: /Partial\s*</ },
+      { description: 'Använder Record', pattern: /Record\s*</ },
+    ],
+  },
 };

@@ -282,6 +282,90 @@ export const IDEAS = [
     ],
     extra: "Lägg till `{ typ: 'game_over' }` när liven tar slut.",
   },
+  {
+    id: 'idea-egna-arraymetoder',
+    track: 'generics',
+    emoji: '🔁',
+    title: 'Egna arraymetoder',
+    summary: 'Skriv egna versioner av filter, find och reduce med generics.',
+    goals: [
+      'Skriv `filtrera<T>(lista: T[], test: (x: T) => boolean): T[]`.',
+      'Skriv `hitta<T>(lista: T[], test: (x: T) => boolean): T | undefined`.',
+      'Jämför typerna med de riktiga metoderna genom att hålla musen över dem.',
+    ],
+    extra:
+      'Skriv `reducera<T, U>(lista: T[], f: (summa: U, x: T) => U, start: U): U`.',
+  },
+  {
+    id: 'idea-stack',
+    track: 'generics',
+    emoji: '🥞',
+    title: 'Högen',
+    summary:
+      'En hög där det sista som lades dit tas först, för vilken typ som helst.',
+    goals: [
+      'Skapa `type Hog<T> = { saker: T[] }`.',
+      'Skriv `lagg<T>` och `ta<T>` som ger en ny hög.',
+      'Använd högen för att vända på ett ord, bokstav för bokstav.',
+    ],
+    extra:
+      'Använd högen för att kolla att alla parenteser i en text är parade.',
+  },
+  {
+    id: 'idea-ordfrekvens',
+    track: 'generics',
+    emoji: '📊',
+    title: 'Ordräknaren',
+    summary: 'Räkna orden i en text och visa de vanligaste.',
+    goals: [
+      'Dela upp en text i ord.',
+      'Räkna dem i en `Map<string, number>`.',
+      'Visa de fem vanligaste.',
+    ],
+    extra: 'Gör räknaren generisk: `rakna<T>(lista: T[]): Map<T, number>`.',
+  },
+  {
+    id: 'idea-typverkstad',
+    track: 'verktyg',
+    emoji: '🔬',
+    title: 'Typverkstaden',
+    summary: 'Gör nya typer av en gammal och håll musen över resultatet.',
+    goals: [
+      'Skapa en stor typ, t.ex. en `Film` med många fält.',
+      'Gör `Partial`, `Pick`, `Omit` och `Readonly` av den, och håll musen över varje.',
+      "Kombinera två: `Partial<Omit<Film, 'id'>>`.",
+    ],
+    extra:
+      'Prova `Required`, `NonNullable` och `Awaited` och läs vad de gör i handboken.',
+  },
+  {
+    id: 'idea-schema',
+    track: 'verktyg',
+    emoji: '🗓️',
+    title: 'Veckoschemat',
+    summary: 'Ett schema där varje dag måste finnas.',
+    goals: [
+      "Skapa `type Dag = 'mån' | 'tis' | 'ons' | 'tor' | 'fre'`.",
+      'Skapa ett `Record<Dag, string[]>` med lektioner.',
+      'Skriv en funktion som räknar lektionerna under veckan.',
+    ],
+    extra:
+      'Lägg till lördag i typen och se var TypeScript säger att schemat är ofullständigt.',
+  },
+  {
+    id: 'idea-config',
+    track: 'verktyg',
+    emoji: '🎛️',
+    title: 'Inställningar med standardvärden',
+    summary: 'Låt typen komma från standardvärdena med typeof.',
+    goals: [
+      'Skapa ett objekt med standardinställningar.',
+      'Gör `type Installningar = typeof standard`.',
+      'Skriv en funktion som tar en `Partial<Installningar>` och fyller i resten.',
+    ],
+    extra:
+      'Lägg till en ny inställning i standardobjektet och se att typen följer med.',
+  },
 ];
 
 const goalLines = idea =>
