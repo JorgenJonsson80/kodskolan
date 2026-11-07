@@ -1,3 +1,5 @@
+import { SLUTPROJEKT_BAS } from './slutprojekt';
+
 // En boss per bana: en större uppgift som använder allt från banan, utan
 // ledtrådar. Banan räknas inte som klar förrän bossen är besegrad.
 // index.js lägger varje boss sist i sin bana.
@@ -520,5 +522,200 @@ export const BOSSES = {
       { description: 'Använder Partial', pattern: /Partial\s*</ },
       { description: 'Använder Record', pattern: /Record\s*</ },
     ],
+  },
+  data: {
+    id: 'data-boss',
+    track: 'data',
+    title: 'Boss: Att göra från servern',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Servern har en lista med uppgifter per användare. Hämta dem, kontrollera att de ser ut som de ska, och visa bara det som inte är gjort.',
+    task: `Uppgift: \`type Todo\` är given. Skriv:
+  1. \`arTodo(x: unknown): x is Todo\` – kollar alla fyra fälten.
+  2. \`async function ogjorda(userId: number): Promise<string[]>\` – hämtar \`/api/users/\${userId}/todos\` och ger titlarna på de uppgifter som inte är klara (\`done\` är \`false\`). En tom lista om svaret inte är ok eller inte är en array.`,
+    starterCode:
+      'type Todo = { id: number; userId: number; title: string; done: boolean };\n',
+    solution:
+      "type Todo = { id: number; userId: number; title: string; done: boolean };\n\nfunction arTodo(x: unknown): x is Todo {\n  return (\n    typeof x === 'object' &&\n    x !== null &&\n    'id' in x &&\n    typeof x.id === 'number' &&\n    'userId' in x &&\n    typeof x.userId === 'number' &&\n    'title' in x &&\n    typeof x.title === 'string' &&\n    'done' in x &&\n    typeof x.done === 'boolean'\n  );\n}\n\nasync function ogjorda(userId: number): Promise<string[]> {\n  const svar = await fetch(`/api/users/${userId}/todos`);\n  if (!svar.ok) {\n    return [];\n  }\n  const data: unknown = await svar.json();\n  if (!Array.isArray(data)) {\n    return [];\n  }\n  return data\n    .filter(arTodo)\n    .filter(t => !t.done)\n    .map(t => t.title);\n}\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Ada har en ogjord',
+        code: 'ogjorda(1)',
+        expected: ['Beskriv maskinen'],
+      },
+      {
+        description: 'Grace har en ogjord',
+        code: 'ogjorda(3)',
+        expected: ['Hitta buggen'],
+      },
+      { description: 'Linus har inga', code: 'ogjorda(2)', expected: [] },
+      {
+        description: 'Användare 9 finns inte',
+        code: 'ogjorda(9)',
+        expected: [],
+      },
+      {
+        description: 'arTodo säger nej till fel typer',
+        code: "arTodo({ id: 1, userId: 1, title: 'x', done: 'nej' })",
+        expected: false,
+      },
+    ],
+    typeTests: [
+      {
+        description: 'ogjorda ger en lista med text',
+        code: 'ogjorda(1).then(t => t.map(s => s.toUpperCase()));',
+      },
+    ],
+    sourceChecks: [
+      { description: 'Inget any', pattern: /\bany\b/, forbidden: true },
+    ],
+  },
+
+  felsok: {
+    id: 'felsok-boss',
+    track: 'felsok',
+    title: 'Boss: Den trasiga kassan',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Kassan har fyra fel. Några syns som typfel, några gömmer sig bakom `any` och `as`. Laga allt utan att ändra vad funktionerna ska göra.',
+    task: `Uppgift: Laga koden.
+  - \`summa\` ska ge summan av \`pris * antal\` för alla rader.
+  - \`kvitto\` ska ge t.ex. \`'Totalt: 101 kr'\`.
+  - Inget \`any\` och inget \`as\` när du är klar.`,
+    starterCode:
+      "type Rad = { vara: string; pris: number; antal: number };\n\nfunction summa(rader: any): number {\n  return rader.reduce((s: number, r: any) => s + r.pris * r.antal, 0);\n}\n\nasync function hamtaRader(): Promise<Rad[]> {\n  return [\n    { vara: 'Bulle', pris: 32, antal: 2 },\n    { vara: 'Kaffe', pris: 37 } as Rad,\n  ];\n}\n\nasync function kvitto(): Promise<string> {\n  const rader = hamtaRader();\n  return `Totalt: ${summa(rader)} kr`;\n}\n",
+    solution:
+      "type Rad = { vara: string; pris: number; antal: number };\n\nfunction summa(rader: Rad[]): number {\n  return rader.reduce((s, r) => s + r.pris * r.antal, 0);\n}\n\nasync function hamtaRader(): Promise<Rad[]> {\n  return [\n    { vara: 'Bulle', pris: 32, antal: 2 },\n    { vara: 'Kaffe', pris: 37, antal: 1 },\n  ];\n}\n\nasync function kvitto(): Promise<string> {\n  const rader = await hamtaRader();\n  return `Totalt: ${summa(rader)} kr`;\n}\n",
+    hints: [],
+    tests: [
+      {
+        description: "kvitto() är 'Totalt: 101 kr'",
+        code: 'kvitto()',
+        expected: 'Totalt: 101 kr',
+      },
+      {
+        description: 'summa räknar pris gånger antal',
+        code: "summa([{ vara: 'a', pris: 10, antal: 3 }])",
+        expected: 30,
+      },
+    ],
+    typeTests: [
+      {
+        description: 'summa vill ha rader',
+        code: "summa('hej');",
+        fails: true,
+      },
+    ],
+    sourceChecks: [
+      { description: 'Inget any', pattern: /\bany\b/, forbidden: true },
+      { description: 'Inget as', pattern: /\bas\s+[A-Z]/, forbidden: true },
+    ],
+  },
+  react: {
+    id: 'react-boss',
+    track: 'react',
+    title: 'Boss: Att göra-appen',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'En hel liten app: lägg till uppgifter, bocka av dem och se hur många som är kvar. Allt med typer.',
+    task: `Uppgift: Skriv \`App\`.
+  1. \`type Uppgift = { id: number; text: string; klar: boolean }\` och state \`useState<Uppgift[]>([])\`.
+  2. Ett \`<form>\` med en \`<input>\` och en knapp \`Lägg till\`. När formuläret skickas läggs texten till (med ett nytt id) och rutan töms.
+  3. En \`<ul>\` med en \`<li>\` per uppgift. Ett klick på \`<li>\` växlar \`klar\`, och en klar uppgift visas med \`' ✓'\` efter texten.
+  4. En \`<p>\` som visar t.ex. \`'1 kvar'\`.`,
+    starterCode:
+      "import { useState } from 'react';\nimport type { FormEvent } from 'react';\n",
+    solution:
+      "import { useState } from 'react';\nimport type { FormEvent } from 'react';\n\ntype Uppgift = { id: number; text: string; klar: boolean };\n\nexport default function App() {\n  const [uppgifter, setUppgifter] = useState<Uppgift[]>([]);\n  const [text, setText] = useState('');\n\n  function lagg(e: FormEvent<HTMLFormElement>) {\n    e.preventDefault();\n    setUppgifter([...uppgifter, { id: uppgifter.length + 1, text, klar: false }]);\n    setText('');\n  }\n\n  function vaxla(id: number) {\n    setUppgifter(uppgifter.map(u => (u.id === id ? { ...u, klar: !u.klar } : u)));\n  }\n\n  const kvar = uppgifter.filter(u => !u.klar).length;\n\n  return (\n    <div>\n      <form onSubmit={lagg}>\n        <input value={text} onChange={e => setText(e.target.value)} />\n        <button>Lägg till</button>\n      </form>\n      <ul>\n        {uppgifter.map(u => (\n          <li key={u.id} onClick={() => vaxla(u.id)}>\n            {u.text}\n            {u.klar ? ' ✓' : ''}\n          </li>\n        ))}\n      </ul>\n      <p>{kvar} kvar</p>\n    </div>\n  );\n}\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Börjar tom',
+        code: "__mount(<App />).text('p')",
+        expected: '0 kvar',
+      },
+      {
+        description: 'Lägg till två',
+        code: "(() => { const app = __mount(<App />); app.type('Handla'); app.submit(); app.type('Städa'); app.submit(); return app.text('p'); })()",
+        expected: '2 kvar',
+      },
+      {
+        description: 'Rutan töms',
+        code: "(() => { const app = __mount(<App />); app.type('Handla'); app.submit(); return app.html().includes('value=\"\"'); })()",
+        expected: true,
+      },
+      {
+        description: 'Bocka av',
+        code: "(() => { const app = __mount(<App />); app.type('Handla'); app.submit(); return app.click('Handla').text('ul'); })()",
+        expected: 'Handla ✓',
+      },
+      {
+        description: 'Avbockad räknas inte',
+        code: "(() => { const app = __mount(<App />); app.type('Handla'); app.submit(); app.type('Städa'); app.submit(); return app.click('Handla').text('p'); })()",
+        expected: '1 kvar',
+      },
+    ],
+    sourceChecks: [
+      { description: 'Har typen Uppgift', pattern: /type\s+Uppgift\s*=/ },
+      {
+        description: 'useState<Uppgift[]>',
+        pattern: /useState\s*<\s*Uppgift\[\]\s*>/,
+      },
+    ],
+    preview: '<App />',
+  },
+  slutprojekt: {
+    id: 'slutprojekt-boss',
+    track: 'slutprojekt',
+    title: 'Boss: Bokningsformuläret',
+    isBoss: true,
+    xp: 60,
+    description:
+      BOSS_INTRO +
+      'Sista biten: ett formulär där Bamses ägare bokar själv. Allt du byggt i banan finns i startkoden.',
+    task: `Uppgift: Skriv \`App\`.
+  1. State för bokningarna (\`useState<Bokning[]>([])\`), de två datumen och ett besked.
+  2. Ett \`<form>\` med två \`<input>\` (från och till), en knapp \`Boka\` och en \`<p>\` med beskedet.
+  3. När formuläret skickas anropas \`boka\` för Bamse (\`hundId: 1\`). Gick det inte visas felet. Gick det sparas bokningen och beskedet blir t.ex. \`'Bokad! 2 nätter, 700 kr'\`.`,
+    starterCode: `import { useState } from 'react';\nimport type { FormEvent } from 'react';\n\n${SLUTPROJEKT_BAS}\nconst bamse: Hund = { id: 1, namn: 'Bamse', storlek: 'stor', agare: 'Ada' };\n`,
+    solution: `import { useState } from 'react';\nimport type { FormEvent } from 'react';\n\n${SLUTPROJEKT_BAS}\nconst bamse: Hund = { id: 1, namn: 'Bamse', storlek: 'stor', agare: 'Ada' };\n\nexport default function App() {\n  const [bokningar, setBokningar] = useState<Bokning[]>([]);\n  const [fran, setFran] = useState('');\n  const [till, setTill] = useState('');\n  const [besked, setBesked] = useState('');\n\n  function skicka(e: FormEvent<HTMLFormElement>) {\n    e.preventDefault();\n    const svar = boka(bokningar, { hundId: 1, fran, till });\n    if (!svar.ok) {\n      setBesked(svar.fel);\n      return;\n    }\n    setBokningar([...bokningar, svar.bokning]);\n    setBesked(\`Bokad! \${natter(fran, till)} nätter, \${pris(svar.bokning, bamse)} kr\`);\n  }\n\n  return (\n    <form onSubmit={skicka}>\n      <input value={fran} onChange={e => setFran(e.target.value)} />\n      <input value={till} onChange={e => setTill(e.target.value)} />\n      <button>Boka</button>\n      <p>{besked}</p>\n    </form>\n  );\n}\n`,
+    hints: [],
+    tests: [
+      {
+        description: 'Två nätter',
+        code: "(() => { const app = __mount(<App />); app.type('2026-06-10', 0); app.type('2026-06-12', 1); app.submit(); return app.text('p'); })()",
+        expected: 'Bokad! 2 nätter, 700 kr',
+      },
+      {
+        description: 'Fel datum',
+        code: "(() => { const app = __mount(<App />); app.type('2026-06-12', 0); app.type('2026-06-10', 1); app.submit(); return app.text('p'); })()",
+        expected: 'Fel datum',
+      },
+      {
+        description: 'Samma nätter två gånger',
+        code: "(() => { const app = __mount(<App />); app.type('2026-06-10', 0); app.type('2026-06-12', 1); app.submit(); app.submit(); return app.text('p'); })()",
+        expected: 'Redan bokad',
+      },
+      {
+        description: 'Formuläret laddar inte om sidan',
+        code: '(() => { const app = __mount(<App />); return app.submit(); })()',
+        expected: true,
+      },
+    ],
+    sourceChecks: [
+      { description: 'Använder boka', pattern: /boka\(\s*bokningar/ },
+      {
+        description: 'useState<Bokning[]>',
+        pattern: /useState\s*<\s*Bokning\[\]\s*>/,
+      },
+    ],
+    preview: '<App />',
   },
 };
