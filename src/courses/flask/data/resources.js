@@ -65,4 +65,28 @@ export const RESOURCES = {
       video: 'http status codes 201 400 explained',
     },
   ],
+  api: [
+    {
+      topic: 'REST och CRUD',
+      read: 'https://developer.mozilla.org/en-US/docs/Glossary/REST',
+      video: 'rest api crud explained',
+    },
+    {
+      topic: 'PUT, PATCH och DELETE',
+      read: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods',
+      video: 'flask rest api put delete tutorial',
+    },
+  ],
+  fel: [
+    {
+      topic: 'abort och errorhandler',
+      read: 'https://flask.palletsprojects.com/en/stable/errorhandling/',
+      video: 'flask error handling errorhandler',
+    },
+    {
+      topic: 'Statuskoder för fel',
+      read: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses',
+      video: 'http 4xx status codes explained',
+    },
+  ],
 };

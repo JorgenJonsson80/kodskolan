@@ -171,4 +171,74 @@ export const QUIZ = {
         'Bara appen vet vad som finns, så bara den kan ge ett id som säkert är nytt.',
     },
   ],
+  api: [
+    {
+      question: 'Vilken metod ändrar något som redan finns?',
+      options: ['PUT', 'POST', 'GET', 'DELETE'],
+      explain: 'PUT skickar en ny version. PATCH skickar bara det som ändras.',
+    },
+    {
+      question: 'Vilken statuskod passar ett lyckat DELETE utan innehåll?',
+      code: "from flask import Flask\n\napp = Flask(__name__)\n\n@app.delete('/x')\ndef ta_bort():\n    return '', 204",
+      check: "__delete('/x').status",
+      options: ['204', '200', '201', '404'],
+      explain: '204 No Content: det gick, och det finns inget att visa.',
+    },
+    {
+      question: 'Vad är skillnaden mellan PUT och PATCH?',
+      options: [
+        'PUT skickar allt, PATCH bara det som ändras',
+        'PUT tar bort, PATCH lägger till',
+        'Ingen skillnad',
+        'PATCH fungerar bara med text',
+      ],
+      explain: 'Med PATCH blir resten kvar som det var.',
+    },
+    {
+      question: 'Vad står CRUD för?',
+      options: [
+        'Create, Read, Update, Delete',
+        'Copy, Run, Undo, Do',
+        'Code, Request, URL, Data',
+        'Ingenting',
+      ],
+      explain:
+        'Skapa, läsa, ändra och ta bort – de fyra saker de flesta API:er gör.',
+    },
+  ],
+  fel: [
+    {
+      question: 'Vad gör abort(404)?',
+      options: [
+        'Avbryter vägfunktionen och svarar 404',
+        'Tar bort sidan',
+        'Stänger av appen',
+        'Skriver ut 404',
+      ],
+      explain: 'Funktionen slutar på raden, och Flask svarar med statuskoden.',
+    },
+    {
+      question: 'Vad svarar appen?',
+      code: "from flask import Flask\n\napp = Flask(__name__)\n\n@app.errorhandler(404)\ndef saknas(fel):\n    return {'fel': 'Finns inte'}",
+      check: "__get('/x').status",
+      options: ['200', '404', '500', '400'],
+      explain:
+        'Felhanteraren glömde statuskoden, så svaret blir 200 – fast det var ett fel.',
+    },
+    {
+      question: 'Vilken statuskod passar när ett användarnamn redan är taget?',
+      options: ['409', '400', '404', '500'],
+      explain: '409 Conflict: anropet krockar med något som redan finns.',
+    },
+    {
+      question: 'Vad är skillnaden mellan 401 och 403?',
+      options: [
+        '401 – logga in först, 403 – du får inte',
+        '401 – finns inte, 403 – fel metod',
+        '401 – serverfel, 403 – klientfel',
+        'Ingen skillnad',
+      ],
+      explain: '403 gäller även om appen vet vem du är.',
+    },
+  ],
 };

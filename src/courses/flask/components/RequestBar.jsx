@@ -1,5 +1,5 @@
-const METHODS = ['GET', 'POST', 'PUT', 'DELETE'];
-const hasBody = method => method === 'POST' || method === 'PUT';
+const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+const hasBody = method => ['POST', 'PUT', 'PATCH'].includes(method);
 
 // 📮 Anropa: vilket anrop appen får när koden körs. Svaret visas under
 // feedbacken (ResponseView), ungefär som i Postman.

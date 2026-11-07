@@ -198,6 +198,85 @@ export const IDEAS = [
     ],
     extra: 'Räkna hur många gånger varje kort länk har använts.',
   },
+  {
+    id: 'idea-crud-eget',
+    track: 'api',
+    emoji: '🧩',
+    title: 'Ditt eget CRUD-API',
+    summary: 'Välj något du samlar på och bygg ett komplett API för det.',
+    goals: [
+      'Välj vad: skivor, spel, växter …',
+      'Bygg alla fem vägarna: lista, en, ny, ändra och ta bort.',
+      'Kontrollera all data som skickas in.',
+    ],
+    extra: 'Lägg till PATCH för att bara ändra en sak.',
+  },
+  {
+    id: 'idea-kundvagn',
+    track: 'api',
+    emoji: '🛒',
+    title: 'Kundvagnen',
+    summary: 'En kundvagn med varor som kan läggas till och tas bort.',
+    goals: [
+      'POST /vagn lägger till en vara med antal.',
+      'DELETE /vagn/<id> tar bort en rad.',
+      'GET /vagn/summa räknar ut vad allt kostar.',
+    ],
+    extra: 'Lägg ihop raderna om samma vara läggs till två gånger.',
+  },
+  {
+    id: 'idea-blogg-api',
+    track: 'api',
+    emoji: '📰',
+    title: 'Bloggen',
+    summary: 'Inlägg med kommentarer under.',
+    goals: [
+      'CRUD för /inlagg.',
+      'GET och POST för /inlagg/<id>/kommentarer.',
+      'Ta bort kommentarerna när ett inlägg tas bort.',
+    ],
+    extra: 'Räkna kommentarerna i listan över inlägg.',
+  },
+  {
+    id: 'idea-statuskoder-api',
+    track: 'fel',
+    emoji: '📛',
+    title: 'Statuskodskatalogen',
+    summary:
+      'Ett API som svarar med vilken statuskod du ber om – med förklaring.',
+    goals: [
+      'GET /status/<int:kod> gör abort med den koden.',
+      'Skriv felhanterare för de vanligaste med en svensk förklaring.',
+      'Svara 200 med en lista över alla koder appen kan.',
+    ],
+    extra: 'Lägg till 418 – kolla vad den betyder.',
+  },
+  {
+    id: 'idea-bank',
+    track: 'fel',
+    emoji: '🏦',
+    title: 'Banken',
+    summary: 'Konton och överföringar där mycket kan gå fel.',
+    goals: [
+      'Skapa konton med saldo.',
+      'POST /overforing tar från, till och belopp.',
+      'Svara rätt fel: 404 för okänt konto, 400 för fel belopp, 409 när pengarna inte räcker.',
+    ],
+    extra: 'Spara alla överföringar och visa historiken.',
+  },
+  {
+    id: 'idea-felsamlare',
+    track: 'fel',
+    emoji: '🧷',
+    title: 'Felsamlaren',
+    summary: 'Ett API där alla fel ser exakt likadana ut.',
+    goals: [
+      'Skriv en funktion felsvar(meddelande, kod).',
+      'Använd den i felhanterare för 400, 404, 405 och 409.',
+      'Gör en väg som kan ge vart och ett av felen.',
+    ],
+    extra: 'Lägg till en tid för när felet hände i varje felsvar.',
+  },
 ];
 
 const goalLines = idea =>

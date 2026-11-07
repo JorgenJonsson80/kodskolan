@@ -61,6 +61,9 @@ class Klient:
     def put(self, path, data=None, form=None):
         return _send(self._client, 'PUT', path, data, form)
 
+    def patch(self, path, data=None, form=None):
+        return _send(self._client, 'PATCH', path, data, form)
+
     def delete(self, path):
         return _send(self._client, 'DELETE', path)
 
@@ -94,6 +97,7 @@ def _helpers(namespace):
         '__get': lambda path: _send(client(), 'GET', path),
         '__post': lambda path, data=None, form=None: _send(client(), 'POST', path, data, form),
         '__put': lambda path, data=None, form=None: _send(client(), 'PUT', path, data, form),
+        '__patch': lambda path, data=None, form=None: _send(client(), 'PATCH', path, data, form),
         '__delete': lambda path: _send(client(), 'DELETE', path),
         '__klient': lambda: Klient(_prepare(_app(namespace))),
         '__vagar': lambda: _routes(_app(namespace)),

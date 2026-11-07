@@ -1,4 +1,6 @@
+import { API } from './api';
 import { BOSSES } from './bossar';
+import { FEL } from './fel';
 import { FORSTA } from './forsta';
 import { FRAGOR } from './fragor';
 import { JSON_BANA } from './json';
@@ -18,4 +20,8 @@ export const LESSONS = [
   BOSSES.fragor,
   ...SKICKA,
   BOSSES.skicka,
+  ...API,
+  BOSSES.api,
+  ...FEL,
+  BOSSES.fel,
 ];

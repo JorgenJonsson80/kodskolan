@@ -1283,6 +1283,631 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-anteckningar',
+    track: 'api',
+    title: 'Anteckningarna',
+    reward: { emoji: '🗒️', name: 'Anteckningsbok' },
+    summary: 'Ett komplett API för anteckningar, steg för steg.',
+    steps: [
+      {
+        title: 'Alla och nya',
+        why: 'GET och POST på samma adress: den ena läser listan, den andra lägger till i den.',
+        xp: 15,
+        description: 'Läs och skriv anteckningar.',
+        task: 'Uppgift: Skapa `GET /anteckningar` och `POST /anteckningar` (kräver `text`, annars 400; id = högsta + 1; svar 201).',
+        starterCode:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nanteckningar = []\n\n\ndef hitta(id):\n    for a in anteckningar:\n        if a['id'] == id:\n            return a\n    return None\n",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nanteckningar = []\n\n\ndef hitta(id):\n    for a in anteckningar:\n        if a['id'] == id:\n            return a\n    return None\n\n\n@app.get('/anteckningar')\ndef alla():\n    return anteckningar\n\n\n@app.post('/anteckningar')\ndef ny():\n    text = request.get_json().get('text')\n    if not text:\n        return {'fel': 'text saknas'}, 400\n    nytt_id = max((a['id'] for a in anteckningar), default=0) + 1\n    anteckning = {'id': nytt_id, 'text': text}\n    anteckningar.append(anteckning)\n    return anteckning, 201\n",
+        hints: [
+          "@app.get('/anteckningar') och @app.post('/anteckningar')",
+          "max((a['id'] for a in anteckningar), default=0) + 1",
+          'return anteckning, 201',
+        ],
+        tests: [
+          {
+            description: 'Ny',
+            code: "__post('/anteckningar', {'text': 'Köp mjölk'}).json",
+            expected: { id: 1, text: 'Köp mjölk' },
+            inputs: [],
+          },
+          {
+            description: 'Utan text',
+            code: "__post('/anteckningar', {}).status",
+            expected: 400,
+            inputs: [],
+          },
+          {
+            description: 'Lista',
+            code: "(__post('/anteckningar', {'text': 'a'}), len(__get('/anteckningar').json))[-1]",
+            expected: 1,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/anteckningar',
+          body: '{"text": "Köp mjölk"}',
+        },
+      },
+      {
+        title: 'En och ändra',
+        why: 'hitta används av båda vägarna, så letandet finns på ett enda ställe.',
+        xp: 20,
+        description: 'Läs och ändra en anteckning.',
+        task: 'Uppgift: Skapa `GET /anteckningar/<int:id>` och `PUT /anteckningar/<int:id>` (404 och 400 som förut).',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nanteckningar = []\n\n\ndef hitta(id):\n    for a in anteckningar:\n        if a['id'] == id:\n            return a\n    return None\n\n\n@app.get('/anteckningar')\ndef alla():\n    return anteckningar\n\n\n@app.post('/anteckningar')\ndef ny():\n    text = request.get_json().get('text')\n    if not text:\n        return {'fel': 'text saknas'}, 400\n    nytt_id = max((a['id'] for a in anteckningar), default=0) + 1\n    anteckning = {'id': nytt_id, 'text': text}\n    anteckningar.append(anteckning)\n    return anteckning, 201\n\n\n@app.get('/anteckningar/<int:id>')\ndef en(id):\n    a = hitta(id)\n    if a is None:\n        return {'fel': 'Finns inte'}, 404\n    return a\n\n\n@app.put('/anteckningar/<int:id>')\ndef andra(id):\n    a = hitta(id)\n    if a is None:\n        return {'fel': 'Finns inte'}, 404\n    text = request.get_json().get('text')\n    if not text:\n        return {'fel': 'text saknas'}, 400\n    a['text'] = text\n    return a\n",
+        hints: [
+          'a = hitta(id)',
+          "@app.put('/anteckningar/<int:id>')",
+          "a['text'] = text",
+        ],
+        tests: [
+          {
+            description: 'Ändra',
+            code: "(__post('/anteckningar', {'text': 'a'}), __put('/anteckningar/1', {'text': 'b'}), __get('/anteckningar/1').json['text'])[-1]",
+            expected: 'b',
+            inputs: [],
+          },
+          {
+            description: 'Finns inte',
+            code: "__get('/anteckningar/5').status",
+            expected: 404,
+            inputs: [],
+          },
+        ],
+        request: { path: '/anteckningar/1' },
+      },
+      {
+        title: 'Ta bort',
+        why: '204 säger att det gick, utan något innehåll. Nu har API:t alla fem vägarna.',
+        xp: 15,
+        description: 'Ta bort en anteckning.',
+        task: 'Uppgift: Skapa `DELETE /anteckningar/<int:id>` som svarar 204, eller 404.',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nanteckningar = []\n\n\ndef hitta(id):\n    for a in anteckningar:\n        if a['id'] == id:\n            return a\n    return None\n\n\n@app.get('/anteckningar')\ndef alla():\n    return anteckningar\n\n\n@app.post('/anteckningar')\ndef ny():\n    text = request.get_json().get('text')\n    if not text:\n        return {'fel': 'text saknas'}, 400\n    nytt_id = max((a['id'] for a in anteckningar), default=0) + 1\n    anteckning = {'id': nytt_id, 'text': text}\n    anteckningar.append(anteckning)\n    return anteckning, 201\n\n\n@app.get('/anteckningar/<int:id>')\ndef en(id):\n    a = hitta(id)\n    if a is None:\n        return {'fel': 'Finns inte'}, 404\n    return a\n\n\n@app.put('/anteckningar/<int:id>')\ndef andra(id):\n    a = hitta(id)\n    if a is None:\n        return {'fel': 'Finns inte'}, 404\n    text = request.get_json().get('text')\n    if not text:\n        return {'fel': 'text saknas'}, 400\n    a['text'] = text\n    return a\n\n\n@app.delete('/anteckningar/<int:id>')\ndef ta_bort(id):\n    a = hitta(id)\n    if a is None:\n        return {'fel': 'Finns inte'}, 404\n    anteckningar.remove(a)\n    return '', 204\n",
+        hints: [
+          "@app.delete('/anteckningar/<int:id>')",
+          'anteckningar.remove(a)',
+          "return '', 204",
+        ],
+        tests: [
+          {
+            description: 'Ta bort',
+            code: "(__post('/anteckningar', {'text': 'a'}), __delete('/anteckningar/1').status)[-1]",
+            expected: 204,
+            inputs: [],
+          },
+          {
+            description: 'Borta',
+            code: "(__post('/anteckningar', {'text': 'a'}), __delete('/anteckningar/1'), __get('/anteckningar/1').status)[-1]",
+            expected: 404,
+            inputs: [],
+          },
+        ],
+        request: { method: 'DELETE', path: '/anteckningar/1' },
+      },
+    ],
+  },
+  {
+    id: 'proj-lager-crud',
+    track: 'api',
+    title: 'Lagerhyllan',
+    reward: { emoji: '🛍️', name: 'Shoppingkasse' },
+    summary: 'Ändra och sälj varor i lagret.',
+    steps: [
+      {
+        title: 'En vara',
+        why: 'Den vanliga GET-vägen för en sak, som resten bygger på.',
+        xp: 10,
+        description: 'Visa en vara.',
+        task: 'Uppgift: Skapa `GET /varor/<int:id>` med 404 för varor som saknas.',
+        starterCode:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nvaror = [{'id': 1, 'namn': 'Mössa', 'antal': 5}]\n\n\ndef hitta(id):\n    for vara in varor:\n        if vara['id'] == id:\n            return vara\n    return None\n",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nvaror = [{'id': 1, 'namn': 'Mössa', 'antal': 5}]\n\n\ndef hitta(id):\n    for vara in varor:\n        if vara['id'] == id:\n            return vara\n    return None\n\n\n@app.get('/varor/<int:id>')\ndef en(id):\n    vara = hitta(id)\n    if vara is None:\n        return {'fel': 'Finns inte'}, 404\n    return vara\n",
+        hints: [
+          "@app.get('/varor/<int:id>')",
+          'vara = hitta(id)',
+          "return {'fel': 'Finns inte'}, 404",
+        ],
+        tests: [
+          {
+            description: 'Mössa',
+            code: "__get('/varor/1').json['namn']",
+            expected: 'Mössa',
+          },
+          {
+            description: 'Finns inte',
+            code: "__get('/varor/2').status",
+            expected: 404,
+          },
+        ],
+        request: { path: '/varor/1' },
+      },
+      {
+        title: 'Ändra antal',
+        why: 'PATCH ändrar bara det som skickas. Antalet kontrolleras så att lagret aldrig blir negativt.',
+        xp: 20,
+        description: 'Inventering.',
+        task: 'Uppgift: Skapa `PATCH /varor/<int:id>` som kan ändra `antal` (heltal, minst 0, annars 400) och `namn`.',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nvaror = [{'id': 1, 'namn': 'Mössa', 'antal': 5}]\n\n\ndef hitta(id):\n    for vara in varor:\n        if vara['id'] == id:\n            return vara\n    return None\n\n\n@app.get('/varor/<int:id>')\ndef en(id):\n    vara = hitta(id)\n    if vara is None:\n        return {'fel': 'Finns inte'}, 404\n    return vara\n\n\n@app.patch('/varor/<int:id>')\ndef andra(id):\n    vara = hitta(id)\n    if vara is None:\n        return {'fel': 'Finns inte'}, 404\n    data = request.get_json()\n    if 'antal' in data:\n        if not isinstance(data['antal'], int) or data['antal'] < 0:\n            return {'fel': 'antal ska vara ett heltal, minst 0'}, 400\n        vara['antal'] = data['antal']\n    if 'namn' in data:\n        vara['namn'] = data['namn']\n    return vara\n",
+        hints: [
+          "@app.patch('/varor/<int:id>')",
+          "if 'antal' in data:",
+          "isinstance(data['antal'], int) and data['antal'] >= 0",
+        ],
+        tests: [
+          {
+            description: 'Nytt antal',
+            code: "__patch('/varor/1', {'antal': 9}).json['antal']",
+            expected: 9,
+            inputs: [],
+          },
+          {
+            description: 'Negativt',
+            code: "__patch('/varor/1', {'antal': -1}).status",
+            expected: 400,
+            inputs: [],
+          },
+          {
+            description: 'Bara namn',
+            code: "__patch('/varor/1', {'namn': 'Keps'}).json",
+            expected: { id: 1, namn: 'Keps', antal: 5 },
+            inputs: [],
+          },
+        ],
+        request: { method: 'PATCH', path: '/varor/1', body: '{"antal": 9}' },
+      },
+      {
+        title: 'Sälj',
+        why: 'Att sälja är en handling, inte en ändring av ett fält. Därför en egen POST-väg, och 409 när det inte räcker.',
+        xp: 20,
+        description: 'Sälj ur lagret.',
+        task: "Uppgift: Skapa `POST /varor/<int:id>/salj` som tar `{'antal': …}` (standard 1) och minskar lagret. Finns det inte tillräckligt: `{'fel': 'Inte tillräckligt i lager'}` med 409.",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nvaror = [{'id': 1, 'namn': 'Mössa', 'antal': 5}]\n\n\ndef hitta(id):\n    for vara in varor:\n        if vara['id'] == id:\n            return vara\n    return None\n\n\n@app.get('/varor/<int:id>')\ndef en(id):\n    vara = hitta(id)\n    if vara is None:\n        return {'fel': 'Finns inte'}, 404\n    return vara\n\n\n@app.patch('/varor/<int:id>')\ndef andra(id):\n    vara = hitta(id)\n    if vara is None:\n        return {'fel': 'Finns inte'}, 404\n    data = request.get_json()\n    if 'antal' in data:\n        if not isinstance(data['antal'], int) or data['antal'] < 0:\n            return {'fel': 'antal ska vara ett heltal, minst 0'}, 400\n        vara['antal'] = data['antal']\n    if 'namn' in data:\n        vara['namn'] = data['namn']\n    return vara\n\n\n@app.post('/varor/<int:id>/salj')\ndef salj(id):\n    vara = hitta(id)\n    if vara is None:\n        return {'fel': 'Finns inte'}, 404\n    antal = request.get_json().get('antal', 1)\n    if antal > vara['antal']:\n        return {'fel': 'Inte tillräckligt i lager'}, 409\n    vara['antal'] -= antal\n    return vara\n",
+        hints: [
+          "@app.post('/varor/<int:id>/salj')",
+          "request.get_json().get('antal', 1)",
+          "if antal > vara['antal']: … 409",
+        ],
+        tests: [
+          {
+            description: 'Sälj 2',
+            code: "__post('/varor/1/salj', {'antal': 2}).json['antal']",
+            expected: 3,
+            inputs: [],
+          },
+          {
+            description: 'Sälj 9',
+            code: "__post('/varor/1/salj', {'antal': 9}).status",
+            expected: 409,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/varor/1/salj',
+          body: '{"antal": 2}',
+        },
+      },
+    ],
+  },
+  {
+    id: 'proj-klubben',
+    track: 'api',
+    title: 'Klubben',
+    reward: { emoji: '⚽', name: 'Fotboll' },
+    summary: 'Lag och spelare, där spelarna hör till ett lag.',
+    steps: [
+      {
+        title: 'Lagen',
+        why: 'Lagen är den översta nivån. Spelarna kommer att höra till dem.',
+        xp: 15,
+        description: 'Lista och skapa lag.',
+        task: 'Uppgift: Skapa `GET /lag` och `POST /lag` (kräver `namn`; id = högsta + 1; 201).',
+        starterCode:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nlag = [{'id': 1, 'namn': 'Hundarna'}]\nspelare = [{'id': 1, 'lag_id': 1, 'namn': 'Ada'}]\n",
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nlag = [{'id': 1, 'namn': 'Hundarna'}]\nspelare = [{'id': 1, 'lag_id': 1, 'namn': 'Ada'}]\n\n\n@app.get('/lag')\ndef alla_lag():\n    return lag\n\n\n@app.post('/lag')\ndef nytt_lag():\n    namn = request.get_json().get('namn')\n    if not namn:\n        return {'fel': 'namn saknas'}, 400\n    nytt = {'id': max(l['id'] for l in lag) + 1, 'namn': namn}\n    lag.append(nytt)\n    return nytt, 201\n",
+        hints: [
+          "@app.get('/lag') och @app.post('/lag')",
+          "max(l['id'] for l in lag) + 1",
+          'return nytt, 201',
+        ],
+        tests: [
+          {
+            description: 'Nytt lag',
+            code: "__post('/lag', {'namn': 'Katterna'}).json",
+            expected: { id: 2, namn: 'Katterna' },
+            inputs: [],
+          },
+          {
+            description: 'Utan namn',
+            code: "__post('/lag', {}).status",
+            expected: 400,
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/lag', body: '{"namn": "Katterna"}' },
+      },
+      {
+        title: 'Lagets spelare',
+        why: 'Adressen /lag/1/spelare säger att spelarna hör till lag 1. Först kollas att laget finns.',
+        xp: 20,
+        description: 'Spelarna i ett lag.',
+        task: 'Uppgift: Skapa `GET` och `POST /lag/<int:id>/spelare`. Ett lag som inte finns ger 404.',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nlag = [{'id': 1, 'namn': 'Hundarna'}]\nspelare = [{'id': 1, 'lag_id': 1, 'namn': 'Ada'}]\n\n\n@app.get('/lag')\ndef alla_lag():\n    return lag\n\n\n@app.post('/lag')\ndef nytt_lag():\n    namn = request.get_json().get('namn')\n    if not namn:\n        return {'fel': 'namn saknas'}, 400\n    nytt = {'id': max(l['id'] for l in lag) + 1, 'namn': namn}\n    lag.append(nytt)\n    return nytt, 201\n\n\ndef finns_lag(id):\n    return any(l['id'] == id for l in lag)\n\n\n@app.get('/lag/<int:id>/spelare')\ndef lagets_spelare(id):\n    if not finns_lag(id):\n        return {'fel': 'Finns inte'}, 404\n    return [s for s in spelare if s['lag_id'] == id]\n\n\n@app.post('/lag/<int:id>/spelare')\ndef ny_spelare(id):\n    if not finns_lag(id):\n        return {'fel': 'Finns inte'}, 404\n    ny = {'id': max(s['id'] for s in spelare) + 1, 'lag_id': id, 'namn': request.get_json()['namn']}\n    spelare.append(ny)\n    return ny, 201\n",
+        hints: [
+          "def finns_lag(id): return any(l['id'] == id for l in lag)",
+          "[s for s in spelare if s['lag_id'] == id]",
+          "'lag_id': id i den nya spelaren",
+        ],
+        tests: [
+          {
+            description: 'Ada',
+            code: "__get('/lag/1/spelare').json[0]['namn']",
+            expected: 'Ada',
+          },
+          {
+            description: 'Ny spelare',
+            code: "__post('/lag/1/spelare', {'namn': 'Bo'}).json",
+            expected: { id: 2, lag_id: 1, namn: 'Bo' },
+            inputs: [],
+          },
+          {
+            description: 'Lag 9',
+            code: "__get('/lag/9/spelare').status",
+            expected: 404,
+          },
+        ],
+        request: { path: '/lag/1/spelare' },
+      },
+      {
+        title: 'Lämna laget',
+        why: 'Både lagets och spelarens id står i adressen. Spelaren måste höra till just det laget.',
+        xp: 15,
+        description: 'En spelare lämnar.',
+        task: 'Uppgift: Skapa `DELETE /lag/<int:id>/spelare/<int:spelare_id>` som svarar 204, eller 404.',
+        solution:
+          "from flask import Flask, request\n\napp = Flask(__name__)\n\nlag = [{'id': 1, 'namn': 'Hundarna'}]\nspelare = [{'id': 1, 'lag_id': 1, 'namn': 'Ada'}]\n\n\n@app.get('/lag')\ndef alla_lag():\n    return lag\n\n\n@app.post('/lag')\ndef nytt_lag():\n    namn = request.get_json().get('namn')\n    if not namn:\n        return {'fel': 'namn saknas'}, 400\n    nytt = {'id': max(l['id'] for l in lag) + 1, 'namn': namn}\n    lag.append(nytt)\n    return nytt, 201\n\n\ndef finns_lag(id):\n    return any(l['id'] == id for l in lag)\n\n\n@app.get('/lag/<int:id>/spelare')\ndef lagets_spelare(id):\n    if not finns_lag(id):\n        return {'fel': 'Finns inte'}, 404\n    return [s for s in spelare if s['lag_id'] == id]\n\n\n@app.post('/lag/<int:id>/spelare')\ndef ny_spelare(id):\n    if not finns_lag(id):\n        return {'fel': 'Finns inte'}, 404\n    ny = {'id': max(s['id'] for s in spelare) + 1, 'lag_id': id, 'namn': request.get_json()['namn']}\n    spelare.append(ny)\n    return ny, 201\n\n\n@app.delete('/lag/<int:id>/spelare/<int:spelare_id>')\ndef ta_bort_spelare(id, spelare_id):\n    for s in spelare:\n        if s['id'] == spelare_id and s['lag_id'] == id:\n            spelare.remove(s)\n            return '', 204\n    return {'fel': 'Finns inte'}, 404\n",
+        hints: [
+          'Två variabler i adressen.',
+          "s['id'] == spelare_id and s['lag_id'] == id",
+          "return '', 204",
+        ],
+        tests: [
+          {
+            description: 'Ada lämnar',
+            code: "__delete('/lag/1/spelare/1').status",
+            expected: 204,
+            inputs: [],
+          },
+          {
+            description: 'Fel lag',
+            code: "__delete('/lag/2/spelare/1').status",
+            expected: 404,
+            inputs: [],
+          },
+        ],
+        request: { method: 'DELETE', path: '/lag/1/spelare/1' },
+      },
+    ],
+  },
+  {
+    id: 'proj-biljetter',
+    track: 'fel',
+    title: 'Biljettkassan',
+    reward: { emoji: '🎟️', name: 'Teaterbiljett' },
+    summary: 'Köp biljetter, och få tydliga fel när det inte går.',
+    steps: [
+      {
+        title: 'En föreställning',
+        why: 'hitta gör abort själv, så vägfunktionen blir en enda rad. Felhanteraren gör svaret till JSON.',
+        xp: 15,
+        description: 'Visa en föreställning.',
+        task: "Uppgift: Skapa `GET /forestallningar/<int:id>` med `hitta`, och en felhanterare för 400, 404 och 409 som svarar `{'fel': fel.description}`.",
+        starterCode:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nforestallningar = [{'id': 1, 'namn': 'Hamlet', 'kvar': 3}]\n\n\ndef hitta(id):\n    for f in forestallningar:\n        if f['id'] == id:\n            return f\n    abort(404, description='Ingen sådan föreställning')\n",
+        solution:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nforestallningar = [{'id': 1, 'namn': 'Hamlet', 'kvar': 3}]\n\n\ndef hitta(id):\n    for f in forestallningar:\n        if f['id'] == id:\n            return f\n    abort(404, description='Ingen sådan föreställning')\n\n\n@app.get('/forestallningar/<int:id>')\ndef en(id):\n    return hitta(id)\n\n\n@app.errorhandler(400)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n",
+        hints: [
+          'return hitta(id)',
+          '@app.errorhandler(404) (och 400, 409) ovanför samma funktion',
+          "return {'fel': fel.description}, fel.code",
+        ],
+        tests: [
+          {
+            description: 'Hamlet',
+            code: "__get('/forestallningar/1').json['namn']",
+            expected: 'Hamlet',
+          },
+          {
+            description: 'Finns inte',
+            code: "__get('/forestallningar/7').json",
+            expected: { fel: 'Ingen sådan föreställning' },
+          },
+        ],
+        request: { path: '/forestallningar/7' },
+      },
+      {
+        title: 'Köp',
+        why: 'Fel antal är ett fel i anropet (400). Slutsålt krockar med hur det är just nu (409).',
+        xp: 20,
+        description: 'Köp biljetter.',
+        task: "Uppgift: Skapa `POST /forestallningar/<int:id>/kop` med `{'antal': …}`. Fel antal ger 400, för få kvar ger 409 med `'Slutsålt'`. Svara `{'kopt': …, 'kvar': …}`.",
+        solution:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nforestallningar = [{'id': 1, 'namn': 'Hamlet', 'kvar': 3}]\n\n\ndef hitta(id):\n    for f in forestallningar:\n        if f['id'] == id:\n            return f\n    abort(404, description='Ingen sådan föreställning')\n\n\n@app.get('/forestallningar/<int:id>')\ndef en(id):\n    return hitta(id)\n\n\n@app.post('/forestallningar/<int:id>/kop')\ndef kop(id):\n    f = hitta(id)\n    antal = request.get_json().get('antal')\n    if not isinstance(antal, int) or antal < 1:\n        abort(400, description='antal ska vara ett heltal, minst 1')\n    if antal > f['kvar']:\n        abort(409, description='Slutsålt')\n    f['kvar'] -= antal\n    return {'kopt': antal, 'kvar': f['kvar']}\n\n\n@app.errorhandler(400)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n",
+        hints: [
+          'isinstance(antal, int) and antal >= 1',
+          "abort(409, description='Slutsålt')",
+          "f['kvar'] -= antal",
+        ],
+        tests: [
+          {
+            description: 'Köp 2',
+            code: "__post('/forestallningar/1/kop', {'antal': 2}).json",
+            expected: { kopt: 2, kvar: 1 },
+            inputs: [],
+          },
+          {
+            description: 'Köp 5',
+            code: "__post('/forestallningar/1/kop', {'antal': 5}).json",
+            expected: { fel: 'Slutsålt' },
+            inputs: [],
+          },
+          {
+            description: 'Köp noll',
+            code: "__post('/forestallningar/1/kop', {'antal': 0}).status",
+            expected: 400,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/forestallningar/1/kop',
+          body: '{"antal": 2}',
+        },
+      },
+      {
+        title: 'Fel metod',
+        why: 'Med 405 i samma felhanterare svarar API:t JSON för alla fel det kan ge.',
+        xp: 10,
+        description: 'Också fel metod ska bli JSON.',
+        task: 'Uppgift: Låt felhanteraren också ta hand om 405.',
+        solution:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nforestallningar = [{'id': 1, 'namn': 'Hamlet', 'kvar': 3}]\n\n\ndef hitta(id):\n    for f in forestallningar:\n        if f['id'] == id:\n            return f\n    abort(404, description='Ingen sådan föreställning')\n\n\n@app.get('/forestallningar/<int:id>')\ndef en(id):\n    return hitta(id)\n\n\n@app.post('/forestallningar/<int:id>/kop')\ndef kop(id):\n    f = hitta(id)\n    antal = request.get_json().get('antal')\n    if not isinstance(antal, int) or antal < 1:\n        abort(400, description='antal ska vara ett heltal, minst 1')\n    if antal > f['kvar']:\n        abort(409, description='Slutsålt')\n    f['kvar'] -= antal\n    return {'kopt': antal, 'kvar': f['kvar']}\n\n\n@app.errorhandler(400)\n@app.errorhandler(404)\n@app.errorhandler(405)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n",
+        hints: [
+          'En dekorator till.',
+          '@app.errorhandler(405)',
+          'Ingen annan ändring behövs.',
+        ],
+        tests: [
+          {
+            description: 'DELETE',
+            code: "'fel' in __delete('/forestallningar/1').json",
+            expected: true,
+          },
+        ],
+        request: { method: 'DELETE', path: '/forestallningar/1' },
+      },
+    ],
+  },
+  {
+    id: 'proj-rumsbokning',
+    track: 'fel',
+    title: 'Rumsbokningen',
+    reward: { emoji: '🚪', name: 'Dörr' },
+    summary: 'Boka mötesrum utan dubbelbokningar.',
+    steps: [
+      {
+        title: 'Boka',
+        why: 'Ett rum som inte finns är 404. Ett rum som redan är bokat är en krock, 409.',
+        xp: 20,
+        description: 'Boka ett rum ett visst datum.',
+        task: "Uppgift: Skapa `POST /bokningar` med `{'rum': …, 'datum': …}`. Okänt rum ger 404, redan bokat 409. Felhanteraren svarar `{'fel': fel.description}`.",
+        starterCode:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nrum = ['Stora', 'Lilla']\nbokningar = []\n",
+        solution:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nrum = ['Stora', 'Lilla']\nbokningar = []\n\n\n@app.post('/bokningar')\ndef boka():\n    data = request.get_json()\n    if data.get('rum') not in rum:\n        abort(404, description='Rummet finns inte')\n    if any(b['rum'] == data['rum'] and b['datum'] == data['datum'] for b in bokningar):\n        abort(409, description='Rummet är redan bokat')\n    bokning = {'id': len(bokningar) + 1, 'rum': data['rum'], 'datum': data['datum']}\n    bokningar.append(bokning)\n    return bokning, 201\n\n\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n",
+        hints: [
+          "abort(404, description='Rummet finns inte')",
+          "any(b['rum'] == data['rum'] and b['datum'] == data['datum'] for b in bokningar)",
+          'return bokning, 201',
+        ],
+        tests: [
+          {
+            description: 'Boka',
+            code: "__post('/bokningar', {'rum': 'Stora', 'datum': '2026-06-10'}).status",
+            expected: 201,
+            inputs: [],
+          },
+          {
+            description: 'Dubbelbokat',
+            code: "(__post('/bokningar', {'rum': 'Stora', 'datum': '2026-06-10'}), __post('/bokningar', {'rum': 'Stora', 'datum': '2026-06-10'}).json)[-1]",
+            expected: { fel: 'Rummet är redan bokat' },
+            inputs: [],
+          },
+          {
+            description: 'Okänt rum',
+            code: "__post('/bokningar', {'rum': 'Källaren', 'datum': 'x'}).status",
+            expected: 404,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/bokningar',
+          body: '{"rum": "Stora", "datum": "2026-06-10"}',
+        },
+      },
+      {
+        title: 'Datum saknas',
+        why: 'Kontrollen av datan kommer först, innan appen letar i bokningarna.',
+        xp: 15,
+        description: 'Utan datum kan inget bokas.',
+        task: "Uppgift: Utan `datum` ska det bli `abort(400, description='datum saknas')`. Lägg till 400 i felhanteraren.",
+        solution:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nrum = ['Stora', 'Lilla']\nbokningar = []\n\n\n@app.post('/bokningar')\ndef boka():\n    data = request.get_json()\n    if not data.get('datum'):\n        abort(400, description='datum saknas')\n    if data.get('rum') not in rum:\n        abort(404, description='Rummet finns inte')\n    if any(b['rum'] == data['rum'] and b['datum'] == data['datum'] for b in bokningar):\n        abort(409, description='Rummet är redan bokat')\n    bokning = {'id': len(bokningar) + 1, 'rum': data['rum'], 'datum': data['datum']}\n    bokningar.append(bokning)\n    return bokning, 201\n\n\n@app.errorhandler(400)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n",
+        hints: [
+          "if not data.get('datum'):",
+          "abort(400, description='datum saknas')",
+          '@app.errorhandler(400)',
+        ],
+        tests: [
+          {
+            description: 'Utan datum',
+            code: "__post('/bokningar', {'rum': 'Stora'}).json",
+            expected: { fel: 'datum saknas' },
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/bokningar',
+          body: '{"rum": "Stora"}',
+        },
+      },
+      {
+        title: 'Avboka',
+        why: 'En avbokning av något som inte finns är 404, med samma form på felet som resten av API:t.',
+        xp: 15,
+        description: 'Avboka.',
+        task: "Uppgift: Skapa `DELETE /bokningar/<int:id>` som svarar 204, eller 404 med `'Ingen sådan bokning'`.",
+        solution:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nrum = ['Stora', 'Lilla']\nbokningar = []\n\n\n@app.post('/bokningar')\ndef boka():\n    data = request.get_json()\n    if not data.get('datum'):\n        abort(400, description='datum saknas')\n    if data.get('rum') not in rum:\n        abort(404, description='Rummet finns inte')\n    if any(b['rum'] == data['rum'] and b['datum'] == data['datum'] for b in bokningar):\n        abort(409, description='Rummet är redan bokat')\n    bokning = {'id': len(bokningar) + 1, 'rum': data['rum'], 'datum': data['datum']}\n    bokningar.append(bokning)\n    return bokning, 201\n\n\n@app.errorhandler(400)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n\n\n@app.delete('/bokningar/<int:id>')\ndef avboka(id):\n    for b in bokningar:\n        if b['id'] == id:\n            bokningar.remove(b)\n            return '', 204\n    abort(404, description='Ingen sådan bokning')\n",
+        hints: [
+          "@app.delete('/bokningar/<int:id>')",
+          "bokningar.remove(b)\n            return '', 204",
+          "abort(404, description='Ingen sådan bokning')",
+        ],
+        tests: [
+          {
+            description: 'Avboka',
+            code: "(__post('/bokningar', {'rum': 'Lilla', 'datum': 'x'}), __delete('/bokningar/1').status)[-1]",
+            expected: 204,
+            inputs: [],
+          },
+          {
+            description: 'Finns inte',
+            code: "__delete('/bokningar/3').json",
+            expected: { fel: 'Ingen sådan bokning' },
+            inputs: [],
+          },
+        ],
+        request: { method: 'DELETE', path: '/bokningar/1' },
+      },
+    ],
+  },
+  {
+    id: 'proj-konton',
+    track: 'fel',
+    title: 'Kontoskaparen',
+    reward: { emoji: '👤', name: 'Användare' },
+    summary: 'Skapa konton och visa alla fel på en gång.',
+    steps: [
+      {
+        title: 'Alla fel på en gång',
+        why: 'En lista med fel gör att användaren kan rätta allt på en gång, i stället för ett fel i taget.',
+        xp: 20,
+        description: 'Kontrollera ett nytt konto.',
+        task: "Uppgift: Skriv `kontrollera(data)` som ger en lista med fel (namn minst 3 tecken, losenord minst 8). `POST /konton` svarar `{'fel': [...]}` med 400, eller `{'namn': …}` med 201.",
+        starterCode:
+          'from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nkonton = {}\n',
+        solution:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nkonton = {}\n\n\ndef kontrollera(data):\n    fel = []\n    if len(data.get('namn', '')) < 3:\n        fel.append('namn ska vara minst 3 tecken')\n    if len(data.get('losenord', '')) < 8:\n        fel.append('losenord ska vara minst 8 tecken')\n    return fel\n\n\n@app.post('/konton')\ndef nytt_konto():\n    data = request.get_json()\n    fel = kontrollera(data)\n    if fel:\n        return {'fel': fel}, 400\n    konton[data['namn']] = data['losenord']\n    return {'namn': data['namn']}, 201\n",
+        hints: [
+          'fel = [] och fel.append(…)',
+          "if fel: return {'fel': fel}, 400",
+          "return {'namn': data['namn']}, 201",
+        ],
+        tests: [
+          {
+            description: 'Två fel',
+            code: "__post('/konton', {'namn': 'A', 'losenord': 'kort'}).json",
+            expected: {
+              fel: [
+                'namn ska vara minst 3 tecken',
+                'losenord ska vara minst 8 tecken',
+              ],
+            },
+            inputs: [],
+          },
+          {
+            description: 'Godkänt',
+            code: "__post('/konton', {'namn': 'Ada', 'losenord': 'hemligt123'}).status",
+            expected: 201,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/konton',
+          body: '{"namn": "A", "losenord": "kort"}',
+        },
+      },
+      {
+        title: 'Upptaget namn',
+        why: 'Felet har samma form som de andra, en lista, så att appen kan visa det på samma sätt.',
+        xp: 15,
+        description: 'Två konton kan inte heta likadant.',
+        task: "Uppgift: Ett namn som redan finns ger `{'fel': ['namnet är upptaget']}` med 409.",
+        solution:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nkonton = {}\n\n\ndef kontrollera(data):\n    fel = []\n    if len(data.get('namn', '')) < 3:\n        fel.append('namn ska vara minst 3 tecken')\n    if len(data.get('losenord', '')) < 8:\n        fel.append('losenord ska vara minst 8 tecken')\n    return fel\n\n\n@app.post('/konton')\ndef nytt_konto():\n    data = request.get_json()\n    fel = kontrollera(data)\n    if fel:\n        return {'fel': fel}, 400\n    if data['namn'] in konton:\n        return {'fel': ['namnet är upptaget']}, 409\n    konton[data['namn']] = data['losenord']\n    return {'namn': data['namn']}, 201\n",
+        hints: [
+          "if data['namn'] in konton:",
+          "return {'fel': ['namnet är upptaget']}, 409",
+          'Kolla efter de andra felen.',
+        ],
+        tests: [
+          {
+            description: 'Två gånger',
+            code: "(__post('/konton', {'namn': 'Ada', 'losenord': 'hemligt123'}), __post('/konton', {'namn': 'Ada', 'losenord': 'hemligt123'}).status)[-1]",
+            expected: 409,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/konton',
+          body: '{"namn": "Ada", "losenord": "hemligt123"}',
+        },
+      },
+      {
+        title: 'Visa ett konto',
+        why: 'Lösenordet skickas aldrig tillbaka. Felhanteraren ger 404 samma form som de andra felen.',
+        xp: 15,
+        description: 'Visa ett konto.',
+        task: "Uppgift: Skapa `GET /konton/<namn>` som svarar `{'namn': …}` eller `abort(404)`, och en felhanterare som svarar `{'fel': ['finns inte']}`.",
+        solution:
+          "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nkonton = {}\n\n\ndef kontrollera(data):\n    fel = []\n    if len(data.get('namn', '')) < 3:\n        fel.append('namn ska vara minst 3 tecken')\n    if len(data.get('losenord', '')) < 8:\n        fel.append('losenord ska vara minst 8 tecken')\n    return fel\n\n\n@app.post('/konton')\ndef nytt_konto():\n    data = request.get_json()\n    fel = kontrollera(data)\n    if fel:\n        return {'fel': fel}, 400\n    if data['namn'] in konton:\n        return {'fel': ['namnet är upptaget']}, 409\n    konton[data['namn']] = data['losenord']\n    return {'namn': data['namn']}, 201\n\n\n@app.get('/konton/<namn>')\ndef konto(namn):\n    if namn not in konton:\n        abort(404)\n    return {'namn': namn}\n\n\n@app.errorhandler(404)\ndef finns_inte(fel):\n    return {'fel': ['finns inte']}, 404\n",
+        hints: [
+          "@app.get('/konton/<namn>')",
+          'abort(404)',
+          '@app.errorhandler(404)',
+        ],
+        tests: [
+          {
+            description: 'Finns inte',
+            code: "__get('/konton/Bo').json",
+            expected: { fel: ['finns inte'] },
+          },
+          {
+            description: 'Inget lösenord',
+            code: "(__post('/konton', {'namn': 'Ada', 'losenord': 'hemligt123'}), __get('/konton/Ada').json)[-1]",
+            expected: { namn: 'Ada' },
+            inputs: [],
+          },
+        ],
+        request: { path: '/konton/Ada' },
+      },
+    ],
+  },
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `# ${text}`);
