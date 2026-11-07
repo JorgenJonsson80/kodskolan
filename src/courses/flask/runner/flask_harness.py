@@ -158,8 +158,9 @@ def _body(request):
     return json.loads(text), None
 
 
-def _anropa(namespace, request_json):
+def _anropa(namespace, request_json, client=None):
     # 📮 Anropa: ett anrop som eleven själv valt, och vägarna appen har.
+    # client är fullstackens klient, som behåller cookies mellan anropen.
     request = json.loads(request_json)
     app = _app(namespace)
     try:
@@ -167,7 +168,7 @@ def _anropa(namespace, request_json):
     except ValueError as error:
         return {'bodyError': f'Det som ska skickas är inte giltig JSON: {error}', 'routes': _routes(app)}
     try:
-        svar = _send(_prepare(app).test_client(), request.get('method', 'GET'), request.get('path') or '/', data, form)
+        svar = _send(client or _prepare(app).test_client(), request.get('method', 'GET'), request.get('path') or '/', data, form)
     except HTTPException as error:
         return {'status': error.code, 'type': 'text/plain', 'text': str(error), 'routes': _routes(app)}
     return {
@@ -196,13 +197,16 @@ def run_flask(code, tests_json, inputs_json, files_json, request_json=None):
 # --- En app som kör hela tiden (fullstack) ---
 # React-sidan i fullstack-projektet anropar appen med fetch, och appen
 # ska komma ihåg det som skickats till den mellan anropen. Därför körs
-# elevens kod en gång, och anropen går sedan till samma namespace.
+# elevens kod en gång, och anropen går sedan till samma namespace. Klienten
+# behåller cookies som en webbläsare, så att en inloggning håller.
 
 _served = None
+_served_client = None
 
 
 def serve_start(code, files_json='{}'):
-    global _served
+    global _served, _served_client
+    _served_client = None
     _write_files(files_json)
     try:
         compiled = compile(code, STUDENT_FILE, 'exec')
@@ -214,11 +218,14 @@ def serve_start(code, files_json='{}'):
 
 
 def serve_request(request_json):
+    global _served_client
     if _served is None or _served.error is not None:
-        return json.dumps({'status': 503, 'type': 'text/plain', 'text': 'Flask-appen kör inte'})
+        return json.dumps({'status': 503, 'type': 'text/plain', 'text': 'Flask-appen kör inte', 'stopped': True})
     with _served:
         try:
-            result = _anropa(_served.namespace, request_json)
+            if _served_client is None:
+                _served_client = _prepare(_app(_served.namespace)).test_client()
+            result = _anropa(_served.namespace, request_json, _served_client)
         except BaseException as error:
             result = {'status': 500, 'type': 'text/plain', 'text': str(error),
                       'error': _error_info(error, STUDENT_FILE, _served.namespace)}

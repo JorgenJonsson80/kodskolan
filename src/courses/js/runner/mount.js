@@ -59,9 +59,12 @@ function toHtml(node) {
   return `<${node.type}${attrs}>${toHtml(node.children)}</${node.type}>`;
 }
 
+// Ett <input> har inga barn (null), och en komponent som returnerar null
+// ritar ingenting.
 function textOf(instance) {
+  if (!instance) return '';
   if (typeof instance === 'string') return instance;
-  return instance.children.map(textOf).join('');
+  return (instance.children ?? []).map(textOf).join('');
 }
 
 function isHost(instance, tags) {
@@ -100,12 +103,13 @@ class ErrorCatcher extends Component {
 }
 
 // clock är låtsasklockan från fakes.js, så att app.tick(ms) kan
-// spola fram tiden för timers som komponenten startat.
-export function createMount(clock) {
-  return element => mount(element, clock);
+// spola fram tiden för timers som komponenten startat. idle väntar in
+// anrop till ett riktigt API (Fullstack-kursen, se bridgeFetch.js).
+export function createMount(clock, idle) {
+  return element => mount(element, clock, idle);
 }
 
-function mount(element, clock) {
+function mount(element, clock, idle) {
   const errors = [];
   const wrap = child =>
     createElement(
@@ -216,8 +220,13 @@ function mount(element, clock) {
     // Väntar tills Promises, t.ex. från fetch, är klara och React
     // har ritat om. Används med await: await app.settle().
     async settle() {
-      for (let round = 0; round < 10; round += 1) {
-        await new Promise(resolve => realSetTimeout(resolve, 0));
+      // Ett svar kan starta ett nytt anrop (logga in, hämta sedan), så
+      // vi väntar tills inga anrop är på väg.
+      for (let pass = 0; pass < 20; pass += 1) {
+        for (let round = 0; round < 10; round += 1) {
+          await new Promise(resolve => realSetTimeout(resolve, 0));
+        }
+        if (!(await idle?.())) break;
       }
       act(() => {});
       return app;

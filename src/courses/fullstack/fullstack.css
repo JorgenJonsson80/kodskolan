@@ -1,0 +1,32 @@
+.fullstack-other {
+  margin: 8px 0;
+}
+
+.fullstack-other summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.fullstack-other pre {
+  max-height: 360px;
+  overflow: auto;
+  margin: 6px 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-sunken);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.fullstack-page h3 {
+  margin: 16px 0 6px;
+  font-size: 1rem;
+}
+
+/* Tassens sida är längre än en komponent i JS-kursen. */
+.fullstack-page .preview {
+  height: 460px;
+}

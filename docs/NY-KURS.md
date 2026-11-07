@@ -101,6 +101,12 @@ Se `src/courses/flask/CLAUDE.md` och `docs/kurser/flask.md`. Kursen
 återanvänder Python-kursens körning (`createPythonRunner`) och lägger
 Flask i en egen worker. Kärnan behövde ingenting nytt.
 
+### Fullstack – klar som sjunde kurs
+
+Se `src/courses/fullstack/CLAUDE.md` och `docs/kurser/fullstack.md`. En
+kurs med två språk: övningens `lang` byter körning och editor
+(`editor.context`). Kärnan behövde ingenting nytt.
+
 ### SQL – klar som fjärde kurs
 
 Se `src/courses/sql/CLAUDE.md` och `docs/kurser/sql.md`.

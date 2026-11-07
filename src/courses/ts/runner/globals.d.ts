@@ -15,13 +15,22 @@ declare function setInterval(handler: () => void, timeout?: number): number;
 declare function clearTimeout(id: number | undefined): void;
 declare function clearInterval(id: number | undefined): void;
 
+interface Headers {
+  get(name: string): string | null;
+}
 interface Response {
   readonly ok: boolean;
   readonly status: number;
+  readonly headers: Headers;
   json(): Promise<any>;
   text(): Promise<string>;
 }
-declare function fetch(url: string): Promise<Response>;
+interface RequestInit {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
+declare function fetch(url: string, init?: RequestInit): Promise<Response>;
 
 interface Storage {
   getItem(key: string): string | null;

@@ -202,6 +202,11 @@ Användaren testar efter varje etapp.
 Flask kom efter TypeScript som sjätte kurs (`src/courses/flask`, SPEC i
 `docs/kurser/flask.md`). Kärnan behövde ingenting nytt.
 
+Fullstack är den sjunde kursen och sist i spåret Fullstack
+(`src/courses/fullstack`, SPEC i `docs/kurser/fullstack.md`). Den
+återanvänder Flask- och TypeScript-kursernas körning, och React-sidans
+fetch går till Flask-appen på riktigt. Kärnan behövde ingenting nytt.
+
 SQL kom före etapp 4–7 som fjärde kurs (`src/courses/sql`, SPEC i
 `docs/kurser/sql.md`). Kärnan behövde bara två saker: `editor.context`
 och `beforeEditor` på Lekplatsen.

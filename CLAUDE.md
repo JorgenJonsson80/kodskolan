@@ -8,8 +8,8 @@ tester. Planen och etapperna står i `SPEC.md` – läs den först.
 
 Byggs i etapper enligt `SPEC.md`; användaren testar efter varje. Python,
 HTML & CSS och JavaScript har flyttat in (`src/courses/python`, `html`,
-`js`), och SQL, TypeScript och Flask är nya kurser (`src/courses/sql`, `ts`,
-`flask`). De gamla repona (`../python från S`, `../html från S`,
+`js`), och SQL, TypeScript, Flask och Fullstack är nya kurser
+(`src/courses/sql`, `ts`, `flask`, `fullstack`). De gamla repona (`../python från S`, `../html från S`,
 `../React från S`) publicerar bara en sida som skickar vidare hit.
 
 Live: https://jorgenjonsson80.github.io/kodskolan/

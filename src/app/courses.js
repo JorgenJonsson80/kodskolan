@@ -1,4 +1,5 @@
 import { meta as flask } from '../courses/flask/meta';
+import { meta as fullstack } from '../courses/fullstack/meta';
 import { meta as html } from '../courses/html/meta';
 import { meta as js } from '../courses/js/meta';
 import { meta as python } from '../courses/python/meta';
@@ -39,6 +40,11 @@ export const COURSES = [
     ...flask,
     load: () => import('../courses/flask'),
     summary: () => import('../courses/flask/summary'),
+  },
+  {
+    ...fullstack,
+    load: () => import('../courses/fullstack'),
+    summary: () => import('../courses/fullstack/summary'),
   },
 ];
 

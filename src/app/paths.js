@@ -29,7 +29,8 @@ export const PATHS = [
     id: 'fullstack',
     icon: '🚀',
     title: 'Fullstack',
-    summary: 'Allt från sidan till databasen: hela Webbutvecklare och Backend.',
-    courses: ['html', 'js', 'ts', 'python', 'sql', 'flask'],
+    summary:
+      'Allt från sidan till databasen: hela Webbutvecklare och Backend, och sist ett projekt där en React-sida pratar med ditt eget API.',
+    courses: ['html', 'js', 'ts', 'python', 'sql', 'flask', 'fullstack'],
   },
 ];

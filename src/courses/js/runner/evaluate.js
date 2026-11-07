@@ -49,8 +49,9 @@ function createKeyChecker() {
 // Skapas på nytt för varje körning, så att keyProblems börjar tomt.
 // localStorage, document.title och timers är låtsasversioner, se fakes.js.
 // console samlar det eleven skriver ut i logs, så att det kan visas i
-// appen och testerna kan läsa det med __logs.
-function createRuntime(logs = []) {
+// appen och testerna kan läsa det med __logs. fetch kan bytas ut, t.ex.
+// mot en riktig Flask-app (Fullstack-kursen, se bridgeFetch.js).
+function createRuntime(logs = [], { fetch } = {}) {
   const keyChecker = createKeyChecker();
   const clock = createClock();
   const log = (...values) => {
@@ -61,7 +62,7 @@ function createRuntime(logs = []) {
     globals: {
       __React: keyChecker.React,
       __render: render,
-      __mount: createMount(clock),
+      __mount: createMount(clock, fetch?.idle),
       __keyProblems: keyChecker.keyProblems,
       __clock: clock,
       localStorage: createStorage(),
@@ -70,7 +71,7 @@ function createRuntime(logs = []) {
       setInterval: clock.setInterval,
       clearTimeout: clock.clearTimeout,
       clearInterval: clock.clearInterval,
-      fetch: createFetch(),
+      fetch: fetch ?? createFetch(),
       console: { log, info: log, warn: log, error: log },
       __logs: logs,
     },
@@ -112,10 +113,14 @@ function isEqual(actual, expected) {
 // Elevens kod och uttrycket körs i samma scope, så uttrycket kan läsa
 // variabler och anropa funktioner eleven skapat. De andra filerna nås
 // med __require('./app.js').
-function runExpression(code, expression, { fileName = 'main.js', files = {} }) {
+function runExpression(
+  code,
+  expression,
+  { fileName = 'main.js', files = {}, fetch },
+) {
   const modules = createModuleSystem(
     { ...files, [fileName]: code },
-    createRuntime(),
+    createRuntime([], { fetch }),
   );
   return modules.runFile(
     fileName,
@@ -125,12 +130,15 @@ function runExpression(code, expression, { fileName = 'main.js', files = {} }) {
 }
 
 // Kör elevens kod en gång och samlar det som skrivs ut med console.log.
-async function collectOutput(code, { fileName = 'main.js', files = {} }) {
+async function collectOutput(
+  code,
+  { fileName = 'main.js', files = {}, fetch },
+) {
   const logs = [];
   try {
     const modules = createModuleSystem(
       { ...files, [fileName]: code },
-      createRuntime(logs),
+      createRuntime(logs, { fetch }),
     );
     modules.runFile(fileName, code, '');
     // Vänta in det som loggas efter en await.
@@ -145,6 +153,8 @@ async function collectOutput(code, { fileName = 'main.js', files = {} }) {
 // Då väntar vi in värdet innan det jämförs.
 async function runTest(code, test, options) {
   try {
+    // Fullstack: Flask-appen startas om, så att testet börjar från noll.
+    await options.beforeTest?.();
     const actual = await runExpression(code, test.code, options);
 
     const result = {
@@ -195,6 +205,8 @@ function renderPreview(code, options) {
 // options:
 //   fileName, files – för övningar med import och export
 //   preview – JSX som renderas och visas för eleven
+//   fetch, beforeTest – ett riktigt API i stället för låtsas-fetch, och
+//     det som ska göras före varje test (Fullstack-kursen)
 export async function evaluate(code, tests, sourceChecks = [], options = {}) {
   try {
     checkSyntax(code);

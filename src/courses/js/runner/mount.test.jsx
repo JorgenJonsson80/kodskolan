@@ -67,3 +67,15 @@ describe('mount', () => {
     expect(() => app.click('Spara')).toThrow('Glömde du onClick');
   });
 });
+
+describe('text med fält', () => {
+  it('räknar ett <input> som tomt', () => {
+    const app = createMount(createClock())(
+      <form>
+        <input value="x" onChange={() => {}} />
+        <button>Spara</button>
+      </form>,
+    );
+    expect(app.text()).toBe('Spara');
+  });
+});
