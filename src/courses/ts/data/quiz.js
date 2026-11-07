@@ -123,4 +123,87 @@ export const QUIZ = {
       explain: 'smeknamn saknas och är undefined, så ?? ger namnet.',
     },
   ],
+  egna: [
+    {
+      question: 'Vad gör type Bok = { titel: string }?',
+      options: [
+        'Ger en typ ett namn',
+        'Skapar ett objekt som heter Bok',
+        'Skapar en klass',
+        'Gör om en bok till text',
+      ],
+      explain:
+        'type ger en typ ett namn. Inget objekt skapas, och typen försvinner när koden körs.',
+    },
+    {
+      question: 'Vad betyder interface Hund extends Djur?',
+      options: [
+        'En Hund har allt ett Djur har, och mer',
+        'Ett Djur har allt en Hund har',
+        'Hund och Djur är samma sak',
+        'Hund ersätter Djur',
+      ],
+      explain:
+        'extends bygger vidare. En Hund kan användas där ett Djur behövs.',
+    },
+    {
+      question: 'Vad händer med koden?',
+      code: "interface Kund {\n  namn: string;\n}\nconst k: Kund = { namm: 'Ada' };",
+      check: 'typeError',
+      options: [
+        'Ett typfel: namm finns inte i Kund',
+        'k.namn blir Ada',
+        'k.namn blir undefined',
+        'Inget',
+      ],
+      explain: 'Typen känner inte till namm, och namn saknas.',
+    },
+    {
+      question: 'Vad betyder A & B?',
+      options: [
+        'Allt från både A och B',
+        'Antingen A eller B',
+        'Det som finns i båda',
+        'A minus B',
+      ],
+      explain: '& sätter ihop typerna: värdet måste ha allt från båda.',
+    },
+  ],
+  unioner: [
+    {
+      question: "Vilka värden har type Svar = 'ja' | 'nej'?",
+      options: [
+        "Bara 'ja' och 'nej'",
+        'All text',
+        "'ja', 'nej' och 'kanske'",
+        'true och false',
+      ],
+      explain: 'En union av literaltyper tillåter bara just de värdena.',
+    },
+    {
+      question: 'Vad händer med koden?',
+      code: "type Storlek = 'liten' | 'stor';\nconst s: Storlek = 'mellan';",
+      check: 'typeError',
+      options: [
+        'Ett typfel',
+        "s blir 'mellan'",
+        "s blir 'liten'",
+        's blir undefined',
+      ],
+      explain: "'mellan' är inte en av de tillåtna storlekarna.",
+    },
+    {
+      question:
+        "Vilken typ har x inne i if (typeof x === 'string'), om x: string | number?",
+      options: ['string', 'number', 'string | number', 'any'],
+      explain: 'TypeScript smalnar av typen inne i if-satsen.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: "const blandat: (string | number)[] = [1, 'två', 3];\nconst tal = blandat.filter(x => typeof x === 'number');\nconsole.log(tal.length);",
+      check: 'log',
+      options: ['2', '3', '1', '0'],
+      explain: 'filter behåller bara talen 1 och 3.',
+    },
+  ],
 };

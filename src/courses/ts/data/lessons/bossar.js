@@ -172,4 +172,115 @@ export const BOSSES = {
       },
     ],
   },
+  egna: {
+    id: 'egna-boss',
+    track: 'egna',
+    title: 'Boss: Biblioteket',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Biblioteket lånar ut både böcker och filmer. Bygg typerna som håller ordning på allt, och en funktion som hittar de försenade lånen.',
+    task: `Uppgift:
+  1. \`interface Medium\` med \`titel\` (\`string\`) och \`ar\` (\`number\`).
+  2. \`interface Bok extends Medium\` med \`forfattare\` (\`string\`).
+  3. \`type Lan = { bok: Bok; lantagare: string; dagar: number }\`.
+  4. \`forsenade(lan: Lan[]): string[]\` – titlarna på lånen som varat mer än 14 dagar.`,
+    starterCode: START,
+    solution:
+      'interface Medium {\n  titel: string;\n  ar: number;\n}\n\ninterface Bok extends Medium {\n  forfattare: string;\n}\n\ntype Lan = { bok: Bok; lantagare: string; dagar: number };\n\nfunction forsenade(lan: Lan[]): string[] {\n  return lan.filter(l => l.dagar > 14).map(l => l.bok.titel);\n}\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Ett försenat lån av två',
+        code: "forsenade([{ bok: { titel: 'Ronja', ar: 1981, forfattare: 'Astrid' }, lantagare: 'Ada', dagar: 20 }, { bok: { titel: 'Mio', ar: 1954, forfattare: 'Astrid' }, lantagare: 'Bo', dagar: 3 }])",
+        expected: ['Ronja'],
+      },
+      { description: 'Inga lån', code: 'forsenade([])', expected: [] },
+    ],
+    typeTests: [
+      {
+        description: 'En Bok är ett Medium',
+        code: "const m: Medium = { titel: 'A', ar: 1, forfattare: 'B' } as Bok;",
+      },
+      {
+        description: 'En Bok måste ha författare',
+        code: "const b: Bok = { titel: 'A', ar: 1 };",
+        fails: true,
+      },
+      {
+        description: 'Ett lån måste ha dagar',
+        code: "const l: Lan = { bok: { titel: 'A', ar: 1, forfattare: 'B' }, lantagare: 'C' };",
+        fails: true,
+      },
+    ],
+    sourceChecks: [
+      {
+        description: 'Bok bygger på Medium',
+        pattern: /interface\s+Bok\s+extends\s+Medium/,
+      },
+    ],
+  },
+
+  unioner: {
+    id: 'unioner-boss',
+    track: 'unioner',
+    title: 'Boss: Kaffebeställningen',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Kaféets kassa tar emot beställningar. Storlek och mjölk får bara vara vissa värden, och antalet kan komma som text eller tal.',
+    task: `Uppgift:
+  1. \`type Storlek = 'liten' | 'mellan' | 'stor'\` och \`type Mjolk = 'vanlig' | 'havre' | 'ingen'\`.
+  2. \`pris(storlek: Storlek, mjolk: Mjolk): number\` – liten 30, mellan 38, stor 45, och havre kostar 5 kr extra.
+  3. \`totalt(storlek: Storlek, mjolk: Mjolk, antal: string | number): number\` – priset gånger antalet (text görs om med \`Number\`).`,
+    starterCode: START,
+    solution:
+      "type Storlek = 'liten' | 'mellan' | 'stor';\ntype Mjolk = 'vanlig' | 'havre' | 'ingen';\n\nfunction pris(storlek: Storlek, mjolk: Mjolk): number {\n  let grund = 45;\n  if (storlek === 'liten') {\n    grund = 30;\n  } else if (storlek === 'mellan') {\n    grund = 38;\n  }\n  if (mjolk === 'havre') {\n    return grund + 5;\n  }\n  return grund;\n}\n\nfunction totalt(storlek: Storlek, mjolk: Mjolk, antal: string | number): number {\n  if (typeof antal === 'string') {\n    return pris(storlek, mjolk) * Number(antal);\n  }\n  return pris(storlek, mjolk) * antal;\n}\n",
+    hints: [],
+    tests: [
+      {
+        description: 'liten utan mjölk',
+        code: "pris('liten', 'ingen')",
+        expected: 30,
+      },
+      {
+        description: 'stor med havre',
+        code: "pris('stor', 'havre')",
+        expected: 50,
+      },
+      {
+        description: 'mellan med vanlig',
+        code: "pris('mellan', 'vanlig')",
+        expected: 38,
+      },
+      {
+        description: "totalt('mellan', 'havre', '3') är 129",
+        code: "totalt('mellan', 'havre', '3')",
+        expected: 129,
+      },
+      {
+        description: "totalt('liten', 'ingen', 2) är 60",
+        code: "totalt('liten', 'ingen', 2)",
+        expected: 60,
+      },
+    ],
+    typeTests: [
+      {
+        description: "'jätte' är ingen storlek",
+        code: "pris('jätte', 'ingen');",
+        fails: true,
+      },
+      {
+        description: "'mandel' är ingen mjölk",
+        code: "pris('liten', 'mandel');",
+        fails: true,
+      },
+      {
+        description: 'Antalet kan vara text',
+        code: "totalt('liten', 'ingen', '2');",
+      },
+    ],
+  },
 };

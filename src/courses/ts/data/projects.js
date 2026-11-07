@@ -805,6 +805,506 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-webbshop',
+    track: 'egna',
+    title: 'Webbshoppen',
+    reward: { emoji: '🛒', name: 'Kundvagn' },
+    summary: 'Produkter, rader och en varukorg, med en typ för varje del.',
+    steps: [
+      {
+        title: 'Produkterna',
+        why: 'Produkt beskrivs en gång. Sortimentet, varukorgen och kvittot kan sedan alla använda samma typ.',
+        xp: 15,
+        description: 'Butiken har tre produkter.',
+        task: 'Uppgift: Skapa `interface Produkt` (`id: number`, `namn: string`, `pris: number`) och `sortiment: Produkt[]` med Mössa (1, 149), Vantar (2, 99) och Halsduk (3, 199).',
+        starterCode: '// Steg 1: produkterna\n',
+        solution:
+          "interface Produkt {\n  id: number;\n  namn: string;\n  pris: number;\n}\n\nconst sortiment: Produkt[] = [\n  { id: 1, namn: 'Mössa', pris: 149 },\n  { id: 2, namn: 'Vantar', pris: 99 },\n  { id: 3, namn: 'Halsduk', pris: 199 },\n];\n",
+        hints: [
+          'interface Produkt { … }',
+          'sortiment: Produkt[]',
+          "{ id: 1, namn: 'Mössa', pris: 149 }",
+        ],
+        tests: [
+          {
+            description: 'Tre produkter',
+            code: 'sortiment.length',
+            expected: 3,
+          },
+        ],
+        typeTests: [
+          {
+            description: 'En produkt utan pris ger typfel',
+            code: "const p: Produkt = { id: 4, namn: 'Keps' };",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'En rad i korgen',
+        why: 'En rad är en produkt och ett antal. Typen Rad använder Produkt, så det går inte att lägga en halv produkt i korgen.',
+        xp: 15,
+        description: 'Varukorgen består av rader.',
+        task: 'Uppgift: Skapa `type Rad = { produkt: Produkt; antal: number }` och `radSumma(rad: Rad): number`.',
+        solution:
+          "interface Produkt {\n  id: number;\n  namn: string;\n  pris: number;\n}\n\nconst sortiment: Produkt[] = [\n  { id: 1, namn: 'Mössa', pris: 149 },\n  { id: 2, namn: 'Vantar', pris: 99 },\n  { id: 3, namn: 'Halsduk', pris: 199 },\n];\n\ntype Rad = { produkt: Produkt; antal: number };\n\nfunction radSumma(rad: Rad): number {\n  return rad.produkt.pris * rad.antal;\n}\n",
+        hints: [
+          'produkt: Produkt inne i Rad.',
+          'rad.produkt.pris * rad.antal',
+          'return rad.produkt.pris * rad.antal;',
+        ],
+        tests: [
+          {
+            description: 'Två mössor',
+            code: 'radSumma({ produkt: sortiment[0], antal: 2 })',
+            expected: 298,
+          },
+        ],
+      },
+      {
+        title: 'Hela korgen',
+        why: 'Varukorg är bara ett namn på Rad[]. Det gör funktionens rad lättare att läsa: total(korg: Varukorg).',
+        xp: 20,
+        description: 'Räkna ihop hela korgen.',
+        task: 'Uppgift: Skapa `type Varukorg = Rad[]` och `total(korg: Varukorg): number` som summerar alla rader med `radSumma`.',
+        solution:
+          "interface Produkt {\n  id: number;\n  namn: string;\n  pris: number;\n}\n\nconst sortiment: Produkt[] = [\n  { id: 1, namn: 'Mössa', pris: 149 },\n  { id: 2, namn: 'Vantar', pris: 99 },\n  { id: 3, namn: 'Halsduk', pris: 199 },\n];\n\ntype Rad = { produkt: Produkt; antal: number };\n\nfunction radSumma(rad: Rad): number {\n  return rad.produkt.pris * rad.antal;\n}\n\ntype Varukorg = Rad[];\n\nfunction total(korg: Varukorg): number {\n  return korg.reduce((summa, rad) => summa + radSumma(rad), 0);\n}\n",
+        hints: [
+          'type Varukorg = Rad[];',
+          'reduce med radSumma.',
+          'return korg.reduce((summa, rad) => summa + radSumma(rad), 0);',
+        ],
+        tests: [
+          {
+            description: 'En mössa och två vantar',
+            code: 'total([{ produkt: sortiment[0], antal: 1 }, { produkt: sortiment[1], antal: 2 }])',
+            expected: 347,
+          },
+          { description: 'En tom korg', code: 'total([])', expected: 0 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-husdjur',
+    track: 'egna',
+    title: 'Husdjursregistret',
+    reward: { emoji: '🐾', name: 'Tassavtryck' },
+    summary:
+      'Katter och hundar som båda är djur, och funktioner som fungerar för alla.',
+    steps: [
+      {
+        title: 'Djuren',
+        why: 'Det alla djur har gemensamt står i Djur. Katt och Hund bygger vidare med det som bara gäller dem.',
+        xp: 15,
+        description: 'Registret har katter och hundar.',
+        task: 'Uppgift: Skapa `interface Djur` (`namn: string`, `alder: number`), `interface Katt extends Djur` (`inne: boolean`) och `interface Hund extends Djur` (`ras: string`).',
+        starterCode: '// Steg 1: djuren\n',
+        solution:
+          'interface Djur {\n  namn: string;\n  alder: number;\n}\n\ninterface Katt extends Djur {\n  inne: boolean;\n}\n\ninterface Hund extends Djur {\n  ras: string;\n}\n',
+        hints: [
+          'Tre interface.',
+          'interface Katt extends Djur { inne: boolean; }',
+          'interface Hund extends Djur { ras: string; }',
+        ],
+        tests: [],
+        typeTests: [
+          {
+            description: 'En katt är ett djur',
+            code: "const d: Djur = { namn: 'M', alder: 2, inne: true } as Katt;",
+          },
+          {
+            description: 'En hund har ras',
+            code: "const h: Hund = { namn: 'S', alder: 3, ras: 'tax' };",
+          },
+          {
+            description: 'En hund utan ras ger typfel',
+            code: "const h: Hund = { namn: 'S', alder: 3 };",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Registret',
+        why: 'Listorna har var sin typ. Ett djur av fel sort kan inte hamna i fel lista.',
+        xp: 15,
+        description: 'Två listor med djur.',
+        task: 'Uppgift: Skapa `katter: Katt[]` med Misse (4, inne) och Tiger (9, ute), och `hundar: Hund[]` med Saga (3, tax).',
+        solution:
+          "interface Djur {\n  namn: string;\n  alder: number;\n}\n\ninterface Katt extends Djur {\n  inne: boolean;\n}\n\ninterface Hund extends Djur {\n  ras: string;\n}\n\nconst katter: Katt[] = [\n  { namn: 'Misse', alder: 4, inne: true },\n  { namn: 'Tiger', alder: 9, inne: false },\n];\n\nconst hundar: Hund[] = [{ namn: 'Saga', alder: 3, ras: 'tax' }];\n",
+        hints: [
+          'katter: Katt[] = [ … ]',
+          "{ namn: 'Misse', alder: 4, inne: true }",
+          "const hundar: Hund[] = [{ namn: 'Saga', alder: 3, ras: 'tax' }];",
+        ],
+        tests: [
+          { description: 'Två katter', code: 'katter.length', expected: 2 },
+          {
+            description: 'Saga är en tax',
+            code: 'hundar[0].ras',
+            expected: 'tax',
+          },
+        ],
+      },
+      {
+        title: 'Den äldsta',
+        why: 'Funktionen vill ha Djur[]. Både katter och hundar är djur, så samma funktion fungerar för båda listorna.',
+        xp: 20,
+        description: 'Vem är äldst?',
+        task: 'Uppgift: Skriv `aldst(djur: Djur[]): string` som ger namnet på det äldsta djuret. Den ska fungera för både `katter` och `hundar`.',
+        solution:
+          "interface Djur {\n  namn: string;\n  alder: number;\n}\n\ninterface Katt extends Djur {\n  inne: boolean;\n}\n\ninterface Hund extends Djur {\n  ras: string;\n}\n\nconst katter: Katt[] = [\n  { namn: 'Misse', alder: 4, inne: true },\n  { namn: 'Tiger', alder: 9, inne: false },\n];\n\nconst hundar: Hund[] = [{ namn: 'Saga', alder: 3, ras: 'tax' }];\n\nfunction aldst(djur: Djur[]): string {\n  let aldsta = djur[0];\n  for (const d of djur) {\n    if (d.alder > aldsta.alder) {\n      aldsta = d;\n    }\n  }\n  return aldsta.namn;\n}\n",
+        hints: [
+          'Börja med det första djuret.',
+          'Byt när du hittar ett äldre.',
+          'return aldsta.namn;',
+        ],
+        tests: [
+          {
+            description: 'aldst(katter) är Tiger',
+            code: 'aldst(katter)',
+            expected: 'Tiger',
+          },
+          {
+            description: 'aldst(hundar) är Saga',
+            code: 'aldst(hundar)',
+            expected: 'Saga',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-karaktar',
+    track: 'egna',
+    title: 'Spelkaraktären',
+    reward: { emoji: '🕹️', name: 'Joystick' },
+    summary: 'En karaktär med position och drag som flyttar den.',
+    steps: [
+      {
+        title: 'Karaktären',
+        why: 'Position får en egen typ, för den behövs igen för fiender och skatter. Karaktar bygger på den.',
+        xp: 15,
+        description: 'Spelet har en hjälte.',
+        task: 'Uppgift: Skapa `type Position = { x: number; y: number }` och `type Karaktar = { namn: string; liv: number; position: Position }`. Skapa `hjalte`: Ada, 3 liv, på (0, 0).',
+        starterCode: '// Steg 1: karaktären\n',
+        solution:
+          "type Position = { x: number; y: number };\ntype Karaktar = { namn: string; liv: number; position: Position };\n\nconst hjalte: Karaktar = { namn: 'Ada', liv: 3, position: { x: 0, y: 0 } };\n",
+        hints: [
+          'Position först.',
+          'position: Position inne i Karaktar.',
+          "const hjalte: Karaktar = { namn: 'Ada', liv: 3, position: { x: 0, y: 0 } };",
+        ],
+        tests: [
+          { description: 'Ada har 3 liv', code: 'hjalte.liv', expected: 3 },
+        ],
+      },
+      {
+        title: 'Drag',
+        why: 'Ett drag tar en karaktär och ger en ny. Den gamla ändras inte, så det går att spara historiken.',
+        xp: 20,
+        description: 'Karaktären ska kunna flytta sig.',
+        task: 'Uppgift: Skapa `type Drag = (k: Karaktar) => Karaktar`. Skapa `hoger: Drag` (x + 1) och `upp: Drag` (y + 1), som ger nya objekt med spread.',
+        solution:
+          "type Position = { x: number; y: number };\ntype Karaktar = { namn: string; liv: number; position: Position };\n\nconst hjalte: Karaktar = { namn: 'Ada', liv: 3, position: { x: 0, y: 0 } };\n\ntype Drag = (k: Karaktar) => Karaktar;\n\nconst hoger: Drag = k => ({ ...k, position: { x: k.position.x + 1, y: k.position.y } });\nconst upp: Drag = k => ({ ...k, position: { x: k.position.x, y: k.position.y + 1 } });\n",
+        hints: [
+          'type Drag = (k: Karaktar) => Karaktar;',
+          '({ ...k, position: { … } }) – parentes runt objektet.',
+          'const hoger: Drag = k => ({ ...k, position: { x: k.position.x + 1, y: k.position.y } });',
+        ],
+        tests: [
+          {
+            description: 'hoger flyttar x',
+            code: 'hoger(hjalte).position',
+            expected: { x: 1, y: 0 },
+          },
+          {
+            description: 'upp flyttar y',
+            code: 'upp(hjalte).position',
+            expected: { x: 0, y: 1 },
+          },
+          {
+            description: 'hjalte är kvar på (0, 0)',
+            code: '(hoger(hjalte), hjalte.position)',
+            expected: { x: 0, y: 0 },
+          },
+        ],
+      },
+      {
+        title: 'Spela',
+        why: 'En lista med drag körs ett i taget med reduce. Typen Drag[] gör att bara riktiga drag kan stå i listan.',
+        xp: 20,
+        description: 'Kör flera drag efter varandra.',
+        task: 'Uppgift: Skriv `spela(k: Karaktar, drag: Drag[]): Karaktar` som kör dragen i ordning.',
+        solution:
+          "type Position = { x: number; y: number };\ntype Karaktar = { namn: string; liv: number; position: Position };\n\nconst hjalte: Karaktar = { namn: 'Ada', liv: 3, position: { x: 0, y: 0 } };\n\ntype Drag = (k: Karaktar) => Karaktar;\n\nconst hoger: Drag = k => ({ ...k, position: { x: k.position.x + 1, y: k.position.y } });\nconst upp: Drag = k => ({ ...k, position: { x: k.position.x, y: k.position.y + 1 } });\n\nfunction spela(k: Karaktar, drag: Drag[]): Karaktar {\n  return drag.reduce((nu, d) => d(nu), k);\n}\n",
+        hints: [
+          'reduce med karaktären som startvärde.',
+          '(nu, d) => d(nu)',
+          'return drag.reduce((nu, d) => d(nu), k);',
+        ],
+        tests: [
+          {
+            description: 'Höger, höger, upp',
+            code: 'spela(hjalte, [hoger, hoger, upp]).position',
+            expected: { x: 2, y: 1 },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-trafikljus',
+    track: 'unioner',
+    title: 'Trafikljuset',
+    reward: { emoji: '🚦', name: 'Trafikljus' },
+    summary: 'Ett trafikljus som bara kan vara rött, gult eller grönt.',
+    steps: [
+      {
+        title: 'Nästa färg',
+        why: 'Typen Ljus har bara tre värden. Funktionen lovar att alltid ge ett av dem, och TypeScript kollar att varje return gör det.',
+        xp: 15,
+        description: 'Trafikljuset byter färg i en ordning.',
+        task: "Uppgift: Skapa `type Ljus = 'röd' | 'gul' | 'grön'` och `nasta(ljus: Ljus): Ljus`: röd → grön, grön → gul, gul → röd.",
+        starterCode: '// Steg 1: nästa färg\n',
+        solution:
+          "type Ljus = 'röd' | 'gul' | 'grön';\n\nfunction nasta(ljus: Ljus): Ljus {\n  if (ljus === 'röd') {\n    return 'grön';\n  }\n  if (ljus === 'grön') {\n    return 'gul';\n  }\n  return 'röd';\n}\n",
+        hints: [
+          'Tre värden i typen.',
+          "if (ljus === 'röd') return 'grön';",
+          "return 'röd'; sist – då är det gult.",
+        ],
+        tests: [
+          { description: 'röd → grön', code: "nasta('röd')", expected: 'grön' },
+          { description: 'grön → gul', code: "nasta('grön')", expected: 'gul' },
+          { description: 'gul → röd', code: "nasta('gul')", expected: 'röd' },
+        ],
+        typeTests: [
+          {
+            description: 'Blått finns inte',
+            code: "nasta('blå');",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Får man köra?',
+        why: 'En jämförelse med ett av de tillåtna värdena ger en boolean. Stavar du fel säger TypeScript att jämförelsen aldrig kan bli sann.',
+        xp: 15,
+        description: 'Bara på grönt.',
+        task: 'Uppgift: Skriv `kanKora(ljus: Ljus): boolean`.',
+        solution:
+          "type Ljus = 'röd' | 'gul' | 'grön';\n\nfunction nasta(ljus: Ljus): Ljus {\n  if (ljus === 'röd') {\n    return 'grön';\n  }\n  if (ljus === 'grön') {\n    return 'gul';\n  }\n  return 'röd';\n}\n\nfunction kanKora(ljus: Ljus): boolean {\n  return ljus === 'grön';\n}\n",
+        hints: [
+          'En jämförelse räcker.',
+          "ljus === 'grön'",
+          "return ljus === 'grön';",
+        ],
+        tests: [
+          { description: 'Grönt', code: "kanKora('grön')", expected: true },
+          { description: 'Rött', code: "kanKora('röd')", expected: false },
+        ],
+      },
+      {
+        title: 'Många byten',
+        why: 'Variabeln får typen Ljus, så att TypeScript vet att nasta kan ta emot den varje varv.',
+        xp: 20,
+        description: 'Vilken färg är det efter ett antal byten?',
+        task: 'Uppgift: Skriv `efter(start: Ljus, byten: number): Ljus` som anropar `nasta` så många gånger.',
+        solution:
+          "type Ljus = 'röd' | 'gul' | 'grön';\n\nfunction nasta(ljus: Ljus): Ljus {\n  if (ljus === 'röd') {\n    return 'grön';\n  }\n  if (ljus === 'grön') {\n    return 'gul';\n  }\n  return 'röd';\n}\n\nfunction kanKora(ljus: Ljus): boolean {\n  return ljus === 'grön';\n}\n\nfunction efter(start: Ljus, byten: number): Ljus {\n  let ljus: Ljus = start;\n  for (let i = 0; i < byten; i++) {\n    ljus = nasta(ljus);\n  }\n  return ljus;\n}\n",
+        hints: [
+          'let ljus: Ljus = start;',
+          'En for-loop med nasta.',
+          'ljus = nasta(ljus);',
+        ],
+        tests: [
+          {
+            description: 'Efter 0 byten',
+            code: "efter('röd', 0)",
+            expected: 'röd',
+          },
+          {
+            description: 'Efter 4 byten',
+            code: "efter('röd', 4)",
+            expected: 'grön',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-betyg',
+    track: 'unioner',
+    title: 'Betygsräknaren',
+    reward: { emoji: '🅰️', name: 'Betyget A' },
+    summary: 'Poäng blir betyg, och betygen kan bara vara A–F.',
+    steps: [
+      {
+        title: 'Från poäng till betyg',
+        why: 'Betyg är en union av sex bokstäver. Funktionen kan inte råka ge "G" eller "a".',
+        xp: 15,
+        description: 'Poängen 0–100 ger ett betyg.',
+        task: "Uppgift: Skapa `type Betyg = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'` och `betyg(poang: number): Betyg`: 90 A, 80 B, 70 C, 60 D, 50 E, annars F.",
+        starterCode: '// Steg 1: från poäng till betyg\n',
+        solution:
+          "type Betyg = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';\n\nfunction betyg(poang: number): Betyg {\n  if (poang >= 90) return 'A';\n  if (poang >= 80) return 'B';\n  if (poang >= 70) return 'C';\n  if (poang >= 60) return 'D';\n  if (poang >= 50) return 'E';\n  return 'F';\n}\n",
+        hints: [
+          'Börja med den högsta gränsen.',
+          "if (poang >= 90) return 'A';",
+          "return 'F'; sist.",
+        ],
+        tests: [
+          { description: '95 är A', code: 'betyg(95)', expected: 'A' },
+          { description: '72 är C', code: 'betyg(72)', expected: 'C' },
+          { description: '12 är F', code: 'betyg(12)', expected: 'F' },
+        ],
+        typeTests: [
+          {
+            description: "'G' är inget betyg",
+            code: "const b: Betyg = 'G';",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Godkänd?',
+        why: 'Allt utom F är godkänt. En enda jämförelse räcker, eftersom typen bara har de sex värdena.',
+        xp: 15,
+        description: 'Är betyget godkänt?',
+        task: 'Uppgift: Skriv `godkand(b: Betyg): boolean`.',
+        solution:
+          "type Betyg = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';\n\nfunction betyg(poang: number): Betyg {\n  if (poang >= 90) return 'A';\n  if (poang >= 80) return 'B';\n  if (poang >= 70) return 'C';\n  if (poang >= 60) return 'D';\n  if (poang >= 50) return 'E';\n  return 'F';\n}\n\nfunction godkand(b: Betyg): boolean {\n  return b !== 'F';\n}\n",
+        hints: ['Bara F är underkänt.', "b !== 'F'", "return b !== 'F';"],
+        tests: [
+          { description: 'E är godkänt', code: "godkand('E')", expected: true },
+          {
+            description: 'F är inte godkänt',
+            code: "godkand('F')",
+            expected: false,
+          },
+        ],
+      },
+      {
+        title: 'Poäng som text',
+        why: 'Poängen kan komma från ett formulär som text. typeof smalnar av, och efter if-satsen är det säkert ett tal.',
+        xp: 20,
+        description: 'Poängen kan vara text eller tal.',
+        task: 'Uppgift: Skriv `franSvar(poang: string | number): Betyg` som gör om text med `Number` och sedan använder `betyg`.',
+        solution:
+          "type Betyg = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';\n\nfunction betyg(poang: number): Betyg {\n  if (poang >= 90) return 'A';\n  if (poang >= 80) return 'B';\n  if (poang >= 70) return 'C';\n  if (poang >= 60) return 'D';\n  if (poang >= 50) return 'E';\n  return 'F';\n}\n\nfunction godkand(b: Betyg): boolean {\n  return b !== 'F';\n}\n\nfunction franSvar(poang: string | number): Betyg {\n  if (typeof poang === 'string') {\n    return betyg(Number(poang));\n  }\n  return betyg(poang);\n}\n",
+        hints: [
+          "if (typeof poang === 'string')",
+          'betyg(Number(poang))',
+          'return betyg(poang); efter if.',
+        ],
+        tests: [
+          {
+            description: "franSvar('85') är B",
+            code: "franSvar('85')",
+            expected: 'B',
+          },
+          {
+            description: 'franSvar(55) är E',
+            code: 'franSvar(55)',
+            expected: 'E',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-vader',
+    track: 'unioner',
+    title: 'Väderappen',
+    reward: { emoji: '⛅', name: 'Moln' },
+    summary:
+      'Temperaturer i Celsius eller Fahrenheit, och text när sensorn krånglar.',
+    steps: [
+      {
+        title: 'Två enheter',
+        why: "Enhet kan bara vara 'C' eller 'F'. Skriver någon 'K' blir det typfel direkt.",
+        xp: 15,
+        description: 'Väderappen kan visa båda enheterna.',
+        task: "Uppgift: Skapa `type Enhet = 'C' | 'F'` och `tillCelsius(grader: number, enhet: Enhet): number`. Fahrenheit räknas om med `(grader - 32) * 5 / 9`.",
+        starterCode: '// Steg 1: två enheter\n',
+        solution:
+          "type Enhet = 'C' | 'F';\n\nfunction tillCelsius(grader: number, enhet: Enhet): number {\n  if (enhet === 'F') {\n    return (grader - 32) * 5 / 9;\n  }\n  return grader;\n}\n",
+        hints: [
+          "type Enhet = 'C' | 'F';",
+          "if (enhet === 'F') { … }",
+          'return (grader - 32) * 5 / 9;',
+        ],
+        tests: [
+          {
+            description: '212 F är 100 C',
+            code: "tillCelsius(212, 'F')",
+            expected: 100,
+          },
+          {
+            description: '20 C är 20 C',
+            code: "tillCelsius(20, 'C')",
+            expected: 20,
+          },
+        ],
+        typeTests: [
+          {
+            description: "'K' är ingen enhet",
+            code: "tillCelsius(0, 'K');",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Mätningen',
+        why: 'En mätning har både värde och enhet. Med en typ hör de ihop och kan inte blandas ihop med andra tal.',
+        xp: 15,
+        description: 'Sensorerna skickar mätningar.',
+        task: 'Uppgift: Skapa `type Matning = { varde: number; enhet: Enhet }` och `celsius(m: Matning): number` som avrundar med `Math.round`.',
+        solution:
+          "type Enhet = 'C' | 'F';\n\nfunction tillCelsius(grader: number, enhet: Enhet): number {\n  if (enhet === 'F') {\n    return (grader - 32) * 5 / 9;\n  }\n  return grader;\n}\n\ntype Matning = { varde: number; enhet: Enhet };\n\nfunction celsius(m: Matning): number {\n  return Math.round(tillCelsius(m.varde, m.enhet));\n}\n",
+        hints: [
+          'enhet: Enhet inne i Matning.',
+          'Använd tillCelsius.',
+          'return Math.round(tillCelsius(m.varde, m.enhet));',
+        ],
+        tests: [
+          {
+            description: '70 F',
+            code: "celsius({ varde: 70, enhet: 'F' })",
+            expected: 21,
+          },
+        ],
+      },
+      {
+        title: 'Sensorn krånglar',
+        why: 'Ibland skickar sensorn ett felmeddelande i stället för en mätning. Med typeof skiljer vi text från objekt.',
+        xp: 20,
+        description: 'Ibland kommer det text i stället för en mätning.',
+        task: 'Uppgift: Skriv `visa(data: Matning | string): string`. Text visas som den är, en mätning som `` `${celsius(data)} °C` ``.',
+        solution:
+          "type Enhet = 'C' | 'F';\n\nfunction tillCelsius(grader: number, enhet: Enhet): number {\n  if (enhet === 'F') {\n    return (grader - 32) * 5 / 9;\n  }\n  return grader;\n}\n\ntype Matning = { varde: number; enhet: Enhet };\n\nfunction celsius(m: Matning): number {\n  return Math.round(tillCelsius(m.varde, m.enhet));\n}\n\nfunction visa(data: Matning | string): string {\n  if (typeof data === 'string') {\n    return data;\n  }\n  return `${celsius(data)} °C`;\n}\n",
+        hints: [
+          "if (typeof data === 'string') return data;",
+          'Efter if är data en Matning.',
+          'return `${celsius(data)} °C`;',
+        ],
+        tests: [
+          {
+            description: 'En mätning',
+            code: "visa({ varde: 70, enhet: 'F' })",
+            expected: '21 °C',
+          },
+          {
+            description: 'Ett fel',
+            code: "visa('Sensorn svarar inte')",
+            expected: 'Sensorn svarar inte',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `// ${text}`);

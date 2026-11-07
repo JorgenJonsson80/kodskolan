@@ -46,4 +46,28 @@ export const RESOURCES = {
       video: 'typescript object types optional readonly',
     },
   ],
+  egna: [
+    {
+      topic: 'type och interface',
+      read: `${HANDBOOK}2/everyday-types.html#type-aliases`,
+      video: 'typescript type vs interface',
+    },
+    {
+      topic: 'extends och &',
+      read: `${HANDBOOK}2/objects.html#extending-types`,
+      video: 'typescript extends intersection types',
+    },
+  ],
+  unioner: [
+    {
+      topic: 'Unioner och literaltyper',
+      read: `${HANDBOOK}2/everyday-types.html#union-types`,
+      video: 'typescript union types literal types',
+    },
+    {
+      topic: 'Avsmalning med typeof och in',
+      read: `${HANDBOOK}2/narrowing.html`,
+      video: 'typescript narrowing typeof',
+    },
+  ],
 };

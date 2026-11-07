@@ -124,6 +124,86 @@ export const IDEAS = [
     ],
     extra: 'Gör enheten valfri, för "3 ägg" har ingen enhet.',
   },
+  {
+    id: 'idea-typbibliotek',
+    track: 'egna',
+    emoji: '🏫',
+    title: 'Skolan i typer',
+    summary:
+      'Beskriv en skola med egna typer, utan att skriva någon logik alls först.',
+    goals: [
+      'Skapa typer för `Elev`, `Larare` och `Kurs`.',
+      'Låt `Elev` och `Larare` bygga på en gemensam `Person` med `extends`.',
+      'Skapa några objekt och se att TypeScript kollar dem.',
+    ],
+    extra: 'Lägg till en `Klass` med en lärare och en lista med elever.',
+  },
+  {
+    id: 'idea-kalender',
+    track: 'egna',
+    emoji: '📅',
+    title: 'Kalendern',
+    summary: 'Händelser med datum, plats och deltagare.',
+    goals: [
+      'Skapa `type Handelse` med titel, datum (text) och plats.',
+      'Skapa en lista med händelser.',
+      'Skriv en funktion som ger alla händelser på en viss plats.',
+    ],
+    extra: 'Lägg till `type MedId = { id: number }` och sätt ihop med `&`.',
+  },
+  {
+    id: 'idea-interface-vs-type',
+    track: 'egna',
+    emoji: '⚖️',
+    title: 'type eller interface?',
+    summary: 'Skriv samma typ på båda sätten och hitta skillnaderna.',
+    goals: [
+      'Skriv en `Bil` som `type` och som `interface`.',
+      'Bygg vidare på båda: `extends` för interface och `&` för type.',
+      'Försök skriva två `interface Bil` efter varandra. Vad händer? Prova samma med `type`.',
+    ],
+    extra: 'Läs om "declaration merging" i handboken.',
+  },
+  {
+    id: 'idea-sten-sax-pase',
+    track: 'unioner',
+    emoji: '✂️',
+    title: 'Sten, sax, påse',
+    summary: 'Spelet där bara tre drag är tillåtna.',
+    goals: [
+      "Skapa `type Drag = 'sten' | 'sax' | 'påse'`.",
+      'Skriv `vinnare(a: Drag, b: Drag)` som säger vem som vann, eller oavgjort.',
+      'Låt datorn slumpa ett drag och spela mot den.',
+    ],
+    extra:
+      "Lägg till 'ödla' och 'Spock' och se var TypeScript säger att koden behöver ändras.",
+  },
+  {
+    id: 'idea-enheter',
+    track: 'unioner',
+    emoji: '📐',
+    title: 'Enhetsomvandlaren',
+    summary: 'Längder i olika enheter, med en union av enheterna.',
+    goals: [
+      "Skapa `type Enhet = 'mm' | 'cm' | 'm' | 'km'`.",
+      'Skriv en funktion som gör om en längd från en enhet till en annan.',
+      'Låt längden få komma som text eller tal.',
+    ],
+    extra: 'Lägg till tum och fot.',
+  },
+  {
+    id: 'idea-dagens-humor',
+    track: 'unioner',
+    emoji: '😊',
+    title: 'Dagens humör',
+    summary: 'En dagbok där humöret bara kan vara vissa värden.',
+    goals: [
+      'Skapa en union med fem humör.',
+      'Skapa en lista med dagar och humör.',
+      'Räkna hur många dagar av varje humör det blev.',
+    ],
+    extra: 'Ge varje humör en emoji och skriv ut veckan som en rad.',
+  },
 ];
 
 const goalLines = idea =>
