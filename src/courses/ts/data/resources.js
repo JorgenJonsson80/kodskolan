@@ -118,4 +118,52 @@ export const RESOURCES = {
       video: 'typescript keyof typeof',
     },
   ],
+  data: [
+    {
+      topic: 'Promise och async',
+      read: `${HANDBOOK}2/everyday-types.html#functions-which-return-promises`,
+      video: 'typescript async await promise types',
+    },
+    {
+      topic: 'unknown och typkontroller',
+      read: `${HANDBOOK}2/narrowing.html#using-type-predicates`,
+      video: 'typescript unknown type guards',
+    },
+  ],
+  felsok: [
+    {
+      topic: 'as och any',
+      read: `${HANDBOOK}2/everyday-types.html#type-assertions`,
+      video: 'typescript any vs unknown type assertion',
+    },
+    {
+      topic: 'Läsa typfel',
+      read: `${HANDBOOK}2/basic-types.html`,
+      video: 'how to read typescript errors',
+    },
+  ],
+  react: [
+    {
+      topic: 'React med TypeScript',
+      read: 'https://react.dev/learn/typescript',
+      video: 'react typescript tutorial beginners',
+    },
+    {
+      topic: 'Props och händelser',
+      read: 'https://react.dev/learn/typescript#typing-dom-events',
+      video: 'react typescript props events',
+    },
+  ],
+  slutprojekt: [
+    {
+      topic: 'Handboken från början',
+      read: `${HANDBOOK}intro.html`,
+      video: 'typescript project tutorial',
+    },
+    {
+      topic: 'TypeScript 7 och Go',
+      read: 'https://devblogs.microsoft.com/typescript/typescript-native-port/',
+      video: 'typescript 7 go native',
+    },
+  ],
 };

@@ -42,7 +42,18 @@ Koden är `main.tsx` när den har JSX eller importerar från react, annars
 | 13 | `slutprojekt` | Slutprojektet        | en typad app från grunden                                    |
 
 Varje bana: 9 övningar och en boss, tre projekt med tre steg, tre idéer
-till Lekplatsen, fyra quizfrågor och minst två länkar i Fastnat?.
+till Lekplatsen, fyra quizfrågor och minst två länkar i Fastnat?. Alla
+13 banor är klara: 130 övningar, 39 projekt med 117 steg, 39 idéer och
+52 quizfrågor.
+
+Bana 10 hämtar från JS-kursens låtsas-API (`/api/users`,
+`/api/users/1/todos`, `/api/todos`, `/api/broken`). Bana 11 och dess
+projekt har trasig startkod med ett nytt fel i varje steg. Bana 12 och
+13 rättas med JS-kursens `__render` och `__mount` (`click`, `type`,
+`submit`, `text`, `count`). `submit()` svarar med om `preventDefault`
+anropades, inte med appen, så den kan inte kedjas. Slutprojektet bygger
+bokningsappen för hundpensionatet Tassen, samma pensionat som i
+SQL-kursen.
 
 ## En övning
 

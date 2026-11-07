@@ -5,11 +5,13 @@ En ny kurs är en ny mapp i `src/courses/` och en rad i
 Behöver den det, lägg till det i kontraktet i `SPEC.md` så att nästa
 kurs slipper, i stället för att lösa det med ett specialfall.
 
-Fyra kurser att utgå från: `python` (en körning som startas, Kör rad
+Fem kurser att utgå från: `python` (en körning som startas, Kör rad
 för rad, Streamlit), `html` (rättas direkt i webbläsaren, ingen
 Kör-knapp), `js` (en worker per körning, React-förhandsvisning,
 Prettier) och `sql` (en varm worker med WebAssembly, rättning mot
-facit, editorn får övningens tabeller via `editor.context`). Välj den
+facit, editorn får övningens tabeller via `editor.context`) och `ts`
+(kompilatorn i en varm worker, typtester, körs sedan med JS-kursens
+rättning). Välj den
 som liknar det nya språket mest. `sql` är den minsta och den första som
 byggdes direkt i Kodskolan.
 
@@ -86,15 +88,17 @@ Användaren testar efter varje steg.
 
 ## Språken
 
-### TypeScript – nästa kurs (etapp 7)
+### TypeScript – klar som femte kurs
 
-- Utgå från `src/courses/js`: samma worker (`runner/`) plus `typescript`
-  från npm, där `ts.transpileModule` gör om koden till JavaScript före
-  körningen.
-- Typfelen kommer från en `LanguageService` med
-  `getSemanticDiagnostics`. Visa dem som syntaxfel med radnummer.
-- Övningar kan rättas på typerna: "den här koden ska ge typfel" är ett
-  test som går att skriva.
+Se `src/courses/ts/CLAUDE.md` och `docs/kurser/typescript.md`. Kursen
+återanvänder JS-kursens körning och React, och lägger till kompilatorn i
+en egen worker. Kärnan behövde bara en sak: hovern får vara ett Promise.
+
+### Flask – förslag
+
+Flask fungerar i Pyodide (`micropip.install('flask')`, ungefär en
+sekund). Appen anropas med `app.test_client()`, så ingen riktig server
+behövs, och sqlite3 finns. Bygg på Python-kursens worker.
 
 ### SQL – klar som fjärde kurs
 

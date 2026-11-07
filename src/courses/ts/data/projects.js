@@ -2345,6 +2345,887 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-anvandarkort',
+    track: 'data',
+    title: 'Användarkortet',
+    reward: { emoji: '📇', name: 'Visitkort' },
+    summary: 'Hämta en användare, kontrollera den och visa ett kort.',
+    steps: [
+      {
+        title: 'Typen och kontrollen',
+        why: 'Kontrollen är det enda som står mellan servern och resten av appen. Efter den kan typen litas på.',
+        xp: 15,
+        description: 'Först typen och en kontroll av den.',
+        task: 'Uppgift: Skapa `type Anvandare = { id: number; name: string; email: string }` och `arAnvandare(x: unknown): x is Anvandare`.',
+        starterCode: '// Steg 1: typen och kontrollen\n',
+        solution:
+          "type Anvandare = { id: number; name: string; email: string };\n\nfunction arAnvandare(x: unknown): x is Anvandare {\n  return (\n    typeof x === 'object' &&\n    x !== null &&\n    'id' in x &&\n    typeof x.id === 'number' &&\n    'name' in x &&\n    typeof x.name === 'string' &&\n    'email' in x &&\n    typeof x.email === 'string'\n  );\n}\n",
+        hints: [
+          "typeof x === 'object' && x !== null",
+          "'id' in x && typeof x.id === 'number'",
+          'Samma för name och email.',
+        ],
+        tests: [
+          {
+            description: 'En användare',
+            code: "arAnvandare({ id: 1, name: 'A', email: 'a' })",
+            expected: true,
+          },
+          {
+            description: 'Fel typ',
+            code: "arAnvandare({ id: 1, name: 2, email: 'a' })",
+            expected: false,
+          },
+        ],
+      },
+      {
+        title: 'Hämta',
+        why: 'null betyder att användaren inte fanns eller såg fel ut. Typen tvingar den som anropar att hantera det.',
+        xp: 20,
+        description: 'Hämta en användare från servern.',
+        task: 'Uppgift: Skriv `async function hamta(id: number): Promise<Anvandare | null>`.',
+        solution:
+          "type Anvandare = { id: number; name: string; email: string };\n\nfunction arAnvandare(x: unknown): x is Anvandare {\n  return (\n    typeof x === 'object' &&\n    x !== null &&\n    'id' in x &&\n    typeof x.id === 'number' &&\n    'name' in x &&\n    typeof x.name === 'string' &&\n    'email' in x &&\n    typeof x.email === 'string'\n  );\n}\n\nasync function hamta(id: number): Promise<Anvandare | null> {\n  const svar = await fetch(`/api/users/${id}`);\n  if (!svar.ok) {\n    return null;\n  }\n  const data: unknown = await svar.json();\n  return arAnvandare(data) ? data : null;\n}\n",
+        hints: [
+          'if (!svar.ok) return null;',
+          'const data: unknown = await svar.json();',
+          'return arAnvandare(data) ? data : null;',
+        ],
+        tests: [
+          {
+            description: 'Användare 2',
+            code: 'hamta(2).then(a => a?.name)',
+            expected: 'Linus Torvalds',
+          },
+          { description: 'Användare 7', code: 'hamta(7)', expected: null },
+        ],
+      },
+      {
+        title: 'Kortet',
+        why: '?: smalnar av: när a finns är det en Anvandare, annars null.',
+        xp: 15,
+        description: 'Visa ett kort.',
+        task: "Uppgift: Skriv `async function kort(id: number): Promise<string>` som ger `'Namn <e-post>'` eller `'Finns inte'`.",
+        solution:
+          "type Anvandare = { id: number; name: string; email: string };\n\nfunction arAnvandare(x: unknown): x is Anvandare {\n  return (\n    typeof x === 'object' &&\n    x !== null &&\n    'id' in x &&\n    typeof x.id === 'number' &&\n    'name' in x &&\n    typeof x.name === 'string' &&\n    'email' in x &&\n    typeof x.email === 'string'\n  );\n}\n\nasync function hamta(id: number): Promise<Anvandare | null> {\n  const svar = await fetch(`/api/users/${id}`);\n  if (!svar.ok) {\n    return null;\n  }\n  const data: unknown = await svar.json();\n  return arAnvandare(data) ? data : null;\n}\n\nasync function kort(id: number): Promise<string> {\n  const a = await hamta(id);\n  return a ? `${a.name} <${a.email}>` : 'Finns inte';\n}\n",
+        hints: [
+          'const a = await hamta(id);',
+          'a ? … : …',
+          "return a ? `${a.name} <${a.email}>` : 'Finns inte';",
+        ],
+        tests: [
+          {
+            description: 'Ada',
+            code: 'kort(1)',
+            expected: 'Ada Lovelace <ada@example.com>',
+          },
+          { description: 'Ingen', code: 'kort(9)', expected: 'Finns inte' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-todoraknare',
+    track: 'data',
+    title: 'Statistiken',
+    reward: { emoji: '📈', name: 'Diagram' },
+    summary: 'Hur mycket är gjort? Räkna på uppgifterna från servern.',
+    steps: [
+      {
+        title: 'Alla uppgifter',
+        why: 'Promise<Todo[]> är ett löfte vi ger om datan. Här litar vi på servern, för den är vår egen.',
+        xp: 15,
+        description: 'Hämta alla uppgifter.',
+        task: 'Uppgift: Skapa `type Todo = { id: number; userId: number; title: string; done: boolean }` och `async function allaTodos(): Promise<Todo[]>` som hämtar `/api/todos`.',
+        starterCode: '// Steg 1: alla uppgifter\n',
+        solution:
+          "type Todo = { id: number; userId: number; title: string; done: boolean };\n\nasync function allaTodos(): Promise<Todo[]> {\n  const svar = await fetch('/api/todos');\n  return svar.json();\n}\n",
+        hints: [
+          "fetch('/api/todos')",
+          'return svar.json();',
+          'Returtypen är Promise<Todo[]>.',
+        ],
+        tests: [
+          {
+            description: 'Tre uppgifter',
+            code: 'allaTodos().then(t => t.length)',
+            expected: 3,
+          },
+        ],
+      },
+      {
+        title: 'Klara',
+        why: 'await ger en Todo[], och då vet TypeScript att t.done är en boolean.',
+        xp: 15,
+        description: 'Hur många är klara?',
+        task: 'Uppgift: Skriv `async function antalKlara(): Promise<number>`.',
+        solution:
+          "type Todo = { id: number; userId: number; title: string; done: boolean };\n\nasync function allaTodos(): Promise<Todo[]> {\n  const svar = await fetch('/api/todos');\n  return svar.json();\n}\n\nasync function antalKlara(): Promise<number> {\n  const todos = await allaTodos();\n  return todos.filter(t => t.done).length;\n}\n",
+        hints: [
+          'const todos = await allaTodos();',
+          'filter(t => t.done)',
+          '.length',
+        ],
+        tests: [
+          { description: 'En är klar', code: 'antalKlara()', expected: 1 },
+        ],
+      },
+      {
+        title: 'Procent',
+        why: 'En tom lista ger 0 i stället för NaN. Kolla det först.',
+        xp: 20,
+        description: 'Hur många procent är klara?',
+        task: 'Uppgift: Skriv `async function procentKlar(): Promise<number>`, avrundat. En tom lista ger 0.',
+        solution:
+          "type Todo = { id: number; userId: number; title: string; done: boolean };\n\nasync function allaTodos(): Promise<Todo[]> {\n  const svar = await fetch('/api/todos');\n  return svar.json();\n}\n\nasync function antalKlara(): Promise<number> {\n  const todos = await allaTodos();\n  return todos.filter(t => t.done).length;\n}\n\nasync function procentKlar(): Promise<number> {\n  const todos = await allaTodos();\n  if (todos.length === 0) {\n    return 0;\n  }\n  return Math.round((100 * (await antalKlara())) / todos.length);\n}\n",
+        hints: [
+          'if (todos.length === 0) return 0;',
+          '100 * klara / alla',
+          'Math.round( … )',
+        ],
+        tests: [
+          { description: '33 procent', code: 'procentKlar()', expected: 33 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-sok-api',
+    track: 'data',
+    title: 'Sök användare',
+    reward: { emoji: '🛰️', name: 'Satellit' },
+    summary: 'En sökning mot servern där svaret kontrolleras innan det visas.',
+    steps: [
+      {
+        title: 'Sök',
+        why: 'Svaret är unknown. Den som använder det måste kolla vad det är, och det gör nästa steg.',
+        xp: 15,
+        description: 'Sök bland användarna.',
+        task: 'Uppgift: Skriv `async function sok(fraga: string): Promise<unknown>` som hämtar `` `/api/users?q=${fraga}` ``.',
+        starterCode: '// Steg 1: sök\n',
+        solution:
+          'async function sok(fraga: string): Promise<unknown> {\n  const svar = await fetch(`/api/users?q=${fraga}`);\n  return svar.json();\n}\n',
+        hints: [
+          'fetch(`/api/users?q=${fraga}`)',
+          'return svar.json();',
+          'Returtypen är Promise<unknown>.',
+        ],
+        tests: [
+          {
+            description: 'Sök ada',
+            code: "sok('ada').then(d => Array.isArray(d))",
+            expected: true,
+          },
+        ],
+      },
+      {
+        title: 'Bara namnen',
+        why: 'Varje element kollas för sig. Ett trasigt element hoppas över i stället för att krascha appen.',
+        xp: 20,
+        description: 'Plocka ut namnen ur svaret.',
+        task: 'Uppgift: Skriv `namnLista(data: unknown): string[]` som ger namnen på alla element som har ett `name` som är text.',
+        solution:
+          "async function sok(fraga: string): Promise<unknown> {\n  const svar = await fetch(`/api/users?q=${fraga}`);\n  return svar.json();\n}\n\nfunction namnLista(data: unknown): string[] {\n  if (!Array.isArray(data)) {\n    return [];\n  }\n  const namn: string[] = [];\n  for (const x of data) {\n    if (typeof x === 'object' && x !== null && 'name' in x && typeof x.name === 'string') {\n      namn.push(x.name);\n    }\n  }\n  return namn;\n}\n",
+        hints: [
+          'if (!Array.isArray(data)) return [];',
+          "typeof x === 'object' && x !== null && 'name' in x",
+          'namn.push(x.name);',
+        ],
+        tests: [
+          {
+            description: 'Två namn',
+            code: "namnLista([{ name: 'A' }, { name: 2 }, null, { name: 'B' }])",
+            expected: ['A', 'B'],
+          },
+          {
+            description: 'Inte en lista',
+            code: "namnLista('x')",
+            expected: [],
+          },
+        ],
+      },
+      {
+        title: 'Ihop',
+        why: 'sokNamn sätter ihop de två delarna. Typen string[] gör den enkel att använda.',
+        xp: 15,
+        description: 'Sök och visa namnen.',
+        task: 'Uppgift: Skriv `async function sokNamn(fraga: string): Promise<string[]>`.',
+        solution:
+          "async function sok(fraga: string): Promise<unknown> {\n  const svar = await fetch(`/api/users?q=${fraga}`);\n  return svar.json();\n}\n\nfunction namnLista(data: unknown): string[] {\n  if (!Array.isArray(data)) {\n    return [];\n  }\n  const namn: string[] = [];\n  for (const x of data) {\n    if (typeof x === 'object' && x !== null && 'name' in x && typeof x.name === 'string') {\n      namn.push(x.name);\n    }\n  }\n  return namn;\n}\n\nasync function sokNamn(fraga: string): Promise<string[]> {\n  return namnLista(await sok(fraga));\n}\n",
+        hints: [
+          'await sok(fraga)',
+          'namnLista( … )',
+          'return namnLista(await sok(fraga));',
+        ],
+        tests: [
+          {
+            description: 'Sök gr',
+            code: "sokNamn('gr')",
+            expected: ['Grace Hopper'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-lagerlista',
+    track: 'felsok',
+    title: 'Lagerlistan',
+    reward: { emoji: '🧾', name: 'Följesedel' },
+    summary:
+      'Tre fel i lagret – två hittar TypeScript, ett får du hitta själv.',
+    steps: [
+      {
+        title: 'Antalet',
+        why: 'Ett antal i citattecken är text. TypeScript säger till innan någon försöker räkna med det.',
+        xp: 15,
+        description: 'Lagret ger ett typfel.',
+        task: 'Uppgift: Laga listan så att mössorna är `4` st.',
+        starterCode:
+          "type Vara = { namn: string; antal: number };\n\nconst lager: Vara[] = [\n  { namn: 'Mössa', antal: '4' },\n  { namn: 'Vantar', antal: 0 },\n];\n",
+        solution:
+          "type Vara = { namn: string; antal: number };\n\nconst lager: Vara[] = [\n  { namn: 'Mössa', antal: 4 },\n  { namn: 'Vantar', antal: 0 },\n];\n",
+        hints: [
+          'Läs felet.',
+          'Ett tal har inga citattecken.',
+          "{ namn: 'Mössa', antal: 4 }",
+        ],
+        tests: [
+          { description: '4 mössor', code: 'lager[0].antal', expected: 4 },
+        ],
+      },
+      {
+        title: 'Stavfelet',
+        why: 'Med typen Vara vet TypeScript vilka egenskaper som finns och föreslår rätt namn.',
+        xp: 15,
+        description: 'Totalen ger ett typfel.',
+        task: 'Uppgift: Laga `totalt`.',
+        starterCode:
+          "type Vara = { namn: string; antal: number };\n\nconst lager: Vara[] = [\n  { namn: 'Mössa', antal: 4 },\n  { namn: 'Vantar', antal: 0 },\n];\n\nfunction totalt(lista: Vara[]): number {\n  return lista.reduce((summa, v) => summa + v.antl, 0);\n}\n",
+        solution:
+          "type Vara = { namn: string; antal: number };\n\nconst lager: Vara[] = [\n  { namn: 'Mössa', antal: 4 },\n  { namn: 'Vantar', antal: 0 },\n];\n\nfunction totalt(lista: Vara[]): number {\n  return lista.reduce((summa, v) => summa + v.antal, 0);\n}\n",
+        hints: [
+          'Läs felet – det har ett förslag.',
+          'antl är felstavat.',
+          'v.antal',
+        ],
+        tests: [
+          { description: 'Totalt 4', code: 'totalt(lager)', expected: 4 },
+        ],
+      },
+      {
+        title: '= eller ===',
+        why: 'TypeScript ser inget fel: = ger ett tal, och filter tar vad som helst. Det är testerna som hittar buggen.',
+        xp: 20,
+        description:
+          '`slut` ska ge varorna som är slut, men ger en tom lista – och ändrar lagret!',
+        task: 'Uppgift: Laga `slut`.',
+        starterCode:
+          "type Vara = { namn: string; antal: number };\n\nconst lager: Vara[] = [\n  { namn: 'Mössa', antal: 4 },\n  { namn: 'Vantar', antal: 0 },\n];\n\nfunction totalt(lista: Vara[]): number {\n  return lista.reduce((summa, v) => summa + v.antal, 0);\n}\n\nfunction slut(lista: Vara[]): string[] {\n  return lista.filter(v => (v.antal = 0)).map(v => v.namn);\n}\n",
+        solution:
+          "type Vara = { namn: string; antal: number };\n\nconst lager: Vara[] = [\n  { namn: 'Mössa', antal: 4 },\n  { namn: 'Vantar', antal: 0 },\n];\n\nfunction totalt(lista: Vara[]): number {\n  return lista.reduce((summa, v) => summa + v.antal, 0);\n}\n\nfunction slut(lista: Vara[]): string[] {\n  return lista.filter(v => v.antal === 0).map(v => v.namn);\n}\n",
+        hints: [
+          '= tilldelar, === jämför.',
+          'v.antal = 0 sätter antal till 0.',
+          'filter(v => v.antal === 0)',
+        ],
+        tests: [
+          {
+            description: 'Vantar är slut',
+            code: 'slut(lager)',
+            expected: ['Vantar'],
+          },
+          {
+            description: 'Lagret ändras inte',
+            code: '(slut(lager), lager[0].antal)',
+            expected: 4,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-vaderfel',
+    track: 'felsok',
+    title: 'Väderhämtaren',
+    reward: { emoji: '🌧️', name: 'Regnmoln' },
+    summary: 'Buggar som TypeScript inte ser, för att något tystar den.',
+    steps: [
+      {
+        title: '[object Promise]',
+        why: 'En template literal tar vad som helst, även ett Promise. Därför sa TypeScript inget – men texten blev fel.',
+        xp: 15,
+        description: "`text()` ger `'[object Promise] grader'`.",
+        task: "Uppgift: Laga `text` så att den ger `'21 grader'`.",
+        starterCode:
+          'async function temp(): Promise<number> {\n  return 21;\n}\n\nasync function text(): Promise<string> {\n  const t = temp();\n  return `${t} grader`;\n}\n',
+        solution:
+          'async function temp(): Promise<number> {\n  return 21;\n}\n\nasync function text(): Promise<string> {\n  const t = await temp();\n  return `${t} grader`;\n}\n',
+        hints: ['Vad är t?', 'Håll musen över t.', 'const t = await temp();'],
+        tests: [
+          { description: '21 grader', code: 'text()', expected: '21 grader' },
+        ],
+      },
+      {
+        title: 'any',
+        why: 'any stängde av kontrollen. Med en riktig typ pekar TypeScript ut att grader inte finns.',
+        xp: 20,
+        description: '`snitt` blir `NaN`.',
+        task: 'Uppgift: Byt `any[]` mot `{ temp: number }[]` och laga felet som syns.',
+        starterCode:
+          'async function temp(): Promise<number> {\n  return 21;\n}\n\nasync function text(): Promise<string> {\n  const t = await temp();\n  return `${t} grader`;\n}\n\nfunction medel(matningar: any[]): number {\n  return matningar.reduce((s, m) => s + m.grader, 0) / matningar.length;\n}\n\nconst snitt = medel([{ temp: 20 }, { temp: 22 }]);\n',
+        solution:
+          'async function temp(): Promise<number> {\n  return 21;\n}\n\nasync function text(): Promise<string> {\n  const t = await temp();\n  return `${t} grader`;\n}\n\nfunction medel(matningar: { temp: number }[]): number {\n  return matningar.reduce((s, m) => s + m.temp, 0) / matningar.length;\n}\n\nconst snitt = medel([{ temp: 20 }, { temp: 22 }]);\n',
+        hints: ['Byt typen på matningar.', 'Läs felet efter bytet.', 'm.temp'],
+        tests: [{ description: 'snitt är 21', code: 'snitt', expected: 21 }],
+        sourceChecks: [
+          { description: 'Inget any', pattern: /\bany\b/, forbidden: true },
+        ],
+      },
+      {
+        title: 'Tom lista',
+        why: '[0] på en tom lista ger undefined. TypeScript varnar inte för det som standard, så returtypen får säga att det kan saknas.',
+        xp: 20,
+        description: '`hogst([])` kraschar.',
+        task: 'Uppgift: Låt `hogst` ge `number | null`, och `null` för en tom lista.',
+        starterCode:
+          'async function temp(): Promise<number> {\n  return 21;\n}\n\nasync function text(): Promise<string> {\n  const t = await temp();\n  return `${t} grader`;\n}\n\nfunction medel(matningar: { temp: number }[]): number {\n  return matningar.reduce((s, m) => s + m.temp, 0) / matningar.length;\n}\n\nconst snitt = medel([{ temp: 20 }, { temp: 22 }]);\n\nfunction hogst(lista: { temp: number }[]): number {\n  return lista.toSorted((a, b) => b.temp - a.temp)[0].temp;\n}\n',
+        solution:
+          'async function temp(): Promise<number> {\n  return 21;\n}\n\nasync function text(): Promise<string> {\n  const t = await temp();\n  return `${t} grader`;\n}\n\nfunction medel(matningar: { temp: number }[]): number {\n  return matningar.reduce((s, m) => s + m.temp, 0) / matningar.length;\n}\n\nconst snitt = medel([{ temp: 20 }, { temp: 22 }]);\n\nfunction hogst(lista: { temp: number }[]): number | null {\n  if (lista.length === 0) {\n    return null;\n  }\n  return lista.toSorted((a, b) => b.temp - a.temp)[0].temp;\n}\n',
+        hints: [
+          'Ändra returtypen.',
+          'if (lista.length === 0) return null;',
+          'Resten är som förut.',
+        ],
+        tests: [
+          {
+            description: 'Högst 22',
+            code: 'hogst([{ temp: 20 }, { temp: 22 }])',
+            expected: 22,
+          },
+          { description: 'Tom', code: 'hogst([])', expected: null },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-profilfel',
+    track: 'felsok',
+    title: 'Profilsidan',
+    reward: { emoji: '🪞', name: 'Spegel' },
+    summary: 'Tre typfel där det ibland är typen som ska lagas, inte koden.',
+    steps: [
+      {
+        title: 'Staden',
+        why: 'Profilen har en stad, men typen vet inte om det. Här är det typen som ska ändras.',
+        xp: 15,
+        description: 'Profilen ger ett typfel.',
+        task: 'Uppgift: Laga typen så att Ada kan ha en stad.',
+        starterCode:
+          "interface Profil {\n  namn: string;\n  alder: number;\n}\n\nconst ada: Profil = { namn: 'Ada', alder: 36, stad: 'Lund' };\n",
+        solution:
+          "interface Profil {\n  namn: string;\n  alder: number;\n  stad: string;\n}\n\nconst ada: Profil = { namn: 'Ada', alder: 36, stad: 'Lund' };\n",
+        hints: [
+          'Läs felet: stad finns inte i Profil.',
+          'Lägg till stad i interfacet.',
+          'stad: string;',
+        ],
+        tests: [{ description: 'Lund', code: 'ada.stad', expected: 'Lund' }],
+      },
+      {
+        title: 'Titeln',
+        why: 'En valfri parameter kan vara undefined. Kolla den innan den används.',
+        xp: 15,
+        description: '`halsa` ger ett typfel.',
+        task: "Uppgift: Laga `halsa` så att `halsa(ada)` ger `'Ada'` och `halsa(ada, 'dr')` ger `'DR Ada'`.",
+        starterCode:
+          "interface Profil {\n  namn: string;\n  alder: number;\n  stad: string;\n}\n\nconst ada: Profil = { namn: 'Ada', alder: 36, stad: 'Lund' };\n\nfunction halsa(p: Profil, titel?: string): string {\n  return titel.toUpperCase() + ' ' + p.namn;\n}\n",
+        solution:
+          "interface Profil {\n  namn: string;\n  alder: number;\n  stad: string;\n}\n\nconst ada: Profil = { namn: 'Ada', alder: 36, stad: 'Lund' };\n\nfunction halsa(p: Profil, titel?: string): string {\n  if (titel) {\n    return titel.toUpperCase() + ' ' + p.namn;\n  }\n  return p.namn;\n}\n",
+        hints: [
+          'titel kan vara undefined.',
+          'if (titel) { … }',
+          'return p.namn; efter if.',
+        ],
+        tests: [
+          { description: 'Utan titel', code: 'halsa(ada)', expected: 'Ada' },
+          {
+            description: 'Med titel',
+            code: "halsa(ada, 'dr')",
+            expected: 'DR Ada',
+          },
+        ],
+      },
+      {
+        title: 'Det nya temat',
+        why: 'never vaktar switchen. När auto lades till i typen säger den exakt vad som saknas.',
+        xp: 15,
+        description: "Temat `'auto'` är nytt.",
+        task: "Uppgift: Laga `farg` så att `'auto'` ger `'grå'`.",
+        starterCode:
+          "interface Profil {\n  namn: string;\n  alder: number;\n  stad: string;\n}\n\nconst ada: Profil = { namn: 'Ada', alder: 36, stad: 'Lund' };\n\nfunction halsa(p: Profil, titel?: string): string {\n  if (titel) {\n    return titel.toUpperCase() + ' ' + p.namn;\n  }\n  return p.namn;\n}\n\ntype Tema = 'ljust' | 'mörkt' | 'auto';\n\nfunction farg(t: Tema): string {\n  switch (t) {\n    case 'ljust':\n      return 'vit';\n    case 'mörkt':\n      return 'svart';\n    default: {\n      const koll: never = t;\n      return koll;\n    }\n  }\n}\n",
+        solution:
+          "interface Profil {\n  namn: string;\n  alder: number;\n  stad: string;\n}\n\nconst ada: Profil = { namn: 'Ada', alder: 36, stad: 'Lund' };\n\nfunction halsa(p: Profil, titel?: string): string {\n  if (titel) {\n    return titel.toUpperCase() + ' ' + p.namn;\n  }\n  return p.namn;\n}\n\ntype Tema = 'ljust' | 'mörkt' | 'auto';\n\nfunction farg(t: Tema): string {\n  switch (t) {\n    case 'ljust':\n      return 'vit';\n    case 'mörkt':\n      return 'svart';\n    case 'auto':\n      return 'grå';\n    default: {\n      const koll: never = t;\n      return koll;\n    }\n  }\n}\n",
+        hints: ['Läs felet vid never.', "case 'auto':", "return 'grå';"],
+        tests: [{ description: 'auto', code: "farg('auto')", expected: 'grå' }],
+      },
+    ],
+  },
+  {
+    id: 'proj-profilkort',
+    track: 'react',
+    title: 'Profilkorten',
+    reward: { emoji: '🧑‍🎨', name: 'Konstnär' },
+    summary: 'Små komponenter med typade props som byggs ihop till en lista.',
+    steps: [
+      {
+        title: 'Avataren',
+        why: 'storlek är valfri med ett standardvärde. Inne i komponenten är den alltid ett number.',
+        xp: 15,
+        description: 'En rund bild med första bokstaven.',
+        task: 'Uppgift: Skriv `Avatar` med props `namn: string` och valfri `storlek: number` (standard 40). Den visar en `<div className="avatar">` med namnets första bokstav.',
+        starterCode: '// Steg 1: avataren\n',
+        solution:
+          'type AvatarProps = { namn: string; storlek?: number };\n\nfunction Avatar({ namn, storlek = 40 }: AvatarProps) {\n  return (\n    <div className="avatar" style={{ width: storlek, height: storlek }}>\n      {namn.charAt(0)}\n    </div>\n  );\n}\n',
+        hints: [
+          'type AvatarProps = { namn: string; storlek?: number };',
+          '{ namn, storlek = 40 }: AvatarProps',
+          '{namn.charAt(0)}',
+        ],
+        tests: [
+          {
+            description: 'A för Ada',
+            code: '__mount(<Avatar namn="Ada" />).text(\'div\')',
+            expected: 'A',
+          },
+        ],
+        typeTests: [
+          { description: 'namn krävs', code: '<Avatar />;', fails: true },
+        ],
+      },
+      {
+        title: 'Kortet',
+        why: 'Profil används som props-typ. Samma typ kommer att användas för listan i nästa steg.',
+        xp: 15,
+        description: 'Ett kort med avatar, namn och bio.',
+        task: "Uppgift: Skapa `type Profil = { namn: string; bio?: string }` och `Profilkort(props: Profil)` med `Avatar`, en `<h3>` och en `<p>` med bion eller `'Ingen bio'`.",
+        solution:
+          'type AvatarProps = { namn: string; storlek?: number };\n\nfunction Avatar({ namn, storlek = 40 }: AvatarProps) {\n  return (\n    <div className="avatar" style={{ width: storlek, height: storlek }}>\n      {namn.charAt(0)}\n    </div>\n  );\n}\n\ntype Profil = { namn: string; bio?: string };\n\nfunction Profilkort({ namn, bio }: Profil) {\n  return (\n    <article>\n      <Avatar namn={namn} />\n      <h3>{namn}</h3>\n      <p>{bio ?? \'Ingen bio\'}</p>\n    </article>\n  );\n}\n',
+        hints: [
+          '<Avatar namn={namn} />',
+          "bio ?? 'Ingen bio'",
+          'function Profilkort({ namn, bio }: Profil)',
+        ],
+        tests: [
+          {
+            description: 'Utan bio',
+            code: '__mount(<Profilkort namn="Bo" />).text(\'p\')',
+            expected: 'Ingen bio',
+          },
+          {
+            description: 'Namnet',
+            code: '__mount(<Profilkort namn="Bo" />).text(\'h3\')',
+            expected: 'Bo',
+          },
+        ],
+      },
+      {
+        title: 'Listan',
+        why: 'Profil[] gör att varje element i map är en Profil, och att Profilkort får rätt props.',
+        xp: 20,
+        description: 'Många kort.',
+        task: 'Uppgift: Skriv `Profiler({ profiler }: { profiler: Profil[] })` som visar ett `Profilkort` per profil.',
+        solution:
+          'type AvatarProps = { namn: string; storlek?: number };\n\nfunction Avatar({ namn, storlek = 40 }: AvatarProps) {\n  return (\n    <div className="avatar" style={{ width: storlek, height: storlek }}>\n      {namn.charAt(0)}\n    </div>\n  );\n}\n\ntype Profil = { namn: string; bio?: string };\n\nfunction Profilkort({ namn, bio }: Profil) {\n  return (\n    <article>\n      <Avatar namn={namn} />\n      <h3>{namn}</h3>\n      <p>{bio ?? \'Ingen bio\'}</p>\n    </article>\n  );\n}\n\nfunction Profiler({ profiler }: { profiler: Profil[] }) {\n  return (\n    <div>\n      {profiler.map(p => (\n        <Profilkort key={p.namn} namn={p.namn} bio={p.bio} />\n      ))}\n    </div>\n  );\n}\n',
+        hints: [
+          'profiler.map(p => …)',
+          'key={p.namn}',
+          '<Profilkort key={p.namn} namn={p.namn} bio={p.bio} />',
+        ],
+        tests: [
+          {
+            description: 'Två kort',
+            code: "__mount(<Profiler profiler={[{ namn: 'Ada' }, { namn: 'Bo', bio: 'Hej' }]} />).count('article')",
+            expected: 2,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-raknare',
+    track: 'react',
+    title: 'Räknaren',
+    reward: { emoji: '🔢', name: 'Siffror' },
+    summary:
+      'En räknare som växer med props: steg och en funktion som säger till.',
+    steps: [
+      {
+        title: 'Räknaren',
+        why: 'useState(0) räknar själv ut att antal är ett number. Ingen typ behövs.',
+        xp: 15,
+        description: 'En knapp som räknar.',
+        task: 'Uppgift: Skriv `Raknare` med en `<p>` som visar antalet och en knapp `Mer` som ökar det med 1.',
+        starterCode: '// Steg 1: räknaren\n',
+        solution:
+          "import { useState } from 'react';\n\nfunction Raknare() {\n  const [antal, setAntal] = useState(0);\n  return (\n    <div>\n      <p>{antal}</p>\n      <button onClick={() => setAntal(antal + 1)}>Mer</button>\n    </div>\n  );\n}\n",
+        hints: [
+          "import { useState } from 'react';",
+          'const [antal, setAntal] = useState(0);',
+          'onClick={() => setAntal(antal + 1)}',
+        ],
+        tests: [
+          {
+            description: 'Två klick',
+            code: "__mount(<Raknare />).click('Mer').click('Mer').text('p')",
+            expected: '2',
+          },
+        ],
+      },
+      {
+        title: 'Steget',
+        why: 'steg är valfri med standardvärdet 1, så den gamla räknaren fungerar som förut.',
+        xp: 15,
+        description: 'Ibland ska den räkna i större steg.',
+        task: 'Uppgift: Ge `Raknare` en valfri prop `steg: number` (standard 1).',
+        solution:
+          "import { useState } from 'react';\n\nfunction Raknare({ steg = 1 }: { steg?: number }) {\n  const [antal, setAntal] = useState(0);\n  return (\n    <div>\n      <p>{antal}</p>\n      <button onClick={() => setAntal(antal + steg)}>Mer</button>\n    </div>\n  );\n}\n",
+        hints: [
+          '{ steg = 1 }: { steg?: number }',
+          'setAntal(antal + steg)',
+          'Resten som förut.',
+        ],
+        tests: [
+          {
+            description: 'Steg 5',
+            code: "__mount(<Raknare steg={5} />).click('Mer').text('p')",
+            expected: '5',
+          },
+          {
+            description: 'Utan steg',
+            code: "__mount(<Raknare />).click('Mer').text('p')",
+            expected: '1',
+          },
+        ],
+        typeTests: [
+          {
+            description: 'steg är ett tal',
+            code: '<Raknare steg="5" />;',
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Säg till',
+        why: 'onAndring är valfri, så ?.() anropar den bara om den finns.',
+        xp: 20,
+        description: 'Föräldern vill veta när antalet ändras.',
+        task: 'Uppgift: Lägg till en valfri prop `onAndring: (antal: number) => void` som anropas med det nya antalet.',
+        solution:
+          "import { useState } from 'react';\n\ntype Props = { steg?: number; onAndring?: (antal: number) => void };\n\nfunction Raknare({ steg = 1, onAndring }: Props) {\n  const [antal, setAntal] = useState(0);\n\n  function oka() {\n    const nytt = antal + steg;\n    setAntal(nytt);\n    onAndring?.(nytt);\n  }\n\n  return (\n    <div>\n      <p>{antal}</p>\n      <button onClick={oka}>Mer</button>\n    </div>\n  );\n}\n",
+        hints: [
+          'type Props = { steg?: number; onAndring?: (antal: number) => void };',
+          'onAndring?.(nytt);',
+          'Räkna ut nytt först.',
+        ],
+        tests: [
+          {
+            description: 'Säger till',
+            code: "(() => { let senast = 0; __mount(<Raknare steg={2} onAndring={n => { senast = n; }} />).click('Mer').click('Mer'); return senast; })()",
+            expected: 4,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-sokbar',
+    track: 'react',
+    title: 'Den sökbara listan',
+    reward: { emoji: '🧭', name: 'Kompass' },
+    summary: 'En lista som filtreras medan man skriver.',
+    steps: [
+      {
+        title: 'Sökrutan',
+        why: 'Inne i onChange vet TypeScript att e.target är en input, så value är en string.',
+        xp: 15,
+        description: 'En ruta att skriva i.',
+        task: 'Uppgift: Skriv `Sok` med en `<input>` och en `<p>` som visar `` `Du söker: ${fraga}` ``.',
+        starterCode: '// Steg 1: sökrutan\n',
+        solution:
+          "import { useState } from 'react';\n\nfunction Sok() {\n  const [fraga, setFraga] = useState('');\n  return (\n    <div>\n      <input value={fraga} onChange={e => setFraga(e.target.value)} />\n      <p>Du söker: {fraga}</p>\n    </div>\n  );\n}\n",
+        hints: [
+          "const [fraga, setFraga] = useState('');",
+          'onChange={e => setFraga(e.target.value)}',
+          '<p>Du söker: {fraga}</p>',
+        ],
+        tests: [
+          {
+            description: 'Skriver',
+            code: "__mount(<Sok />).type('ada').text('p')",
+            expected: 'Du söker: ada',
+          },
+        ],
+      },
+      {
+        title: 'Listan',
+        why: 'namn: string[] i props. Träffarna räknas ut vid varje render, så de behöver inget eget state.',
+        xp: 20,
+        description: 'Visa namnen som matchar.',
+        task: 'Uppgift: Ge `Sok` props `namn: string[]` och visa träffarna (utan hänsyn till stora och små bokstäver) i en `<ul>`. Ta bort `<p>`.',
+        solution:
+          "import { useState } from 'react';\n\nfunction Sok({ namn }: { namn: string[] }) {\n  const [fraga, setFraga] = useState('');\n  const traffar = namn.filter(n => n.toLowerCase().includes(fraga.toLowerCase()));\n  return (\n    <div>\n      <input value={fraga} onChange={e => setFraga(e.target.value)} />\n      <ul>\n        {traffar.map(n => (\n          <li key={n}>{n}</li>\n        ))}\n      </ul>\n    </div>\n  );\n}\n",
+        hints: [
+          '{ namn }: { namn: string[] }',
+          'namn.filter(n => n.toLowerCase().includes(fraga.toLowerCase()))',
+          'traffar.map(n => <li key={n}>{n}</li>)',
+        ],
+        tests: [
+          {
+            description: 'Söker a',
+            code: "__mount(<Sok namn={['Ada', 'Bo', 'Alva']} />).type('a').count('li')",
+            expected: 2,
+          },
+          {
+            description: 'Söker bo',
+            code: "__mount(<Sok namn={['Ada', 'Bo', 'Alva']} />).type('BO').text('ul')",
+            expected: 'Bo',
+          },
+        ],
+      },
+      {
+        title: 'Antalet',
+        why: 'Antalet kommer från samma lista som visas, så de kan aldrig visa olika saker.',
+        xp: 15,
+        description: 'Visa hur många träffar det blev.',
+        task: 'Uppgift: Lägg till `<p>{traffar.length} träffar</p>` före listan.',
+        solution:
+          "import { useState } from 'react';\n\nfunction Sok({ namn }: { namn: string[] }) {\n  const [fraga, setFraga] = useState('');\n  const traffar = namn.filter(n => n.toLowerCase().includes(fraga.toLowerCase()));\n  return (\n    <div>\n      <input value={fraga} onChange={e => setFraga(e.target.value)} />\n      <p>{traffar.length} träffar</p>\n      <ul>\n        {traffar.map(n => (\n          <li key={n}>{n}</li>\n        ))}\n      </ul>\n    </div>\n  );\n}\n",
+        hints: [
+          'traffar.length',
+          '<p> före <ul>.',
+          '<p>{traffar.length} träffar</p>',
+        ],
+        tests: [
+          {
+            description: 'Tre träffar',
+            code: "__mount(<Sok namn={['Ada', 'Bo', 'Alva']} />).text('p')",
+            expected: '3 träffar',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-budget',
+    track: 'slutprojekt',
+    title: 'Budgeten',
+    reward: { emoji: '💳', name: 'Betalkort' },
+    summary: 'Inkomster och utgifter, saldo och vart pengarna tar vägen.',
+    steps: [
+      {
+        title: 'Posterna',
+        why: 'typ är en union, så en post kan inte vara något annat än inkomst eller utgift.',
+        xp: 15,
+        description: 'Månadens poster.',
+        task: "Uppgift: Skapa `type Post = { typ: 'inkomst' | 'utgift'; belopp: number; kategori: string }` och `poster: Post[]`: Lön 25000 (inkomst), Hyra 8000, Mat 3000 och Mat 1200.",
+        starterCode: '// Steg 1: posterna\n',
+        solution:
+          "type Post = { typ: 'inkomst' | 'utgift'; belopp: number; kategori: string };\n\nconst poster: Post[] = [\n  { typ: 'inkomst', belopp: 25000, kategori: 'Lön' },\n  { typ: 'utgift', belopp: 8000, kategori: 'Hyra' },\n  { typ: 'utgift', belopp: 3000, kategori: 'Mat' },\n  { typ: 'utgift', belopp: 1200, kategori: 'Mat' },\n];\n",
+        hints: [
+          "typ: 'inkomst' | 'utgift'",
+          'poster: Post[]',
+          "{ typ: 'utgift', belopp: 8000, kategori: 'Hyra' }",
+        ],
+        tests: [
+          { description: 'Fyra poster', code: 'poster.length', expected: 4 },
+        ],
+        typeTests: [
+          {
+            description: "'gåva' är ingen typ",
+            code: "const p: Post = { typ: 'gåva', belopp: 1, kategori: 'x' };",
+            fails: true,
+          },
+        ],
+      },
+      {
+        title: 'Saldot',
+        why: 'Inkomster läggs till och utgifter dras ifrån. typ avgör vilket.',
+        xp: 15,
+        description: 'Vad blir kvar?',
+        task: 'Uppgift: Skriv `saldo(lista: Post[]): number`.',
+        solution:
+          "type Post = { typ: 'inkomst' | 'utgift'; belopp: number; kategori: string };\n\nconst poster: Post[] = [\n  { typ: 'inkomst', belopp: 25000, kategori: 'Lön' },\n  { typ: 'utgift', belopp: 8000, kategori: 'Hyra' },\n  { typ: 'utgift', belopp: 3000, kategori: 'Mat' },\n  { typ: 'utgift', belopp: 1200, kategori: 'Mat' },\n];\n\nfunction saldo(lista: Post[]): number {\n  return lista.reduce((s, p) => (p.typ === 'inkomst' ? s + p.belopp : s - p.belopp), 0);\n}\n",
+        hints: [
+          'reduce med 0 som start.',
+          "p.typ === 'inkomst' ? s + p.belopp : s - p.belopp",
+          'return lista.reduce( … , 0);',
+        ],
+        tests: [
+          { description: '12800 kvar', code: 'saldo(poster)', expected: 12800 },
+        ],
+      },
+      {
+        title: 'Per kategori',
+        why: 'Record<string, number> är ett objekt med kategorier som nycklar. ?? 0 hanterar första gången en kategori dyker upp.',
+        xp: 20,
+        description: 'Vart går pengarna?',
+        task: 'Uppgift: Skriv `perKategori(lista: Post[]): Record<string, number>` med summan av utgifterna per kategori.',
+        solution:
+          "type Post = { typ: 'inkomst' | 'utgift'; belopp: number; kategori: string };\n\nconst poster: Post[] = [\n  { typ: 'inkomst', belopp: 25000, kategori: 'Lön' },\n  { typ: 'utgift', belopp: 8000, kategori: 'Hyra' },\n  { typ: 'utgift', belopp: 3000, kategori: 'Mat' },\n  { typ: 'utgift', belopp: 1200, kategori: 'Mat' },\n];\n\nfunction saldo(lista: Post[]): number {\n  return lista.reduce((s, p) => (p.typ === 'inkomst' ? s + p.belopp : s - p.belopp), 0);\n}\n\nfunction perKategori(lista: Post[]): Record<string, number> {\n  const svar: Record<string, number> = {};\n  for (const p of lista) {\n    if (p.typ === 'utgift') {\n      svar[p.kategori] = (svar[p.kategori] ?? 0) + p.belopp;\n    }\n  }\n  return svar;\n}\n",
+        hints: [
+          'const svar: Record<string, number> = {};',
+          "if (p.typ === 'utgift')",
+          'svar[p.kategori] = (svar[p.kategori] ?? 0) + p.belopp;',
+        ],
+        tests: [
+          {
+            description: 'Hyra och mat',
+            code: 'perKategori(poster)',
+            expected: { Hyra: 8000, Mat: 4200 },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-quizapp',
+    track: 'slutprojekt',
+    title: 'Quizappen',
+    reward: { emoji: '❓', name: 'Frågetecken' },
+    summary: 'Frågor, rättning och en komponent som visar en fråga.',
+    steps: [
+      {
+        title: 'Frågorna',
+        why: 'ratt är platsen för det rätta svaret i alternativ. Typen gör att alla frågor har samma form.',
+        xp: 15,
+        description: 'Ett quiz med två frågor.',
+        task: 'Uppgift: Skapa `type Fraga = { fraga: string; alternativ: string[]; ratt: number }` och `fragor: Fraga[]` med frågorna i exemplet i ledtrådarna.',
+        starterCode: '// Steg 1: frågorna\n',
+        solution:
+          "type Fraga = { fraga: string; alternativ: string[]; ratt: number };\n\nconst fragor: Fraga[] = [\n  { fraga: 'Vad är 2 + 2?', alternativ: ['3', '4', '5'], ratt: 1 },\n  { fraga: 'Huvudstad i Norge?', alternativ: ['Oslo', 'Bergen'], ratt: 0 },\n];\n",
+        hints: [
+          'alternativ: string[]',
+          "{ fraga: 'Vad är 2 + 2?', alternativ: ['3', '4', '5'], ratt: 1 }",
+          "{ fraga: 'Huvudstad i Norge?', alternativ: ['Oslo', 'Bergen'], ratt: 0 }",
+        ],
+        tests: [
+          { description: 'Två frågor', code: 'fragor.length', expected: 2 },
+        ],
+      },
+      {
+        title: 'Rätta',
+        why: 'svar[i] är elevens val för fråga i. filter med index jämför dem en i taget.',
+        xp: 15,
+        description: 'Hur många rätt?',
+        task: 'Uppgift: Skriv `ratta(svar: number[], lista: Fraga[]): number`.',
+        solution:
+          "type Fraga = { fraga: string; alternativ: string[]; ratt: number };\n\nconst fragor: Fraga[] = [\n  { fraga: 'Vad är 2 + 2?', alternativ: ['3', '4', '5'], ratt: 1 },\n  { fraga: 'Huvudstad i Norge?', alternativ: ['Oslo', 'Bergen'], ratt: 0 },\n];\n\nfunction ratta(svar: number[], lista: Fraga[]): number {\n  return lista.filter((f, i) => svar[i] === f.ratt).length;\n}\n",
+        hints: ['filter((f, i) => …)', 'svar[i] === f.ratt', '.length'],
+        tests: [
+          {
+            description: 'Båda rätt',
+            code: 'ratta([1, 0], fragor)',
+            expected: 2,
+          },
+          {
+            description: 'En rätt',
+            code: 'ratta([0, 0], fragor)',
+            expected: 1,
+          },
+        ],
+      },
+      {
+        title: 'Frågekortet',
+        why: 'onSvar får platsen för knappen. Föräldern bestämmer vad som händer, och typen säger att det är ett tal.',
+        xp: 20,
+        description: 'En komponent som visar en fråga.',
+        task: 'Uppgift: Importera `useState` överst och skriv `FragaKort({ fraga, onSvar }: { fraga: Fraga; onSvar: (index: number) => void })` med en `<h3>` och en knapp per alternativ.',
+        solution:
+          "import { useState } from 'react';\n\ntype Fraga = { fraga: string; alternativ: string[]; ratt: number };\n\nconst fragor: Fraga[] = [\n  { fraga: 'Vad är 2 + 2?', alternativ: ['3', '4', '5'], ratt: 1 },\n  { fraga: 'Huvudstad i Norge?', alternativ: ['Oslo', 'Bergen'], ratt: 0 },\n];\n\nfunction ratta(svar: number[], lista: Fraga[]): number {\n  return lista.filter((f, i) => svar[i] === f.ratt).length;\n}\n\nfunction FragaKort({ fraga, onSvar }: { fraga: Fraga; onSvar: (index: number) => void }) {\n  return (\n    <div>\n      <h3>{fraga.fraga}</h3>\n      {fraga.alternativ.map((a, i) => (\n        <button key={a} onClick={() => onSvar(i)}>\n          {a}\n        </button>\n      ))}\n    </div>\n  );\n}\n",
+        hints: [
+          "import { useState } from 'react'; överst.",
+          'fraga.alternativ.map((a, i) => <button … onClick={() => onSvar(i)}>{a}</button>)',
+          'key={a}',
+        ],
+        tests: [
+          {
+            description: 'Klick på 4',
+            code: "(() => { let valt = -1; __mount(<FragaKort fraga={fragor[0]} onSvar={i => { valt = i; }} />).click('4'); return valt; })()",
+            expected: 1,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-spellista',
+    track: 'slutprojekt',
+    title: 'Spellistan',
+    reward: { emoji: '🎧', name: 'Hörlurar' },
+    summary: 'Låtar, total speltid och en rad i listan.',
+    steps: [
+      {
+        title: 'Låtarna',
+        why: 'sekunder sparas som ett tal. Att visa 3:51 är ett jobb för en egen funktion, inte för datan.',
+        xp: 15,
+        description: 'Tre låtar.',
+        task: 'Uppgift: Skapa `type Lat = { titel: string; artist: string; sekunder: number }` och `lista: Lat[]` med Dancing Queen (ABBA, 231), Waterloo (ABBA, 168) och Euphoria (Loreen, 183).',
+        starterCode: '// Steg 1: låtarna\n',
+        solution:
+          "type Lat = { titel: string; artist: string; sekunder: number };\n\nconst lista: Lat[] = [\n  { titel: 'Dancing Queen', artist: 'ABBA', sekunder: 231 },\n  { titel: 'Waterloo', artist: 'ABBA', sekunder: 168 },\n  { titel: 'Euphoria', artist: 'Loreen', sekunder: 183 },\n];\n",
+        hints: [
+          'type Lat = { … };',
+          'lista: Lat[]',
+          "{ titel: 'Waterloo', artist: 'ABBA', sekunder: 168 }",
+        ],
+        tests: [
+          { description: 'Tre låtar', code: 'lista.length', expected: 3 },
+        ],
+      },
+      {
+        title: 'Tiden',
+        why: 'padStart ger alltid två siffror för sekunderna: 3:05, inte 3:5.',
+        xp: 15,
+        description: 'Visa tid som minuter och sekunder.',
+        task: "Uppgift: Skriv `tid(sekunder: number): string` (t.ex. `'3:51'`) och `total` med hela listans tid.",
+        solution:
+          "type Lat = { titel: string; artist: string; sekunder: number };\n\nconst lista: Lat[] = [\n  { titel: 'Dancing Queen', artist: 'ABBA', sekunder: 231 },\n  { titel: 'Waterloo', artist: 'ABBA', sekunder: 168 },\n  { titel: 'Euphoria', artist: 'Loreen', sekunder: 183 },\n];\n\nfunction tid(sekunder: number): string {\n  const min = Math.floor(sekunder / 60);\n  const sek = sekunder % 60;\n  return `${min}:${String(sek).padStart(2, '0')}`;\n}\n\nconst total = tid(lista.reduce((s, l) => s + l.sekunder, 0));\n",
+        hints: [
+          'Math.floor(sekunder / 60)',
+          "String(sek).padStart(2, '0')",
+          'tid(lista.reduce((s, l) => s + l.sekunder, 0))',
+        ],
+        tests: [
+          { description: '231 sekunder', code: 'tid(231)', expected: '3:51' },
+          { description: 'Totalt', code: 'total', expected: '9:42' },
+          { description: 'Kort', code: 'tid(65)', expected: '1:05' },
+        ],
+      },
+      {
+        title: 'Raden',
+        why: 'Komponenten tar en hel Lat, så den kan aldrig få en låt utan artist.',
+        xp: 15,
+        description: 'En rad i spellistan.',
+        task: "Uppgift: Skriv `Latrad({ lat }: { lat: Lat })` som visar `<li>` med t.ex. `'Waterloo – ABBA (2:48)'`.",
+        solution:
+          "type Lat = { titel: string; artist: string; sekunder: number };\n\nconst lista: Lat[] = [\n  { titel: 'Dancing Queen', artist: 'ABBA', sekunder: 231 },\n  { titel: 'Waterloo', artist: 'ABBA', sekunder: 168 },\n  { titel: 'Euphoria', artist: 'Loreen', sekunder: 183 },\n];\n\nfunction tid(sekunder: number): string {\n  const min = Math.floor(sekunder / 60);\n  const sek = sekunder % 60;\n  return `${min}:${String(sek).padStart(2, '0')}`;\n}\n\nconst total = tid(lista.reduce((s, l) => s + l.sekunder, 0));\n\nfunction Latrad({ lat }: { lat: Lat }) {\n  return (\n    <li>\n      {`${lat.titel} – ${lat.artist} (${tid(lat.sekunder)})`}\n    </li>\n  );\n}\n",
+        hints: [
+          '{ lat }: { lat: Lat }',
+          'tid(lat.sekunder)',
+          '<li>{`${lat.titel} – ${lat.artist} (${tid(lat.sekunder)})`}</li>',
+        ],
+        tests: [
+          {
+            description: 'Waterloo',
+            code: '__render(<Latrad lat={lista[1]} />)',
+            expected: '<li>Waterloo – ABBA (2:48)</li>',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `// ${text}`);

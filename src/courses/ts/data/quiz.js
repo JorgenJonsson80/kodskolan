@@ -354,4 +354,162 @@ export const QUIZ = {
       explain: 'keyof ger namnen på egenskaperna som en union.',
     },
   ],
+  data: [
+    {
+      question:
+        'Vad är typen på svaret från en async function som returnerar text?',
+      options: ['Promise<string>', 'string', 'async string', 'Promise'],
+      explain:
+        'En async-funktion ger alltid ett Promise. Med await får du ut texten.',
+    },
+    {
+      question: 'Varför unknown i stället för any för data från en server?',
+      options: [
+        'unknown tvingar dig att kolla datan innan du använder den',
+        'unknown är snabbare',
+        'any finns inte för fetch',
+        'unknown gör om datan till rätt typ',
+      ],
+      explain:
+        'Med any kontrolleras ingenting. Med unknown måste du smalna av först.',
+    },
+    {
+      question: 'Vad betyder returtypen x is Kund?',
+      options: [
+        'Att x är en Kund när funktionen svarar true',
+        'Att funktionen returnerar en Kund',
+        'Att x alltid är en Kund',
+        'Att funktionen gör om x till en Kund',
+      ],
+      explain: 'Det är en typkontroll. TypeScript litar på den efter en if.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'async function tal(): Promise<number> {\n  return 5;\n}\ntal().then(n => console.log(n * 2));',
+      check: 'log',
+      options: ['10', '5', '[object Promise]', 'NaN'],
+      explain: 'then får värdet 5 när löftet är klart.',
+    },
+  ],
+  felsok: [
+    {
+      question: 'Vad gör as Kund?',
+      options: [
+        'Säger åt TypeScript att värdet är en Kund, utan att kolla',
+        'Gör om värdet till en Kund',
+        'Kollar att värdet är en Kund',
+        'Skapar en ny Kund',
+      ],
+      explain: 'as är ett löfte. Är det fel kraschar koden när den körs.',
+    },
+    {
+      question:
+        "Vad betyder felet Type 'Promise<string>' is not assignable to type 'string'?",
+      options: [
+        'Oftast en glömd await',
+        'Att texten är för lång',
+        'Att Promise är felstavat',
+        'Att funktionen saknar return',
+      ],
+      explain: 'Ett Promise är löftet om en text. await ger texten.',
+    },
+    {
+      question: 'Vad är typeof null?',
+      options: ["'object'", "'null'", "'undefined'", "'number'"],
+      explain: 'En gammal egenhet i JavaScript. Kolla x !== null i stället.',
+    },
+    {
+      question: 'Vad händer med koden?',
+      code: 'function f(lista: readonly number[]) {\n  lista.push(1);\n}',
+      check: 'typeError',
+      options: [
+        'Ett typfel: push finns inte på readonly',
+        'Listan får en etta till',
+        'Inget',
+        'Listan töms',
+      ],
+      explain: 'En readonly-lista har inga metoder som ändrar den.',
+    },
+  ],
+  react: [
+    {
+      question: 'Hur skriver man typen för en komponents props?',
+      options: [
+        'Som typen på parametern: ({ namn }: Props)',
+        'I JSX: <Komp type="Props" />',
+        'Med en kommentar ovanför',
+        'Det går inte i React',
+      ],
+      explain:
+        'Props är ett vanligt objekt, så parametern får en vanlig objekttyp.',
+    },
+    {
+      question: 'Varför useState<string | null>(null)?',
+      options: [
+        'Annars blir typen bara null och det går aldrig att sätta en text',
+        'useState kräver alltid en typ',
+        'null är inte tillåtet i React',
+        'För att det går snabbare',
+      ],
+      explain: 'TypeScript gissar typen från startvärdet. null säger för lite.',
+    },
+    {
+      question: 'Vad är ReactNode?',
+      options: [
+        'Allt React kan visa: text, tal, element och null',
+        'En komponent',
+        'Ett HTML-element',
+        'En hook',
+      ],
+      explain: 'children har ofta typen ReactNode.',
+    },
+    {
+      question: 'Vad händer med koden?',
+      code: 'type Props = { namn: string };\nfunction Hej({ namn }: Props) {\n  return <p>{namn}</p>;\n}\nconst x = <Hej />;',
+      check: 'typeError',
+      options: [
+        'Ett typfel: namn saknas',
+        'Hej visar en tom p',
+        'Hej visar undefined',
+        'Inget',
+      ],
+      explain: 'namn är inte valfri, så den måste skickas med.',
+    },
+  ],
+  slutprojekt: [
+    {
+      question: 'Varför skriva typerna först i ett nytt projekt?',
+      options: [
+        'De blir en karta som resten av koden följer',
+        'TypeScript kräver det',
+        'Koden körs snabbare',
+        'Annars går det inte att köra koden',
+      ],
+      explain:
+        'Med typerna klara pekar TypeScript ut vad som saknas medan du bygger resten.',
+    },
+    {
+      question: "Vad är Omit<Bokning, 'id' | 'status'>?",
+      options: [
+        'En bokning utan id och status',
+        'Bara id och status',
+        'En bokning där id och status är valfria',
+        'En avbokad bokning',
+      ],
+      explain: 'Omit tar bort de nämnda egenskaperna.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: "const dag = 24 * 60 * 60 * 1000;\nconsole.log((new Date('2026-06-13').getTime() - new Date('2026-06-10').getTime()) / dag);",
+      check: 'log',
+      options: ['3', '4', '2', '259200000'],
+      explain: 'Skillnaden är tre dygn.',
+    },
+    {
+      question: 'Vilken TypeScript-version är omskriven i Go?',
+      options: ['TypeScript 7', 'TypeScript 5', 'TypeScript 6', 'Ingen'],
+      explain:
+        'TypeScript 7 är mycket snabbare, men språket du skriver är detsamma.',
+    },
+  ],
 };

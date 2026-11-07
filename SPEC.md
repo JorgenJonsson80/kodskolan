@@ -187,8 +187,9 @@ Användaren testar efter varje etapp.
    Admin: en tabell `admins` (user_id) som bara går att ändra i
    Supabase. En admin har tillgång till allt, som om allt vore köpt.
 6. **Lärarvyn.** Klasser, inbjudningslänk, elevernas framsteg.
-7. **TypeScript som ny kurs.** Bevisar att en ny kurs bara är en ny
-   mapp.
+7. ✅ **TypeScript som ny kurs.** Bevisar att en ny kurs bara är en ny
+   mapp (`src/courses/ts`, SPEC i `docs/kurser/typescript.md`). Kärnan
+   behövde bara en sak: `describeAt` får svara med ett Promise.
 
 SQL kom före etapp 4–7 som fjärde kurs (`src/courses/sql`, SPEC i
 `docs/kurser/sql.md`). Kärnan behövde bara två saker: `editor.context`
