@@ -435,6 +435,87 @@ export const IDEAS = [
     ],
     extra: 'Hitta en statuskod som Flask aldrig ger själv.',
   },
+  {
+    id: 'idea-login-sida',
+    track: 'inloggning',
+    emoji: '🚪',
+    title: 'Inloggningssidan',
+    summary: 'En inloggning med riktiga HTML-sidor i stället för JSON.',
+    goals: [
+      'Ett formulär för att registrera och ett för att logga in.',
+      'Spara lösenorden som hashar.',
+      'En sida som bara inloggade ser, och en knapp för att logga ut.',
+    ],
+    extra: 'Visa namnet på den inloggade i sidhuvudet på alla sidor.',
+  },
+  {
+    id: 'idea-roller',
+    track: 'inloggning',
+    emoji: '👑',
+    title: 'Roller',
+    summary:
+      'Användare, moderatorer och admin – var och en får göra olika mycket.',
+    goals: [
+      'Ge varje användare en roll.',
+      'Skriv en dekorator kraver_roll(roll).',
+      'Använd den på tre vägar med olika krav.',
+    ],
+    extra: 'Låt admin ändra andras roller.',
+  },
+  {
+    id: 'idea-api-nyckel',
+    track: 'inloggning',
+    emoji: '🗝️',
+    title: 'API-nycklar',
+    summary:
+      'Appar loggar inte in med formulär. De skickar en nyckel med varje anrop.',
+    goals: [
+      'Ge varje användare en slumpad nyckel med secrets.token_hex.',
+      'Låt vägarna läsa nyckeln från request.headers.',
+      'Svara 401 när nyckeln saknas eller är fel.',
+    ],
+    extra: 'Räkna hur många anrop varje nyckel har gjort.',
+  },
+  {
+    id: 'idea-tassen-plus',
+    track: 'slutprojekt',
+    emoji: '🐕‍🦺',
+    title: 'Tassen, version 2',
+    summary: 'Bygg vidare på boknings-API:t.',
+    goals: [
+      'Lägg till rum, och se till att två hundar inte bor i samma rum samtidigt.',
+      'Lägg till ägare med konton, som bara ser sina egna hundar.',
+      'Gör en sida som visar veckans beläggning.',
+    ],
+    extra: 'Koppla API:t till TypeScript-kursens bokningsapp.',
+  },
+  {
+    id: 'idea-eget-projekt',
+    track: 'slutprojekt',
+    emoji: '🚀',
+    title: 'Ditt eget projekt',
+    summary: 'Planera och bygg en egen app – databasen först.',
+    goals: [
+      'Välj något du bryr dig om och rita upp tabellerna.',
+      'Bygg API:t väg för väg, med kontroller och felsvar.',
+      'Lägg till inloggning om appen har användare.',
+    ],
+    extra: 'Skriv en README som förklarar alla vägar.',
+  },
+  {
+    id: 'idea-pa-riktigt',
+    track: 'slutprojekt',
+    emoji: '💻',
+    title: 'På din egen dator',
+    summary: 'Kör en app från kursen på riktigt.',
+    goals: [
+      'Installera Python och skriv pip install flask.',
+      'Spara en app från kursen som app.py och kör python app.py.',
+      'Öppna http://127.0.0.1:5000 i webbläsaren.',
+    ],
+    extra:
+      'Byt :memory: mot en fil, så att datan finns kvar när du startar om.',
+  },
 ];
 
 const goalLines = idea =>

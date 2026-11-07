@@ -30,7 +30,10 @@ describe.each(questions)('%s', (_, question) => {
       code: question.code,
       tests: [{ code: question.check, expected: null }],
     });
-    expect(String(result.tests[0].actual)).toBe(question.options[0]);
+    // Text jämförs som den är, annat som Python skriver det (False, None).
+    const [entry] = result.tests;
+    const shown = typeof entry.actual === 'string' ? entry.actual : entry.repr;
+    expect(shown).toBe(question.options[0]);
   });
 });
 

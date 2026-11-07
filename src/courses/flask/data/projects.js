@@ -3014,6 +3014,583 @@ export const PROJECTS = [
       },
     ],
   },
+  {
+    id: 'proj-blogg-login',
+    track: 'inloggning',
+    title: 'Bloggen',
+    reward: { emoji: '✍️', name: 'Penna' },
+    summary: 'En blogg där bara författaren kan ta bort sina inlägg.',
+    steps: [
+      {
+        title: 'Konton',
+        why: 'Samma registrering och inloggning som i banan. Lösenorden sparas som hashar.',
+        xp: 20,
+        description: 'Registrera och logga in.',
+        task: 'Uppgift: `POST /registrera` och `POST /logga-in` (JSON), med hashade lösenord, 409 för upptaget namn och 401 för fel inloggning.',
+        starterCode:
+          "from flask import Flask, request, session\nfrom werkzeug.security import check_password_hash, generate_password_hash\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\nanvandare = {}\ninlagg = []\n",
+        solution:
+          "from flask import Flask, request, session\nfrom werkzeug.security import check_password_hash, generate_password_hash\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\nanvandare = {}\ninlagg = []\n\n\n@app.post('/registrera')\ndef registrera():\n    data = request.get_json()\n    if data['namn'] in anvandare:\n        return {'fel': 'Upptaget'}, 409\n    anvandare[data['namn']] = generate_password_hash(data['losenord'])\n    return {'namn': data['namn']}, 201\n\n\n@app.post('/logga-in')\ndef logga_in():\n    data = request.get_json()\n    sparad = anvandare.get(data['namn'])\n    if sparad is None or not check_password_hash(sparad, data['losenord']):\n        return {'fel': 'Fel namn eller lösenord'}, 401\n    session['namn'] = data['namn']\n    return {'inloggad': data['namn']}\n",
+        hints: [
+          'generate_password_hash(…) vid registrering',
+          'check_password_hash(sparad, …) vid inloggning',
+          "session['namn'] = data['namn']",
+        ],
+        tests: [
+          {
+            description: 'Inloggad',
+            code: "(a := __klient(), a.post('/registrera', {'namn': 'ada', 'losenord': 'hemligt1'}), a.post('/logga-in', {'namn': 'ada', 'losenord': 'hemligt1'}))[-1].json",
+            expected: { inloggad: 'ada' },
+            inputs: [],
+          },
+          {
+            description: 'Fel lösenord',
+            code: "(__post('/registrera', {'namn': 'ada', 'losenord': 'x'}), __post('/logga-in', {'namn': 'ada', 'losenord': 'y'}).status)[-1]",
+            expected: 401,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/registrera',
+          body: '{"namn": "ada", "losenord": "hemligt1"}',
+        },
+      },
+      {
+        title: 'Skriv',
+        why: 'Författaren kommer från sessionen, inte från datan. Annars kunde vem som helst skriva i någon annans namn.',
+        xp: 15,
+        description: 'Inloggade skriver inlägg.',
+        task: "Uppgift: `POST /inlagg` kräver inloggning och sparar `{'id', 'forfattare', 'text'}` med den inloggades namn.",
+        solution:
+          "from flask import Flask, request, session\nfrom werkzeug.security import check_password_hash, generate_password_hash\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\nanvandare = {}\ninlagg = []\n\n\n@app.post('/registrera')\ndef registrera():\n    data = request.get_json()\n    if data['namn'] in anvandare:\n        return {'fel': 'Upptaget'}, 409\n    anvandare[data['namn']] = generate_password_hash(data['losenord'])\n    return {'namn': data['namn']}, 201\n\n\n@app.post('/logga-in')\ndef logga_in():\n    data = request.get_json()\n    sparad = anvandare.get(data['namn'])\n    if sparad is None or not check_password_hash(sparad, data['losenord']):\n        return {'fel': 'Fel namn eller lösenord'}, 401\n    session['namn'] = data['namn']\n    return {'inloggad': data['namn']}\n\n\n@app.post('/inlagg')\ndef skriv():\n    if 'namn' not in session:\n        return {'fel': 'Logga in först'}, 401\n    nytt = {'id': len(inlagg) + 1, 'forfattare': session['namn'], 'text': request.get_json()['text']}\n    inlagg.append(nytt)\n    return nytt, 201\n",
+        hints: [
+          "if 'namn' not in session: … 401",
+          "'forfattare': session['namn']",
+          'return nytt, 201',
+        ],
+        tests: [
+          {
+            description: 'Utloggad',
+            code: "__post('/inlagg', {'text': 'Hej'}).status",
+            expected: 401,
+            inputs: [],
+          },
+          {
+            description: 'Författaren',
+            code: "(a := __klient(), a.post('/registrera', {'namn': 'ada', 'losenord': 'hemligt1'}), a.post('/logga-in', {'namn': 'ada', 'losenord': 'hemligt1'}), a.post('/inlagg', {'text': 'Hej', 'forfattare': 'bo'}).json['forfattare'])[-1]",
+            expected: 'ada',
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/inlagg', body: '{"text": "Hej"}' },
+      },
+      {
+        title: 'Ta bort sitt eget',
+        why: '401 för utloggade, 403 för andras inlägg, 404 när det inte finns. Tre olika svar, tre olika betydelser.',
+        xp: 20,
+        description: 'Bara författaren får ta bort.',
+        task: 'Uppgift: `DELETE /inlagg/<int:id>` – 401 utloggad, 403 om inlägget är någon annans, 404 om det saknas, annars 204.',
+        solution:
+          "from flask import Flask, request, session\nfrom werkzeug.security import check_password_hash, generate_password_hash\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\nanvandare = {}\ninlagg = []\n\n\n@app.post('/registrera')\ndef registrera():\n    data = request.get_json()\n    if data['namn'] in anvandare:\n        return {'fel': 'Upptaget'}, 409\n    anvandare[data['namn']] = generate_password_hash(data['losenord'])\n    return {'namn': data['namn']}, 201\n\n\n@app.post('/logga-in')\ndef logga_in():\n    data = request.get_json()\n    sparad = anvandare.get(data['namn'])\n    if sparad is None or not check_password_hash(sparad, data['losenord']):\n        return {'fel': 'Fel namn eller lösenord'}, 401\n    session['namn'] = data['namn']\n    return {'inloggad': data['namn']}\n\n\n@app.post('/inlagg')\ndef skriv():\n    if 'namn' not in session:\n        return {'fel': 'Logga in först'}, 401\n    nytt = {'id': len(inlagg) + 1, 'forfattare': session['namn'], 'text': request.get_json()['text']}\n    inlagg.append(nytt)\n    return nytt, 201\n\n\n@app.delete('/inlagg/<int:id>')\ndef ta_bort(id):\n    if 'namn' not in session:\n        return {'fel': 'Logga in först'}, 401\n    for i in inlagg:\n        if i['id'] == id:\n            if i['forfattare'] != session['namn']:\n                return {'fel': 'Inte ditt inlägg'}, 403\n            inlagg.remove(i)\n            return '', 204\n    return {'fel': 'Finns inte'}, 404\n",
+        hints: [
+          "if i['forfattare'] != session['namn']: … 403",
+          "inlagg.remove(i)\n            return '', 204",
+          "return {'fel': 'Finns inte'}, 404",
+        ],
+        tests: [
+          {
+            description: 'Någon annans',
+            code: "(a := __klient(), a.post('/registrera', {'namn': 'ada', 'losenord': 'hemligt1'}), a.post('/logga-in', {'namn': 'ada', 'losenord': 'hemligt1'}), a.post('/inlagg', {'text': 'Hej'}), b := __klient(), b.post('/registrera', {'namn': 'bo', 'losenord': 'hemligt2'}), b.post('/logga-in', {'namn': 'bo', 'losenord': 'hemligt2'}), b.delete('/inlagg/1').status)[-1]",
+            expected: 403,
+            inputs: [],
+          },
+          {
+            description: 'Sitt eget',
+            code: "(a := __klient(), a.post('/registrera', {'namn': 'ada', 'losenord': 'hemligt1'}), a.post('/logga-in', {'namn': 'ada', 'losenord': 'hemligt1'}), a.post('/inlagg', {'text': 'Hej'}), a.delete('/inlagg/1').status)[-1]",
+            expected: 204,
+            inputs: [],
+          },
+        ],
+        request: { method: 'DELETE', path: '/inlagg/1' },
+      },
+    ],
+  },
+  {
+    id: 'proj-mina-besok',
+    track: 'inloggning',
+    title: 'Mina besök',
+    reward: { emoji: '👣', name: 'Fotspår' },
+    summary: 'En räknare per besökare, med sessionen.',
+    steps: [
+      {
+        title: 'Räkna',
+        why: 'En global variabel räknar alla besökare ihop. Sessionen räknar varje besökare för sig.',
+        xp: 15,
+        description: 'Räkna besöken för just den här besökaren.',
+        task: 'Uppgift: `/` ökar `session[\'besok\']` och svarar `f"Du har varit här {n} gånger"`.',
+        starterCode:
+          "from flask import Flask, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n",
+        solution:
+          "from flask import Flask, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\n\n@app.get('/')\ndef start():\n    session['besok'] = session.get('besok', 0) + 1\n    return f\"Du har varit här {session['besok']} gånger\"\n",
+        hints: [
+          "session.get('besok', 0) + 1",
+          "session['besok'] = …",
+          'return f"Du har varit här {session[\'besok\']} gånger"',
+        ],
+        tests: [
+          {
+            description: 'Tre besök',
+            code: "(k := __klient(), k.get('/'), k.get('/'), k.get('/').text)[-1]",
+            expected: 'Du har varit här 3 gånger',
+          },
+          {
+            description: 'Två besökare',
+            code: "(a := __klient(), b := __klient(), a.get('/'), a.get('/'), b.get('/').text)[-1]",
+            expected: 'Du har varit här 1 gånger',
+          },
+        ],
+      },
+      {
+        title: 'Nollställ',
+        why: 'pop med None som standard kraschar inte när nyckeln saknas.',
+        xp: 10,
+        description: 'Börja om.',
+        task: 'Uppgift: `POST /nollstall` tar bort `besok` ur sessionen.',
+        solution:
+          "from flask import Flask, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\n\n@app.get('/')\ndef start():\n    session['besok'] = session.get('besok', 0) + 1\n    return f\"Du har varit här {session['besok']} gånger\"\n\n\n@app.post('/nollstall')\ndef nollstall():\n    session.pop('besok', None)\n    return 'Nollställt'\n",
+        hints: [
+          "@app.post('/nollstall')",
+          "session.pop('besok', None)",
+          "return 'Nollställt'",
+        ],
+        tests: [
+          {
+            description: 'Börja om',
+            code: "(k := __klient(), k.get('/'), k.get('/'), k.post('/nollstall'), k.get('/').text)[-1]",
+            expected: 'Du har varit här 1 gånger',
+          },
+        ],
+        request: { method: 'POST', path: '/nollstall', kind: 'form' },
+      },
+      {
+        title: 'Välkommen',
+        why: 'Första besöket får en egen hälsning. Sessionen gör att appen vet om det är första gången.',
+        xp: 15,
+        description: 'Hälsa nya besökare.',
+        task: "Uppgift: Första besöket svarar `'Välkommen för första gången!'`.",
+        solution:
+          "from flask import Flask, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\n\n@app.get('/')\ndef start():\n    session['besok'] = session.get('besok', 0) + 1\n    if session['besok'] == 1:\n        return 'Välkommen för första gången!'\n    return f\"Du har varit här {session['besok']} gånger\"\n\n\n@app.post('/nollstall')\ndef nollstall():\n    session.pop('besok', None)\n    return 'Nollställt'\n",
+        hints: [
+          "if session['besok'] == 1:",
+          "return 'Välkommen för första gången!'",
+          'Före den vanliga raden.',
+        ],
+        tests: [
+          {
+            description: 'Första',
+            code: "__get('/').text",
+            expected: 'Välkommen för första gången!',
+          },
+          {
+            description: 'Andra',
+            code: "(k := __klient(), k.get('/'), k.get('/').text)[-1]",
+            expected: 'Du har varit här 2 gånger',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proj-session-vagn',
+    track: 'inloggning',
+    title: 'Kundvagnen i sessionen',
+    reward: { emoji: '🧺', name: 'Korg' },
+    summary: 'En kundvagn som följer med besökaren, utan databas.',
+    steps: [
+      {
+        title: 'Lägg i vagnen',
+        why: 'Sessionen märker bara när en nyckel får ett nytt värde. Därför skapas en ny lista med + i stället för append.',
+        xp: 20,
+        description: 'Lägg varor i vagnen.',
+        task: "Uppgift: `POST /vagn` med `{'vara': …}` lägger till varan i `session['vagn']` och svarar `{'antal': …}`.",
+        starterCode:
+          "from flask import Flask, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n",
+        solution:
+          "from flask import Flask, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\n\n@app.post('/vagn')\ndef lagg():\n    vara = request.get_json()['vara']\n    session['vagn'] = session.get('vagn', []) + [vara]\n    return {'antal': len(session['vagn'])}\n",
+        hints: [
+          "session.get('vagn', []) + [vara]",
+          "session['vagn'] = …",
+          "return {'antal': len(session['vagn'])}",
+        ],
+        tests: [
+          {
+            description: 'Två varor',
+            code: "(k := __klient(), k.post('/vagn', {'vara': 'mössa'}), k.post('/vagn', {'vara': 'vantar'}).json)[-1]",
+            expected: { antal: 2 },
+          },
+        ],
+        request: { method: 'POST', path: '/vagn', body: '{"vara": "mössa"}' },
+      },
+      {
+        title: 'Visa vagnen',
+        why: 'Varje besökare har sin egen vagn, för sessionen är deras egen.',
+        xp: 10,
+        description: 'Vad finns i vagnen?',
+        task: 'Uppgift: `GET /vagn` svarar med listan (tom om inget finns).',
+        solution:
+          "from flask import Flask, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\n\n@app.post('/vagn')\ndef lagg():\n    vara = request.get_json()['vara']\n    session['vagn'] = session.get('vagn', []) + [vara]\n    return {'antal': len(session['vagn'])}\n\n\n@app.get('/vagn')\ndef visa():\n    return session.get('vagn', [])\n",
+        hints: [
+          "@app.get('/vagn')",
+          "session.get('vagn', [])",
+          "return session.get('vagn', [])",
+        ],
+        tests: [
+          { description: 'Tom', code: "__get('/vagn').json", expected: [] },
+          {
+            description: 'Mössa',
+            code: "(k := __klient(), k.post('/vagn', {'vara': 'mössa'}), k.get('/vagn').json)[-1]",
+            expected: ['mössa'],
+          },
+        ],
+        request: { path: '/vagn' },
+      },
+      {
+        title: 'Kassan',
+        why: 'pop tar ut vagnen och tömmer den på en gång, så att samma köp inte kan göras två gånger.',
+        xp: 15,
+        description: 'Betala.',
+        task: "Uppgift: `POST /kassa` tömmer vagnen och svarar `{'kopt': antal}`, eller `{'fel': 'Vagnen är tom'}` med 400.",
+        solution:
+          "from flask import Flask, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\n\n@app.post('/vagn')\ndef lagg():\n    vara = request.get_json()['vara']\n    session['vagn'] = session.get('vagn', []) + [vara]\n    return {'antal': len(session['vagn'])}\n\n\n@app.get('/vagn')\ndef visa():\n    return session.get('vagn', [])\n\n\n@app.post('/kassa')\ndef kassa():\n    vagn = session.pop('vagn', [])\n    if not vagn:\n        return {'fel': 'Vagnen är tom'}, 400\n    return {'kopt': len(vagn)}\n",
+        hints: [
+          "vagn = session.pop('vagn', [])",
+          'if not vagn: … 400',
+          "return {'kopt': len(vagn)}",
+        ],
+        tests: [
+          {
+            description: 'Köp',
+            code: "(k := __klient(), k.post('/vagn', {'vara': 'mössa'}), k.post('/kassa').json, k.get('/vagn').json)[2:]",
+            expected: [{ kopt: 1 }, []],
+          },
+          {
+            description: 'Tom',
+            code: "__post('/kassa').status",
+            expected: 400,
+          },
+        ],
+        request: { method: 'POST', path: '/kassa' },
+      },
+    ],
+  },
+  {
+    id: 'proj-restaurang',
+    track: 'slutprojekt',
+    title: 'Restaurangen',
+    reward: { emoji: '🍷', name: 'Vinglas' },
+    summary:
+      'Bordsbokning med databas, kontroller och en gräns för antalet gäster.',
+    steps: [
+      {
+        title: 'Boka',
+        why: 'Allt som skickas in kontrolleras först. Felhanteraren gör felen till JSON.',
+        xp: 20,
+        description: 'Boka bord.',
+        task: "Uppgift: `POST /bokningar` (JSON: namn, datum, personer). Fel data ger `abort(400, description='namn, datum och personer krävs')`. Spara och svara `{'id': …}` med 201.",
+        starterCode:
+          "import sqlite3\n\nfrom flask import Flask, abort, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE bokningar (id INTEGER PRIMARY KEY, namn TEXT, datum TEXT, personer INTEGER);\n''')\nPLATSER = 20\n",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, abort, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE bokningar (id INTEGER PRIMARY KEY, namn TEXT, datum TEXT, personer INTEGER);\n''')\nPLATSER = 20\n\n\n@app.post('/bokningar')\ndef boka():\n    data = request.get_json()\n    personer = data.get('personer')\n    if not data.get('namn') or not data.get('datum') or not isinstance(personer, int) or personer < 1:\n        abort(400, description='namn, datum och personer krävs')\n    cur = db.execute('INSERT INTO bokningar (namn, datum, personer) VALUES (?, ?, ?)', (data['namn'], data['datum'], personer))\n    db.commit()\n    return {'id': cur.lastrowid}, 201\n\n\n@app.errorhandler(400)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n",
+        hints: [
+          'isinstance(personer, int) and personer >= 1',
+          'INSERT INTO bokningar (namn, datum, personer) VALUES (?, ?, ?)',
+          "@app.errorhandler(400) … {'fel': fel.description}",
+        ],
+        tests: [
+          {
+            description: 'Boka',
+            code: "__post('/bokningar', {'namn': 'Ada', 'datum': '2026-06-10', 'personer': 4}).json",
+            expected: { id: 1 },
+            inputs: [],
+          },
+          {
+            description: 'Fel',
+            code: "__post('/bokningar', {'namn': 'Ada', 'datum': '2026-06-10', 'personer': 0}).status",
+            expected: 400,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/bokningar',
+          body: '{"namn": "Ada", "datum": "2026-06-10", "personer": 4}',
+        },
+      },
+      {
+        title: 'En dag',
+        why: 'SUM räknar ihop gästerna i databasen. COALESCE gör att en dag utan bokningar ger 0 i stället för NULL.',
+        xp: 15,
+        description: 'Hur många är bokade en dag?',
+        task: "Uppgift: `GET /dag/<datum>` svarar `{'datum', 'bokade', 'lediga'}`.",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, abort, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE bokningar (id INTEGER PRIMARY KEY, namn TEXT, datum TEXT, personer INTEGER);\n''')\nPLATSER = 20\n\n\n@app.post('/bokningar')\ndef boka():\n    data = request.get_json()\n    personer = data.get('personer')\n    if not data.get('namn') or not data.get('datum') or not isinstance(personer, int) or personer < 1:\n        abort(400, description='namn, datum och personer krävs')\n    cur = db.execute('INSERT INTO bokningar (namn, datum, personer) VALUES (?, ?, ?)', (data['namn'], data['datum'], personer))\n    db.commit()\n    return {'id': cur.lastrowid}, 201\n\n\n@app.errorhandler(400)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n\n\n@app.get('/dag/<datum>')\ndef dag(datum):\n    rad = db.execute('SELECT COALESCE(SUM(personer), 0) AS bokade FROM bokningar WHERE datum = ?', (datum,)).fetchone()\n    return {'datum': datum, 'bokade': rad['bokade'], 'lediga': PLATSER - rad['bokade']}\n",
+        hints: [
+          'SELECT COALESCE(SUM(personer), 0) AS bokade FROM bokningar WHERE datum = ?',
+          "'lediga': PLATSER - …",
+          'return {…}',
+        ],
+        tests: [
+          {
+            description: 'En bokning',
+            code: "(__post('/bokningar', {'namn': 'Ada', 'datum': '2026-06-10', 'personer': 4}), __get('/dag/2026-06-10').json)[-1]",
+            expected: { datum: '2026-06-10', bokade: 4, lediga: 16 },
+            inputs: [],
+          },
+          {
+            description: 'Tom dag',
+            code: "__get('/dag/2026-06-11').json['lediga']",
+            expected: 20,
+            inputs: [],
+          },
+        ],
+        request: { path: '/dag/2026-06-10' },
+      },
+      {
+        title: 'Fullbokat',
+        why: 'dag() används också inne i boka. En funktion kan vara både en väg och en hjälpfunktion.',
+        xp: 15,
+        description: 'Max 20 gäster per dag.',
+        task: "Uppgift: En bokning som skulle ge fler än 20 gäster en dag ger `abort(409, description='Fullbokat')`.",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, abort, request\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE bokningar (id INTEGER PRIMARY KEY, namn TEXT, datum TEXT, personer INTEGER);\n''')\nPLATSER = 20\n\n\n@app.post('/bokningar')\ndef boka():\n    data = request.get_json()\n    personer = data.get('personer')\n    if not data.get('namn') or not data.get('datum') or not isinstance(personer, int) or personer < 1:\n        abort(400, description='namn, datum och personer krävs')\n    bokade = dag(data['datum'])['bokade']\n    if bokade + personer > PLATSER:\n        abort(409, description='Fullbokat')\n    cur = db.execute('INSERT INTO bokningar (namn, datum, personer) VALUES (?, ?, ?)', (data['namn'], data['datum'], personer))\n    db.commit()\n    return {'id': cur.lastrowid}, 201\n\n\n@app.errorhandler(400)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n\n\n@app.get('/dag/<datum>')\ndef dag(datum):\n    rad = db.execute('SELECT COALESCE(SUM(personer), 0) AS bokade FROM bokningar WHERE datum = ?', (datum,)).fetchone()\n    return {'datum': datum, 'bokade': rad['bokade'], 'lediga': PLATSER - rad['bokade']}\n",
+        hints: [
+          "bokade = dag(data['datum'])['bokade']",
+          'if bokade + personer > PLATSER:',
+          "abort(409, description='Fullbokat')",
+        ],
+        tests: [
+          {
+            description: 'Fullbokat',
+            code: "(__post('/bokningar', {'namn': 'A', 'datum': 'd', 'personer': 15}), __post('/bokningar', {'namn': 'B', 'datum': 'd', 'personer': 6}).json)[-1]",
+            expected: { fel: 'Fullbokat' },
+            inputs: [],
+          },
+          {
+            description: 'Precis',
+            code: "(__post('/bokningar', {'namn': 'A', 'datum': 'd', 'personer': 15}), __post('/bokningar', {'namn': 'B', 'datum': 'd', 'personer': 5}).status)[-1]",
+            expected: 201,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/bokningar',
+          body: '{"namn": "Bo", "datum": "2026-06-10", "personer": 20}',
+        },
+      },
+    ],
+  },
+  {
+    id: 'proj-kurser',
+    track: 'slutprojekt',
+    title: 'Hundkurserna',
+    reward: { emoji: '🎓', name: 'Studentmössa' },
+    summary: 'Kursanmälan med inloggning, databas och fulla kurser.',
+    steps: [
+      {
+        title: 'Kurserna',
+        why: 'LEFT JOIN och COUNT räknar anmälningarna, även för kurser utan några.',
+        xp: 20,
+        description: 'Visa kurserna och lediga platser.',
+        task: "Uppgift: `GET /kurser` svarar med `{'id', 'namn', 'lediga'}` för varje kurs.",
+        starterCode:
+          "import sqlite3\n\nfrom flask import Flask, abort, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE kurser (id INTEGER PRIMARY KEY, namn TEXT, platser INTEGER);\nCREATE TABLE anmalningar (kurs_id INTEGER, deltagare TEXT, PRIMARY KEY (kurs_id, deltagare));\nINSERT INTO kurser (namn, platser) VALUES ('Valpkurs', 2), ('Agility', 5);\n''')\n\n\n@app.post('/logga-in')\ndef logga_in():\n    session['namn'] = request.get_json()['namn']\n    return {'inloggad': session['namn']}\n",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, abort, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE kurser (id INTEGER PRIMARY KEY, namn TEXT, platser INTEGER);\nCREATE TABLE anmalningar (kurs_id INTEGER, deltagare TEXT, PRIMARY KEY (kurs_id, deltagare));\nINSERT INTO kurser (namn, platser) VALUES ('Valpkurs', 2), ('Agility', 5);\n''')\n\n\n@app.post('/logga-in')\ndef logga_in():\n    session['namn'] = request.get_json()['namn']\n    return {'inloggad': session['namn']}\n\n\n@app.get('/kurser')\ndef kurser():\n    rader = db.execute('''\n        SELECT k.id, k.namn, k.platser - COUNT(a.deltagare) AS lediga\n        FROM kurser k LEFT JOIN anmalningar a ON a.kurs_id = k.id\n        GROUP BY k.id ORDER BY k.id\n    ''').fetchall()\n    return [dict(r) for r in rader]\n",
+        hints: [
+          'FROM kurser k LEFT JOIN anmalningar a ON a.kurs_id = k.id',
+          'k.platser - COUNT(a.deltagare) AS lediga',
+          'GROUP BY k.id',
+        ],
+        tests: [
+          {
+            description: 'Kurserna',
+            code: "__get('/kurser').json",
+            expected: [
+              { id: 1, namn: 'Valpkurs', lediga: 2 },
+              { id: 2, namn: 'Agility', lediga: 5 },
+            ],
+          },
+        ],
+        request: { path: '/kurser' },
+      },
+      {
+        title: 'Anmäl',
+        why: 'Fyra fall, fyra svar: utloggad 401, okänd 404, full 409 och anmäld 201.',
+        xp: 20,
+        description: 'Anmäl dig till en kurs.',
+        task: "Uppgift: `POST /kurser/<int:id>/anmal` kräver inloggning (401), en kurs som finns (404) och lediga platser (409, `'Kursen är full'`). Svara `{'anmald': kursnamn}` med 201.",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, abort, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE kurser (id INTEGER PRIMARY KEY, namn TEXT, platser INTEGER);\nCREATE TABLE anmalningar (kurs_id INTEGER, deltagare TEXT, PRIMARY KEY (kurs_id, deltagare));\nINSERT INTO kurser (namn, platser) VALUES ('Valpkurs', 2), ('Agility', 5);\n''')\n\n\n@app.post('/logga-in')\ndef logga_in():\n    session['namn'] = request.get_json()['namn']\n    return {'inloggad': session['namn']}\n\n\n@app.get('/kurser')\ndef kurser():\n    rader = db.execute('''\n        SELECT k.id, k.namn, k.platser - COUNT(a.deltagare) AS lediga\n        FROM kurser k LEFT JOIN anmalningar a ON a.kurs_id = k.id\n        GROUP BY k.id ORDER BY k.id\n    ''').fetchall()\n    return [dict(r) for r in rader]\n\n\n@app.post('/kurser/<int:id>/anmal')\ndef anmal(id):\n    if 'namn' not in session:\n        abort(401, description='Logga in först')\n    kurs = next((k for k in kurser() if k['id'] == id), None)\n    if kurs is None:\n        abort(404, description='Ingen sådan kurs')\n    if kurs['lediga'] == 0:\n        abort(409, description='Kursen är full')\n    db.execute('INSERT OR IGNORE INTO anmalningar (kurs_id, deltagare) VALUES (?, ?)', (id, session['namn']))\n    db.commit()\n    return {'anmald': kurs['namn']}, 201\n\n\n@app.errorhandler(401)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n",
+        hints: [
+          "kurs = next((k for k in kurser() if k['id'] == id), None)",
+          "if kurs['lediga'] == 0: abort(409, …)",
+          'INSERT OR IGNORE INTO anmalningar …',
+        ],
+        tests: [
+          {
+            description: 'Utloggad',
+            code: "__post('/kurser/1/anmal').status",
+            expected: 401,
+            inputs: [],
+          },
+          {
+            description: 'Anmäld',
+            code: "(a := __klient(), a.post('/logga-in', {'namn': 'Ada'}), a.post('/kurser/1/anmal').json)[-1]",
+            expected: { anmald: 'Valpkurs' },
+            inputs: [],
+          },
+          {
+            description: 'Full',
+            code: "(x := __klient(), x.post('/logga-in', {'namn': 'A'}), x.post('/kurser/1/anmal'), y := __klient(), y.post('/logga-in', {'namn': 'B'}), y.post('/kurser/1/anmal'), z := __klient(), z.post('/logga-in', {'namn': 'C'}), z.post('/kurser/1/anmal').status)[-1]",
+            expected: 409,
+            inputs: [],
+          },
+        ],
+        request: { method: 'POST', path: '/kurser/1/anmal' },
+      },
+      {
+        title: 'Mina kurser',
+        why: 'Den inloggade ser bara sina egna anmälningar. Namnet kommer från sessionen.',
+        xp: 15,
+        description: 'Vilka kurser går jag?',
+        task: 'Uppgift: `GET /mina-kurser` svarar med namnen på den inloggades kurser, i bokstavsordning (401 för utloggade).',
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, abort, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE kurser (id INTEGER PRIMARY KEY, namn TEXT, platser INTEGER);\nCREATE TABLE anmalningar (kurs_id INTEGER, deltagare TEXT, PRIMARY KEY (kurs_id, deltagare));\nINSERT INTO kurser (namn, platser) VALUES ('Valpkurs', 2), ('Agility', 5);\n''')\n\n\n@app.post('/logga-in')\ndef logga_in():\n    session['namn'] = request.get_json()['namn']\n    return {'inloggad': session['namn']}\n\n\n@app.get('/kurser')\ndef kurser():\n    rader = db.execute('''\n        SELECT k.id, k.namn, k.platser - COUNT(a.deltagare) AS lediga\n        FROM kurser k LEFT JOIN anmalningar a ON a.kurs_id = k.id\n        GROUP BY k.id ORDER BY k.id\n    ''').fetchall()\n    return [dict(r) for r in rader]\n\n\n@app.post('/kurser/<int:id>/anmal')\ndef anmal(id):\n    if 'namn' not in session:\n        abort(401, description='Logga in först')\n    kurs = next((k for k in kurser() if k['id'] == id), None)\n    if kurs is None:\n        abort(404, description='Ingen sådan kurs')\n    if kurs['lediga'] == 0:\n        abort(409, description='Kursen är full')\n    db.execute('INSERT OR IGNORE INTO anmalningar (kurs_id, deltagare) VALUES (?, ?)', (id, session['namn']))\n    db.commit()\n    return {'anmald': kurs['namn']}, 201\n\n\n@app.errorhandler(401)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n\n\n@app.get('/mina-kurser')\ndef mina_kurser():\n    if 'namn' not in session:\n        abort(401, description='Logga in först')\n    rader = db.execute('''\n        SELECT k.namn FROM anmalningar a JOIN kurser k ON k.id = a.kurs_id\n        WHERE a.deltagare = ? ORDER BY k.namn\n    ''', (session['namn'],)).fetchall()\n    return [r['namn'] for r in rader]\n",
+        hints: [
+          'JOIN kurser k ON k.id = a.kurs_id',
+          'WHERE a.deltagare = ?',
+          "[r['namn'] for r in rader]",
+        ],
+        tests: [
+          {
+            description: 'Två kurser',
+            code: "(a := __klient(), a.post('/logga-in', {'namn': 'Ada'}), a.post('/kurser/1/anmal'), a.post('/kurser/2/anmal'), a.get('/mina-kurser').json)[-1]",
+            expected: ['Agility', 'Valpkurs'],
+            inputs: [],
+          },
+        ],
+        request: { path: '/mina-kurser' },
+      },
+    ],
+  },
+  {
+    id: 'proj-tassen-sida',
+    track: 'slutprojekt',
+    title: 'Tassens bokningssida',
+    reward: { emoji: '🐶', name: 'Hundhuvud' },
+    summary:
+      'Bokningar som en riktig webbsida, med mall, formulär och databas.',
+    steps: [
+      {
+        title: 'Sidan',
+        why: 'Mallen har både listan och formuläret. Datan kommer från databasen vid varje anrop.',
+        xp: 15,
+        description: 'Visa bokningarna.',
+        task: 'Uppgift: Skriv `alla()` som hämtar bokningarna sorterade på `fran`, och `/` som visar `SIDA` med `bokningar=alla()` och `fel=None`.',
+        starterCode:
+          'import sqlite3\n\nfrom flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(\':memory:\')\ndb.row_factory = sqlite3.Row\ndb.execute(\'CREATE TABLE bokningar (id INTEGER PRIMARY KEY, hund TEXT, fran TEXT, till TEXT)\')\n\nSIDA = \'\'\'<h1>Tassen</h1>\n<ul>{% for b in bokningar %}<li>{{ b.hund }}: {{ b.fran }}–{{ b.till }}</li>{% endfor %}</ul>\n{% if fel %}<p>{{ fel }}</p>{% endif %}\n<form method="post" action="/boka"><input name="hund"><input name="fran"><input name="till"><button>Boka</button></form>\'\'\'\n',
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE bokningar (id INTEGER PRIMARY KEY, hund TEXT, fran TEXT, till TEXT)')\n\nSIDA = '''<h1>Tassen</h1>\n<ul>{% for b in bokningar %}<li>{{ b.hund }}: {{ b.fran }}–{{ b.till }}</li>{% endfor %}</ul>\n{% if fel %}<p>{{ fel }}</p>{% endif %}\n<form method=\"post\" action=\"/boka\"><input name=\"hund\"><input name=\"fran\"><input name=\"till\"><button>Boka</button></form>'''\n\n\ndef alla():\n    return [dict(r) for r in db.execute('SELECT * FROM bokningar ORDER BY fran').fetchall()]\n\n\n@app.get('/')\ndef start():\n    return render_template_string(SIDA, bokningar=alla(), fel=None)\n",
+        hints: [
+          "db.execute('SELECT * FROM bokningar ORDER BY fran').fetchall()",
+          '[dict(r) for r in …]',
+          'render_template_string(SIDA, bokningar=alla(), fel=None)',
+        ],
+        tests: [
+          {
+            description: 'Formuläret',
+            code: "'<form' in __get('/').text",
+            expected: true,
+          },
+          {
+            description: 'Ingen bokning',
+            code: "__get('/').text.count('<li>')",
+            expected: 0,
+          },
+        ],
+      },
+      {
+        title: 'Boka',
+        why: 'POST, spara och redirect – och bokningen syns när sidan visas igen.',
+        xp: 15,
+        description: 'Formuläret bokar.',
+        task: 'Uppgift: `POST /boka` sparar hund, fran och till och skickar vidare till `start`.',
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE bokningar (id INTEGER PRIMARY KEY, hund TEXT, fran TEXT, till TEXT)')\n\nSIDA = '''<h1>Tassen</h1>\n<ul>{% for b in bokningar %}<li>{{ b.hund }}: {{ b.fran }}–{{ b.till }}</li>{% endfor %}</ul>\n{% if fel %}<p>{{ fel }}</p>{% endif %}\n<form method=\"post\" action=\"/boka\"><input name=\"hund\"><input name=\"fran\"><input name=\"till\"><button>Boka</button></form>'''\n\n\ndef alla():\n    return [dict(r) for r in db.execute('SELECT * FROM bokningar ORDER BY fran').fetchall()]\n\n\n@app.get('/')\ndef start():\n    return render_template_string(SIDA, bokningar=alla(), fel=None)\n\n\n@app.post('/boka')\ndef boka():\n    hund = request.form.get('hund', '').strip()\n    fran = request.form.get('fran', '')\n    till = request.form.get('till', '')\n    db.execute('INSERT INTO bokningar (hund, fran, till) VALUES (?, ?, ?)', (hund, fran, till))\n    db.commit()\n    return redirect(url_for('start'))\n",
+        hints: [
+          "request.form.get('hund', '').strip()",
+          'INSERT INTO bokningar (hund, fran, till) VALUES (?, ?, ?)',
+          "return redirect(url_for('start'))",
+        ],
+        tests: [
+          {
+            description: 'Vidare',
+            code: "__post('/boka', form={'hund': 'Bamse', 'fran': '2026-06-10', 'till': '2026-06-12'}).location",
+            expected: '/',
+            inputs: [],
+          },
+          {
+            description: 'Syns',
+            code: "(__post('/boka', form={'hund': 'Bamse', 'fran': '2026-06-10', 'till': '2026-06-12'}), '<li>Bamse: 2026-06-10–2026-06-12</li>' in __get('/').text)[-1]",
+            expected: true,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/boka',
+          kind: 'form',
+          body: 'hund=Bamse&fran=2026-06-10&till=2026-06-12',
+        },
+      },
+      {
+        title: 'Fel i formuläret',
+        why: 'Sidan visas igen med felet, och 400. Besökaren ser vad som var fel och kan rätta direkt.',
+        xp: 15,
+        description: 'Kontrollera formuläret.',
+        task: "Uppgift: Saknas hund eller datum, eller är `till` inte efter `fran`, visas `SIDA` med `fel='Fyll i hund och datum rätt'` och 400.",
+        solution:
+          "import sqlite3\n\nfrom flask import Flask, redirect, render_template_string, request, url_for\n\napp = Flask(__name__)\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.execute('CREATE TABLE bokningar (id INTEGER PRIMARY KEY, hund TEXT, fran TEXT, till TEXT)')\n\nSIDA = '''<h1>Tassen</h1>\n<ul>{% for b in bokningar %}<li>{{ b.hund }}: {{ b.fran }}–{{ b.till }}</li>{% endfor %}</ul>\n{% if fel %}<p>{{ fel }}</p>{% endif %}\n<form method=\"post\" action=\"/boka\"><input name=\"hund\"><input name=\"fran\"><input name=\"till\"><button>Boka</button></form>'''\n\n\ndef alla():\n    return [dict(r) for r in db.execute('SELECT * FROM bokningar ORDER BY fran').fetchall()]\n\n\n@app.get('/')\ndef start():\n    return render_template_string(SIDA, bokningar=alla(), fel=None)\n\n\n@app.post('/boka')\ndef boka():\n    hund = request.form.get('hund', '').strip()\n    fran = request.form.get('fran', '')\n    till = request.form.get('till', '')\n    if not hund or not fran or till <= fran:\n        return render_template_string(SIDA, bokningar=alla(), fel='Fyll i hund och datum rätt'), 400\n    db.execute('INSERT INTO bokningar (hund, fran, till) VALUES (?, ?, ?)', (hund, fran, till))\n    db.commit()\n    return redirect(url_for('start'))\n",
+        hints: [
+          'if not hund or not fran or till <= fran:',
+          "render_template_string(SIDA, bokningar=alla(), fel='Fyll i hund och datum rätt'), 400",
+          'Före INSERT.',
+        ],
+        tests: [
+          {
+            description: 'Fel datum',
+            code: "__post('/boka', form={'hund': 'Bamse', 'fran': '2026-06-12', 'till': '2026-06-10'}).status",
+            expected: 400,
+            inputs: [],
+          },
+          {
+            description: 'Felet syns',
+            code: "'Fyll i hund och datum rätt' in __post('/boka', form={'hund': ''}).text",
+            expected: true,
+            inputs: [],
+          },
+        ],
+        request: {
+          method: 'POST',
+          path: '/boka',
+          kind: 'form',
+          body: 'hund=&fran=&till=',
+        },
+      },
+    ],
+  },
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `# ${text}`);

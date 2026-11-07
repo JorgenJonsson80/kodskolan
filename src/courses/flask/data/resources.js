@@ -137,4 +137,28 @@ export const RESOURCES = {
       video: 'http status codes explained',
     },
   ],
+  inloggning: [
+    {
+      topic: 'session',
+      read: `${QUICK}#sessions`,
+      video: 'flask session login tutorial',
+    },
+    {
+      topic: 'Hashade lösenord',
+      read: 'https://werkzeug.palletsprojects.com/en/stable/utils/#module-werkzeug.security',
+      video: 'password hashing explained',
+    },
+  ],
+  slutprojekt: [
+    {
+      topic: 'Flasks egen guide från början till slut',
+      read: 'https://flask.palletsprojects.com/en/stable/tutorial/',
+      video: 'flask full project tutorial',
+    },
+    {
+      topic: 'Installera Flask på din dator',
+      read: 'https://flask.palletsprojects.com/en/stable/installation/',
+      video: 'install flask windows mac',
+    },
+  ],
 };

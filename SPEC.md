@@ -191,6 +191,9 @@ Användaren testar efter varje etapp.
    mapp (`src/courses/ts`, SPEC i `docs/kurser/typescript.md`). Kärnan
    behövde bara en sak: `describeAt` får svara med ett Promise.
 
+Flask kom efter TypeScript som sjätte kurs (`src/courses/flask`, SPEC i
+`docs/kurser/flask.md`). Kärnan behövde ingenting nytt.
+
 SQL kom före etapp 4–7 som fjärde kurs (`src/courses/sql`, SPEC i
 `docs/kurser/sql.md`). Kärnan behövde bara två saker: `editor.context`
 och `beforeEditor` på Lekplatsen.

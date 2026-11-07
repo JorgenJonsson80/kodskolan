@@ -6,9 +6,11 @@ import { FELSOK } from './felsok';
 import { FORMULAR } from './formular';
 import { FORSTA } from './forsta';
 import { FRAGOR } from './fragor';
+import { INLOGGNING } from './inloggning';
 import { JSON_BANA } from './json';
 import { MALLAR } from './mallar';
 import { SKICKA } from './skicka';
+import { SLUTPROJEKT } from './slutprojekt';
 import { VAGAR } from './vagar';
 
 // Alla övningar i banornas ordning, med bossen sist i varje bana. Se
@@ -36,4 +38,8 @@ export const LESSONS = [
   BOSSES.databas,
   ...FELSOK,
   BOSSES.felsok,
+  ...INLOGGNING,
+  BOSSES.inloggning,
+  ...SLUTPROJEKT,
+  BOSSES.slutprojekt,
 ];

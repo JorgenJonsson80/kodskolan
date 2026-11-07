@@ -5,13 +5,14 @@ En ny kurs är en ny mapp i `src/courses/` och en rad i
 Behöver den det, lägg till det i kontraktet i `SPEC.md` så att nästa
 kurs slipper, i stället för att lösa det med ett specialfall.
 
-Fem kurser att utgå från: `python` (en körning som startas, Kör rad
+Sex kurser att utgå från: `python` (en körning som startas, Kör rad
 för rad, Streamlit), `html` (rättas direkt i webbläsaren, ingen
 Kör-knapp), `js` (en worker per körning, React-förhandsvisning,
 Prettier) och `sql` (en varm worker med WebAssembly, rättning mot
 facit, editorn får övningens tabeller via `editor.context`) och `ts`
 (kompilatorn i en varm worker, typtester, körs sedan med JS-kursens
-rättning). Välj den
+rättning) och `flask` (Python-kursens worker med fler paket, en egen
+panel för anropen). Välj den
 som liknar det nya språket mest. `sql` är den minsta och den första som
 byggdes direkt i Kodskolan.
 
@@ -94,11 +95,11 @@ Se `src/courses/ts/CLAUDE.md` och `docs/kurser/typescript.md`. Kursen
 återanvänder JS-kursens körning och React, och lägger till kompilatorn i
 en egen worker. Kärnan behövde bara en sak: hovern får vara ett Promise.
 
-### Flask – förslag
+### Flask – klar som sjätte kurs
 
-Flask fungerar i Pyodide (`micropip.install('flask')`, ungefär en
-sekund). Appen anropas med `app.test_client()`, så ingen riktig server
-behövs, och sqlite3 finns. Bygg på Python-kursens worker.
+Se `src/courses/flask/CLAUDE.md` och `docs/kurser/flask.md`. Kursen
+återanvänder Python-kursens körning (`createPythonRunner`) och lägger
+Flask i en egen worker. Kärnan behövde ingenting nytt.
 
 ### SQL – klar som fjärde kurs
 

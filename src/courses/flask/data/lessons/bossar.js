@@ -596,4 +596,114 @@ export const BOSSES = {
     ],
     request: { path: '/hundar' },
   },
+
+  inloggning: {
+    id: 'inloggning-boss',
+    track: 'inloggning',
+    title: 'Boss: Medlemssidan',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Ett komplett konto-API: registrera, logga in, se sina sidor och logga ut.',
+    task: "Uppgift:\n  1. `POST /registrera` (JSON: namn, losenord). Lösenordet ska vara minst 8 tecken (400 annars), och sparas som hash. Upptaget namn ger 409. Svar 201.\n  2. `POST /logga-in` (JSON) – 401 med `{'fel': 'Fel namn eller lösenord'}` om något är fel.\n  3. `GET /mina-sidor` – `{'namn': …}` för inloggade, annars 401.\n  4. `POST /logga-ut` – tömmer sessionen.",
+    starterCode:
+      "from flask import Flask, request, session\nfrom werkzeug.security import check_password_hash, generate_password_hash\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\nanvandare = {}\n",
+    solution:
+      "from flask import Flask, request, session\nfrom werkzeug.security import check_password_hash, generate_password_hash\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\nanvandare = {}\n\n\n@app.post('/registrera')\ndef registrera():\n    data = request.get_json()\n    namn = data.get('namn')\n    losenord = data.get('losenord', '')\n    if not namn or len(losenord) < 8:\n        return {'fel': 'Namn och ett lösenord på minst 8 tecken krävs'}, 400\n    if namn in anvandare:\n        return {'fel': 'Namnet är upptaget'}, 409\n    anvandare[namn] = generate_password_hash(losenord)\n    return {'namn': namn}, 201\n\n\n@app.post('/logga-in')\ndef logga_in():\n    data = request.get_json()\n    sparad = anvandare.get(data.get('namn'))\n    if sparad is None or not check_password_hash(sparad, data.get('losenord', '')):\n        return {'fel': 'Fel namn eller lösenord'}, 401\n    session['namn'] = data['namn']\n    return {'inloggad': data['namn']}\n\n\n@app.get('/mina-sidor')\ndef mina_sidor():\n    if 'namn' not in session:\n        return {'fel': 'Logga in först'}, 401\n    return {'namn': session['namn']}\n\n\n@app.post('/logga-ut')\ndef logga_ut():\n    session.clear()\n    return {'utloggad': True}\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Kort lösenord',
+        code: "__post('/registrera', {'namn': 'ada', 'losenord': 'kort'}).status",
+        expected: 400,
+        inputs: [],
+      },
+      {
+        description: 'Registrera',
+        code: "__post('/registrera', {'namn': 'ada', 'losenord': 'hemligt123'}).status",
+        expected: 201,
+        inputs: [],
+      },
+      {
+        description: 'Hashat',
+        code: "(__post('/registrera', {'namn': 'ada', 'losenord': 'hemligt123'}), 'hemligt123' not in anvandare['ada'])[-1]",
+        expected: true,
+        inputs: [],
+      },
+      {
+        description: 'Upptaget',
+        code: "(__post('/registrera', {'namn': 'ada', 'losenord': 'hemligt123'}), __post('/registrera', {'namn': 'ada', 'losenord': 'annat12345'}).status)[-1]",
+        expected: 409,
+        inputs: [],
+      },
+      {
+        description: 'Fel lösenord',
+        code: "(__post('/registrera', {'namn': 'ada', 'losenord': 'hemligt123'}), __post('/logga-in', {'namn': 'ada', 'losenord': 'fel'}).status)[-1]",
+        expected: 401,
+        inputs: [],
+      },
+      {
+        description: 'Hela vägen',
+        code: "(k := __klient(), k.post('/registrera', {'namn': 'ada', 'losenord': 'hemligt123'}), k.post('/logga-in', {'namn': 'ada', 'losenord': 'hemligt123'}), k.get('/mina-sidor').json, k.post('/logga-ut').json, k.get('/mina-sidor').status)[3:]",
+        expected: [{ namn: 'ada' }, { utloggad: true }, 401],
+        inputs: [],
+      },
+    ],
+    request: {
+      method: 'POST',
+      path: '/registrera',
+      body: '{"namn": "ada", "losenord": "hemligt123"}',
+    },
+    sourceChecks: [
+      { description: 'Hashar lösenordet', pattern: /generate_password_hash\(/ },
+    ],
+  },
+
+  slutprojekt: {
+    id: 'slutprojekt-boss',
+    track: 'slutprojekt',
+    title: 'Boss: Tassens startsida',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Sista biten: en startsida för personalen och statistik för ägaren. Allt du byggt i banan finns i startkoden.',
+    task: "Uppgift:\n  1. `GET /` – en HTML-sida (mall) med `<h1>🐾 Tassen</h1>`, en `<ul>` med `<li>hund: fran – till</li>` per bokning, och `<p>2 bokningar</p>` med antalet.\n  2. `GET /statistik` – `{'bokningar': …, 'natter': …, 'intakt': …}` för alla bokningar.",
+    starterCode:
+      "import sqlite3\nfrom datetime import date\n\nfrom flask import Flask, abort, render_template_string, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE hundar (\n    id INTEGER PRIMARY KEY,\n    namn TEXT NOT NULL,\n    storlek TEXT NOT NULL CHECK (storlek IN ('liten', 'mellan', 'stor'))\n);\nCREATE TABLE bokningar (\n    id INTEGER PRIMARY KEY,\n    hund_id INTEGER NOT NULL REFERENCES hundar(id),\n    fran TEXT NOT NULL,\n    till TEXT NOT NULL\n);\nINSERT INTO hundar (namn, storlek) VALUES ('Bamse', 'stor'), ('Saga', 'liten');\n''')\n\n\ndef fraga(sql, parametrar=()):\n    return [dict(rad) for rad in db.execute(sql, parametrar).fetchall()]\n\nPRIS_PER_NATT = {'liten': 250, 'mellan': 300, 'stor': 350}\n\n\ndef natter(fran, till):\n    return (date.fromisoformat(till) - date.fromisoformat(fran)).days\n\n\n@app.get('/hundar')\ndef hundar():\n    return fraga('SELECT * FROM hundar ORDER BY namn')\n\n\n@app.post('/hundar')\ndef ny_hund():\n    data = request.get_json()\n    if not data.get('namn') or data.get('storlek') not in ('liten', 'mellan', 'stor'):\n        abort(400, description='namn och storlek (liten, mellan, stor) krävs')\n    cur = db.execute('INSERT INTO hundar (namn, storlek) VALUES (?, ?)', (data['namn'], data['storlek']))\n    db.commit()\n    return {'id': cur.lastrowid, 'namn': data['namn'], 'storlek': data['storlek']}, 201\n\n\n@app.errorhandler(400)\n@app.errorhandler(401)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n\n\n@app.get('/bokningar')\ndef bokningar():\n    return fraga('''\n        SELECT b.id, h.namn AS hund, b.fran, b.till\n        FROM bokningar b JOIN hundar h ON h.id = b.hund_id\n        ORDER BY b.fran\n    ''')\n\n\n@app.post('/bokningar')\ndef boka():\n    data = request.get_json()\n    fran, till = data.get('fran', ''), data.get('till', '')\n    if not fran or not till or till <= fran:\n        abort(400, description='till måste vara efter fran')\n    if not fraga('SELECT id FROM hundar WHERE id = ?', (data.get('hund_id'),)):\n        abort(404, description='Ingen sådan hund')\n    krock = fraga(\n        'SELECT id FROM bokningar WHERE hund_id = ? AND fran < ? AND ? < till',\n        (data['hund_id'], till, fran),\n    )\n    if krock:\n        abort(409, description='Hunden är redan bokad då')\n    cur = db.execute('INSERT INTO bokningar (hund_id, fran, till) VALUES (?, ?, ?)', (data['hund_id'], fran, till))\n    db.commit()\n    return {'id': cur.lastrowid, 'hund_id': data['hund_id'], 'fran': fran, 'till': till}, 201\n\n\n@app.get('/bokningar/<int:id>')\ndef bokning(id):\n    rader = fraga('''\n        SELECT b.id, h.namn AS hund, h.storlek, b.fran, b.till\n        FROM bokningar b JOIN hundar h ON h.id = b.hund_id WHERE b.id = ?\n    ''', (id,))\n    if not rader:\n        abort(404, description='Ingen sådan bokning')\n    b = rader[0]\n    n = natter(b['fran'], b['till'])\n    return {**b, 'natter': n, 'pris': n * PRIS_PER_NATT[b['storlek']]}\n\n\n@app.delete('/bokningar/<int:id>')\ndef avboka(id):\n    if not session.get('personal'):\n        abort(401, description='Bara personalen kan avboka')\n    cur = db.execute('DELETE FROM bokningar WHERE id = ?', (id,))\n    db.commit()\n    if cur.rowcount == 0:\n        abort(404, description='Ingen sådan bokning')\n    return '', 204\n\n\n@app.post('/personal/logga-in')\ndef logga_in():\n    if request.get_json().get('kod') != 'tassen2026':\n        abort(401, description='Fel kod')\n    session['personal'] = True\n    return {'inloggad': True}\n",
+    solution:
+      "import sqlite3\nfrom datetime import date\n\nfrom flask import Flask, abort, render_template_string, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\ndb = sqlite3.connect(':memory:')\ndb.row_factory = sqlite3.Row\ndb.executescript('''\nCREATE TABLE hundar (\n    id INTEGER PRIMARY KEY,\n    namn TEXT NOT NULL,\n    storlek TEXT NOT NULL CHECK (storlek IN ('liten', 'mellan', 'stor'))\n);\nCREATE TABLE bokningar (\n    id INTEGER PRIMARY KEY,\n    hund_id INTEGER NOT NULL REFERENCES hundar(id),\n    fran TEXT NOT NULL,\n    till TEXT NOT NULL\n);\nINSERT INTO hundar (namn, storlek) VALUES ('Bamse', 'stor'), ('Saga', 'liten');\n''')\n\n\ndef fraga(sql, parametrar=()):\n    return [dict(rad) for rad in db.execute(sql, parametrar).fetchall()]\n\nPRIS_PER_NATT = {'liten': 250, 'mellan': 300, 'stor': 350}\n\n\ndef natter(fran, till):\n    return (date.fromisoformat(till) - date.fromisoformat(fran)).days\n\n\n@app.get('/hundar')\ndef hundar():\n    return fraga('SELECT * FROM hundar ORDER BY namn')\n\n\n@app.post('/hundar')\ndef ny_hund():\n    data = request.get_json()\n    if not data.get('namn') or data.get('storlek') not in ('liten', 'mellan', 'stor'):\n        abort(400, description='namn och storlek (liten, mellan, stor) krävs')\n    cur = db.execute('INSERT INTO hundar (namn, storlek) VALUES (?, ?)', (data['namn'], data['storlek']))\n    db.commit()\n    return {'id': cur.lastrowid, 'namn': data['namn'], 'storlek': data['storlek']}, 201\n\n\n@app.errorhandler(400)\n@app.errorhandler(401)\n@app.errorhandler(404)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n\n\n@app.get('/bokningar')\ndef bokningar():\n    return fraga('''\n        SELECT b.id, h.namn AS hund, b.fran, b.till\n        FROM bokningar b JOIN hundar h ON h.id = b.hund_id\n        ORDER BY b.fran\n    ''')\n\n\n@app.post('/bokningar')\ndef boka():\n    data = request.get_json()\n    fran, till = data.get('fran', ''), data.get('till', '')\n    if not fran or not till or till <= fran:\n        abort(400, description='till måste vara efter fran')\n    if not fraga('SELECT id FROM hundar WHERE id = ?', (data.get('hund_id'),)):\n        abort(404, description='Ingen sådan hund')\n    krock = fraga(\n        'SELECT id FROM bokningar WHERE hund_id = ? AND fran < ? AND ? < till',\n        (data['hund_id'], till, fran),\n    )\n    if krock:\n        abort(409, description='Hunden är redan bokad då')\n    cur = db.execute('INSERT INTO bokningar (hund_id, fran, till) VALUES (?, ?, ?)', (data['hund_id'], fran, till))\n    db.commit()\n    return {'id': cur.lastrowid, 'hund_id': data['hund_id'], 'fran': fran, 'till': till}, 201\n\n\n@app.get('/bokningar/<int:id>')\ndef bokning(id):\n    rader = fraga('''\n        SELECT b.id, h.namn AS hund, h.storlek, b.fran, b.till\n        FROM bokningar b JOIN hundar h ON h.id = b.hund_id WHERE b.id = ?\n    ''', (id,))\n    if not rader:\n        abort(404, description='Ingen sådan bokning')\n    b = rader[0]\n    n = natter(b['fran'], b['till'])\n    return {**b, 'natter': n, 'pris': n * PRIS_PER_NATT[b['storlek']]}\n\n\n@app.delete('/bokningar/<int:id>')\ndef avboka(id):\n    if not session.get('personal'):\n        abort(401, description='Bara personalen kan avboka')\n    cur = db.execute('DELETE FROM bokningar WHERE id = ?', (id,))\n    db.commit()\n    if cur.rowcount == 0:\n        abort(404, description='Ingen sådan bokning')\n    return '', 204\n\n\n@app.post('/personal/logga-in')\ndef logga_in():\n    if request.get_json().get('kod') != 'tassen2026':\n        abort(401, description='Fel kod')\n    session['personal'] = True\n    return {'inloggad': True}\n\n\nSIDA = \"\"\"<h1>🐾 Tassen</h1>\n<ul>{% for b in bokningar %}<li>{{ b.hund }}: {{ b.fran }} – {{ b.till }}</li>{% endfor %}</ul>\n<p>{{ bokningar|length }} bokningar</p>\"\"\"\n\n\n@app.get('/')\ndef start():\n    return render_template_string(SIDA, bokningar=bokningar())\n\n\n@app.get('/statistik')\ndef statistik():\n    rader = fraga('SELECT b.fran, b.till, h.storlek FROM bokningar b JOIN hundar h ON h.id = b.hund_id')\n    natter_totalt = sum(natter(r['fran'], r['till']) for r in rader)\n    intakt = sum(natter(r['fran'], r['till']) * PRIS_PER_NATT[r['storlek']] for r in rader)\n    return {'bokningar': len(rader), 'natter': natter_totalt, 'intakt': intakt}\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Startsidan',
+        code: "(__post('/bokningar', {'hund_id': 1, 'fran': '2026-06-10', 'till': '2026-06-13'}), __post('/bokningar', {'hund_id': 2, 'fran': '2026-06-11', 'till': '2026-06-12'}), __get('/').text)[-1]",
+        expected:
+          '<h1>🐾 Tassen</h1>\n<ul><li>Bamse: 2026-06-10 – 2026-06-13</li><li>Saga: 2026-06-11 – 2026-06-12</li></ul>\n<p>2 bokningar</p>',
+        inputs: [],
+      },
+      {
+        description: 'Det är HTML',
+        code: "__get('/').typ",
+        expected: 'text/html',
+        inputs: [],
+      },
+      {
+        description: 'Statistiken',
+        code: "(__post('/bokningar', {'hund_id': 1, 'fran': '2026-06-10', 'till': '2026-06-13'}), __post('/bokningar', {'hund_id': 2, 'fran': '2026-06-11', 'till': '2026-06-12'}), __get('/statistik').json)[-1]",
+        expected: { bokningar: 2, natter: 4, intakt: 1300 },
+        inputs: [],
+      },
+      {
+        description: 'Tomt',
+        code: "__get('/statistik').json",
+        expected: { bokningar: 0, natter: 0, intakt: 0 },
+        inputs: [],
+      },
+    ],
+    sourceChecks: [
+      { description: 'Använder en mall', pattern: /render_template/ },
+    ],
+  },
 };

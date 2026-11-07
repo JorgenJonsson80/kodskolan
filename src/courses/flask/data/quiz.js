@@ -395,4 +395,79 @@ export const QUIZ = {
       explain: 'Det kraschar inte – därför syns felet bara som en tom plats.',
     },
   ],
+  inloggning: [
+    {
+      question: 'Var sparas session i Flask?',
+      options: [
+        'I en signerad cookie hos besökaren',
+        'I en fil på servern',
+        'I app.config',
+        'I URL:en',
+      ],
+      explain:
+        'Cookien är signerad med secret_key, så den går inte att ändra utan att det märks.',
+    },
+    {
+      question: 'Varför sparar man en hash i stället för lösenordet?',
+      options: [
+        'Läcker databasen syns inga lösenord',
+        'Det går fortare att logga in',
+        'Lösenord får inte innehålla siffror',
+        'Databasen kan inte spara text',
+      ],
+      explain: 'En hash går inte att räkna baklänges till lösenordet.',
+    },
+    {
+      question: 'Vad ger check_password_hash?',
+      code: "from werkzeug.security import check_password_hash, generate_password_hash\n\nh = generate_password_hash('hemligt')",
+      check: "check_password_hash(h, 'Hemligt')",
+      options: ['False', 'True', 'None', 'Ett fel'],
+      explain:
+        'Stora och små bokstäver räknas – Hemligt är ett annat lösenord.',
+    },
+    {
+      question:
+        'Vilken statuskod passar när en inloggad gäst försöker nå en admin-sida?',
+      options: ['403', '401', '404', '400'],
+      explain:
+        '401 betyder logga in först, 403 att du inte får fast vi vet vem du är.',
+    },
+  ],
+  slutprojekt: [
+    {
+      question: 'När krockar två bokningar?',
+      options: [
+        'När den ena börjar innan den andra slutar, och tvärtom',
+        'När de har samma startdatum',
+        'När de har samma id',
+        'Aldrig',
+      ],
+      explain: 'fran < annan_till AND annan_fran < till.',
+    },
+    {
+      question: 'Hur många nätter blir det?',
+      code: "from datetime import date\n\nn = (date.fromisoformat('2026-06-29') - date.fromisoformat('2026-07-02')).days",
+      check: 'n',
+      options: ['-3', '3', '4', '0'],
+      explain:
+        'Datumen står i fel ordning – därför ska API:t kontrollera att till är efter fran.',
+    },
+    {
+      question: 'Vilken statuskod ger en dubbelbokning?',
+      options: ['409', '400', '404', '500'],
+      explain:
+        'Anropet i sig är rätt, men det krockar med en bokning som redan finns.',
+    },
+    {
+      question:
+        'Vad behöver du för att köra en app från kursen på din egen dator?',
+      options: [
+        'Python, pip install flask och python app.py',
+        'Bara en webbläsare',
+        'En betald server',
+        'Node.js',
+      ],
+      explain: 'app.run startar en server på http://127.0.0.1:5000.',
+    },
+  ],
 };

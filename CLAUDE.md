@@ -8,7 +8,8 @@ tester. Planen och etapperna står i `SPEC.md` – läs den först.
 
 Byggs i etapper enligt `SPEC.md`; användaren testar efter varje. Python,
 HTML & CSS och JavaScript har flyttat in (`src/courses/python`, `html`,
-`js`), och SQL och TypeScript är nya kurser (`src/courses/sql`, `ts`). De gamla repona (`../python från S`, `../html från S`,
+`js`), och SQL, TypeScript och Flask är nya kurser (`src/courses/sql`, `ts`,
+`flask`). De gamla repona (`../python från S`, `../html från S`,
 `../React från S`) publicerar bara en sida som skickar vidare hit.
 
 Live: https://jorgenjonsson80.github.io/kodskolan/
@@ -27,7 +28,7 @@ pushas.
 - `npm run dev` – utvecklingsserver
 - `npx vitest run` – alla tester, även kursernas: i Node (Python körs på
   riktigt via `pyodide` från npm, SQL med `sql.js`, TypeScript med
-  `typescript`, HTML med jsdom) och `*.browser.test.js`
+  `typescript`, Flask med wheel-filerna i `public/wheels`, HTML med jsdom) och `*.browser.test.js`
   i riktig Chrome (`npx playwright install chromium` första gången)
 - `npm run lint` och `npx prettier --check src`
 - `npm run build` – byggs med `base: /kodskolan/` och kopierar
