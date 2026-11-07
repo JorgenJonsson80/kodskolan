@@ -141,6 +141,29 @@ function Academy({ course }) {
     setSignOuts(count => count + 1);
   }
 
+  // Inloggningen visas först när eleven klarat en övning: då finns något
+  // att spara. Första gången frågar en ruta ovanför övningen, tills man
+  // loggar in eller säger Inte nu.
+  const lessonsDone = LESSONS.filter(item =>
+    completedIds.includes(item.id),
+  ).length;
+  const [saveNudgeDismissed, setSaveNudgeDismissed] = useState(() =>
+    readJson(KEYS.saveNudge, false, value => typeof value === 'boolean'),
+  );
+  const showSaveNudge =
+    account.isAvailable &&
+    !account.user &&
+    lessonsDone > 0 &&
+    !saveNudgeDismissed &&
+    !showPlayground;
+  const showAccountPanel =
+    Boolean(account.user) || (lessonsDone > 0 && !showSaveNudge);
+
+  function dismissSaveNudge() {
+    setSaveNudgeDismissed(true);
+    writeJson(KEYS.saveNudge, true);
+  }
+
   const lesson = EXERCISES.find(item => item.id === lessonId);
   const project = PROJECTS.find(item => item.id === lesson.project) ?? null;
   const lessonIndex = LESSONS.indexOf(lesson);
@@ -413,7 +436,9 @@ function Academy({ course }) {
       <main>
         <div className="academy-layout">
           <aside aria-label="Banor och progression">
-            <AccountPanel account={account} onSignOut={handleSignOut} />
+            {showAccountPanel && (
+              <AccountPanel account={account} onSignOut={handleSignOut} />
+            )}
             <HeroCard
               growth={growth}
               totalXp={totalXp}
@@ -490,50 +515,72 @@ function Academy({ course }) {
               onBack={() => setShowPlayground(false)}
             />
           ) : (
-            <LessonPanel
-              key={`lesson-${signOuts}-${lesson.id}`}
-              lesson={lesson}
-              track={track}
-              lessonNumber={lessonIndex + 1}
-              lessonCount={LESSONS.length}
-              completedInTrack={
-                trackLessons.filter(item => completedIds.includes(item.id))
-                  .length
-              }
-              trackLessonCount={trackLessons.length}
-              isCompleted={completedIds.includes(lesson.id)}
-              code={startCodeFor(lesson)}
-              onCodeChange={newCode =>
-                setDrafts(previous => ({ ...previous, [lesson.id]: newCode }))
-              }
-              onSolved={handleSolved}
-              runtimeReady={status === 'ready'}
-              stage={growth.stage}
-              onPrevious={() => selectLesson(neighbour(-1))}
-              onNext={() => selectLesson(neighbour(1))}
-              canPrevious={neighbour(-1) !== null}
-              canNext={neighbour(1) !== null}
-              project={project}
-              projectMode={projectMode}
-              onChooseProjectMode={handleChooseProjectMode}
-              noHintsBonusXp={project ? noHintsBonusXp(project) : 0}
-              resources={RESOURCES[track.id] ?? []}
-              learnedTracks={learnedTracks}
-              onBreakDown={code => {
-                copyToPlayground(course, code, lesson.title);
-                openPlayground(PLAYGROUND_COPY);
-              }}
-              freeBuildIdeas={
-                project && canBuildFreely(project.track)
-                  ? IDEAS.filter(idea => idea.track === project.track)
-                  : []
-              }
-              onOpenIdea={openPlayground}
-              canTestOut={!project && canTestOut(lesson.track)}
-              onTestOut={() => setActiveQuiz({ trackId: lesson.track })}
-              bossLeft={project ? null : bossLeftIn(lesson.track)}
-              onGoToBoss={boss => selectLesson(boss.id)}
-            />
+            <div className="lesson-column">
+              <LessonPanel
+                key={`lesson-${signOuts}-${lesson.id}`}
+                lesson={lesson}
+                track={track}
+                lessonNumber={lessonIndex + 1}
+                lessonCount={LESSONS.length}
+                completedInTrack={
+                  trackLessons.filter(item => completedIds.includes(item.id))
+                    .length
+                }
+                trackLessonCount={trackLessons.length}
+                isCompleted={completedIds.includes(lesson.id)}
+                code={startCodeFor(lesson)}
+                onCodeChange={newCode =>
+                  setDrafts(previous => ({ ...previous, [lesson.id]: newCode }))
+                }
+                onSolved={handleSolved}
+                runtimeReady={status === 'ready'}
+                stage={growth.stage}
+                onPrevious={() => selectLesson(neighbour(-1))}
+                onNext={() => selectLesson(neighbour(1))}
+                canPrevious={neighbour(-1) !== null}
+                canNext={neighbour(1) !== null}
+                project={project}
+                projectMode={projectMode}
+                onChooseProjectMode={handleChooseProjectMode}
+                noHintsBonusXp={project ? noHintsBonusXp(project) : 0}
+                resources={RESOURCES[track.id] ?? []}
+                learnedTracks={learnedTracks}
+                onBreakDown={code => {
+                  copyToPlayground(course, code, lesson.title);
+                  openPlayground(PLAYGROUND_COPY);
+                }}
+                freeBuildIdeas={
+                  project && canBuildFreely(project.track)
+                    ? IDEAS.filter(idea => idea.track === project.track)
+                    : []
+                }
+                onOpenIdea={openPlayground}
+                canTestOut={!project && canTestOut(lesson.track)}
+                onTestOut={() => setActiveQuiz({ trackId: lesson.track })}
+                bossLeft={project ? null : bossLeftIn(lesson.track)}
+                onGoToBoss={boss => selectLesson(boss.id)}
+              />
+              {showSaveNudge && (
+                <section
+                  className="card save-nudge"
+                  aria-label="Spara dina framsteg"
+                >
+                  <p>
+                    🎉 <strong>Snyggt, din första övning är klar!</strong> Vill
+                    du spara framstegen? Med ett konto följer de med till andra
+                    datorer. Det är gratis, och du kan fortsätta utan.
+                  </p>
+                  <AccountPanel
+                    account={account}
+                    onSignOut={handleSignOut}
+                    compact
+                  />
+                  <button type="button" onClick={dismissSaveNudge}>
+                    Inte nu
+                  </button>
+                </section>
+              )}
+            </div>
           )}
         </div>
       </main>

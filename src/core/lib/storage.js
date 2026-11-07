@@ -34,6 +34,7 @@ export const progressKeys = prefix => ({
   helpSeen: `${prefix}help-seen`,
   projectModes: `${prefix}project-modes`,
   owner: `${prefix}owner`,
+  saveNudge: `${prefix}save-nudge-dismissed`,
 });
 
 // Vems framsteg webbläsaren har för en kurs: kontots id, eller null om de

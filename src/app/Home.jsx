@@ -16,6 +16,9 @@ import { COURSES } from './courses';
 import { PATHS } from './paths';
 import { useCloudCompleted } from './useCloudCompleted';
 
+// Första övningen för den som aldrig kodat: print i Python.
+const FIRST_COURSE = 'python';
+
 // Klara övningar i en kurs. Klarade tester för en bana (…-testad) och
 // projektbonusar räknas inte som övningar.
 const lessonCount = ids =>
@@ -102,6 +105,10 @@ export default function Home() {
     setSignOuts(count => count + 1);
   }
 
+  // En ny besökare (inga framsteg, inte inloggad) får börja direkt.
+  // Inloggningen kommer sist, och i kursen först efter första övningen.
+  const isNew = mine.length === 0 && !account.user;
+
   const status = !account.user
     ? 'synced'
     : !cloud
@@ -109,6 +116,15 @@ export default function Home() {
       : cloud.error
         ? 'error'
         : 'synced';
+
+  const accountPanel = (
+    <div className="home-account">
+      <AccountPanel
+        account={{ ...account, status }}
+        onSignOut={handleSignOut}
+      />
+    </div>
+  );
 
   return (
     <>
@@ -124,15 +140,21 @@ export default function Home() {
             svenska och projekt att bygga själv. Du behöver inte installera
             något.
           </p>
+          {isNew && (
+            <div className="home-start">
+              <a
+                className="primary-button start-button"
+                href={`${import.meta.env.BASE_URL}${FIRST_COURSE}`}
+              >
+                ▶ Skriv din första kod
+              </a>
+              <p className="muted">
+                Gratis och inget konto behövs. Den första övningen tar en minut.
+              </p>
+            </div>
+          )}
         </section>
-        {account.isReady && (
-          <div className="home-account">
-            <AccountPanel
-              account={{ ...account, status }}
-              onSignOut={handleSignOut}
-            />
-          </div>
-        )}
+        {account.isReady && !isNew && accountPanel}
         {mine.length > 0 && (
           <section aria-labelledby="mine-title">
             <h2 id="mine-title">Mina kurser</h2>
@@ -161,8 +183,25 @@ export default function Home() {
             </ul>
           </section>
         )}
+        {more.length > 0 && (
+          <section aria-labelledby="more-title">
+            <h2 id="more-title">
+              {mine.length > 0 ? 'Fler kurser' : 'Kurser'}
+            </h2>
+            <ul className="course-cards">
+              {more.map(({ course }) => (
+                <CourseCard
+                  key={`more-${course.id}`}
+                  course={course}
+                  done={0}
+                />
+              ))}
+            </ul>
+          </section>
+        )}
         <section aria-labelledby="paths-title">
           <h2 id="paths-title">Spår</h2>
+          <p className="muted">Kurser i en ordning som leder mot ett mål.</p>
           <ul className="course-cards">
             {PATHS.map(path => (
               <li key={`path-${path.id}`}>
@@ -181,18 +220,10 @@ export default function Home() {
             ))}
           </ul>
         </section>
-        {more.length > 0 && (
-          <section aria-labelledby="more-title">
-            {mine.length > 0 && <h2 id="more-title">Fler kurser</h2>}
-            <ul className="course-cards">
-              {more.map(({ course }) => (
-                <CourseCard
-                  key={`more-${course.id}`}
-                  course={course}
-                  done={0}
-                />
-              ))}
-            </ul>
+        {account.isReady && isNew && (
+          <section aria-labelledby="account-title">
+            <h2 id="account-title">Har du redan ett konto?</h2>
+            {accountPanel}
           </section>
         )}
       </main>

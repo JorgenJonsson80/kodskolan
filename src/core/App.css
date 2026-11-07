@@ -2167,6 +2167,14 @@
   color: #4b5563;
 }
 
+.diploma-note {
+  margin: 14px 0 0;
+  color: #6b7280;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
 .diploma-footer {
   display: flex;
   flex-wrap: wrap;
@@ -2331,4 +2339,49 @@
   padding: 16px 24px 0;
   border-top: 1px solid var(--border);
   font-size: 0.9rem;
+}
+
+.home-start {
+  margin-top: 20px;
+}
+
+.start-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: 1px solid var(--accent);
+  font-size: 1.15rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.home-start .muted {
+  margin: 10px 0 0;
+}
+
+.lesson-column {
+  display: grid;
+  gap: 16px;
+}
+
+.save-nudge {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  border-color: var(--accent);
+}
+
+.save-nudge p {
+  margin: 0;
+}
+
+.save-nudge .account-panel {
+  width: 100%;
+  max-width: 420px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
 }

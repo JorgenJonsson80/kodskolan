@@ -44,7 +44,8 @@ export default function DiplomaDialog({
       <h2 id="diploma-title">🎓 Grattis!</h2>
       <p>
         Du har klarat {title}. Nu kan du få ett diplom med en egen kod, som vem
-        som helst kan kontrollera.
+        som helst kan slå upp. Det visar att du genomfört hela kursen i
+        Kodskolan.
       </p>
       {account.user ? (
         <form onSubmit={handleSubmit}>

@@ -12,7 +12,8 @@ const isRateLimit = error =>
 
 // Inloggning med en länk i mejlet. Utan inloggning sparas allt bara i
 // den här webbläsaren.
-export default function AccountPanel({ account, onSignOut }) {
+// compact: bara formuläret, när rutan runt redan förklarar varför.
+export default function AccountPanel({ account, onSignOut, compact = false }) {
   const [email, setEmail] = useState('');
   const [sentTo, setSentTo] = useState(null);
   const [error, setError] = useState(null);
@@ -62,7 +63,7 @@ export default function AccountPanel({ account, onSignOut }) {
 
   return (
     <section className="card account-panel" aria-label="Logga in">
-      <h2>☁️ Spara dina framsteg</h2>
+      {!compact && <h2>☁️ Spara dina framsteg</h2>}
       {sentTo ? (
         <p>
           Kolla din mejl! Vi har skickat en inloggningslänk till{' '}
@@ -70,10 +71,12 @@ export default function AccountPanel({ account, onSignOut }) {
         </p>
       ) : (
         <form onSubmit={handleSubmit}>
-          <p className="muted">
-            Logga in så sparas dina framsteg i ett konto och följer med till
-            andra enheter.
-          </p>
+          {!compact && (
+            <p className="muted">
+              Logga in så sparas dina framsteg i ett konto och följer med till
+              andra enheter.
+            </p>
+          )}
           <input
             type="email"
             required

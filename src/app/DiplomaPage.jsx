@@ -106,10 +106,9 @@ export default function DiplomaPage({ code }) {
       <article className="diploma" aria-label={`Diplom för ${diploma.name}`}>
         <p className="diploma-school">⌨️ Kodskolan</p>
         <h1>Diplom</h1>
-        <p className="diploma-lead">Detta intygar att</p>
         <p className="diploma-name">{diploma.name}</p>
         <p className="diploma-lead">
-          har klarat {isPath ? 'spåret' : 'kursen'}
+          har genomfört {isPath ? 'spåret' : 'kursen'}
         </p>
         <p className="diploma-subject">
           <span aria-hidden="true">{details.icon}</span> {details.title}
@@ -130,6 +129,12 @@ export default function DiplomaPage({ code }) {
             {diplomaUrl(diploma.id).replace(/^https?:\/\//, '')}
           </span>
         </footer>
+        <p className="diploma-note">
+          Diplomet visar att alla övningar och bossar i{' '}
+          {isPath ? 'spårets kurser' : 'kursen'} är klarade i Kodskolan.
+          Övningarna rättas automatiskt i webbläsaren, så diplomet är ett bevis
+          på genomförd kurs och inte ett övervakat kunskapsprov.
+        </p>
       </article>
     </main>
   );
