@@ -22,4 +22,28 @@ export const RESOURCES = {
       video: 'typescript type inference explained',
     },
   ],
+  funktioner: [
+    {
+      topic: 'Typade funktioner',
+      read: `${HANDBOOK}2/functions.html`,
+      video: 'typescript functions tutorial beginners',
+    },
+    {
+      topic: 'Valfria parametrar och void',
+      read: `${HANDBOOK}2/functions.html#optional-parameters`,
+      video: 'typescript optional parameters void',
+    },
+  ],
+  objekt: [
+    {
+      topic: 'Arrayer',
+      read: `${HANDBOOK}2/everyday-types.html#arrays`,
+      video: 'typescript arrays tutorial',
+    },
+    {
+      topic: 'Objekttyper, valfria egenskaper och readonly',
+      read: `${HANDBOOK}2/objects.html`,
+      video: 'typescript object types optional readonly',
+    },
+  ],
 };
