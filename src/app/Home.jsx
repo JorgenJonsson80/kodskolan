@@ -12,7 +12,9 @@ import {
 import { fetchMyDiplomas } from '../core/lib/diplomas';
 import { supabase } from '../core/lib/supabase';
 import { useAccount } from '../core/lib/useAccount';
+import { COURSE_INFO, courseInfoUrl } from './courseInfo';
 import { COURSES } from './courses';
+import { Faq, ForWhom, HowItWorks } from './Landing';
 import { PATHS } from './paths';
 import { useCloudCompleted } from './useCloudCompleted';
 
@@ -47,13 +49,17 @@ function useMyDiplomas(userId) {
   return saved.userId === userId ? saved.diplomas : [];
 }
 
-function CourseCard({ course, done }) {
+// En ny besökare kommer till sidan om kursen först, den som redan börjat
+// rakt in i kursen.
+function CourseCard({ course, done, toInfo }) {
+  const href =
+    course.href ??
+    (toInfo && COURSE_INFO[course.id]
+      ? courseInfoUrl(course.id)
+      : `${import.meta.env.BASE_URL}${course.id}`);
   return (
     <li>
-      <a
-        className="course-card"
-        href={course.href ?? `${import.meta.env.BASE_URL}${course.id}`}
-      >
+      <a className="course-card" href={href}>
         <span className="course-icon" aria-hidden="true">
           {course.icon}
         </span>
@@ -62,7 +68,9 @@ function CourseCard({ course, done }) {
         <span className="course-progress">
           {done > 0
             ? `✓ ${done} ${done === 1 ? 'klar övning' : 'klara övningar'} · Fortsätt →`
-            : 'Börja →'}
+            : toInfo
+              ? 'Läs mer →'
+              : 'Börja →'}
         </span>
       </a>
     </li>
@@ -183,6 +191,7 @@ export default function Home() {
             </ul>
           </section>
         )}
+        {isNew && <HowItWorks />}
         {more.length > 0 && (
           <section aria-labelledby="more-title">
             <h2 id="more-title">
@@ -194,6 +203,7 @@ export default function Home() {
                   key={`more-${course.id}`}
                   course={course}
                   done={0}
+                  toInfo={isNew}
                 />
               ))}
             </ul>
@@ -220,6 +230,8 @@ export default function Home() {
             ))}
           </ul>
         </section>
+        {isNew && <ForWhom />}
+        {isNew && <Faq />}
         {account.isReady && isNew && (
           <section aria-labelledby="account-title">
             <h2 id="account-title">Har du redan ett konto?</h2>

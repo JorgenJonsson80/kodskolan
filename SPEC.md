@@ -169,6 +169,11 @@ Gratisbanorna ligger kvar i appen. Betalbanorna hämtas från
 
 ## Adresser
 
+Startsidan berättar för nya besökare vad Kodskolan är (Så funkar det,
+För vem, Vanliga frågor i `src/app/Landing.jsx`), och korten går till
+`/kurser/<id>/`: sidan om kursen (`CoursePage.jsx`, texterna i
+`courseInfo.js`). Den som redan börjat ser Mina kurser som förut.
+
 `/diplom/<kod>` visar ett diplom, `/spar` spåren och `/konto` Mitt konto
 och data: vad som sparas, ladda ner det och radera kontot
 (`delete_my_account`) eller webbläsarens framsteg (`src/app/Page.jsx`).

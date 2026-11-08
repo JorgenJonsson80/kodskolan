@@ -37,9 +37,12 @@ spåren kan räkna utan att ladda kurserna.
   `typescript`, Flask med wheel-filerna i `public/wheels`, HTML med jsdom) och `*.browser.test.js`
   i riktig Chrome (`npx playwright install chromium` första gången)
 - `npm run lint` och `npx prettier --check src`
-- `npm run build` – byggs med `base: /kodskolan/` och kopierar
-  `index.html` till `404.html`, så att `/kodskolan/python` fungerar
-  när man laddar om
+- `npm run build` – byggs med `base: /kodskolan/` (`VITE_BASE`), och
+  sedan skriver `scripts/prerender.mjs` en färdig `index.html` per adress
+  (startsidan, `/kurser/<id>/`, kurserna, `/spar`, `/konto`) med titel,
+  beskrivning och delningsbild, plus `404.html`, `sitemap.xml` och
+  `robots.txt`. Sidorna ritas med samma komponenter
+  (`src/app/prerender.jsx`). Egen domän: `docs/DOMAN.md`
 
 Push till `main` kör testerna och publicerar via
 `.github/workflows/deploy.yml`.

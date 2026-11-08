@@ -33,6 +33,9 @@ jobs:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
           VITE_SUPPORT_EMAIL: ${{ vars.VITE_SUPPORT_EMAIL }}
+          # Tomma tills sajten har en egen domän (se docs/DOMAN.md).
+          VITE_SITE_URL: ${{ vars.VITE_SITE_URL }}
+          VITE_BASE: ${{ vars.VITE_BASE }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

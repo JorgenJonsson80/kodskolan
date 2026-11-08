@@ -2455,3 +2455,119 @@
     display: none;
   }
 }
+
+/* Startsidan för nya besökare och sidorna om kurserna */
+.landing-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-steps li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.landing-steps strong {
+  font-size: 1.1rem;
+}
+
+.landing-icon {
+  font-size: 1.8rem;
+}
+
+.landing-faq {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.landing-faq details {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.landing-faq summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.landing-faq p {
+  margin: 8px 0 0;
+}
+
+.app-brand {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.course-info h1 {
+  margin: 4px 0 8px;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.course-info-icon {
+  margin: 16px 0 0;
+  font-size: 2.6rem;
+}
+
+.course-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.course-facts li {
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.9rem;
+}
+
+.course-example {
+  margin: 16px 0 0;
+  padding: 16px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-sunken);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.9rem;
+}
+
+.course-tracks {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding-left: 24px;
+}
+
+.course-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 640px) {
+  .course-info h1 {
+    font-size: 1.6rem;
+  }
+}

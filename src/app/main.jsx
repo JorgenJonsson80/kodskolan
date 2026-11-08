@@ -1,6 +1,7 @@
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { courseFromPath, pathParts } from './courses';
+import { COURSE_INFO } from './courseInfo';
+import { COURSES, courseFromPath, pathParts } from './courses';
 import Page from './Page';
 import '../core/index.css';
 import '../core/App.css';
@@ -18,6 +19,11 @@ const TITLES = {
   konto: 'Mitt konto och data – Kodskolan',
 };
 if (!entry && TITLES[page]) document.title = TITLES[page];
+const infoCourse =
+  page === 'kurser' && COURSE_INFO[code]
+    ? COURSES.find(course => course.id === code)
+    : null;
+if (infoCourse) document.title = `${COURSE_INFO[code].title} – Kodskolan`;
 
 const Course =
   entry &&
@@ -31,16 +37,34 @@ const Course =
 
 if (entry) document.title = `${entry.name} – Kodskolan`;
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    {Course ? (
-      <Suspense fallback={<p className="course-loading">Laddar kursen…</p>}>
-        <Course />
-      </Suspense>
-    ) : (
-      <Suspense fallback={<p className="course-loading">Laddar…</p>}>
-        <Page page={page} code={code} />
-      </Suspense>
-    )}
-  </StrictMode>,
-);
+const root = createRoot(document.getElementById('root'));
+
+// Sidan om en kurs finns redan som färdig HTML (scripts/prerender.mjs).
+// Den får stå kvar tills banorna och sidans kod hämtats och ritas sedan
+// direkt, utan Suspense, så att den inte blinkar till "Laddar…".
+if (infoCourse) {
+  Promise.all([infoCourse.summary(), import('./CoursePage')]).then(
+    ([summary, { CourseInfo }]) =>
+      root.render(
+        <StrictMode>
+          <CourseInfo course={infoCourse} summary={summary} />
+        </StrictMode>,
+      ),
+    // Utan nät står den färdiga sidan kvar. Länkarna i den fungerar ändå.
+    () => {},
+  );
+} else {
+  root.render(
+    <StrictMode>
+      {Course ? (
+        <Suspense fallback={<p className="course-loading">Laddar kursen…</p>}>
+          <Course />
+        </Suspense>
+      ) : (
+        <Suspense fallback={<p className="course-loading">Laddar…</p>}>
+          <Page page={page} code={code} />
+        </Suspense>
+      )}
+    </StrictMode>,
+  );
+}

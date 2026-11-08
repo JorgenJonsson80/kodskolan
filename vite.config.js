@@ -2,11 +2,14 @@ import react from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
 import { defineConfig } from 'vite'
 
-// På GitHub Pages ligger appen under /kodskolan/, lokalt under /.
-// Pythons worker laddar Pyodide med import(), så den måste byggas som
-// ES-modul.
+// På GitHub Pages ligger appen under /kodskolan/, lokalt under /. Med en
+// egen domän sätts VITE_BASE till / (och VITE_SITE_URL, se
+// scripts/prerender.mjs). Pythons worker laddar Pyodide med import(), så
+// den måste byggas som ES-modul.
+const BASE = process.env.VITE_BASE || '/kodskolan/'
+
 export default defineConfig(({ command, isPreview }) => ({
-  base: command === 'build' || isPreview ? '/kodskolan/' : '/',
+  base: command === 'build' || isPreview ? BASE : '/',
   plugins: [react()],
   worker: { format: 'es' },
   // Tailwind (HTML-kursens bana 12) och det JS-kursens worker rättar
