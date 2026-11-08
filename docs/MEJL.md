@@ -35,9 +35,12 @@ Resend (nedan) före lansering.
 
 1. Skapa ett konto på https://resend.com (gratis upp till 3 000 mejl i
    månaden).
-2. **Domains → Add domain**: din domän, t.ex. `kodskolan.se`.
-3. Lägg in DNS-posterna Resend visar (SPF, DKIM och gärna DMARC) hos den
-   som säljer domänen. Vänta tills Resend säger **Verified**.
+2. **Domains → Add domain**: `kodskolan.nu`, region EU (Ireland).
+3. Lägg in DNS-posterna Resend visar hos One.com (DNS → DNS-post, samma
+   sida som A-posterna). Oftast en TXT-post `resend._domainkey` (DKIM)
+   och en MX- och en TXT-post på `send` (SPF). Värdnamnet skrivs utan
+   `.kodskolan.nu` sist. Lägg gärna till DMARC: TXT på `_dmarc` med
+   `v=DMARC1; p=none;`. Vänta tills Resend säger **Verified**.
 4. **API Keys → Create**: rättigheten _Sending access_. Kopiera nyckeln
    (den visas bara en gång).
 
@@ -45,14 +48,14 @@ Resend (nedan) före lansering.
 
 **Project Settings → Authentication → SMTP Settings → Enable custom SMTP**
 
-| Fält         | Värde                   |
-| ------------ | ----------------------- |
-| Sender email | `hej@kodskolan.se`      |
-| Sender name  | `Kodskolan`             |
-| Host         | `smtp.resend.com`       |
-| Port         | `465`                   |
-| Username     | `resend`                |
-| Password     | API-nyckeln från steg 1 |
+| Fält         | Värde                     |
+| ------------ | ------------------------- |
+| Sender email | `inloggning@kodskolan.nu` |
+| Sender name  | `Kodskolan`               |
+| Host         | `smtp.resend.com`         |
+| Port         | `465`                     |
+| Username     | `resend`                  |
+| Password     | API-nyckeln från steg 1   |
 
 Höj sedan **Authentication → Rate Limits → Emails sent per hour** till
 t.ex. 100.
@@ -80,7 +83,7 @@ adress).
 
 Sätt GitHub-variabeln `VITE_SUPPORT_EMAIL` (Settings → Secrets and
 variables → Actions → Variables) till adressen elever ska mejla, t.ex.
-`hej@kodskolan.se`. Lokalt läggs den i `.env.local`. Utan den visas
+`hej@kodskolan.nu` när den adressen tar emot mejl. Lokalt läggs den i `.env.local`. Utan den visas
 inga kontaktlänkar ("🐞 Något fungerar inte?" och "✉️ Kontakt").
 
 ## Prova
