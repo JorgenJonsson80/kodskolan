@@ -5,7 +5,7 @@ import { RESOURCES } from './resources';
 import { TRACKS } from './tracks';
 
 describe('banorna', () => {
-  it('har en ålder för figuren per bana, plus bebisen', () => {
+  it('har en nivå för figuren per bana, plus nybörjaren', () => {
     expect(stages.length).toBeGreaterThanOrEqual(TRACKS.length + 1);
   });
 

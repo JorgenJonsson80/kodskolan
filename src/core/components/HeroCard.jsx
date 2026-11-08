@@ -1,6 +1,6 @@
 import Avatar from './Avatar';
 
-// Visar figuren, XP och vad som krävs för att växa till nästa ålder.
+// Visar figuren, XP och vad som krävs för att växa till nästa nivå.
 export default function HeroCard({
   growth,
   totalXp,

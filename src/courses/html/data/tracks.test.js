@@ -5,7 +5,7 @@ import { TRACKS } from './tracks';
 describe('banorna', () => {
   // Figuren har åldrar för alla banor i SPEC.md. Sätt toHaveLength när
   // den sista banan finns.
-  it('har en ålder för figuren per bana, plus bebisen', () => {
+  it('har en nivå för figuren per bana, plus nybörjaren', () => {
     expect(stages.length).toBeGreaterThanOrEqual(TRACKS.length + 1);
   });
 

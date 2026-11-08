@@ -12,10 +12,10 @@ const lessons = [
 ];
 
 describe('getGrowth', () => {
-  it('börjar som bebis', () => {
+  it('börjar som nybörjare', () => {
     const growth = getGrowth(tracks, lessons, []);
-    expect(growth.stage.title).toBe('Bebis');
-    expect(growth.nextStage.title).toBe('Småbarn');
+    expect(growth.stage.title).toBe('Nybörjare');
+    expect(growth.nextStage.title).toBe('Nyfiken');
     expect(growth.currentTrack).toMatchObject({ done: 0, total: 2 });
     expect(growth.rewards).toEqual([]);
   });
@@ -23,7 +23,7 @@ describe('getGrowth', () => {
   it('växer bara när en hel bana är klar', () => {
     expect(getGrowth(tracks, lessons, ['a1']).stageIndex).toBe(0);
     const growth = getGrowth(tracks, lessons, ['a1', 'a2']);
-    expect(growth.stage.title).toBe('Småbarn');
+    expect(growth.stage.title).toBe('Nyfiken');
     expect(growth.currentTrack.track.id).toBe('b');
     expect(growth.rewards).toEqual([tracks[0].reward]);
   });
@@ -76,7 +76,7 @@ describe('trackProgress via quiz och boss', () => {
 
   it('låter figuren växa av banor klarade via quiz', () => {
     expect(getGrowth(tracks, lessons, ['a2'], ['a']).stage.title).toBe(
-      'Småbarn',
+      'Nyfiken',
     );
   });
 });

@@ -122,7 +122,7 @@ Det här tog många omgångar att få till i JS Academy. Bygg in det direkt.
 8. **Projekt** efter varje bana: välj ett av tre, 3–4 steg där koden följer
    med, med eller utan ledtrådar (+50 % XP utan). Svårare för varje bana.
 9. **Kort välkomst** (tre steg, resten bakom "Fler tips"), figur som växer
-   en ålder per klar bana och peppar, nivåtest för att hoppa fram.
+   en nivå per klar bana och peppar, nivåtest för att hoppa fram.
 10. **Boss och Testa dig förbi:** varje bana slutar med en boss, en större
     uppgift utan ledtrådar. *Testa dig på banan* (quiz + boss) låter den
     som redan kan hoppa över banan.

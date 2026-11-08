@@ -3,7 +3,7 @@ import { stages } from '../../../core/stages';
 import { TRACKS } from './tracks';
 
 describe('banorna', () => {
-  it('har en ålder för figuren per bana, plus bebisen', () => {
+  it('har en nivå för figuren per bana, plus nybörjaren', () => {
     expect(stages).toHaveLength(TRACKS.length + 1);
   });
 

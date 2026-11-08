@@ -1,4 +1,4 @@
-// Ritar figuren för en ålder i stages.js. Allt mäts från marken (GROUND)
+// Ritar figuren för en nivå i stages.js. Allt mäts från marken (GROUND)
 // och uppåt, så att figuren växer när ben, kropp och huvud blir större.
 const GROUND = 160;
 const CX = 60;
@@ -210,7 +210,7 @@ export default function Avatar({ stage, size = 160, silhouette = false }) {
       height={(size * 154) / 120}
       role="img"
       aria-label={
-        silhouette ? `Nästa ålder: ${stage.title}` : `Din figur: ${stage.title}`
+        silhouette ? `Nästa nivå: ${stage.title}` : `Din figur: ${stage.title}`
       }
     >
       <ellipse

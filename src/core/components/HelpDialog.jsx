@@ -59,8 +59,8 @@ export default function HelpDialog({ onClose }) {
         <h3>Banor och figuren</h3>
         <ul>
           <li>
-            Varje bana låses upp när den förra är klar. Din figur växer en ålder
-            för varje klar bana och du får en pryl.
+            Varje bana låses upp när den förra är klar. Din figur går upp en
+            nivå för varje klar bana och du får en pryl.
           </li>
           <li>
             Framstegen och koden du skrivit sparas i webbläsaren, så du kan

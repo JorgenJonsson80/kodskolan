@@ -1,29 +1,30 @@
-// Figurens åldrar. Figuren växer ett steg för varje bana som är klar, så
-// det ska finnas en ålder mer än det finns banor (bebisen från början).
+// Figurens nivåer. Figuren växer ett steg för varje bana som är klar, så
+// det ska finnas en nivå mer än det finns banor (Nybörjare från början).
+// Namnen är neutrala, så att de passar vuxna och skolor lika bra som barn.
 // head, body och leg är storlekar i SVG:n, extras är saker figuren bär.
 export const stages = [
   {
-    title: 'Bebis',
+    title: 'Nybörjare',
     head: 22,
     body: 22,
     leg: 10,
     shirt: '#fde68a',
     pants: '#fde68a',
     hair: 'tuft',
-    extras: ['pacifier'],
+    extras: [],
   },
   {
-    title: 'Småbarn',
+    title: 'Nyfiken',
     head: 22,
     body: 26,
     leg: 16,
     shirt: '#86efac',
     pants: '#3b82f6',
     hair: 'tuft',
-    extras: ['teddy'],
+    extras: ['cap'],
   },
   {
-    title: 'Skolbarn',
+    title: 'Elev',
     head: 21,
     body: 30,
     leg: 24,
@@ -33,7 +34,7 @@ export const stages = [
     extras: ['backpack', 'cap'],
   },
   {
-    title: 'Tonåring',
+    title: 'Lärling',
     head: 20,
     body: 36,
     leg: 32,
@@ -191,7 +192,7 @@ export function trackProgress(track, lessons, completedIds, passedTrackIds) {
   };
 }
 
-// Räknar ut var eleven är: ålder, nästa ålder och hur långt det är kvar.
+// Räknar ut var eleven är: nivå, nästa nivå och hur långt det är kvar.
 export function getGrowth(tracks, lessons, completedIds, passedTrackIds = []) {
   const trackStatus = tracks.map(track =>
     trackProgress(track, lessons, completedIds, passedTrackIds),
