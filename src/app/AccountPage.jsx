@@ -2,7 +2,8 @@ import { useState } from 'react';
 import AccountPanel from '../core/components/AccountPanel';
 import SiteFooter from '../core/components/SiteFooter';
 import { contactUrl } from '../core/lib/contact';
-import { useAccount } from '../core/lib/useAccount';
+import { errorText, MIN_PASSWORD } from '../core/lib/authText';
+import { NEW_PASSWORD, useAccount } from '../core/lib/useAccount';
 import {
   clearLocalData,
   deleteMyAccount,
@@ -12,6 +13,65 @@ import {
 } from './myData';
 
 const CONFIRM_WORD = 'RADERA';
+
+// Lösenordet kan sättas här av den som loggat in med länk eller Google, och
+// hit leder länken i mejlet för "Glömt lösenordet?" (?nytt-losenord).
+function PasswordForm({ account }) {
+  const fromMail = new URLSearchParams(window.location.search).has(
+    NEW_PASSWORD,
+  );
+  const [password, setPassword] = useState('');
+  const [state, setState] = useState('idle');
+  const [error, setError] = useState(null);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setState('saving');
+    setError(null);
+    const failed = await account.setPassword(password);
+    if (failed) {
+      setError(errorText(failed));
+      setState('idle');
+    } else {
+      setPassword('');
+      setState('saved');
+    }
+  }
+
+  return (
+    <section id="losenord" className={fromMail ? 'card' : undefined}>
+      <h2>{fromMail ? 'Välj ett nytt lösenord' : 'Lösenord'}</h2>
+      {state === 'saved' ? (
+        <p>✓ Lösenordet är sparat. Nästa gång kan du logga in med det.</p>
+      ) : (
+        <form className="password-form" onSubmit={handleSubmit}>
+          <p className="muted">
+            Med ett lösenord kan du logga in utan att vänta på ett mejl.
+          </p>
+          <input
+            type="password"
+            required
+            minLength={MIN_PASSWORD}
+            placeholder={`Nytt lösenord (minst ${MIN_PASSWORD} tecken)`}
+            aria-label="Nytt lösenord"
+            autoComplete="new-password"
+            autoFocus={fromMail}
+            value={password}
+            onChange={event => setPassword(event.target.value)}
+          />
+          <button
+            className="primary-button"
+            type="submit"
+            disabled={state === 'saving'}
+          >
+            {state === 'saving' ? 'Sparar…' : 'Spara lösenordet'}
+          </button>
+          {error && <p className="feedback-error">{error}</p>}
+        </form>
+      )}
+    </section>
+  );
+}
 
 function DeleteAccount({ onDeleted }) {
   const [open, setOpen] = useState(false);
@@ -172,6 +232,8 @@ export default function AccountPage() {
                 />
               </div>
             )}
+
+            {account.user && <PasswordForm account={account} />}
 
             <section>
               <h2>Ladda ner din data</h2>

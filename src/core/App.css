@@ -2585,3 +2585,68 @@
 .legal-page ul {
   padding-left: 20px;
 }
+
+/* Inloggningen: Google först, sedan mejl och lösenord, och länkarna till
+   de andra sätten. */
+.link-button {
+  min-height: 0;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-weight: 400;
+  text-decoration: underline;
+  text-align: left;
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: #fff;
+  color: #1f1f1f;
+  border-color: #dadce0;
+}
+
+.google-mark {
+  font-weight: 700;
+  color: #4285f4;
+}
+
+.account-or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.9em;
+}
+
+.account-or::before,
+.account-or::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--border);
+}
+
+.account-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.password-form {
+  display: grid;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.password-form input {
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface-sunken);
+  color: var(--text);
+  font: inherit;
+}

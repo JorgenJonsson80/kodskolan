@@ -94,10 +94,8 @@ export function useCloudProgress({
   const isLoading = userId && loadedUserId !== userId && status !== 'error';
 
   return {
-    isAvailable: account.isAvailable,
-    user: account.user,
+    ...account,
     status: isLoading ? 'loading' : status,
-    signIn: account.signIn,
     signOut,
   };
 }
