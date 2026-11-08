@@ -147,6 +147,12 @@ och databasvalet på Lekplatsen).
 | `lesson_content`   | 5     | betalbanornas övningar, läses bara med tillgång  |
 | `schools` …        | 6     | skolor, klasser, medlemmar                       |
 
+Facit kostar en 🔑 nyckel (`core/lib/keys.js`): 3 från början och en
+ny per tre övningar klarade utan facit. Ett använt facit sparas som
+`<id>-facit` bland de klara id:na, så nycklarna räknas fram och följer
+med kontot. Bossar har inget facit, och fel körningar räknas bara när
+koden ändrats.
+
 `course_progress` har en rad per användare och kurs (`course_id` är
 kursens `id`), så en ny kurs behöver ingen ny tabell. Migrationen
 kopierade över akademiernas tabeller, som ligger kvar orörda.

@@ -1,3 +1,10 @@
+import { facitId } from '../lib/keys';
+
+// 👀 visar att övningen klarades med facit. Ingen bestraffning, men eleven
+// ser vad som kan vara värt att göra om på egen hand.
+const doneMark = (completedIds, id) =>
+  completedIds.includes(facitId(id)) ? '👀' : '✓';
+
 // Projekten på en klar bana. Det projekt man arbetar med visar sina steg.
 function ProjectPicker({
   projects,
@@ -55,7 +62,9 @@ function ProjectPicker({
                         }
                       >
                         <span aria-hidden="true">
-                          {completedIds.includes(step.id) ? '✓' : '○'}
+                          {completedIds.includes(step.id)
+                            ? doneMark(completedIds, step.id)
+                            : '○'}
                         </span>{' '}
                         Steg {step.stepNumber}: {step.title.split(': ').at(-1)}
                       </button>
@@ -186,11 +195,19 @@ export default function TrackList({
                           }
                         >
                           <span aria-hidden="true">
-                            {isDone ? '✓' : lesson.isBoss ? '👑' : '○'}
+                            {isDone
+                              ? doneMark(completedIds, lesson.id)
+                              : lesson.isBoss
+                                ? '👑'
+                                : '○'}
                           </span>{' '}
                           {lesson.title}
                           {isDone && (
-                            <span className="visually-hidden"> (klar)</span>
+                            <span className="visually-hidden">
+                              {completedIds.includes(facitId(lesson.id))
+                                ? ' (klar med facit)'
+                                : ' (klar)'}
+                            </span>
                           )}
                           {hasDraft && <span className="draft"> · utkast</span>}
                         </button>

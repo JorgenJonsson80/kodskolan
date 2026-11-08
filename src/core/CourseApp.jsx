@@ -13,6 +13,7 @@ import Quiz from './components/Quiz';
 import TrackList from './components/TrackList';
 import { CourseContext } from './course';
 import { copyToPlayground, PLAYGROUND_COPY } from './lib/playground';
+import { facitId, keyStatus } from './lib/keys';
 import { mergeCompleted } from './lib/progress';
 import {
   isStringList,
@@ -306,6 +307,15 @@ function Academy({ course }) {
     window.scrollTo({ top: 0 });
   }
 
+  // Facit kostar en nyckel, en gång per övning.
+  const facitKeys = keyStatus(completedIds, EXERCISES);
+  function handleUseFacit(item) {
+    const id = facitId(item.id);
+    setCompletedIds(previous =>
+      previous.includes(id) ? previous : [...previous, id],
+    );
+  }
+
   function handleSolved(solved) {
     if (completedIds.includes(solved.id)) return;
     const newIds = [...completedIds, solved.id];
@@ -528,6 +538,9 @@ function Academy({ course }) {
                 }
                 trackLessonCount={trackLessons.length}
                 isCompleted={completedIds.includes(lesson.id)}
+                facitPaid={completedIds.includes(facitId(lesson.id))}
+                facitKeys={facitKeys}
+                onUseFacit={() => handleUseFacit(lesson)}
                 code={startCodeFor(lesson)}
                 onCodeChange={newCode =>
                   setDrafts(previous => ({ ...previous, [lesson.id]: newCode }))

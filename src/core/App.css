@@ -2385,3 +2385,11 @@
   background: none;
   box-shadow: none;
 }
+
+.facit-keys-empty {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  color: var(--muted);
+}

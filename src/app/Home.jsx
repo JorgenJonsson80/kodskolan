@@ -20,9 +20,9 @@ import { useCloudCompleted } from './useCloudCompleted';
 const FIRST_COURSE = 'python';
 
 // Klara övningar i en kurs. Klarade tester för en bana (…-testad) och
-// projektbonusar räknas inte som övningar.
+// projektbonusar räknas inte som övningar, och inte heller använda facit.
 const lessonCount = ids =>
-  ids.filter(id => !/-(testad|utan-ledtradar)$/.test(id)).length;
+  ids.filter(id => !/-(testad|utan-ledtradar|facit)$/.test(id)).length;
 
 // Webbläsarens klara övningar, om de inte hör till ett annat konto.
 const localIds = (course, userId) =>

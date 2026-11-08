@@ -49,8 +49,9 @@ export default function HelpDialog({ onClose }) {
         </li>
       </ol>
       <p className="muted">
-        Fel är helt okej – du får ledtrådar på vägen och kan se lösningen till
-        slut.
+        Fel är helt okej – du får ledtrådar på vägen. Kör du fast kan du se
+        lösningen för en 🔑 nyckel. Du börjar med 3 och får en ny för var tredje
+        övning du klarar på egen hand. Bossarna har inget facit.
       </p>
 
       <details className="help-more">

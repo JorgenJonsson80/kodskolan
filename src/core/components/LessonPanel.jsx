@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useCourse } from '../course';
 import { encouragement } from '../encouragement';
 import { buildAiPrompt } from '../lib/aiPrompt';
@@ -10,7 +10,8 @@ import SolutionCompare from './SolutionCompare';
 import StuckPanel from './StuckPanel';
 
 // Visa lösning dyker upp efter så här många felaktiga försök. Utan
-// ledtrådar (bossar och projekt utan ledtrådar) dröjer den lite längre.
+// ledtrådar (projekt utan ledtrådar) dröjer den lite längre. Bossar har
+// inget facit: de visar att man kan banan, och diplomet bygger på dem.
 const SOLUTION_AFTER = 4;
 const SOLUTION_AFTER_NO_HINTS = 6;
 
@@ -26,6 +27,9 @@ export default function LessonPanel({
   completedInTrack,
   trackLessonCount,
   isCompleted,
+  facitPaid,
+  facitKeys,
+  onUseFacit,
   code,
   onCodeChange,
   onSolved,
@@ -55,6 +59,9 @@ export default function LessonPanel({
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [running, setRunning] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
+  // Koden vid senaste försöket som räknades. Samma kod igen, eller
+  // startkoden, räknas inte, så att det inte går att klicka sig till facit.
+  const lastCounted = useRef(null);
   // Koden innan man tryckte på Börja om, så att det går att ångra.
   const [undoCode, setUndoCode] = useState(null);
   const workbench = course.useWorkbench({ code, lesson, busy: running });
@@ -86,13 +93,25 @@ export default function LessonPanel({
         ...result,
         message: encouragement(failedAttempts, kind, texts.encouragement),
       });
-      setFailedAttempts(count => count + 1);
+      if (code !== lesson.starterCode && code !== lastCounted.current) {
+        lastCounted.current = code;
+        setFailedAttempts(count => count + 1);
+      }
     }
   }
+
+  // Facit är gratis för en övning man redan klarat eller betalat för.
+  const facitFree = isCompleted || facitPaid;
+  const canSeeFacit =
+    !lesson.isBoss &&
+    !showSolution &&
+    failedAttempts >=
+      (projectMode === 'noHints' ? SOLUTION_AFTER_NO_HINTS : SOLUTION_AFTER);
 
   // Lösningen räknas som hjälp, så då försvinner bonusen.
   function handleShowSolution() {
     if (project && projectMode !== 'hints') onChooseProjectMode('hints');
+    if (!facitFree) onUseFacit();
     setShowSolution(true);
   }
 
@@ -311,16 +330,23 @@ export default function LessonPanel({
           💡 Byt till med ledtrådar (bonusen försvinner)
         </button>
       )}
-      {failedAttempts >=
-        (projectMode === 'noHints' || lesson.isBoss
-          ? SOLUTION_AFTER_NO_HINTS
-          : SOLUTION_AFTER) &&
-        !showSolution && (
+      {canSeeFacit &&
+        (facitFree || facitKeys.keys > 0 ? (
           <button type="button" onClick={handleShowSolution}>
             Visa lösning
+            {!facitFree && ` (1 🔑, du har ${facitKeys.keys})`}
             {projectMode === 'noHints' && ' (bonusen försvinner)'}
           </button>
-        )}
+        ) : (
+          <p className="facit-keys-empty">
+            🔑 Facit kostar en nyckel, och dina är slut. Klara{' '}
+            {facitKeys.untilNext === 1
+              ? 'en övning'
+              : `${facitKeys.untilNext} övningar`}{' '}
+            till på egen hand så får du en ny. Under tiden hjälper ledtrådarna
+            och Fastnat? nedanför.
+          </p>
+        ))}
       {showSolution && (
         <figure className="solution-compare">
           <figcaption>
