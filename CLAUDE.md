@@ -66,6 +66,12 @@ Push till `main` kör testerna och publicerar via
   - `lib/` lagring (`storage.js`, localStorage i try/catch som tål
     skräpdata), inloggning (`useAccount.js`, samma i alla kurser och på
     startsidan), synk (`useCloudProgress.js`, `progress.js` slår ihop), `aiPrompt.js`, `playground.js`
+  - `lib/analytics.js` statistik och fel till PostHog (EU), bara i bygget
+    och med `VITE_POSTHOG_KEY`. Cookieless: inget sparas i webbläsaren.
+    `trackEvent(namn, props)` för egna händelser (`ovning_klar`,
+    `bana_klar`, `kurs_klar`, `facit_anvant`, `test_klarat`). Skicka
+    aldrig elevens kod eller mejladress, och ändra texten på `/konto`
+    (`AccountPage.jsx`) om något nytt skickas
   - `projects.js`, `quiz.js`, `resources.js`, `stages.js` (figuren som
     växer en ålder per klar bana), `encouragement.js`
   - `runner/diff.js` och `compare.js` – Visa skillnaden och facit-längd

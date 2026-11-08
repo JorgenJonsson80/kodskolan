@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import AccountPanel from './components/AccountPanel';
+import { trackEvent } from './lib/analytics';
 import SiteFooter from './components/SiteFooter';
 import Avatar from './components/Avatar';
 import Collection from './components/Collection';
@@ -311,14 +312,23 @@ function Academy({ course }) {
   const facitKeys = keyStatus(completedIds, EXERCISES);
   function handleUseFacit(item) {
     const id = facitId(item.id);
+    trackEvent('facit_anvant', { kurs: course.id, ovning: item.id });
     setCompletedIds(previous =>
       previous.includes(id) ? previous : [...previous, id],
     );
   }
 
-  function handleSolved(solved) {
+  function handleSolved(solved, failedAttempts = 0) {
     if (completedIds.includes(solved.id)) return;
     const newIds = [...completedIds, solved.id];
+    trackEvent('ovning_klar', {
+      kurs: course.id,
+      ovning: solved.id,
+      bana: solved.track,
+      forsok: failedAttempts + 1,
+      boss: Boolean(solved.isBoss),
+      projekt: Boolean(project),
+    });
     const projectDone = project && isProjectComplete(project, newIds);
     const withoutHints = projectDone && projectMode === 'noHints';
     if (withoutHints) newIds.push(noHintsId(project));
@@ -340,6 +350,15 @@ function Academy({ course }) {
       item =>
         !trackStatusById[item.id].isComplete && newStatus[item.id].isComplete,
     );
+    doneTracks.forEach(item =>
+      trackEvent('bana_klar', { kurs: course.id, bana: item.id }),
+    );
+    if (
+      doneTracks.length > 0 &&
+      TRACKS.every(item => newStatus[item.id].isComplete)
+    ) {
+      trackEvent('kurs_klar', { kurs: course.id });
+    }
     if (doneTracks.length === 0 && doneProjects.length === 0) return;
     const newGrowth = getGrowth(TRACKS, LESSONS, newIds, passed);
     setCelebration({
@@ -372,6 +391,9 @@ function Academy({ course }) {
 
   // En bana man testat sig förbi är klar först när bossen är klar.
   function handleQuizFinish(passed) {
+    if (passed.length > 0) {
+      trackEvent('test_klarat', { kurs: course.id, banor: passed.join(',') });
+    }
     const newIds = [...new Set([...completedIds, ...passed.map(passedId)])];
     setCompletedIds(newIds);
     celebrate(newIds);

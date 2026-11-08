@@ -1,5 +1,6 @@
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
+import { startAnalytics } from '../core/lib/analytics';
 import { COURSE_INFO } from './courseInfo';
 import { COURSES, courseFromPath, pathParts } from './courses';
 import Page from './Page';
@@ -36,6 +37,8 @@ const Course =
   );
 
 if (entry) document.title = `${entry.name} – Kodskolan`;
+
+startAnalytics();
 
 const root = createRoot(document.getElementById('root'));
 

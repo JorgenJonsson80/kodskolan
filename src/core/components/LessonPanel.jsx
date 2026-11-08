@@ -86,7 +86,7 @@ export default function LessonPanel({
     const result = runtime.evaluate(lesson, code, raw);
     if (result.isCorrect) {
       setFeedback({ ...result, xpGained: isCompleted ? 0 : lesson.xp });
-      onSolved(lesson);
+      onSolved(lesson, failedAttempts);
     } else {
       const kind = raw.syntaxError ? 'syntax' : raw.error ? 'crash' : 'tests';
       setFeedback({

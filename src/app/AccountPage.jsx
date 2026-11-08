@@ -144,8 +144,18 @@ export default function AccountPage() {
                 </li>
               </ul>
               <p className="muted">
-                Inget annat: ingen spårning och ingen reklam. Kontot används
-                bara för att dina framsteg ska följa med dig.
+                Ingen reklam och inga cookies. Kontot används bara för att dina
+                framsteg ska följa med dig.
+              </p>
+              <h3>Statistik</h3>
+              <p className="muted">
+                För att se var kurserna är för svåra och hitta fel räknar vi
+                besök, klarade övningar och banor, använda facit och fel som
+                uppstår i sidan. Det skickas till PostHog i EU utan cookies och
+                utan något som sparas i din webbläsare, så vi kan inte känna
+                igen dig från dag till dag. Din kod och din mejladress skickas
+                aldrig. Har du slagit på Do Not Track i webbläsaren skickas
+                ingenting.
               </p>
             </section>
 
