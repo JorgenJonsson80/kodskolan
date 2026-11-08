@@ -18,6 +18,8 @@ const TITLES = {
   diplom: 'Diplom – Kodskolan',
   spar: 'Spår – Kodskolan',
   konto: 'Mitt konto och data – Kodskolan',
+  integritet: 'Integritetspolicy – Kodskolan',
+  villkor: 'Villkor – Kodskolan',
 };
 if (!entry && TITLES[page]) document.title = TITLES[page];
 const infoCourse =

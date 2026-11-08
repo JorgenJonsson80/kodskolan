@@ -66,6 +66,8 @@ Push till `main` kör testerna och publicerar via
   - `lib/` lagring (`storage.js`, localStorage i try/catch som tål
     skräpdata), inloggning (`useAccount.js`, samma i alla kurser och på
     startsidan), synk (`useCloudProgress.js`, `progress.js` slår ihop), `aiPrompt.js`, `playground.js`
+  (`src/app/LegalPage.jsx` och `legal.js`: /integritet och /villkor. Ändra
+  dem när något nytt sparas eller en ny tjänst används.)
   - `lib/analytics.js` statistik och fel till PostHog (EU), bara i bygget
     och med `VITE_POSTHOG_KEY`. Cookieless: inget sparas i webbläsaren.
     `trackEvent(namn, props)` för egna händelser (`ovning_klar`,

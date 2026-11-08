@@ -157,6 +157,11 @@ export default function AccountPage() {
                 aldrig. Har du slagit på Do Not Track i webbläsaren skickas
                 ingenting.
               </p>
+              <p>
+                <a href={`${import.meta.env.BASE_URL}integritet`}>
+                  Läs hela integritetspolicyn
+                </a>
+              </p>
             </section>
 
             {account.isReady && (

@@ -3,6 +3,8 @@ import { CourseInfo } from './CoursePage';
 import { COURSE_INFO } from './courseInfo';
 import { COURSES } from './courses';
 import Home from './Home';
+import { LEGAL } from './legal';
+import LegalPage from './LegalPage';
 import { PATHS } from './paths';
 
 // Sidorna som skrivs ut som färdig HTML vid bygget (scripts/prerender.mjs).
@@ -34,6 +36,13 @@ export async function prerenderPages() {
         'Det Kodskolan sparar om dig, och hur du laddar ner eller raderar det.',
       noindex: true,
     },
+    ...Object.entries(LEGAL).map(([kind, legal]) => ({
+      path: `${kind}/`,
+      title: `${legal.title} – Kodskolan`,
+      description: legal.description,
+      html: renderToString(<LegalPage kind={kind} />),
+      sitemap: true,
+    })),
   ];
   for (const course of COURSES) {
     const info = COURSE_INFO[course.id];

@@ -2571,3 +2571,17 @@
     font-size: 1.6rem;
   }
 }
+
+/* /integritet och /villkor: löptext som ska gå att läsa. */
+.legal-page {
+  max-width: 720px;
+  line-height: 1.6;
+}
+
+.legal-page h2 {
+  margin-top: 32px;
+}
+
+.legal-page ul {
+  padding-left: 20px;
+}
