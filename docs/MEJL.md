@@ -36,11 +36,11 @@ Resend (nedan) före lansering.
 1. Skapa ett konto på https://resend.com (gratis upp till 3 000 mejl i
    månaden).
 2. **Domains → Add domain**: `kodskolan.nu`, region EU (Ireland).
-3. Lägg in DNS-posterna Resend visar hos One.com (DNS → DNS-post, samma
-   sida som A-posterna). Oftast en TXT-post `resend._domainkey` (DKIM)
-   och en MX- och en TXT-post på `send` (SPF). Värdnamnet skrivs utan
-   `.kodskolan.nu` sist. Lägg gärna till DMARC: TXT på `_dmarc` med
-   `v=DMARC1; p=none;`. Vänta tills Resend säger **Verified**.
+3. Lägg in DNS-posterna Resend visar hos Cloudflare (DNS → Records, se
+   [DOMAN.md](DOMAN.md)): TXT `resend._domainkey` (DKIM), CNAME `send`
+   och `rsend` (SPF) och gärna TXT `_dmarc` med `v=DMARC1; p=none;`.
+   Namnet skrivs utan `.kodskolan.nu` sist, och CNAME-posterna ska vara
+   **DNS only** (grått moln). Vänta tills Resend säger **Verified**.
 4. **API Keys → Create**: rättigheten _Sending access_. Kopiera nyckeln
    (den visas bara en gång).
 
@@ -69,7 +69,13 @@ t.ex. 100.
 ```html
 <h2>Logga in på Kodskolan</h2>
 <p>Klicka på knappen så loggas du in och dina framsteg sparas i ditt konto.</p>
-<p><a href="{{ .ConfirmationURL }}">Logga in</a></p>
+<p>
+  <a
+    href="{{ .ConfirmationURL }}"
+    style="display:inline-block;padding:12px 24px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;font-weight:bold"
+    >Logga in</a
+  >
+</p>
 <p>
   Länken fungerar en gång och i en timme. Bad du inte om den kan du strunta i
   det här mejlet.

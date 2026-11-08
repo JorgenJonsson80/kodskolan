@@ -13,15 +13,22 @@ Ta gärna fler stavningar och låt dem skicka vidare till huvuddomänen.
 
 För `kodskolan.nu` (utan www) läggs fyra A-poster till GitHub Pages:
 
-| Typ   | Namn | Värde             |
-| ----- | ---- | ----------------- |
-| A     | @    | 185.199.108.153   |
-| A     | @    | 185.199.109.153   |
-| A     | @    | 185.199.110.153   |
-| A     | @    | 185.199.111.153   |
+| Typ   | Namn | Värde                     |
+| ----- | ---- | ------------------------- |
+| A     | @    | 185.199.108.153           |
+| A     | @    | 185.199.109.153           |
+| A     | @    | 185.199.110.153           |
+| A     | @    | 185.199.111.153           |
 | CNAME | www  | jorgenjonsson80.github.io |
 
 Det kan ta upp till ett dygn innan DNS slagit igenom.
+
+**Så ligger det nu:** domänen är köpt hos One.com, men DNS sköts av
+Cloudflare (gratis), eftersom One.com inte kunde spara TXT-poster.
+Namnservrarna hos One.com är `oswald.ns.cloudflare.com` och
+`raina.ns.cloudflare.com`. Alla poster ändras i Cloudflare under
+DNS → Records, och alla ska vara **DNS only** (grått moln): GitHub
+behöver se trafiken själv för att förnya certifikatet.
 
 ## 3. GitHub
 
