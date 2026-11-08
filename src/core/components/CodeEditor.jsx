@@ -389,7 +389,7 @@ export default function CodeEditor({
             Kunde inte formatera – det finns ett syntaxfel någonstans.
           </span>
         ) : (
-          <>
+          <span className="editor-tips-keys">
             <kbd>{RUN_KEYS}</kbd> kör koden · {editor.tips} ·{' '}
             {editor.format && (
               <>
@@ -398,7 +398,7 @@ export default function CodeEditor({
             )}
             <kbd>{COMMENT_KEYS}</kbd> kommenterar bort en rad · håll musen över
             ett namn för att se vad det är
-          </>
+          </span>
         )}
       </p>
     </>

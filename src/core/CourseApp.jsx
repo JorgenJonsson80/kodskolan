@@ -413,7 +413,10 @@ function Academy({ course }) {
       <header className="app-header">
         <h1>
           <a className="home-link" href={import.meta.env.BASE_URL}>
-            Kodskolan
+            <span className="header-label">Kodskolan</span>
+            <span className="header-home-icon" aria-label="Kodskolan">
+              🏠
+            </span>
           </a>
           <span aria-hidden="true"> › {course.icon}</span> {course.name}
         </h1>
@@ -430,16 +433,21 @@ function Academy({ course }) {
             type="button"
             onClick={() => openPlayground()}
             aria-current={showPlayground ? 'page' : undefined}
+            aria-label="Lekplats"
           >
-            🧪 Lekplats
+            🧪<span className="header-label"> Lekplats</span>
           </button>
-          <button type="button" onClick={() => setShowHelp(true)}>
-            ❓ Hjälp
+          <button
+            type="button"
+            onClick={() => setShowHelp(true)}
+            aria-label="Hjälp"
+          >
+            ❓<span className="header-label"> Hjälp</span>
           </button>
         </nav>
         <p className="header-stats">
           <Avatar stage={growth.stage} size={28} />
-          <span>{growth.stage.title}</span>
+          <span className="header-label">{growth.stage.title}</span>
           <span className="chip chip-xp">⭐ {totalXp} XP</span>
         </p>
       </header>

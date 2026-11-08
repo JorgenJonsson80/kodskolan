@@ -2363,6 +2363,9 @@
 
 .lesson-column {
   display: grid;
+  /* minmax(0, …): annars blir kolumnen lika bred som den längsta
+     kodraden, och sidan går att dra i sidled på mobilen. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
 
@@ -2392,4 +2395,63 @@
   border: 1px dashed var(--border-strong);
   border-radius: 10px;
   color: var(--muted);
+}
+
+/* Ikonen till startsidan syns bara på mobilen, där ordet inte får plats. */
+.header-home-icon {
+  display: none;
+}
+
+/* Mobilen: sidhuvudet på en rad, så att uppgiften och editorn får
+   plats. Knapparna visar bara ikonen, och "redo" behöver inte stå kvar
+   – statusen syns medan språket laddar eller om något gick fel. */
+@media (max-width: 640px) {
+  .app-header {
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .app-header h1 {
+    font-size: 1.05rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  /* Statusen krymper först, sedan kursnamnet. */
+  .app-header .runtime-status {
+    flex-shrink: 100;
+    min-width: 0;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .app-header .runtime-status-ready,
+  .header-label {
+    display: none;
+  }
+
+  .header-nav button {
+    padding: 6px 10px;
+  }
+
+  .header-stats .avatar {
+    height: 28px;
+  }
+
+  .header-home-icon {
+    display: inline;
+  }
+}
+
+/* Kortkommandon och "håll musen över" gäller inte på en pekskärm. */
+@media (hover: none) and (pointer: coarse) {
+  .editor-tips:has(> .editor-tips-keys) {
+    display: none;
+  }
 }
