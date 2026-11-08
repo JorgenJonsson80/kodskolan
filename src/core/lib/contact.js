@@ -13,11 +13,13 @@ export const contactUrl = () =>
 // behöver skriva vad som hände.
 export function problemReportUrl({ course, lesson } = {}) {
   if (!SUPPORT_EMAIL) return null;
+  // Vid bygget (scripts/prerender.mjs) finns ingen webbläsare att fråga.
+  const browser = typeof window === 'undefined' ? null : window;
   const facts = [
-    `Sidan: ${window.location.href}`,
+    browser && `Sidan: ${browser.location.href}`,
     course && `Kurs: ${course.name}`,
     lesson && `Övning: ${lesson.title} (${lesson.id})`,
-    `Webbläsare: ${navigator.userAgent}`,
+    browser && `Webbläsare: ${browser.navigator.userAgent}`,
   ].filter(Boolean);
   return mailto(
     'Något fungerar inte i Kodskolan',
