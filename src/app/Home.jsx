@@ -137,10 +137,26 @@ export default function Home() {
   return (
     <>
       <header className="app-header">
-        <h1>Kodskolan</h1>
+        <h1 className="app-brand">
+          <img
+            className="brand-mark"
+            src={`${import.meta.env.BASE_URL}logo-mark.png`}
+            alt=""
+            width="32"
+            height="32"
+          />
+          Kodskolan
+        </h1>
       </header>
       <main className="home">
         <section className="home-intro">
+          <img
+            className="home-logo"
+            src={`${import.meta.env.BASE_URL}logo.webp`}
+            alt="Kodskolan – lär dig koda från noll"
+            width="960"
+            height="640"
+          />
           <h2>Lär dig koda på svenska, från noll</h2>
           <p>
             Du skriver riktig kod direkt i webbläsaren och ser på en gång om den

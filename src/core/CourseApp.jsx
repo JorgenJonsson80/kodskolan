@@ -434,11 +434,19 @@ function Academy({ course }) {
     <>
       <header className="app-header">
         <h1>
-          <a className="home-link" href={import.meta.env.BASE_URL}>
+          <a
+            className="home-link"
+            href={import.meta.env.BASE_URL}
+            aria-label="Kodskolan"
+          >
+            <img
+              className="brand-mark"
+              src={`${import.meta.env.BASE_URL}logo-mark.png`}
+              alt=""
+              width="32"
+              height="32"
+            />
             <span className="header-label">Kodskolan</span>
-            <span className="header-home-icon" aria-label="Kodskolan">
-              🏠
-            </span>
           </a>
           <span aria-hidden="true"> › {course.icon}</span> {course.name}
         </h1>

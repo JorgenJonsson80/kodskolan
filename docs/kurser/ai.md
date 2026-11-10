@@ -61,7 +61,7 @@ som skickar reglerna som filen `.modell.json`.
 
 | #  | id            | Bana                | Lär ut                                                          | Klar |
 | -- | ------------- | ------------------- | --------------------------------------------------------------- | ---- |
-| 1  | `modell`      | Vad är en modell?   | klient, anrop, block, stop_reason, tokens, kostnad, nyckel, omförsök | ✅ |
+| 1  | `modell`      | Språkmodellen       | klient, anrop, block, stop_reason, tokens, kostnad, nyckel, omförsök | ✅ |
 | 2  | `prompter`    | Prompter            | systemprompt, tydliga instruktioner, mallar, data i taggar      |      |
 | 3  | `samtal`      | Samtal              | historiken är en lista, minnet är det du skickar med            |      |
 | 4  | `struktur`    | Strukturerade svar  | `parse` med Pydantic, JSON-schema, när svaret är fel            |      |

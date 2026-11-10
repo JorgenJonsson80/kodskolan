@@ -36,7 +36,7 @@ function head(page) {
     `<meta property="og:title" content="${escape(page.title)}" />`,
     `<meta property="og:description" content="${escape(page.description)}" />`,
     `<meta property="og:url" content="${url}" />`,
-    `<meta property="og:image" content="${SITE}/og.png" />`,
+    `<meta property="og:image" content="${SITE}/og.jpg" />`,
     '<meta name="twitter:card" content="summary_large_image" />',
   ];
   if (page.course) {

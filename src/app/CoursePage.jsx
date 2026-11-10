@@ -23,6 +23,13 @@ export function CourseInfo({ course, summary }) {
     <>
       <header className="app-header">
         <a className="home-link app-brand" href={BASE}>
+          <img
+            className="brand-mark"
+            src={`${BASE}logo-mark.png`}
+            alt=""
+            width="32"
+            height="32"
+          />
           Kodskolan
         </a>
       </header>

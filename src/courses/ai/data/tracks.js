@@ -7,7 +7,7 @@ const DOCS = 'https://platform.claude.com/docs/en/';
 export const TRACKS = [
   {
     id: 'modell',
-    title: 'Vad är en modell?',
+    title: 'Språkmodellen',
     teaches: [
       'Anthropic()',
       'messages.create',

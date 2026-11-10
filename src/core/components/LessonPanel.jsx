@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useCourse } from '../course';
 import { encouragement } from '../encouragement';
 import { buildAiPrompt } from '../lib/aiPrompt';
+import { explainBlocks } from '../lib/explainBlocks';
 import CodeEditor from './CodeEditor';
 import CodeText from './CodeText';
 import FeedbackPanel from './FeedbackPanel';
@@ -187,19 +188,22 @@ export default function LessonPanel({
         // så att den som aldrig kodat hittar den.
         <details className="lesson-explain" open={lessonNumber <= 3}>
           <summary>📖 Ny på det här? Läs mer och se ett exempel</summary>
-          {lesson.explain.split('\n\n').map((paragraph, index) =>
-            // Ett stycke där varje rad börjar med "- " är en lista.
-            paragraph.split('\n').every(line => line.startsWith('- ')) ? (
+          {explainBlocks(lesson.explain).map((block, index) =>
+            block.type === 'code' ? (
+              <pre key={`explain-${index}`} className="explain-code">
+                <code>{block.code}</code>
+              </pre>
+            ) : block.type === 'list' ? (
               <ul key={`explain-${index}`}>
-                {paragraph.split('\n').map((line, row) => (
+                {block.items.map((item, row) => (
                   <li key={`explain-${index}-${row}`}>
-                    <CodeText text={line.slice(2)} />
+                    <CodeText text={item} />
                   </li>
                 ))}
               </ul>
             ) : (
               <p key={`explain-${index}`}>
-                <CodeText text={paragraph} />
+                <CodeText text={block.text} />
               </p>
             ),
           )}

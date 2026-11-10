@@ -661,6 +661,13 @@
   margin: 8px 0 4px;
 }
 
+/* Kodblock (```) i förklaringen: samma stil som exemplet, och lång kod
+   scrollar i sidled i stället för att göra sidan bredare. */
+.lesson-explain .explain-code {
+  margin: 8px 0;
+  overflow-x: auto;
+}
+
 .lesson-explain figcaption {
   color: var(--muted);
   font-size: 0.85rem;
@@ -2397,9 +2404,28 @@
   color: var(--muted);
 }
 
-/* Ikonen till startsidan syns bara på mobilen, där ordet inte får plats. */
-.header-home-icon {
-  display: none;
+/* Loggans märke i sidhuvudet. På mobilen står det ensamt, utan ordet. */
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  border-radius: 8px;
+  vertical-align: middle;
+}
+
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Hela loggan överst på startsidan. */
+.home-logo {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  margin: 8px 0 16px;
+  border-radius: 16px;
 }
 
 /* Mobilen: sidhuvudet på en rad, så att uppgiften och editorn får
@@ -2444,8 +2470,8 @@
     height: 28px;
   }
 
-  .header-home-icon {
-    display: inline;
+  .brand-mark {
+    margin-right: 0;
   }
 }
 
