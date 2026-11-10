@@ -374,4 +374,43 @@ export const QUIZ = {
       explain: 'Skicka attacker och kontrollera att inget hemligt kommer ut.',
     },
   ],
+  slutprojekt: [
+    {
+      question: 'Varför används AsyncAnthropic i en FastAPI-tjänst?',
+      options: [
+        'Servern kan ta hand om andra anrop medan AI:n tänker',
+        'Svaren blir bättre',
+        'Det krävs av FastAPI',
+        'Det blir billigare',
+      ],
+      explain: 'Med async och gather kan också flera frågor ställas samtidigt.',
+    },
+    {
+      question:
+        'Vilken statuskod passar när AI-tjänsten bakom ditt API är överbelastad?',
+      options: ['503', '404', '422', '201'],
+      explain:
+        '503 betyder att tjänsten tillfälligt inte kan svara – försök igen.',
+    },
+    {
+      question: 'Vad skyddar en kvot per nyckel mot?',
+      options: [
+        'Att någon använder AI:n så mycket att det blir dyrt',
+        'Att svaren blir fel',
+        'Att servern kraschar vid fel',
+        'Att lösenord läcker',
+      ],
+      explain: 'Varje AI-anrop kostar. 429 säger att kvoten är slut.',
+    },
+    {
+      question: 'Vad behöver ändras för att AI-hjälpen ska fungera på riktigt?',
+      options: [
+        'Installera anthropic och sätta ANTHROPIC_API_KEY',
+        'Skriva om all kod',
+        'Byta från FastAPI till Flask',
+        'Ta bort async',
+      ],
+      explain: 'Koden är redan samma som mot det riktiga API:et.',
+    },
+  ],
 };

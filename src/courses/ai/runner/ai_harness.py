@@ -8,7 +8,8 @@
 # Hur låtsasmodellen svarar står i docs/kurser/ai.md. Kort:
 #   1. Övningens regler (modell i övningen, filen .modell.json) går först.
 #      En regel kan svara med text, json, ett verktygsanrop eller ett fel
-#      (fel: 'RateLimitError'), högst ganger gånger.
+#      (fel: 'RateLimitError'), högst ganger gånger. fordrojning: 5 gör
+#      att anropet tar fem extra (låtsas)sekunder.
 #   2. Svar på verktygsresultat, minne av namn och enkel räkning.
 #   3. Systemprompten styr stilen: pirat, kort, versaler, engelska.
 #   4. Annars ett vänligt standardsvar.
@@ -27,6 +28,8 @@ SEKUNDER_PER_ANROP = 1.0
 _ANROP = []
 # Hur många gånger varje regel använts, för regler med 'ganger'.
 _ANVANDA = {}
+# Extra (låtsas)sekunder för anropet som just gjordes, från fordrojning.
+_FORDROJNING = [0]
 _RAKNARE = {'msg': 0, 'tool': 0}
 
 
@@ -299,6 +302,11 @@ def _svara(model, max_tokens, system, messages, tools, schema):
         if not _matchar(regel, fraga, systemtext, historik, har_verktyg, resultattext):
             continue
         _ANVANDA[nummer] = _ANVANDA.get(nummer, 0) + 1
+        if 'fordrojning' in regel:
+            # Svaret dröjer, som när en tjänst hänger sig. Nästa regel
+            # bestämmer vad som svaras.
+            _FORDROJNING[0] += regel['fordrojning']
+            continue
         if 'fel' in regel:
             # Som när API:et är överbelastat: övningar om omförsök.
             raise globals()[regel['fel']](regel.get('meddelande', 'För många anrop just nu. Försök igen.'))
@@ -391,10 +399,17 @@ def _tolka(svar, output_format):
     return svar
 
 
+def _skapa_med_tid(kwargs):
+    _FORDROJNING[0] = 0
+    svar = _skapa(**kwargs)
+    return svar, SEKUNDER_PER_ANROP + _FORDROJNING[0]
+
+
 class Messages:
     def create(self, **kwargs):
-        _LOOP._now += SEKUNDER_PER_ANROP
-        return _skapa(**kwargs)
+        svar, sekunder = _skapa_med_tid(kwargs)
+        _LOOP._now += sekunder
+        return svar
 
     def parse(self, *, output_format, **kwargs):
         schema = output_format.model_json_schema()
@@ -404,8 +419,9 @@ class Messages:
 
 class AsyncMessages:
     async def create(self, **kwargs):
-        await asyncio.sleep(SEKUNDER_PER_ANROP)
-        return _skapa(**kwargs)
+        svar, sekunder = _skapa_med_tid(kwargs)
+        await asyncio.sleep(sekunder)
+        return svar
 
     async def parse(self, *, output_format, **kwargs):
         schema = output_format.model_json_schema()

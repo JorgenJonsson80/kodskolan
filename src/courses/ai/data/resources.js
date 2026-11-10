@@ -112,4 +112,16 @@ export const RESOURCES = {
       video: 'llm as a judge explained',
     },
   ],
+  slutprojekt: [
+    {
+      topic: 'Anthropics Python-bibliotek',
+      read: `${DOCS}api/client-sdks`,
+      video: 'claude api fastapi tutorial',
+    },
+    {
+      topic: 'Begränsningar och kvoter',
+      read: `${DOCS}api/rate-limits`,
+      video: 'api rate limiting explained',
+    },
+  ],
 };

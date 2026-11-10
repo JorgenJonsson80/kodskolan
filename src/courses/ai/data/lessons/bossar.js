@@ -1,4 +1,9 @@
 import { AGENT_KROPP } from './agentBoss';
+import {
+  AI_HJALPEN,
+  AI_HJALPEN_KLAR,
+  REGLER as SLUT_REGLER,
+} from './slutprojekt';
 
 // En boss per bana: en större uppgift som använder allt från banan, utan
 // ledtrådar. Banan räknas inte som klar förrän bossen är besegrad.
@@ -581,5 +586,62 @@ export const BOSSES = {
       { system: 'aldrig', om: 'facit', svar: 'Det får jag inte visa.' },
       { om: 'facit', svar: 'Facit är 42 och 10.' },
     ],
+  },
+  slutprojekt: {
+    id: 'ai-slutprojekt-boss',
+    track: 'slutprojekt',
+    title: 'Boss: AI-hjälpen i drift',
+    isBoss: true,
+    xp: 100,
+    description:
+      BOSS_INTRO +
+      'AI-hjälpen ska ut till riktiga kunder. Den behöver minne för samtal, och en tidsgräns när AI:n hänger sig.',
+    task: `Uppgift: Startkoden är hela AI-hjälpen. Lägg till:
+  1. \`POST /chatt/{id}\` (med kvoten) som tar emot \`{'fraga': …}\` och minns samtalet per id i \`SAMTAL\`: historiken skickas med varje gång, och svaret läggs till. Svaret är \`{'svar': …}\`.
+  2. AI:n får ta högst 3 sekunder. Annars: 504 med \`'AI:n svarar inte just nu.'\` (gäller alla vägar som använder \`fraga_ai\`).
+  3. \`GET /chatt/{id}\` (med nyckel) svarar med antal meddelanden i samtalet: \`{'meddelanden': …}\`, eller 404.
+  (Låtsas-AI:n hänger sig på frågor med ordet "långsam".)`,
+    starterCode: AI_HJALPEN,
+    solution: AI_HJALPEN_KLAR,
+    hints: [],
+    tests: [
+      {
+        description: 'Chatten minns',
+        code: "[__post('/chatt/a', {'fraga': 'Jag heter Ada'}, {'x-api-nyckel': 'hemlig'}).status, __post('/chatt/a', {'fraga': 'Vad heter jag?'}, {'x-api-nyckel': 'hemlig'}).json]",
+        expected: [200, { svar: 'Du heter Ada.' }],
+      },
+      {
+        description: 'Fyra meddelanden i samtalet',
+        code: "__get('/chatt/a', {'x-api-nyckel': 'hemlig'}).json",
+        expected: { meddelanden: 4 },
+      },
+      {
+        description: 'Okänt samtal: 404',
+        code: "__get('/chatt/x', {'x-api-nyckel': 'hemlig'}).status",
+        expected: 404,
+      },
+      {
+        description: 'Långsam AI: 504 efter tre sekunder',
+        code: "(lambda r: [r.status, r.json['detail']])(__post('/fraga', {'fraga': 'Är kaffe långsam?'}, {'x-api-nyckel': 'hemlig'}))",
+        expected: [504, 'AI:n svarar inte just nu.'],
+      },
+      {
+        description: 'Tre sekunder, inte fem',
+        code: "__tid(lambda: __post('/chatt/b', {'fraga': 'En långsam fråga'}, {'x-api-nyckel': 'hemlig'}))",
+        expected: 3,
+      },
+      {
+        description: 'Utan nyckel: 401',
+        code: "__post('/chatt/a', {'fraga': 'Hej!'}).status",
+        expected: 401,
+      },
+    ],
+    modell: [{ om: 'långsam', fordrojning: 5 }, ...SLUT_REGLER],
+    request: {
+      method: 'POST',
+      path: '/chatt/a',
+      body: '{"fraga": "Jag heter Ada"}',
+      headers: { 'x-api-nyckel': 'hemlig' },
+    },
   },
 };

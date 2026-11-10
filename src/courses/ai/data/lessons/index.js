@@ -5,6 +5,7 @@ import { MODELL } from './modell';
 import { PROMPTER } from './prompter';
 import { RAG } from './rag';
 import { SAMTAL } from './samtal';
+import { SLUTPROJEKT } from './slutprojekt';
 import { STRUKTUR } from './struktur';
 import { UTVARDERING } from './utvardering';
 import { VERKTYG } from './verktyg';
@@ -30,4 +31,6 @@ export const LESSONS = [
   BOSSES.agent,
   ...UTVARDERING,
   BOSSES.utvardering,
+  ...SLUTPROJEKT,
+  BOSSES.slutprojekt,
 ];

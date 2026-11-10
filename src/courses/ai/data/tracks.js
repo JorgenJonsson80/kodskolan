@@ -210,4 +210,23 @@ export const TRACKS = [
       { title: 'Develop tests', url: `${DOCS}test-and-evaluate/develop-tests` },
     ],
   },
+  {
+    id: 'slutprojekt',
+    title: 'Slutprojektet',
+    teaches: [
+      'AsyncAnthropic',
+      'FastAPI',
+      'nyckel och kvot',
+      'RAG',
+      'strukturerade svar',
+      'logg',
+    ],
+    reward: { emoji: '🚀', name: 'Raket' },
+    canBuild:
+      'en egen AI-tjänst som en app kan använda – och som går att köra på riktigt',
+    docs: [
+      { title: 'Client SDKs', url: `${DOCS}api/client-sdks` },
+      { title: 'Rate limits', url: `${DOCS}api/rate-limits` },
+    ],
+  },
 ];
