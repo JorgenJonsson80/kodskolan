@@ -41,4 +41,89 @@ export const QUIZ = {
       explain: 'För många anrop går över. Ett fel i anropet blir fel igen.',
     },
   ],
+  prompter: [
+    {
+      question: 'Vad skrivs ut?',
+      code: "import anthropic\n\nclient = anthropic.Anthropic()\nsvar = client.messages.create(model='claude-opus-5-5', max_tokens=100, system='Svara med ett ord.', messages=[{'role': 'user', 'content': 'Hej'}])",
+      check: 'svar.content[0].text',
+      options: [
+        'Hej',
+        'Hej! Hur kan jag hjälpa dig?',
+        'Ett ord',
+        'Svara med ett ord.',
+      ],
+      explain:
+        'Låtsasmodellen följer stilorden i systemprompten, som en riktig modell följer instruktioner.',
+    },
+    {
+      question:
+        'Var hör instruktionerna hemma när användarens text kan innehålla vad som helst?',
+      options: [
+        'I systemprompten, med användarens text i taggar',
+        'Sist i användarens text',
+        'I max_tokens',
+        'Det spelar ingen roll',
+      ],
+      explain: 'Så skyddar du dig mot promptinjektion.',
+    },
+    {
+      question: 'Vad är few-shot?',
+      options: [
+        'Att ge några exempel i prompten som modellen följer',
+        'Att ställa få frågor',
+        'Att sänka max_tokens',
+        'Att använda en liten modell',
+      ],
+      explain: 'Exempel visar formatet bättre än en lång förklaring.',
+    },
+    {
+      question: 'Varför be om kortare svar i stället för att sänka max_tokens?',
+      options: [
+        'max_tokens klipper svaret mitt i, en instruktion ger ett helt men kortare svar',
+        'max_tokens kostar extra',
+        'Det går inte att ändra max_tokens',
+        'Det finns ingen skillnad',
+      ],
+      explain: 'Kolla stop_reason – max_tokens betyder att svaret klipptes.',
+    },
+  ],
+  samtal: [
+    {
+      question: 'Varför minns inte modellen vad du sa i förra anropet?',
+      options: [
+        'API:et har inget minne – historiken måste skickas med varje gång',
+        'Modellen glömmer efter en minut',
+        'Det gör den, om man väntar',
+        'max_tokens är för lågt',
+      ],
+      explain: 'Minnet är listan med meddelanden du skickar.',
+    },
+    {
+      question: 'Vad svarar modellen?',
+      code: "import anthropic\n\nclient = anthropic.Anthropic()\nsvar = client.messages.create(model='claude-opus-5-5', max_tokens=100, messages=[{'role': 'user', 'content': 'Jag heter Ada'}, {'role': 'assistant', 'content': 'Hej!'}, {'role': 'user', 'content': 'Vad heter jag?'}])",
+      check: 'svar.content[0].text',
+      options: [
+        'Du heter Ada.',
+        'Det vet jag inte – du har inte berättat det.',
+        'Hej!',
+        'Jag heter Ada',
+      ],
+      explain: 'Namnet finns i historiken som skickades med.',
+    },
+    {
+      question: 'Varför blir långa samtal dyrare för varje fråga?',
+      options: [
+        'Hela historiken skickas med, så input-tokens växer',
+        'Modellen blir trött',
+        'Output-tokens dubblas',
+        'Det blir de inte',
+      ],
+      explain: 'Därför kortar appar historiken eller börjar om.',
+    },
+    {
+      question: 'Vilken roll måste det första meddelandet ha?',
+      options: ['user', 'assistant', 'system', 'Vilken som helst'],
+      explain: 'Kortar du historiken, ta bort assistant-meddelanden i början.',
+    },
+  ],
 };

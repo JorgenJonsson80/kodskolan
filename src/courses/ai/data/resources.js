@@ -16,4 +16,28 @@ export const RESOURCES = {
       video: 'what are tokens llm explained',
     },
   ],
+  prompter: [
+    {
+      topic: 'Skriva bra prompter',
+      read: `${DOCS}build-with-claude/prompt-engineering/overview`,
+      video: 'prompt engineering tutorial',
+    },
+    {
+      topic: 'Promptinjektion',
+      read: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/',
+      video: 'prompt injection explained',
+    },
+  ],
+  samtal: [
+    {
+      topic: 'Samtal i flera steg',
+      read: `${DOCS}build-with-claude/working-with-messages`,
+      video: 'claude api conversation history python',
+    },
+    {
+      topic: 'Kontextfönster',
+      read: `${DOCS}build-with-claude/context-windows`,
+      video: 'llm context window explained',
+    },
+  ],
 };

@@ -26,4 +26,52 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'prompter',
+    title: 'Prompter',
+    teaches: [
+      'system',
+      'stil och längd',
+      'promptmallar',
+      'data i taggar',
+      'promptinjektion',
+      'exempel',
+    ],
+    reward: { emoji: '📜', name: 'Skriftrulle' },
+    canBuild:
+      'en AI-kundtjänst som håller sig till ämnet och inte går att lura',
+    docs: [
+      {
+        title: 'Prompt engineering',
+        url: `${DOCS}build-with-claude/prompt-engineering/overview`,
+      },
+      {
+        title: 'System prompts',
+        url: `${DOCS}build-with-claude/prompt-engineering/system-prompts`,
+      },
+    ],
+  },
+  {
+    id: 'samtal',
+    title: 'Samtal',
+    teaches: [
+      'historiken är en lista',
+      'assistant',
+      'en chatt som klass',
+      'korta historiken',
+      'spara samtal',
+    ],
+    reward: { emoji: '💬', name: 'Pratbubbla' },
+    canBuild: 'en chattbot som minns hela samtalet och går att spara',
+    docs: [
+      {
+        title: 'Multi-turn conversations',
+        url: `${DOCS}build-with-claude/working-with-messages`,
+      },
+      {
+        title: 'Context windows',
+        url: `${DOCS}build-with-claude/context-windows`,
+      },
+    ],
+  },
 ];
