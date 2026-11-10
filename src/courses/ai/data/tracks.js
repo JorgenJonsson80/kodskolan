@@ -188,4 +188,26 @@ export const TRACKS = [
       { title: 'Tool use', url: `${DOCS}agents-and-tools/tool-use/overview` },
     ],
   },
+  {
+    id: 'utvardering',
+    title: 'Testa AI',
+    teaches: [
+      'testfall',
+      'normalisera',
+      'nyckelord',
+      'poäng',
+      'AI som domare',
+      'säkerhetstester',
+    ],
+    reward: { emoji: '🔬', name: 'Mikroskop' },
+    canBuild:
+      'en eval som visar om en ändring i prompten gjorde AI:n bättre eller sämre',
+    docs: [
+      {
+        title: 'Define success criteria',
+        url: `${DOCS}test-and-evaluate/define-success`,
+      },
+      { title: 'Develop tests', url: `${DOCS}test-and-evaluate/develop-tests` },
+    ],
+  },
 ];

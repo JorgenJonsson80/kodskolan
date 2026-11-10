@@ -100,4 +100,16 @@ export const RESOURCES = {
       video: 'ai agent human in the loop',
     },
   ],
+  utvardering: [
+    {
+      topic: 'Testa AI',
+      read: `${DOCS}test-and-evaluate/develop-tests`,
+      video: 'llm evaluation evals tutorial',
+    },
+    {
+      topic: 'AI som domare',
+      read: `${DOCS}test-and-evaluate/define-success`,
+      video: 'llm as a judge explained',
+    },
+  ],
 };

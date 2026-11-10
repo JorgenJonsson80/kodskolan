@@ -335,4 +335,43 @@ export const QUIZ = {
       explain: 'Med is_error kan agenten rätta sig själv.',
     },
   ],
+  utvardering: [
+    {
+      question: 'Varför räcker inte == för att rätta svar från en modell?',
+      options: [
+        'Samma svar kan skrivas på många sätt',
+        'Modellen svarar alltid fel',
+        '== fungerar inte på text',
+        'Det räcker alltid',
+      ],
+      explain: 'Normalisera och använd nyckelord, eller en AI som domare.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: "import re\n\ndef normal(text):\n    return ' '.join(re.findall(r'[a-zåäö0-9]+', text.lower()))",
+      check: "normal('  Hej, Världen! ')",
+      options: ['hej världen', 'Hej, Världen!', 'hej,världen', 'HEJ VÄRLDEN'],
+      explain: 'Små bokstäver, bara ord och ett mellanslag mellan dem.',
+    },
+    {
+      question: 'Vad är en eval?',
+      options: [
+        'En samling testfall som ger AI:n ett betyg',
+        'Pythons eval-funktion',
+        'En sorts modell',
+        'Ett felmeddelande',
+      ],
+      explain: 'Med en eval kan du jämföra prompter med siffror.',
+    },
+    {
+      question: 'Vad testar ett säkerhetstest?',
+      options: [
+        'Att AI:n inte gör eller avslöjar något den inte får',
+        'Att svaren är snabba',
+        'Att API-nyckeln fungerar',
+        'Att max_tokens räcker',
+      ],
+      explain: 'Skicka attacker och kontrollera att inget hemligt kommer ut.',
+    },
+  ],
 };

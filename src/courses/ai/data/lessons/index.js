@@ -6,6 +6,7 @@ import { PROMPTER } from './prompter';
 import { RAG } from './rag';
 import { SAMTAL } from './samtal';
 import { STRUKTUR } from './struktur';
+import { UTVARDERING } from './utvardering';
 import { VERKTYG } from './verktyg';
 
 // Alla övningar i banornas ordning, med bossen sist i varje bana. Se
@@ -27,4 +28,6 @@ export const LESSONS = [
   BOSSES.rag,
   ...AGENT,
   BOSSES.agent,
+  ...UTVARDERING,
+  BOSSES.utvardering,
 ];
