@@ -52,4 +52,16 @@ export const RESOURCES = {
       video: 'pydantic tutorial python',
     },
   ],
+  verktyg: [
+    {
+      topic: 'Verktyg (tool use)',
+      read: `${DOCS}agents-and-tools/tool-use/overview`,
+      video: 'claude tool use tutorial python',
+    },
+    {
+      topic: 'Function calling förklarat',
+      read: `${DOCS}agents-and-tools/tool-use/implement-tool-use`,
+      video: 'llm function calling explained',
+    },
+  ],
 };

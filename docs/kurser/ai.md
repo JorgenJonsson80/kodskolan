@@ -35,9 +35,11 @@ kod som mot det riktiga API:et:
    - `om`, `system`, `historik` – reguljära uttryck (skiftlägesokänsliga)
      mot senaste frågan, systemprompten och alla användarmeddelanden.
    - `kraver_verktyg`, `efter_verktyg` – bara när verktyg skickats med,
-     eller bara på ett meddelande med `tool_result`.
+     eller bara på ett meddelande med `tool_result`. `resultat` matchar
+     texten i verktygsresultaten.
    - Ett svar: `svar` (text, `{fraga}` och `{resultat}` byts ut), `json`
-     (ett strukturerat svar), `verktyg: {namn, input}` (ett `tool_use`)
+     (ett strukturerat svar), `verktyg: {namn, input}` (ett `tool_use`, eller
+     en lista för flera i samma svar)
      eller `fel: 'RateLimitError'`. `ganger` begränsar hur många gånger
      regeln används.
 2. **Inbyggt:** svar på verktygsresultat (`Enligt verktyget: …`), minne av

@@ -244,4 +244,94 @@ export const BOSSES = {
       },
     ],
   },
+  verktyg: {
+    id: 'ai-verktyg-boss',
+    track: 'verktyg',
+    title: 'Boss: Assistenten med verktyg',
+    isBoss: true,
+    xp: 70,
+    description:
+      BOSS_INTRO +
+      'Bygg en assistent med tre verktyg: väder, klocka och räknare. Den ska klara en fråga utan verktyg, med ett, med flera – och när ett verktyg kraschar.',
+    task: `Uppgift: Skriv \`VERKTYG\` (hamta_vader med stad, hamta_tid utan indata, rakna med a, operator och b), funktionerna och \`assistent(fraga)\`.
+  1. \`hamta_vader(stad)\` slår upp i \`VADER\` (okänd stad ger ett fel), \`hamta_tid()\` ger \`'12:00'\` och \`rakna\` räknar utan eval.
+  2. \`assistent\` gör en runda: fråga, kör alla verktygsanrop, skicka alla resultat i ett meddelande (fel med \`is_error\`) och returnera den slutliga texten. Utan verktyg returneras svaret direkt.
+  3. Varje verktyg som körs läggs till i listan \`LOGG\` som \`[namn, input]\`.`,
+    starterCode:
+      "import anthropic\n\nclient = anthropic.Anthropic()\n\nVADER = {'Malmö': 'sol, 18 grader', 'Kiruna': 'snö, -5 grader'}\nLOGG = []\n",
+    solution: `import anthropic\n\nclient = anthropic.Anthropic()\n\nVADER = {'Malmö': 'sol, 18 grader', 'Kiruna': 'snö, -5 grader'}\nLOGG = []\n\nVERKTYG = [\n    {\n        'name': 'hamta_vader',\n        'description': 'Hämtar dagens väder i en stad.',\n        'input_schema': {'type': 'object', 'properties': {'stad': {'type': 'string'}}, 'required': ['stad']},\n    },\n    {\n        'name': 'hamta_tid',\n        'description': 'Hämtar vad klockan är.',\n        'input_schema': {'type': 'object', 'properties': {}},\n    },\n    {\n        'name': 'rakna',\n        'description': 'Räknar ut a operator b exakt.',\n        'input_schema': {\n            'type': 'object',\n            'properties': {\n                'a': {'type': 'number'},\n                'operator': {'type': 'string', 'enum': ['+', '-', '*', '/']},\n                'b': {'type': 'number'},\n            },\n            'required': ['a', 'operator', 'b'],\n        },\n    },\n]\n\nRAKNESATT = {'+': lambda a, b: a + b, '-': lambda a, b: a - b, '*': lambda a, b: a * b, '/': lambda a, b: a / b}\n\n\ndef hamta_vader(stad):\n    return VADER[stad]\n\n\ndef hamta_tid():\n    return '12:00'\n\n\ndef rakna(a, operator, b):\n    return str(RAKNESATT[operator](a, b))\n\n\nFUNKTIONER = {'hamta_vader': hamta_vader, 'hamta_tid': hamta_tid, 'rakna': rakna}\n\n\ndef resultat_for(block):\n    LOGG.append([block.name, block.input])\n    try:\n        return {'type': 'tool_result', 'tool_use_id': block.id, 'content': FUNKTIONER[block.name](**block.input)}\n    except Exception as fel:\n        return {'type': 'tool_result', 'tool_use_id': block.id, 'content': f'Fel: {fel}', 'is_error': True}\n\n\ndef assistent(fraga):\n    meddelanden = [{'role': 'user', 'content': fraga}]\n    svar = client.messages.create(model='${M}', max_tokens=1000, tools=VERKTYG, messages=meddelanden)\n    if svar.stop_reason != 'tool_use':\n        return next(b.text for b in svar.content if b.type == 'text')\n    meddelanden.append({'role': 'assistant', 'content': svar.content})\n    meddelanden.append({'role': 'user', 'content': [resultat_for(b) for b in svar.content if b.type == 'tool_use']})\n    svar = client.messages.create(model='${M}', max_tokens=1000, tools=VERKTYG, messages=meddelanden)\n    return next(b.text for b in svar.content if b.type == 'text')\n`,
+    hints: [],
+    tests: [
+      {
+        description: 'Utan verktyg',
+        code: "assistent('Hej')",
+        expected: 'Hej! Hur kan jag hjälpa dig?',
+      },
+      {
+        description: 'Klockan',
+        code: "assistent('Vad är klockan?')",
+        expected: 'Klockan är 12:00.',
+      },
+      {
+        description: 'Två på en gång',
+        code: "assistent('Väder i Kiruna och tid, tack')",
+        expected: 'Här är allt:\nsnö, -5 grader\n12:00',
+      },
+      {
+        description: 'Räkna',
+        code: "assistent('Vad är 99 gånger 99?')",
+        expected: 'Det blir 9801.',
+      },
+      {
+        description: 'Okänd stad',
+        code: "assistent('Väder i Atlantis')",
+        expected: 'Den staden hittade jag inte.',
+      },
+      {
+        description: 'Loggen',
+        code: 'LOGG',
+        expected: [
+          ['hamta_tid', {}],
+          ['hamta_vader', { stad: 'Kiruna' }],
+          ['hamta_tid', {}],
+          ['rakna', { a: 99, operator: '*', b: 99 }],
+          ['hamta_vader', { stad: 'Atlantis' }],
+        ],
+      },
+    ],
+    modell: [
+      { om: 'klockan', verktyg: { namn: 'hamta_tid', input: {} } },
+      {
+        om: 'Kiruna och tid',
+        verktyg: [
+          { namn: 'hamta_vader', input: { stad: 'Kiruna' } },
+          { namn: 'hamta_tid', input: {} },
+        ],
+      },
+      {
+        om: '99',
+        verktyg: { namn: 'rakna', input: { a: 99, operator: '*', b: 99 } },
+      },
+      {
+        om: 'Atlantis',
+        verktyg: { namn: 'hamta_vader', input: { stad: 'Atlantis' } },
+      },
+      {
+        efter_verktyg: true,
+        resultat: '^Fel',
+        svar: 'Den staden hittade jag inte.',
+      },
+      {
+        efter_verktyg: true,
+        resultat: '\\n',
+        svar: 'Här är allt:\n{resultat}',
+      },
+      {
+        efter_verktyg: true,
+        resultat: '^\\d+:\\d+$',
+        svar: 'Klockan är {resultat}.',
+      },
+      { efter_verktyg: true, svar: 'Det blir {resultat}.' },
+    ],
+  },
 };

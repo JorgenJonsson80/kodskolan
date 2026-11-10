@@ -99,4 +99,25 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'verktyg',
+    title: 'Verktyg',
+    teaches: [
+      'tools',
+      'tool_use',
+      'tool_result',
+      'flera verktyg',
+      'is_error',
+      'ingen eval',
+    ],
+    reward: { emoji: '🔧', name: 'Skiftnyckel' },
+    canBuild: 'en assistent som kan slå upp väder, klockan och räkna exakt',
+    docs: [
+      { title: 'Tool use', url: `${DOCS}agents-and-tools/tool-use/overview` },
+      {
+        title: 'Implement tool use',
+        url: `${DOCS}agents-and-tools/tool-use/implement-tool-use`,
+      },
+    ],
+  },
 ];

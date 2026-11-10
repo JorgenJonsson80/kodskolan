@@ -218,8 +218,10 @@ def _regler():
         return []
 
 
-def _matchar(regel, fraga, system, historik, har_verktyg):
+def _matchar(regel, fraga, system, historik, har_verktyg, resultattext=''):
     if 'om' in regel and not re.search(regel['om'], fraga, re.IGNORECASE):
+        return False
+    if 'resultat' in regel and not re.search(regel['resultat'], resultattext, re.IGNORECASE):
         return False
     if 'system' in regel and not re.search(regel['system'], system, re.IGNORECASE):
         return False
@@ -294,16 +296,18 @@ def _svara(model, max_tokens, system, messages, tools, schema):
             continue
         if not resultat and regel.get('efter_verktyg'):
             continue
-        if not _matchar(regel, fraga, systemtext, historik, har_verktyg):
+        if not _matchar(regel, fraga, systemtext, historik, har_verktyg, resultattext):
             continue
         _ANVANDA[nummer] = _ANVANDA.get(nummer, 0) + 1
         if 'fel' in regel:
             # Som när API:et är överbelastat: övningar om omförsök.
             raise globals()[regel['fel']](regel.get('meddelande', 'För många anrop just nu. Försök igen.'))
         if 'verktyg' in regel:
-            if regel['verktyg']['namn'] not in verktygsnamn:
+            # Ett verktygsanrop, eller en lista med flera i samma svar.
+            anrop = regel['verktyg'] if isinstance(regel['verktyg'], list) else [regel['verktyg']]
+            if any(a['namn'] not in verktygsnamn for a in anrop):
                 continue
-            innehall = [ToolUseBlock(regel['verktyg']['namn'], copy.deepcopy(regel['verktyg'].get('input', {})))]
+            innehall = [ToolUseBlock(a['namn'], copy.deepcopy(a.get('input', {}))) for a in anrop]
             if regel.get('svar'):
                 innehall.insert(0, TextBlock(_fyll(regel['svar'], fraga, resultattext)))
         elif 'json' in regel:

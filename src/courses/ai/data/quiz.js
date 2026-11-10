@@ -172,4 +172,38 @@ export const QUIZ = {
       explain: 'Modeller kan räkna fel. Python räknar rätt varje gång.',
     },
   ],
+  verktyg: [
+    {
+      question: 'Vem kör verktygets funktion?',
+      options: ['Ditt program', 'Modellen', 'Anthropics servrar', 'Användaren'],
+      explain:
+        'Modellen ber bara om verktyget – ditt program kör det och skickar tillbaka resultatet.',
+    },
+    {
+      question: 'Vad är stop_reason när modellen vill använda ett verktyg?',
+      options: ['tool_use', 'end_turn', 'max_tokens', 'tool_result'],
+      explain: 'Då finns ett tool_use-block med name, input och id i svaret.',
+    },
+    {
+      question: 'Hur skickas resultaten från tre verktygsanrop tillbaka?',
+      options: [
+        'Alla tre tool_result i ett user-meddelande',
+        'Ett user-meddelande per resultat',
+        'I systemprompten',
+        'Som ett assistant-meddelande',
+      ],
+      explain:
+        'Annars lär sig modellen att sluta be om flera verktyg samtidigt.',
+    },
+    {
+      question: 'Varför ska man aldrig köra eval på det modellen skickar?',
+      options: [
+        'Då kan modellen få programmet att köra vilken kod som helst',
+        'eval är för långsamt',
+        'eval fungerar inte med tal',
+        'Det går bra',
+      ],
+      explain: 'Ge verktyg bestämda delar, som a, operator och b med en enum.',
+    },
+  ],
 };
