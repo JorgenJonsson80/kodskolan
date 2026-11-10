@@ -165,4 +165,27 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'agent',
+    title: 'Agenter',
+    teaches: [
+      'loopen',
+      'spärr',
+      'logg',
+      'instruktioner',
+      'fel på vägen',
+      'fråga först',
+      'budget',
+    ],
+    reward: { emoji: '🕹️', name: 'Styrspak' },
+    canBuild:
+      'en agent som löser uppgifter i flera steg, men frågar innan den gör något på riktigt',
+    docs: [
+      {
+        title: 'Building effective agents',
+        url: 'https://www.anthropic.com/engineering/building-effective-agents',
+      },
+      { title: 'Tool use', url: `${DOCS}agents-and-tools/tool-use/overview` },
+    ],
+  },
 ];

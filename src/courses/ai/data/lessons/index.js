@@ -1,3 +1,4 @@
+import { AGENT } from './agent';
 import { BOSSES } from './bossar';
 import { EMBEDDINGS } from './embeddings';
 import { MODELL } from './modell';
@@ -24,4 +25,6 @@ export const LESSONS = [
   BOSSES.embeddings,
   ...RAG,
   BOSSES.rag,
+  ...AGENT,
+  BOSSES.agent,
 ];

@@ -88,4 +88,16 @@ export const RESOURCES = {
       video: 'llm hallucination explained',
     },
   ],
+  agent: [
+    {
+      topic: 'Bygga agenter',
+      read: 'https://www.anthropic.com/engineering/building-effective-agents',
+      video: 'ai agents explained tool use loop',
+    },
+    {
+      topic: 'Säkra agenter',
+      read: `${DOCS}agents-and-tools/tool-use/overview`,
+      video: 'ai agent human in the loop',
+    },
+  ],
 };

@@ -1,6 +1,12 @@
+import { AGENT_KROPP } from './agentBoss';
+
 // En boss per bana: en större uppgift som använder allt från banan, utan
 // ledtrådar. Banan räknas inte som klar förrän bossen är besegrad.
 // index.js lägger varje boss sist i sin bana.
+
+// Startkoden till reseagenten (bana 8): verktygen finns, loopen saknas.
+const RESA_START = `import anthropic\n\nclient = anthropic.Anthropic()\n\nFLYG = {'Rom': 1200, 'Oslo': 900}\nHOTELL = {'Rom': 800, 'Oslo': 1100}\n\n\ndef sok_flyg(stad):\n    return str(FLYG[stad])\n\n\ndef sok_hotell(stad):\n    return str(HOTELL[stad])\n\n\ndef rakna(a, operator, b):\n    return str({'+': a + b, '-': a - b, '*': a * b, '/': a / b if b else 0}[operator])\n\n\ndef boka(stad, natter):\n    return f'Bokat: {stad}, {natter} nätter'\n\n\ndef schema(*namn):\n    return {'type': 'object', 'properties': {n: {'type': 'string'} for n in namn}, 'required': list(namn)}\n\n\nVERKTYG = [\n    {'name': 'sok_flyg', 'description': 'Pris för flyg till en stad.', 'input_schema': schema('stad')},\n    {'name': 'sok_hotell', 'description': 'Pris per natt för hotell i en stad.', 'input_schema': schema('stad')},\n    {'name': 'rakna', 'description': 'Räknar ut a operator b.', 'input_schema': schema('a', 'operator', 'b')},\n    {'name': 'boka', 'description': 'Bokar resan.', 'input_schema': schema('stad', 'natter')},\n]\nFUNKTIONER = {'sok_flyg': sok_flyg, 'sok_hotell': sok_hotell, 'rakna': rakna, 'boka': boka}\n`;
+
 const BOSS_INTRO = 'Bossen har inga ledtrådar – visa vad du kan! ';
 const M = 'claude-opus-5-5';
 
@@ -429,6 +435,104 @@ export const BOSSES = {
         svar: 'Lunchen serveras 11.30.',
       },
       { system: 'bara utifrån', svar: 'Det vet jag inte.' },
+    ],
+  },
+  agent: {
+    id: 'ai-agent-boss',
+    track: 'agent',
+    title: 'Boss: Reseagenten',
+    isBoss: true,
+    xp: 80,
+    description:
+      BOSS_INTRO +
+      'En resebyrå vill ha en agent som räknar ut vad en resa kostar och kan boka den – men bara om kunden säger ja.',
+    task: `Uppgift: Verktygen och funktionerna finns. Skriv \`agent(fraga, godkann, max_varv=8)\`.
+  1. Loopen fortsätter så länge modellen ber om verktyg, högst \`max_varv\` anrop. Annars: \`'Gav upp.'\`
+  2. Alla verktygsanrop i ett svar körs, och alla resultat skickas i ett meddelande. Fel skickas med \`is_error\`.
+  3. \`boka\` är farligt: det körs bara om \`godkann(block)\` är sant, annars blir resultatet \`'Kunden sa nej.'\` med \`is_error\`.
+  4. Svaret är \`{'svar': …, 'steg': [[namn, input], …]}\` med alla verktyg som körts (också nekade).`,
+    starterCode: RESA_START,
+    solution: RESA_START + AGENT_KROPP,
+    hints: [],
+    tests: [
+      {
+        description: 'Vad kostar Rom?',
+        code: "agent('Vad kostar en resa till Rom med 3 nätter?', lambda b: True)",
+        expected: {
+          svar: 'Resan till Rom kostar 3600 kronor.',
+          steg: [
+            ['sok_flyg', { stad: 'Rom' }],
+            ['sok_hotell', { stad: 'Rom' }],
+            ['rakna', { a: 800, operator: '*', b: 3 }],
+            ['rakna', { a: 1200, operator: '+', b: 2400 }],
+          ],
+        },
+      },
+      {
+        description: 'Kunden säger nej',
+        code: "agent('Boka Oslo 2 nätter', lambda b: False)['svar']",
+        expected: 'Okej, ingen bokning.',
+      },
+      {
+        description: 'Kunden säger ja',
+        code: "agent('Boka Oslo 2 nätter', lambda b: True)['svar']",
+        expected: 'Klart! Bokat: Oslo, 2 nätter',
+      },
+      {
+        description: 'Okänd stad',
+        code: "agent('Vad kostar flyg till Mars?', lambda b: True)['svar']",
+        expected: 'Dit finns inget flyg.',
+      },
+      {
+        description: 'Spärren',
+        code: "agent('Planera en evig resa', lambda b: True, max_varv=3)",
+        expected: {
+          svar: 'Gav upp.',
+          steg: [
+            ['sok_flyg', { stad: 'Rom' }],
+            ['sok_flyg', { stad: 'Rom' }],
+            ['sok_flyg', { stad: 'Rom' }],
+          ],
+        },
+      },
+    ],
+    modell: [
+      { om: 'evig', verktyg: { namn: 'sok_flyg', input: { stad: 'Rom' } } },
+      {
+        efter_verktyg: true,
+        historik: 'evig',
+        verktyg: { namn: 'sok_flyg', input: { stad: 'Rom' } },
+      },
+      {
+        om: 'Rom med 3',
+        verktyg: [
+          { namn: 'sok_flyg', input: { stad: 'Rom' } },
+          { namn: 'sok_hotell', input: { stad: 'Rom' } },
+        ],
+      },
+      {
+        efter_verktyg: true,
+        resultat: '^1200\\n800$',
+        verktyg: { namn: 'rakna', input: { a: 800, operator: '*', b: 3 } },
+      },
+      {
+        efter_verktyg: true,
+        resultat: '^2400$',
+        verktyg: { namn: 'rakna', input: { a: 1200, operator: '+', b: 2400 } },
+      },
+      {
+        efter_verktyg: true,
+        resultat: '^3600$',
+        svar: 'Resan till Rom kostar 3600 kronor.',
+      },
+      {
+        om: 'Boka Oslo',
+        verktyg: { namn: 'boka', input: { stad: 'Oslo', natter: '2' } },
+      },
+      { efter_verktyg: true, resultat: 'sa nej', svar: 'Okej, ingen bokning.' },
+      { efter_verktyg: true, resultat: '^Bokat', svar: 'Klart! {resultat}' },
+      { om: 'Mars', verktyg: { namn: 'sok_flyg', input: { stad: 'Mars' } } },
+      { efter_verktyg: true, resultat: '^Fel', svar: 'Dit finns inget flyg.' },
     ],
   },
 };

@@ -293,4 +293,46 @@ export const QUIZ = {
       explain: 'Källor bygger förtroende och gör fel lätta att hitta.',
     },
   ],
+  agent: [
+    {
+      question: 'När slutar agentens loop?',
+      options: [
+        'När modellen svarar utan att be om verktyg – eller när spärren nås',
+        'Efter exakt ett verktyg',
+        'När användaren trycker stopp',
+        'Aldrig',
+      ],
+      explain: 'stop_reason som inte är tool_use betyder att modellen är klar.',
+    },
+    {
+      question: 'Varför behöver en agent en spärr?',
+      options: [
+        'Annars kan den loopa för evigt och kosta mycket',
+        'API:et kräver det',
+        'Den blir snabbare',
+        'För att kunna använda verktyg',
+      ],
+      explain: 'Ett tak för varv, eller en budget i tokens.',
+    },
+    {
+      question: 'Vilka verktyg ska kräva att en människa säger ja?',
+      options: [
+        'De som gör saker i verkligheten, som att skicka, betala eller radera',
+        'Alla verktyg',
+        'Inga verktyg',
+        'Bara de som räknar',
+      ],
+      explain: 'Läsa och räkna är ofarligt. Att agera kräver godkännande.',
+    },
+    {
+      question: 'Vad händer när ett verktyg ger fel i en agent?',
+      options: [
+        'Felet skickas till modellen, som kan försöka på ett annat sätt',
+        'Agenten kraschar alltid',
+        'Felet ignoreras',
+        'Loopen börjar om från början',
+      ],
+      explain: 'Med is_error kan agenten rätta sig själv.',
+    },
+  ],
 };
