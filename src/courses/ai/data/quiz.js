@@ -249,4 +249,48 @@ export const QUIZ = {
         '"Katt" och "kissemiss" hamnar nära varandra med en embeddingsmodell.',
     },
   ],
+  rag: [
+    {
+      question: 'Vad betyder RAG?',
+      options: [
+        'Hämta de delar av dokumenten som passar och låt modellen svara utifrån dem',
+        'Träna om modellen på dina dokument',
+        'Skicka alla dokument varje gång',
+        'Låta modellen söka på internet',
+      ],
+      explain: 'Retrieval-Augmented Generation: hämtning först, sedan svar.',
+    },
+    {
+      question: 'Varför står "Svara bara utifrån dokumenten" i systemprompten?',
+      options: [
+        'Så att modellen inte gissar när svaret saknas',
+        'Så att svaret blir kortare',
+        'Det krävs av API:et',
+        'Så att dokumenten skickas',
+      ],
+      explain:
+        'Utan den kan modellen hallucinera svar som låter rimliga men är fel.',
+    },
+    {
+      question: 'Hur skyddar man bäst ett lösenord som står i ett dokument?',
+      options: [
+        'Ta bort biten innan den kommer in i kunskapsbasen',
+        'Be modellen att inte säga det',
+        'Skriva det med versaler',
+        'Sätta max_tokens lågt',
+      ],
+      explain:
+        'En instruktion kan kringgås. En bit som aldrig skickas kan inte läcka.',
+    },
+    {
+      question: 'Vad är en bra anledning att visa källorna i svaret?',
+      options: [
+        'Användaren kan kontrollera svaret',
+        'Svaret blir kortare',
+        'Det blir billigare',
+        'Modellen svarar snabbare',
+      ],
+      explain: 'Källor bygger förtroende och gör fel lätta att hitta.',
+    },
+  ],
 };

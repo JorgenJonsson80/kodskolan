@@ -76,4 +76,16 @@ export const RESOURCES = {
       video: 'cosine similarity explained',
     },
   ],
+  rag: [
+    {
+      topic: 'Vad är RAG?',
+      read: 'https://en.wikipedia.org/wiki/Retrieval-augmented_generation',
+      video: 'rag retrieval augmented generation explained',
+    },
+    {
+      topic: 'Minska hallucinationer',
+      read: `${DOCS}test-and-evaluate/strengthen-guardrails/reduce-hallucinations`,
+      video: 'llm hallucination explained',
+    },
+  ],
 };

@@ -376,4 +376,59 @@ export const BOSSES = {
       },
     ],
   },
+  rag: {
+    id: 'ai-rag-boss',
+    track: 'rag',
+    title: 'Boss: Skolans regelbot',
+    isBoss: true,
+    xp: 70,
+    description:
+      BOSS_INTRO +
+      'Skolan vill att elever ska kunna fråga om reglerna. Bygg en kunskapsbas som svarar bara utifrån reglerna, visar källan och aldrig läcker det som är internt.',
+    task: `Uppgift: Skriv klassen \`Regelbot(dokument, k=2)\`. \`dokument\` är en dict namn → text.
+  1. Varje dokument delas i stycken. Stycken som innehåller \`INTERNT\` kommer aldrig med.
+  2. \`fraga(fraga)\` hittar de k bästa styckena som har något ord gemensamt med frågan, skickar dem numrerade i \`<dokument nr="…">\` och frågan i \`<fraga>\`, med \`SYSTEM\`.
+  3. Har inget stycke något ord gemensamt med frågan: \`{'svar': 'Det vet jag inte.', 'kallor': []}\` utan anrop.
+  4. Annars: \`{'svar': …, 'kallor': [...]}\` med namnen på dokumenten som styckena kom ifrån, bäst först, utan dubbletter.`,
+    starterCode:
+      "import math\nimport re\n\nimport anthropic\n\nclient = anthropic.Anthropic()\n\nSYSTEM = 'Svara bara utifrån dokumenten. Om svaret inte finns där, svara: Det vet jag inte.'\nREGLER = {\n    'Ordning': 'Mobilen ska vara avstängd på lektionerna.\\n\\nINTERNT: Larmkoden är 1234.',\n    'Mat': 'Lunchen serveras klockan 11.30.\\n\\nMobilen får användas i matsalen.',\n}\n",
+    solution:
+      "import math\nimport re\n\nimport anthropic\n\nclient = anthropic.Anthropic()\n\nSYSTEM = 'Svara bara utifrån dokumenten. Om svaret inte finns där, svara: Det vet jag inte.'\nREGLER = {\n    'Ordning': 'Mobilen ska vara avstängd på lektionerna.\\n\\nINTERNT: Larmkoden är 1234.',\n    'Mat': 'Lunchen serveras klockan 11.30.\\n\\nMobilen får användas i matsalen.',\n}\n\n\ndef ord_i(text):\n    return re.findall(r'[a-zåäö0-9]+', text.lower())\n\n\ndef vektor(text, ord):\n    ordlista = ord_i(text)\n    return [ordlista.count(o) for o in ord]\n\n\ndef likhet(a, b):\n    la = math.sqrt(sum(x * x for x in a))\n    lb = math.sqrt(sum(x * x for x in b))\n    if la == 0 or lb == 0:\n        return 0\n    return sum(x * y for x, y in zip(a, b)) / (la * lb)\n\n\nclass Regelbot:\n    def __init__(self, dokument, k=2):\n        self.k = k\n        self.par = [\n            (namn, stycke.strip())\n            for namn, text in dokument.items()\n            for stycke in text.split('\\n\\n')\n            if stycke.strip() and 'INTERNT' not in stycke\n        ]\n\n    def fraga(self, fraga):\n        ord = sorted(set(o for n, b in self.par for o in ord_i(b)) | set(ord_i(fraga)))\n        fraga_v = vektor(fraga, ord)\n        poang = sorted(self.par, key=lambda p: likhet(vektor(p[1], ord), fraga_v), reverse=True)\n        if likhet(vektor(poang[0][1], ord), fraga_v) == 0:\n            return {'svar': 'Det vet jag inte.', 'kallor': []}\n        basta = [p for p in poang[:self.k] if likhet(vektor(p[1], ord), fraga_v) > 0]\n        dokument = '\\n'.join(f'<dokument nr=\"{i + 1}\">{b}</dokument>' for i, (n, b) in enumerate(basta))\n        svar = client.messages.create(\n            model='claude-opus-5-5',\n            max_tokens=1000,\n            system=SYSTEM,\n            messages=[{'role': 'user', 'content': f'{dokument}\\n\\n<fraga>{fraga}</fraga>'}],\n        )\n        kallor = []\n        for namn, bit in basta:\n            if namn not in kallor:\n                kallor.append(namn)\n        return {'svar': next(b.text for b in svar.content if b.type == 'text'), 'kallor': kallor}\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Lunchen',
+        code: "Regelbot(REGLER).fraga('När serveras lunchen?')",
+        expected: { svar: 'Lunchen serveras 11.30.', kallor: ['Mat'] },
+      },
+      {
+        description: 'Mobilen, två källor',
+        code: "Regelbot(REGLER).fraga('Får mobilen användas?')['kallor']",
+        expected: ['Mat', 'Ordning'],
+      },
+      {
+        description: 'Larmkoden läcker aldrig',
+        code: "(Regelbot(REGLER, k=3).fraga('Vad är larmkoden?'), any('1234' in a['messages'][0]['content'] for a in __anrop()))[1]",
+        expected: false,
+      },
+      {
+        description: 'Inget gemensamt, inget anrop',
+        code: "(lambda fore: [Regelbot(REGLER).fraga('Xyz?'), len(__anrop()) - fore])(len(__anrop()))",
+        expected: [{ svar: 'Det vet jag inte.', kallor: [] }, 0],
+      },
+      {
+        description: 'Frågan i taggar',
+        code: "__anrop()[0]['messages'][0]['content'].endswith('<fraga>När serveras lunchen?</fraga>')",
+        expected: true,
+      },
+    ],
+    modell: [
+      {
+        system: 'bara utifrån',
+        om: 'Lunchen serveras[\\s\\S]*<fraga>.*lunch',
+        svar: 'Lunchen serveras 11.30.',
+      },
+      { system: 'bara utifrån', svar: 'Det vet jag inte.' },
+    ],
+  },
 };

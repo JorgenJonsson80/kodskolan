@@ -140,4 +140,29 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'rag',
+    title: 'Egna dokument (RAG)',
+    teaches: [
+      'dela upp text',
+      'hitta bitar',
+      'dokument i taggar',
+      'svara bara utifrån',
+      'källor',
+      'hemligheter',
+    ],
+    reward: { emoji: '📚', name: 'Bokhylla' },
+    canBuild:
+      'en AI som svarar på frågor om dina egna dokument och visar källan',
+    docs: [
+      {
+        title: 'Retrieval-augmented generation',
+        url: 'https://en.wikipedia.org/wiki/Retrieval-augmented_generation',
+      },
+      {
+        title: 'Reduce hallucinations',
+        url: `${DOCS}test-and-evaluate/strengthen-guardrails/reduce-hallucinations`,
+      },
+    ],
+  },
 ];
