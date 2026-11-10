@@ -36,23 +36,26 @@ appen (ASGI).
 
 ## Banorna
 
-| #  | id            | Bana              | Lär ut                                                              | Projekt |
+| #  | id            | Bana              | Lär ut                                                              | Klar    |
 | -- | ------------- | ----------------- | ------------------------------------------------------------------- | ------- |
 | 1  | `forsta`      | Första API:et     | `FastAPI()`, `@app.get`, dict/list blir JSON, 404, 405, `/docs`     | ✅      |
 | 2  | `vagar`       | Vägar och typer   | `{id}`, `id: int`, 422, `float`, ordning, Enum                      | ✅      |
 | 3  | `fragor`      | Frågor i adressen | query, standardvärden, `str \| None`, `bool`, sidor, sortering      | ✅      |
-| 4  | `modeller`    | Pydantic-modeller | `BaseModel`, `@app.post`, `model_dump`, `Field`, `list[str]`, modell i modell |  |
-| 5  | `svar`        | Svar och fel      | `status_code=201`, `HTTPException`, 404/409/400, `response_model`   |         |
-| 6  | `crud`        | Ett helt API      | nytt id, PUT, PATCH (`exclude_unset`), DELETE 204, vägar under vägar |        |
-| 7  | `beroenden`   | Beroenden         | `Depends`, `Header`, API-nyckel, Bearer, 401/403, `dependency_overrides` |    |
-| 8  | `databas`     | Databas           | sqlite3, `?`, SQL-injektion, `Depends` med `yield`, UPDATE, JOIN    |         |
-| 9  | `async`       | async             | `async def`, `await`, `gather`, `wait_for` (504), `BackgroundTasks` |         |
-| 10 | `felsok`      | Felsökning        | trasiga API:er att laga (startkoden är trasig)                      |         |
-| 11 | `slutprojekt` | Slutprojektet     | Kunskapsbanken i nio steg: artiklar, sök, nyckel, låtsas-AI, RAG    |         |
+| 4  | `modeller`    | Pydantic-modeller | `BaseModel`, `@app.post`, `model_dump`, `Field`, `list[str]`, modell i modell | ✅ |
+| 5  | `svar`        | Svar och fel      | `status_code=201`, `HTTPException`, 404/409/400, `response_model`   | ✅      |
+| 6  | `crud`        | Ett helt API      | nytt id, PUT, PATCH (`exclude_unset`), DELETE 204, vägar under vägar | ✅      |
+| 7  | `beroenden`   | Beroenden         | `Depends`, `Header`, API-nyckel, Bearer, 401/403, `dependency_overrides` | ✅      |
+| 8  | `databas`     | Databas           | sqlite3, `?`, SQL-injektion, `Depends` med `yield`, UPDATE, JOIN    | ✅      |
+| 9  | `async`       | async             | `async def`, `await`, `gather`, `wait_for` (504), `BackgroundTasks` | ✅      |
+| 10 | `felsok`      | Felsökning        | trasiga API:er att laga (startkoden är trasig)                      | ✅      |
+| 11 | `slutprojekt` | Slutprojektet     | Kunskapsbanken i nio steg: artiklar, sök, nyckel, låtsas-AI, RAG    | ✅      |
 
-Alla 11 banor har 9 övningar och en boss (110), fyra quizfrågor och
-länkar i Fastnat?. Projekt (tre per bana, tre steg) och idéer (tre per
-bana) finns för bana 1–3. Resten ska skrivas innan kursen publiceras.
+Alla 11 banor har 9 övningar och en boss (110), tre projekt med tre steg
+(33 projekt, 99 steg), tre idéer till Lekplatsen, fyra quizfrågor och
+länkar i Fastnat?. Projekten står i `projects.js` (bana 1–3),
+`projectsMitten.js` (4–7) och `projectsSlut.js` (8–11), med hjälparna i
+`projectHelpers.js`. I felsökningsbanan har varje projektsteg en egen
+`starterCode` med en ny bugg.
 
 Slutprojektets steg bygger på varandra: `slutprojekt.js` sätter ihop
 koden av delar (`STEG1` … `STEG9`), och slutbossen i `bossar.js` utgår

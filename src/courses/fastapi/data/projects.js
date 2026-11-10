@@ -1,10 +1,13 @@
 import { projectSteps } from '../../../core/projects';
+import { step, t } from './projectHelpers';
+import { PROJECTS_MITTEN } from './projectsMitten';
+import { PROJECTS_SLUT } from './projectsSlut';
 
 // Projekt som låses upp när en bana är klar. Eleven väljer ett av tre men
 // kan göra alla. Varje projekt byggs i steg, och koden från förra steget
 // följer med till nästa. why förklarar varför koden ser ut som den gör.
-// request är anropet 📮 börjar med. Projekten finns än så länge för bana
-// 1–3, se docs/kurser/fastapi.md.
+// request är anropet 📮 börjar med. Bana 1–3 står här, bana 4–7 i
+// projectsMitten.js och bana 8–11 i projectsSlut.js.
 const IMPORT = 'from fastapi import FastAPI\n\napp = FastAPI()\n';
 const ENUM =
   'from enum import Enum\n\nfrom fastapi import FastAPI\n\napp = FastAPI()\n';
@@ -66,30 +69,6 @@ const RECEPT0 = `${IMPORT}\nRECEPT = [\n    {'namn': 'Pannkakor', 'minuter': 30,
 const RECEPT1 = `${RECEPT0}\n\n@app.get('/recept')\ndef recept(vego: bool = False):\n    if vego:\n        return [r['namn'] for r in RECEPT if r['vego']]\n    return [r['namn'] for r in RECEPT]\n`;
 const RECEPT2 = `${RECEPT0}\n\n@app.get('/recept')\ndef recept(vego: bool = False, max_minuter: int = 999):\n    svar = [r for r in RECEPT if r['minuter'] <= max_minuter]\n    if vego:\n        svar = [r for r in svar if r['vego']]\n    return [r['namn'] for r in svar]\n`;
 const RECEPT3 = `${RECEPT2}\n\n@app.get('/med')\ndef med(ingrediens: str):\n    return [r['namn'] for r in RECEPT if ingrediens in r['ingredienser']]\n`;
-
-const step = (
-  title,
-  why,
-  task,
-  solution,
-  hints,
-  tests,
-  request,
-  extra = {},
-) => ({
-  title,
-  why,
-  xp: 20,
-  description: title + '.',
-  task: `Uppgift: ${task}`,
-  solution,
-  hints,
-  tests,
-  ...(request && { request }),
-  ...extra,
-});
-
-const t = (description, code, expected) => ({ description, code, expected });
 
 export const PROJECTS = [
   {
@@ -680,6 +659,8 @@ export const PROJECTS = [
       ),
     ],
   },
+  ...PROJECTS_MITTEN,
+  ...PROJECTS_SLUT,
 ];
 
 export const PROJECT_STEPS = projectSteps(PROJECTS, text => `# ${text}`);
