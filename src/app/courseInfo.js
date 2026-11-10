@@ -83,6 +83,27 @@ function kvitto(b: Betalning): string {
   return b.sätt === 'kort' ? 'Kort ' + b.nummer : 'Swish ' + b.telefon;
 }`,
   },
+  ai: {
+    title: 'Lär dig bygga med AI i Python',
+    description:
+      'En AI-kurs på svenska. Prata med språkmodeller från Python: prompter, verktyg, egna dokument (RAG) och agenter – direkt i webbläsaren.',
+    intro:
+      'Här lär du dig bygga program som använder språkmodeller, med samma kod som mot Anthropics riktiga API. Övningarna använder en låtsasmodell, så det kostar ingenting och svaren går att rätta.',
+    forWhom:
+      'Dig som kan Python och vill bygga egna AI-tjänster, och gärna har gått FastAPI-kursen.',
+    before: 'Python, och för slutprojektet FastAPI.',
+    example: `import anthropic
+
+client = anthropic.Anthropic()
+
+svar = client.messages.create(
+    model="claude-opus-5-5",
+    max_tokens=1000,
+    system="Svara kort och vänligt.",
+    messages=[{"role": "user", "content": "Vad är en token?"}],
+)
+print(svar.content[0].text)`,
+  },
   fastapi: {
     title: 'Lär dig FastAPI och bygg moderna API:er i Python',
     description:

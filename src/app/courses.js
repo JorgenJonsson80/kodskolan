@@ -1,3 +1,4 @@
+import { meta as ai } from '../courses/ai/meta';
 import { meta as fastapi } from '../courses/fastapi/meta';
 import { meta as flask } from '../courses/flask/meta';
 import { meta as fullstack } from '../courses/fullstack/meta';
@@ -51,6 +52,11 @@ export const COURSES = [
     ...fastapi,
     load: () => import('../courses/fastapi'),
     summary: () => import('../courses/fastapi/summary'),
+  },
+  {
+    ...ai,
+    load: () => import('../courses/ai'),
+    summary: () => import('../courses/ai/summary'),
   },
 ];
 

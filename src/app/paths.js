@@ -33,4 +33,12 @@ export const PATHS = [
       'Allt från sidan till databasen: hela Webbutvecklare och Backend, och sist ett projekt där en React-sida pratar med ditt eget API.',
     courses: ['html', 'js', 'ts', 'python', 'sql', 'flask', 'fullstack'],
   },
+  {
+    id: 'ai',
+    icon: '🤖',
+    title: 'AI-utvecklare',
+    summary:
+      'Bygg egna AI-tjänster: Python, API:er med FastAPI, och sist språkmodeller med prompter, verktyg, egna dokument och agenter.',
+    courses: ['python', 'fastapi', 'ai'],
+  },
 ];
