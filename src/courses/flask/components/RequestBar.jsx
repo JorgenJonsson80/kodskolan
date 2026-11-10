@@ -1,9 +1,15 @@
 const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 const hasBody = method => ['POST', 'PUT', 'PATCH'].includes(method);
 
+const KINDS = [
+  ['json', 'JSON'],
+  ['form', 'Formulär (namn=Ada&ålder=7)'],
+];
+
 // 📮 Anropa: vilket anrop appen får när koden körs. Svaret visas under
-// feedbacken (ResponseView), ungefär som i Postman.
-export default function RequestBar({ request, onChange }) {
+// feedbacken (ResponseView), ungefär som i Postman. FastAPI-kursen tar
+// bara emot JSON (forms: false), så där visas inget val.
+export default function RequestBar({ request, onChange, forms = true }) {
   const set = change => onChange({ ...request, ...change });
   return (
     <fieldset className="request-bar">
@@ -29,26 +35,25 @@ export default function RequestBar({ request, onChange }) {
       </div>
       {hasBody(request.method) && (
         <div className="request-body">
-          <div
-            className="request-kind"
-            role="radiogroup"
-            aria-label="Skicka som"
-          >
-            {[
-              ['json', 'JSON'],
-              ['form', 'Formulär (namn=Ada&ålder=7)'],
-            ].map(([kind, label]) => (
-              <label key={`kind-${kind}`}>
-                <input
-                  type="radio"
-                  name="request-kind"
-                  checked={(request.kind ?? 'json') === kind}
-                  onChange={() => set({ kind })}
-                />{' '}
-                {label}
-              </label>
-            ))}
-          </div>
+          {forms && (
+            <div
+              className="request-kind"
+              role="radiogroup"
+              aria-label="Skicka som"
+            >
+              {KINDS.map(([kind, label]) => (
+                <label key={`kind-${kind}`}>
+                  <input
+                    type="radio"
+                    name="request-kind"
+                    checked={(request.kind ?? 'json') === kind}
+                    onChange={() => set({ kind })}
+                  />{' '}
+                  {label}
+                </label>
+              ))}
+            </div>
+          )}
           <textarea
             aria-label="Det som skickas"
             rows={3}

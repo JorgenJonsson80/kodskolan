@@ -83,6 +83,29 @@ function kvitto(b: Betalning): string {
   return b.sätt === 'kort' ? 'Kort ' + b.nummer : 'Swish ' + b.telefon;
 }`,
   },
+  fastapi: {
+    title: 'Lär dig FastAPI och bygg moderna API:er i Python',
+    description:
+      'En FastAPI-kurs på svenska. Bygg snabba API:er i Python direkt i webbläsaren, med Pydantic, databas, inloggning och async – grunden för AI-tjänster.',
+    intro:
+      'FastAPI är det moderna sättet att bygga API:er i Python, och det de flesta AI-tjänster byggs med. Du skriver appen och skickar anrop till den direkt i webbläsaren, utan att installera något.',
+    forWhom:
+      'Dig som kan grunderna i Python och vill bygga API:er, till exempel för en app eller en AI-tjänst.',
+    before:
+      'Grunderna i Python, till och med funktioner, dictionaries och klasser.',
+    example: `from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class Hund(BaseModel):
+    namn: str
+    alder: int
+
+@app.post("/hundar", status_code=201)
+def ny_hund(hund: Hund):
+    return hund`,
+  },
   flask: {
     title: 'Lär dig Flask och bygg webb-API:er i Python',
     description:
