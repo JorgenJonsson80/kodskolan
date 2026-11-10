@@ -40,4 +40,16 @@ export const RESOURCES = {
       video: 'llm context window explained',
     },
   ],
+  struktur: [
+    {
+      topic: 'Strukturerade svar',
+      read: `${DOCS}build-with-claude/structured-outputs`,
+      video: 'llm structured output pydantic',
+    },
+    {
+      topic: 'Pydantic',
+      read: 'https://docs.pydantic.dev/latest/concepts/models/',
+      video: 'pydantic tutorial python',
+    },
+  ],
 };

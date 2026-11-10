@@ -126,4 +126,50 @@ export const QUIZ = {
       explain: 'Kortar du historiken, ta bort assistant-meddelanden i början.',
     },
   ],
+  struktur: [
+    {
+      question:
+        'Varför använda output_config med ett JSON-schema i stället för att be om JSON i prompten?',
+      options: [
+        'Då blir svaret alltid giltig JSON i rätt form',
+        'Det blir billigare',
+        'Modellen svarar snabbare',
+        'Det finns ingen skillnad',
+      ],
+      explain:
+        'Ber man bara i prompten kan modellen skriva en mening före JSON:en.',
+    },
+    {
+      question: 'Var hittar du det färdiga objektet efter messages.parse?',
+      options: [
+        'svar.parsed_output',
+        'svar.content[0].text',
+        'svar.json',
+        'svar.usage',
+      ],
+      explain:
+        'parsed_output är ett objekt av Pydantic-modellen du skickade som output_format.',
+    },
+    {
+      question: 'Vad betyder Literal["lätt", "medel", "svår"]?',
+      options: [
+        'Bara något av de tre orden är tillåtet',
+        'Fältet är valfritt',
+        'Fältet är en lista',
+        'Texten måste vara exakt "lätt medel svår"',
+      ],
+      explain:
+        'Bra för klassificering, där svaret ska vara en av några kategorier.',
+    },
+    {
+      question: 'Vem ska räkna ut summan av ett kvitto?',
+      options: [
+        'Python, efter att modellen plockat ut raderna',
+        'Modellen, i samma svar',
+        'Användaren',
+        'Det spelar ingen roll',
+      ],
+      explain: 'Modeller kan räkna fel. Python räknar rätt varje gång.',
+    },
+  ],
 };

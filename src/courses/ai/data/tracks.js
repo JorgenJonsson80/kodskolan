@@ -74,4 +74,29 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'struktur',
+    title: 'Strukturerade svar',
+    teaches: [
+      'JSON',
+      'json_schema',
+      'messages.parse',
+      'Pydantic',
+      'Literal',
+      'ValidationError',
+    ],
+    reward: { emoji: '🧱', name: 'Byggkloss' },
+    canBuild:
+      'ett program som gör om fri text till data som går att söka och räkna med',
+    docs: [
+      {
+        title: 'Structured outputs',
+        url: `${DOCS}build-with-claude/structured-outputs`,
+      },
+      {
+        title: 'Pydantic models',
+        url: 'https://docs.pydantic.dev/latest/concepts/models/',
+      },
+    ],
+  },
 ];

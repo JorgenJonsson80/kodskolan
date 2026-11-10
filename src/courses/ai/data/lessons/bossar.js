@@ -171,4 +171,77 @@ export const BOSSES = {
       },
     ],
   },
+  struktur: {
+    id: 'ai-struktur-boss',
+    track: 'struktur',
+    title: 'Boss: Platsannonsen',
+    isBoss: true,
+    xp: 60,
+    description:
+      BOSS_INTRO +
+      'En jobbsajt vill göra om fritext-annonser till data som går att söka i. Modellen läser, Python kontrollerar och räknar.',
+    task: `Uppgift: Skriv \`Annons\` och \`tolka(annonser)\`.
+  1. \`Annons\` har \`titel\`, \`stad\`, \`distans\` (bool), \`lon\` (heltal, minst 0) och \`krav\` (lista med texter).
+  2. \`tolka(annonser)\` tolkar varje annons med \`messages.parse\`. Annonser som inte klarar kontrollen hoppas över.
+  3. Den returnerar \`{'annonser': [...], 'snittlon': ..., 'distans': ...}\`: de tolkade annonserna som dicts, snittlönen (\`None\` om inga) och hur många som går på distans.`,
+    starterCode:
+      'import anthropic\nfrom pydantic import BaseModel, Field, ValidationError\n\nclient = anthropic.Anthropic()\n',
+    solution: `import anthropic\nfrom pydantic import BaseModel, Field, ValidationError\n\nclient = anthropic.Anthropic()\n\n\nclass Annons(BaseModel):\n    titel: str\n    stad: str\n    distans: bool\n    lon: int = Field(ge=0)\n    krav: list[str]\n\n\ndef tolka_en(text):\n    try:\n        svar = client.messages.parse(\n            model='${M}',\n            max_tokens=1000,\n            messages=[{'role': 'user', 'content': text}],\n            output_format=Annons,\n        )\n    except ValidationError:\n        return None\n    return svar.parsed_output\n\n\ndef tolka(annonser):\n    tolkade = [a for a in (tolka_en(text) for text in annonser) if a is not None]\n    snitt = sum(a.lon for a in tolkade) / len(tolkade) if tolkade else None\n    return {\n        'annonser': [a.model_dump() for a in tolkade],\n        'snittlon': snitt,\n        'distans': len([a for a in tolkade if a.distans]),\n    }\n`,
+    hints: [],
+    tests: [
+      {
+        description: 'Två annonser, en trasig',
+        code: "(lambda r: [len(r['annonser']), r['snittlon'], r['distans']])(tolka(['Utvecklare i Malmö', 'Lärare i Umeå', 'Hemligt jobb']))",
+        expected: [2, 37500.0, 1],
+      },
+      {
+        description: 'Annonsen som dict',
+        code: "tolka(['Utvecklare i Malmö'])['annonser'][0]",
+        expected: {
+          titel: 'Utvecklare',
+          stad: 'Malmö',
+          distans: true,
+          lon: 45000,
+          krav: ['Python', 'FastAPI'],
+        },
+      },
+      {
+        description: 'Inga annonser',
+        code: 'tolka([])',
+        expected: { annonser: [], snittlon: null, distans: 0 },
+      },
+    ],
+    modell: [
+      {
+        om: 'Utvecklare',
+        json: {
+          titel: 'Utvecklare',
+          stad: 'Malmö',
+          distans: true,
+          lon: 45000,
+          krav: ['Python', 'FastAPI'],
+        },
+      },
+      {
+        om: 'Lärare',
+        json: {
+          titel: 'Lärare',
+          stad: 'Umeå',
+          distans: false,
+          lon: 30000,
+          krav: ['Lärarexamen'],
+        },
+      },
+      {
+        om: 'Hemligt',
+        json: {
+          titel: 'Hemligt',
+          stad: '?',
+          distans: false,
+          lon: -1,
+          krav: [],
+        },
+      },
+    ],
+  },
 };
