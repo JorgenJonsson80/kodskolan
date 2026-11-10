@@ -206,4 +206,47 @@ export const QUIZ = {
       explain: 'Ge verktyg bestämda delar, som a, operator och b med en enum.',
     },
   ],
+  embeddings: [
+    {
+      question: 'Vad är en embedding?',
+      options: [
+        'En lista med tal som beskriver vad en text betyder',
+        'En komprimerad textfil',
+        'En sorts prompt',
+        'Ett verktyg som modellen kan använda',
+      ],
+      explain:
+        'Texter med liknande betydelse får vektorer som pekar åt samma håll.',
+    },
+    {
+      question: 'Vad blir cosinuslikheten?',
+      code: 'import math\n\ndef likhet(a, b):\n    return sum(x * y for x, y in zip(a, b)) / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(x * x for x in b)))',
+      check: 'round(likhet([1, 0], [0, 1]), 1)',
+      options: ['0.0', '1.0', '0.5', '-1.0'],
+      explain:
+        'Vektorerna pekar åt helt olika håll – texterna har inget gemensamt.',
+    },
+    {
+      question: 'Varför sparar man embeddings i ett index?',
+      options: [
+        'De kostar ett anrop att räkna ut, så man gör det en gång',
+        'Annars försvinner texterna',
+        'Modellen kräver det',
+        'Det gör sökningen mindre exakt',
+      ],
+      explain: 'Bara frågan behöver en ny embedding vid varje sökning.',
+    },
+    {
+      question:
+        'Vad klarar riktiga embeddings som våra ordvektorer inte klarar?',
+      options: [
+        'Att se att olika ord betyder samma sak',
+        'Att räkna ord',
+        'Att jämföra två texter',
+        'Att sortera träffar',
+      ],
+      explain:
+        '"Katt" och "kissemiss" hamnar nära varandra med en embeddingsmodell.',
+    },
+  ],
 };

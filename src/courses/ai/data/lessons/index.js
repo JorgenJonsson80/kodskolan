@@ -1,4 +1,5 @@
 import { BOSSES } from './bossar';
+import { EMBEDDINGS } from './embeddings';
 import { MODELL } from './modell';
 import { PROMPTER } from './prompter';
 import { SAMTAL } from './samtal';
@@ -18,4 +19,6 @@ export const LESSONS = [
   BOSSES.struktur,
   ...VERKTYG,
   BOSSES.verktyg,
+  ...EMBEDDINGS,
+  BOSSES.embeddings,
 ];

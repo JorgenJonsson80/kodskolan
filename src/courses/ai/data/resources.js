@@ -64,4 +64,16 @@ export const RESOURCES = {
       video: 'llm function calling explained',
     },
   ],
+  embeddings: [
+    {
+      topic: 'Embeddings',
+      read: `${DOCS}build-with-claude/embeddings`,
+      video: 'embeddings explained simply',
+    },
+    {
+      topic: 'Cosinuslikhet',
+      read: 'https://en.wikipedia.org/wiki/Cosine_similarity',
+      video: 'cosine similarity explained',
+    },
+  ],
 };

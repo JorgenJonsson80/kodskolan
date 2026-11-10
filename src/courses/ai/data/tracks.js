@@ -120,4 +120,24 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'embeddings',
+    title: 'Embeddings',
+    teaches: [
+      'text som vektorer',
+      'ordförråd',
+      'cosinuslikhet',
+      'topp k',
+      'ett index',
+    ],
+    reward: { emoji: '🧭', name: 'Kompass' },
+    canBuild: 'en sökning och en rekommendation som hittar det som liknar',
+    docs: [
+      { title: 'Embeddings', url: `${DOCS}build-with-claude/embeddings` },
+      {
+        title: 'Cosine similarity',
+        url: 'https://en.wikipedia.org/wiki/Cosine_similarity',
+      },
+    ],
+  },
 ];

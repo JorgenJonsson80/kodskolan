@@ -334,4 +334,46 @@ export const BOSSES = {
       { efter_verktyg: true, svar: 'Det blir {resultat}.' },
     ],
   },
+  embeddings: {
+    id: 'ai-embeddings-boss',
+    track: 'embeddings',
+    title: 'Boss: Filmtips',
+    isBoss: true,
+    xp: 60,
+    description:
+      BOSS_INTRO +
+      'En streamingtjänst vill visa "Om du gillade den här …". Bygg rekommendationen med vektorer.',
+    task: `Uppgift: \`FILMER\` har titlar och beskrivningar.
+  1. Skriv \`ord_i\`, \`vektor\` och \`likhet\` (cosinuslikhet, 0 för tomma vektorer).
+  2. Skriv \`liknande(titel, k)\` som returnerar de k andra filmerna vars beskrivning liknar filmens mest, bäst först. Filmen själv ska aldrig vara med.
+  3. En okänd titel ger en tom lista.`,
+    starterCode:
+      "import math\nimport re\n\nFILMER = {\n    'Rymdresan': 'Astronauter reser till en planet i rymden',\n    'Hajen': 'En haj skrämmer badgäster vid havet',\n    'Stjärnkrig': 'Rymdskepp strider bland stjärnor och planeter i rymden',\n    'Djupet': 'Dykare möter en haj djupt i havet',\n    'Kocken': 'En kock lagar mat i Paris',\n}\n",
+    solution:
+      "import math\nimport re\n\nFILMER = {\n    'Rymdresan': 'Astronauter reser till en planet i rymden',\n    'Hajen': 'En haj skrämmer badgäster vid havet',\n    'Stjärnkrig': 'Rymdskepp strider bland stjärnor och planeter i rymden',\n    'Djupet': 'Dykare möter en haj djupt i havet',\n    'Kocken': 'En kock lagar mat i Paris',\n}\n\n\ndef ord_i(text):\n    return re.findall(r'[a-zåäö0-9]+', text.lower())\n\n\ndef vektor(text, ord):\n    ordlista = ord_i(text)\n    return [ordlista.count(o) for o in ord]\n\n\ndef likhet(a, b):\n    la = math.sqrt(sum(x * x for x in a))\n    lb = math.sqrt(sum(x * x for x in b))\n    if la == 0 or lb == 0:\n        return 0\n    return sum(x * y for x, y in zip(a, b)) / (la * lb)\n\n\ndef liknande(titel, k):\n    if titel not in FILMER:\n        return []\n    ord = sorted(set(o for t in FILMER.values() for o in ord_i(t)))\n    malet = vektor(FILMER[titel], ord)\n    andra = [t for t in FILMER if t != titel]\n    return sorted(andra, key=lambda t: likhet(vektor(FILMER[t], ord), malet), reverse=True)[:k]\n",
+    hints: [],
+    tests: [
+      {
+        description: 'Som Hajen',
+        code: "liknande('Hajen', 1)",
+        expected: ['Djupet'],
+      },
+      {
+        description: 'Som Stjärnkrig',
+        code: "liknande('Stjärnkrig', 1)",
+        expected: ['Rymdresan'],
+      },
+      {
+        description: 'Aldrig sig själv',
+        code: "'Kocken' in liknande('Kocken', 4)",
+        expected: false,
+      },
+      { description: 'Okänd film', code: "liknande('Okänd', 2)", expected: [] },
+      {
+        description: 'likhet',
+        code: 'round(likhet([1, 0, 1], [1, 1, 0]), 2)',
+        expected: 0.5,
+      },
+    ],
+  },
 };
