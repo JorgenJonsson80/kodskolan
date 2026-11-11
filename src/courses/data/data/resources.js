@@ -17,4 +17,16 @@ export const RESOURCES = {
       video: 'pandas groupby explained',
     },
   ],
+  forsta: [
+    {
+      topic: 'Utforska en ny tabell',
+      read: `${PANDAS}01_table_oriented.html`,
+      video: 'pandas exploratory data analysis beginners',
+    },
+    {
+      topic: 'describe och info',
+      read: 'https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.describe.html',
+      video: 'pandas describe info explained',
+    },
+  ],
 };

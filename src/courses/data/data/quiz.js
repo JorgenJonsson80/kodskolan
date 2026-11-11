@@ -28,4 +28,30 @@ export const QUIZ = {
       explain: 'Gruppen Te har raderna med antal 1 och 2.',
     },
   ],
+  forsta: [
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"]})\nprint(df.shape)',
+      options: ['(3, 2)', '(2, 3)', '6', '3'],
+      explain: 'shape är (rader, kolumner): tre rader och två kolumner.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"p": ["Te", "Latte", "Te", "Te"]})\nprint(df["p"].nunique())',
+      options: ['2', '4', '3', '1'],
+      explain: 'Det finns fyra rader men bara två olika värden: Te och Latte.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"p": ["Te", "Latte", "Te", "Te"]})\nprint(df["p"].value_counts(normalize=True)["Te"])',
+      options: ['0.75', '3', '0.25', '75'],
+      explain: 'Tre av fyra rader är Te, alltså andelen 0.75.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"datum": ["2025-03-04", "2025-01-10", "2025-12-01"]})\nprint(df["datum"].min())',
+      options: ['2025-01-10', '2025-03-04', '2025-12-01', '1'],
+      explain: 'Datum skrivna som år-månad-dag sorteras rätt även som text.',
+    },
+  ],
 };

@@ -59,7 +59,7 @@ semlor bara i februari, en vecka i juli när kaféet är stängt.
 | 10 | `slutprojekt`| Slutprojektet           | en analys från rå fil till slutsats och diagram                        |
 | 11 | `app`        | Från analys till app    | analysen som en Streamlit-sida: filter, diagram och siffror som ändras |
 
-Bana 1 är klar ✅. Excel (`read_excel`) är inte med: CSV räcker, och
+Bana 1–2 är klara ✅. Excel (`read_excel`) är inte med: CSV räcker, och
 `openpyxl` vore ännu ett paket att ladda.
 
 De två första banorna är gratis när låsningen slås på.

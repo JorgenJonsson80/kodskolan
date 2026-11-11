@@ -26,4 +26,22 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'forsta',
+    title: 'Första mötet',
+    teaches: ['shape', 'dtypes', 'info', 'describe', 'unique'],
+    reward: { emoji: '🔍', name: 'Förstoringsglas' },
+    canBuild:
+      'en faktaruta om vilken CSV-fil som helst på en minut, och veta vilka frågor den kan svara på innan du börjar räkna',
+    docs: [
+      {
+        title: 'Hur ser tabellen ut?',
+        url: `${PANDAS}getting_started/intro_tutorials/01_table_oriented.html`,
+      },
+      {
+        title: 'describe',
+        url: `${PANDAS}reference/api/pandas.DataFrame.describe.html`,
+      },
+    ],
+  },
 ];
