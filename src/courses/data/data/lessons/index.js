@@ -1,4 +1,5 @@
 import { BOSSES } from './bossar';
+import { DATUM } from './datum';
 import { FORSTA } from './forsta';
 import { PANDAS } from './pandas';
 import { STADA } from './stada';
@@ -12,4 +13,6 @@ export const LESSONS = [
   BOSSES.forsta,
   ...STADA,
   BOSSES.stada,
+  ...DATUM,
+  BOSSES.datum,
 ];

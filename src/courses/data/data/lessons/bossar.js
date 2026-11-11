@@ -211,4 +211,63 @@ print(f"Städad: {len(df)} rader. Lika med kassan_mars.csv: {lika}")
       },
     ],
   },
+  datum: {
+    id: 'da-boss-datum',
+    track: 'datum',
+    title: 'Boss: Kaféets kalender',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Ägaren ska planera nästa år: vilken månad är bäst, vilken veckodag och när på lördagen behövs flest händer?',
+    task: `Uppgift: Läs in \`kassan.csv\`, lägg till \`summa\` och gör om datum. Skriv sedan ut, rad för rad:
+  1. \`Bästa månaden: juni (44667 kr)\` – månaden med störst intäkt, med namnet från \`MANADER\`.
+  2. \`Bästa veckodagen: lördag (1908 kr per dag)\` – veckodagen med störst snitt per dag (avrundat till heltal), med namnet från \`DAGAR\`.
+  3. \`Rusning på lördagar: kl 12 (203 kunder)\` – timmen på lördagar med flest kunder (olika kvitton).
+
+Spara månadens nummer i \`manad\`, veckodagens nummer i \`veckodag\` och timmen i \`timme\`.`,
+    starterCode:
+      'import pandas as pd\n\nMANADER = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"]\nDAGAR = ["måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag", "söndag"]\n\n# Skriv din kod här\n',
+    solution: `import pandas as pd
+
+MANADER = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"]
+DAGAR = ["måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag", "söndag"]
+
+df = pd.read_csv("kassan.csv")
+df["summa"] = df["antal"] * df["pris"]
+df["tidpunkt"] = pd.to_datetime(df["datum"] + " " + df["tid"])
+df["datum"] = pd.to_datetime(df["datum"])
+
+per_manad = df.groupby(df["datum"].dt.month)["summa"].sum().sort_values(ascending=False)
+manad = per_manad.index[0]
+print(f"Bästa månaden: {MANADER[manad - 1]} ({per_manad.tolist()[0]} kr)")
+
+dagar = df.groupby("datum")["summa"].sum().reset_index()
+dagar["veckodag"] = dagar["datum"].dt.dayofweek
+snitt = dagar.groupby("veckodag")["summa"].mean().round().sort_values(ascending=False)
+veckodag = snitt.index[0]
+print(f"Bästa veckodagen: {DAGAR[veckodag]} ({int(snitt.tolist()[0])} kr per dag)")
+
+lordag = df[df["datum"].dt.dayofweek == 5]
+per_timme = lordag.groupby(lordag["tidpunkt"].dt.hour)["kvitto"].nunique().sort_values(ascending=False)
+timme = per_timme.index[0]
+print(f"Rusning på lördagar: kl {timme} ({per_timme.tolist()[0]} kunder)")
+`,
+    files: KASSA,
+    hints: [],
+    tests: [
+      { description: 'manad är 6', code: 'manad', expected: 6 },
+      { description: 'veckodag är 5', code: 'veckodag', expected: 5 },
+      { description: 'timme är 12', code: 'timme', expected: 12 },
+      {
+        description: 'Kalendern skrivs ut',
+        code: '__output',
+        expected: [
+          'Bästa månaden: juni (44667 kr)',
+          'Bästa veckodagen: lördag (1908 kr per dag)',
+          'Rusning på lördagar: kl 12 (203 kunder)',
+        ],
+      },
+    ],
+  },
 };

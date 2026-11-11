@@ -41,4 +41,16 @@ export const RESOURCES = {
       video: 'pandas data cleaning beginners',
     },
   ],
+  datum: [
+    {
+      topic: 'Datum i pandas',
+      read: 'https://pandas.pydata.org/docs/getting_started/intro_tutorials/09_timeseries.html',
+      video: 'pandas datetime tutorial beginners',
+    },
+    {
+      topic: 'resample',
+      read: 'https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.resample.html',
+      video: 'pandas resample explained',
+    },
+  ],
 };

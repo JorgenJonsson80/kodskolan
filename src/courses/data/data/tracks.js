@@ -70,4 +70,22 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'datum',
+    title: 'Datum och tid',
+    teaches: ['to_datetime', '.dt', 'strftime', 'resample'],
+    reward: { emoji: '📅', name: 'Kalender' },
+    canBuild:
+      'svar på när-frågor: bästa månaden, veckodagen och timmen, vecka för vecka och rättvist jämfört',
+    docs: [
+      {
+        title: 'Datum och tid i pandas',
+        url: `${PANDAS}user_guide/timeseries.html`,
+      },
+      {
+        title: 'Kom igång med datum',
+        url: `${PANDAS}getting_started/intro_tutorials/09_timeseries.html`,
+      },
+    ],
+  },
 ];

@@ -83,4 +83,30 @@ export const QUIZ = {
         'Det tomma värdet blir 1: 2 + 1 + 3 = 6. Kolumnen är decimaltal, eftersom den hade ett NaN.',
     },
   ],
+  datum: [
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\nd = pd.to_datetime("2025-03-04")\nprint(d.month)',
+      options: ['3', '4', '2025', 'mars'],
+      explain: 'Datumet är år-månad-dag, så månaden är 3.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\nd = pd.to_datetime("2025-01-06")\nprint(d.dayofweek)',
+      options: ['0', '1', '6', '7'],
+      explain: '6 januari 2025 var en måndag, och måndag är 0.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\nd = pd.to_datetime("2025-10-04 15:30")\nprint(d.strftime("%d/%m kl %H"))',
+      options: ['04/10 kl 15', '10/04 kl 15', '04/10 kl 30', '2025-10-04'],
+      explain: '%d är dagen, %m månaden och %H timmen.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"datum": pd.to_datetime(["2025-01-01", "2025-01-15", "2025-02-01"]), "n": [1, 2, 3]})\nprint(df[df["datum"] < "2025-02-01"]["n"].sum())',
+      options: ['3', '6', '1', '5'],
+      explain: 'De två datumen i januari är före 1 februari: 1 + 2 = 3.',
+    },
+  ],
 };
