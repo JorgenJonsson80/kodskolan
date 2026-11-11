@@ -26,12 +26,14 @@ Datan är påhittad men ser verklig ut, och den växer med kursen:
 | `produkter.csv`  | produkt, kategori (kaffe, bakverk, mat, dryck), inkop, pris   | 6         |
 | `vadret.csv`     | datum, temperatur, regn                                       | 6         |
 | `personal.csv`   | datum, pass (förmiddag, eftermiddag), personer                | 6         |
-| `kassan_ra.csv`  | som kassan, men med fel som riktig data har                   | 3         |
+| `kassan_rorig.csv` | mars med fel som riktig data har (och `kassan_mars.csv` ren) | 3         |
 
-`kassan_ra.csv` har skrivit "Kanelbulle", "kanelbulle " och
-"Kanelbullar", priser med komma ("32,50"), tomma rader, ett kvitto som
-kom med två gånger och datum som `2026-03-07` och `7/3`. Banorna 3–4
-städar den, och resten av kursen använder den städade.
+`kassan_rorig.csv` är mars med "kanelbulle", "Latte " och
+"Kanelbullar", betalsätt som "KORT" och " swish", priser som "45 kr"
+och "45,00", tomma antal (som betyder 1), helt tomma rader och rader
+som kom med två gånger. Varje fel går att laga så att filen blir exakt
+som `kassan_mars.csv`. Resten av kursen använder den rena kassan.
+`astype("int64")`, inte `astype(int)`: i Pyodide blir `int` 32 bitar.
 
 Några övningar och idéer använder annan data så att det inte blir
 enformigt: vädret i flera städer, ett påhittat kontoutdrag (idén
@@ -59,7 +61,7 @@ semlor bara i februari, en vecka i juli när kaféet är stängt.
 | 10 | `slutprojekt`| Slutprojektet           | en analys från rå fil till slutsats och diagram                        |
 | 11 | `app`        | Från analys till app    | analysen som en Streamlit-sida: filter, diagram och siffror som ändras |
 
-Bana 1–2 är klara ✅. Excel (`read_excel`) är inte med: CSV räcker, och
+Bana 1–3 är klara ✅. Excel (`read_excel`) är inte med: CSV räcker, och
 `openpyxl` vore ännu ett paket att ladda.
 
 De två första banorna är gratis när låsningen slås på.
@@ -80,7 +82,7 @@ Nio per bana och en boss, som i de andra kurserna.
    ett värde, hitta dubbletter, ta bort dem, `"32,50"` till tal,
    trimma och små bokstäver, slå ihop stavningar med `replace`, kolla
    att städningen gick (antal rader före och efter). _Boss:_ städa hela
-   `kassan_ra.csv` så att den blir lika med `kassan.csv`.
+   `kassan_rorig.csv` så att den blir lika med `kassan_mars.csv`.
 4. **Datum och tid:** text till datum, månad, veckodag, timme, filtrera
    en månad, mellan två datum, per veckodag, per timme, `resample` per
    vecka. _Boss:_ kaféets bästa timme på en lördag.

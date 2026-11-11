@@ -29,4 +29,16 @@ export const RESOURCES = {
       video: 'pandas describe info explained',
     },
   ],
+  stada: [
+    {
+      topic: 'Saknade värden',
+      read: 'https://pandas.pydata.org/docs/user_guide/missing_data.html',
+      video: 'pandas missing values dropna fillna',
+    },
+    {
+      topic: 'Städa text',
+      read: 'https://pandas.pydata.org/docs/user_guide/text.html',
+      video: 'pandas data cleaning beginners',
+    },
+  ],
 };

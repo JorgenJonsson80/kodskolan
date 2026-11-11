@@ -1,4 +1,4 @@
-import { KASSA } from '../filer';
+import { KASSA, RORIG_OCH_REN } from '../filer';
 
 // En boss per bana: en större uppgift som använder allt från banan, utan
 // ledtrådar. Banan räknas inte som klar förrän bossen är besegrad.
@@ -147,6 +147,67 @@ print(f"Vanligast betalsätt: {vanligast} ({procent} %)")
       {
         description: 'Skriver inte in 5578 för hand',
         pattern: /^(?![\s\S]*5578)/,
+      },
+    ],
+  },
+  stada: {
+    id: 'da-boss-stada',
+    track: 'stada',
+    title: 'Boss: Den stökiga kassan',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Kaféets bokförare har fått den riktiga marsfilen, kassan_mars.csv. Din städade fil ska bli exakt likadan – rad för rad.',
+    task: `Uppgift: Läs in \`kassan_rorig.csv\` till \`df\` och städa den:
+  1. Ta bort raderna där allt saknas.
+  2. Ett tomt antal betyder 1.
+  3. Ta bort dubbletterna.
+  4. Gör om pris till tal, och kvitto, antal och pris till heltal.
+  5. Betalsätten ska vara med små bokstäver utan mellanslag.
+  6. Produkterna ska heta som i den rena filen: stor första bokstav, inga mellanslag, och Kanelbulle i stället för Kanelbullar.
+  7. Läs in \`kassan_mars.csv\` till \`ren\`. Spara \`df.values.tolist() == ren.values.tolist()\` i \`lika\` och skriv ut \`Städad: 786 rader. Lika med kassan_mars.csv: True\`.`,
+    starterCode: 'import pandas as pd\n\n# Skriv din kod här\n',
+    solution: `import pandas as pd
+
+df = pd.read_csv("kassan_rorig.csv")
+df = df.dropna(how="all")
+df["antal"] = df["antal"].fillna(1)
+df = df.drop_duplicates()
+
+text = df["pris"].str.replace(" kr", "").str.replace(",", ".")
+df["pris"] = pd.to_numeric(text)
+df["kvitto"] = df["kvitto"].astype("int64")
+df["antal"] = df["antal"].astype("int64")
+df["pris"] = df["pris"].astype("int64")
+
+df["betalsatt"] = df["betalsatt"].str.strip().str.lower()
+df["produkt"] = df["produkt"].str.strip().str.capitalize()
+df["produkt"] = df["produkt"].replace({"Kanelbullar": "Kanelbulle"})
+
+ren = pd.read_csv("kassan_mars.csv")
+lika = df.values.tolist() == ren.values.tolist()
+print(f"Städad: {len(df)} rader. Lika med kassan_mars.csv: {lika}")
+`,
+    files: RORIG_OCH_REN,
+    hints: [],
+    tests: [
+      { description: 'df har 786 rader', code: 'len(df)', expected: 786 },
+      {
+        description: 'kvitto, antal och pris är heltal',
+        code: '[str(df[k].dtype) for k in ["kvitto", "antal", "pris"]]',
+        expected: ['int64', 'int64', 'int64'],
+      },
+      {
+        description: 'df är exakt lika med kassan_mars.csv',
+        code: 'df.values.tolist() == pd.read_csv("kassan_mars.csv").values.tolist()',
+        expected: true,
+      },
+      { description: 'lika är True', code: 'lika', expected: true },
+      {
+        description: 'Resultatet skrivs ut',
+        code: '__output',
+        expected: ['Städad: 786 rader. Lika med kassan_mars.csv: True'],
       },
     ],
   },

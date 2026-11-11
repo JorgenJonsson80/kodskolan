@@ -54,4 +54,33 @@ export const QUIZ = {
       explain: 'Datum skrivna som år-månad-dag sorteras rätt även som text.',
     },
   ],
+  stada: [
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"a": [1, None, 3], "b": [None, None, 6]})\nprint(len(df.dropna()))',
+      options: ['1', '2', '3', '0'],
+      explain:
+        'dropna() tar bort varje rad där något saknas. Bara sista raden är hel.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"p": ["Te", "Te", "Latte", "Te"], "n": [1, 1, 1, 2]})\nprint(df.duplicated().sum())',
+      options: ['1', '2', '3', '0'],
+      explain:
+        'Bara andra raden är en exakt kopia av en tidigare. Sista raden har ett annat n.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"p": [" latte", "LATTE", "Latte "]})\nprint(df["p"].str.strip().str.capitalize().nunique())',
+      options: ['1', '3', '2', '0'],
+      explain: 'Efter strip och capitalize heter alla tre "Latte".',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"antal": [2, None, 3]})\nprint(df["antal"].fillna(1).sum())',
+      options: ['6.0', '5.0', '6', 'nan'],
+      explain:
+        'Det tomma värdet blir 1: 2 + 1 + 3 = 6. Kolumnen är decimaltal, eftersom den hade ett NaN.',
+    },
+  ],
 };

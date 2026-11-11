@@ -134,7 +134,61 @@ def main():
         for produkt, (kategori, pris, inkop, _) in PRODUKTER.items():
             skriv.writerow([produkt, kategori, pris, inkop])
 
+    rorig(kassan)
     print(len(kassan), 'rader,', kvitto - 1000, 'kvitton')
+
+
+# Mars som ren fil och som rörig: de fel riktig data har, till banan om
+# att städa (bana 3). Varje fel går att laga så att filen blir exakt som
+# den rena: tomma rader tas bort, ett tomt antal är alltid 1, dubbletterna
+# är exakta kopior och stavningen går tillbaka med strip, capitalize och
+# Kanelbullar → Kanelbulle.
+def rorig(kassan):
+    mars = [rad for rad in kassan if rad[1].startswith(f'{ÅR}-03-')]
+    huvud = ['kvitto', 'datum', 'tid', 'produkt', 'antal', 'pris', 'betalsatt']
+    with open(OUT / 'kassan_mars.csv', 'w', newline='', encoding='utf-8') as fil:
+        skriv = csv.writer(fil, lineterminator='\n')
+        skriv.writerow(huvud)
+        skriv.writerows(mars)
+
+    slump = random.Random(3)
+    ut = []
+    for rad in mars:
+        kvitto, datum, tid, produkt, antal, pris, betal = rad
+        r = slump.random()
+        if r < 0.03:
+            produkt = produkt.lower()
+        elif r < 0.05:
+            produkt = produkt + ' '
+        elif produkt == 'Kanelbulle' and r < 0.12:
+            produkt = 'Kanelbullar'
+        r = slump.random()
+        pris_text = str(pris)
+        if r < 0.04:
+            pris_text = f'{pris} kr'
+        elif r < 0.07:
+            pris_text = f'{pris},00'
+        r = slump.random()
+        antal_text = str(antal)
+        if antal == 1 and r < 0.03:
+            antal_text = ''
+        r = slump.random()
+        if r < 0.03:
+            betal = betal.upper()
+        elif r < 0.05:
+            betal = betal.capitalize()
+        elif r < 0.07:
+            betal = ' ' + betal
+        ny = [kvitto, datum, tid, produkt, antal_text, pris_text, betal]
+        ut.append(ny)
+        if slump.random() < 0.015:
+            ut.append(list(ny))  # samma rad inslagen två gånger
+        if slump.random() < 0.01:
+            ut.append([''] * 7)  # tom rad
+    with open(OUT / 'kassan_rorig.csv', 'w', newline='', encoding='utf-8') as fil:
+        skriv = csv.writer(fil, lineterminator='\n')
+        skriv.writerow(huvud)
+        skriv.writerows(ut)
 
 
 main()

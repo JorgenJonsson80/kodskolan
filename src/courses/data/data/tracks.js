@@ -44,4 +44,30 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'stada',
+    title: 'Städa data',
+    teaches: [
+      'isna',
+      'dropna',
+      'fillna',
+      'drop_duplicates',
+      'to_numeric',
+      'astype',
+      '.str',
+    ],
+    reward: { emoji: '🧹', name: 'Kvast' },
+    canBuild:
+      'en ren tabell av en rörig export: tomma rader, dubbletter, priser som text och samma sak stavad på fem sätt',
+    docs: [
+      {
+        title: 'Saknade värden',
+        url: `${PANDAS}user_guide/missing_data.html`,
+      },
+      {
+        title: 'Text i kolumner (.str)',
+        url: `${PANDAS}user_guide/text.html`,
+      },
+    ],
+  },
 ];
