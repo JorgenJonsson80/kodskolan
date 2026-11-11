@@ -495,4 +495,63 @@ hoger.set_xlabel("Timme")
       },
     ],
   },
+  statistik: {
+    id: 'da-boss-statistik',
+    track: 'statistik',
+    title: 'Boss: Vilka dagar var konstiga?',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'I banan hittade du 18 dagar som stack ut – men 13 var bara lördagar, som alltid är stora. Jämför i stället varje dag med andra dagar av samma veckodag.',
+    task: `Uppgift: Utgå från \`per_dag\` (intäkten per datum, med kolumnen \`veckodag\`).
+  1. Spara medelvärdet och standardavvikelsen av summa per veckodag i \`normalt\`, en tabell med kolumnerna veckodag, mean och std.
+  2. Slå ihop \`per_dag\` med \`normalt\` på veckodag och spara i \`dagar\`.
+  3. Lägg till kolumnen \`avvikelse\`: (summa minus mean) delat med std, avrundat till en decimal. Det är hur många standardavvikelser dagen ligger från en vanlig dag av samma sort.
+  4. Spara dagarna där avvikelsen är större än 2.5 eller mindre än -2.5 i \`konstiga\`, sorterade efter datum.
+  5. Skriv ut en rad per dag, t.ex. \`2025-04-04 fredag: 549 kr (-2.8)\`, med namnet från \`DAGAR\`.`,
+    starterCode:
+      'import pandas as pd\n\nDAGAR = ["måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag", "söndag"]\n\ndf = pd.read_csv("kassan.csv")\ndf["summa"] = df["antal"] * df["pris"]\nper_dag = df.groupby("datum")["summa"].sum().reset_index()\nper_dag["veckodag"] = pd.to_datetime(per_dag["datum"]).dt.dayofweek\n\n# Skriv din kod här\n',
+    solution: `import pandas as pd
+
+DAGAR = ["måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag", "söndag"]
+
+df = pd.read_csv("kassan.csv")
+df["summa"] = df["antal"] * df["pris"]
+per_dag = df.groupby("datum")["summa"].sum().reset_index()
+per_dag["veckodag"] = pd.to_datetime(per_dag["datum"]).dt.dayofweek
+
+normalt = per_dag.groupby("veckodag")["summa"].agg(["mean", "std"]).reset_index()
+dagar = per_dag.merge(normalt, on="veckodag")
+dagar["avvikelse"] = ((dagar["summa"] - dagar["mean"]) / dagar["std"]).round(1)
+konstiga = dagar[(dagar["avvikelse"] > 2.5) | (dagar["avvikelse"] < -2.5)]
+konstiga = konstiga.sort_values("datum")
+
+for datum, veckodag, summa, avvikelse in zip(konstiga["datum"], konstiga["veckodag"], konstiga["summa"], konstiga["avvikelse"]):
+    print(f"{datum} {DAGAR[veckodag]}: {summa} kr ({avvikelse})")
+`,
+    files: KASSA,
+    hints: [],
+    tests: [
+      {
+        description: 'normalt har en rad per veckodag',
+        code: 'len(normalt)',
+        expected: 7,
+      },
+      {
+        description: 'konstiga är tre dagar',
+        code: 'konstiga["datum"].tolist()',
+        expected: ['2025-04-04', '2025-05-18', '2025-07-25'],
+      },
+      {
+        description: 'Dagarna skrivs ut',
+        code: '__output',
+        expected: [
+          '2025-04-04 fredag: 549 kr (-2.8)',
+          '2025-05-18 söndag: 2036 kr (2.6)',
+          '2025-07-25 fredag: 2285 kr (2.6)',
+        ],
+      },
+    ],
+  },
 };

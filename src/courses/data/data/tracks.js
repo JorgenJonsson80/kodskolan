@@ -148,4 +148,22 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'statistik',
+    title: 'Statistik',
+    teaches: ['median', 'std', 'quantile', 'corr', 'rolling', 'numpy'],
+    reward: { emoji: '🎲', name: 'Tärning' },
+    canBuild:
+      'svar på hur vanligt, hur säkert och hur ovanligt: medianer, spridning, percentiler och dagar som verkligen sticker ut',
+    docs: [
+      {
+        title: 'Statistik i pandas',
+        url: `${PANDAS}getting_started/intro_tutorials/06_calculate_statistics.html`,
+      },
+      {
+        title: 'numpy för nybörjare',
+        url: 'https://numpy.org/doc/stable/user/absolute_beginners.html',
+      },
+    ],
+  },
 ];

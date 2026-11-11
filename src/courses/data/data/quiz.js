@@ -206,4 +206,37 @@ export const QUIZ = {
         'Liggande staplar ritas nerifrån och upp. Sortera med minst först för att få den största överst.',
     },
   ],
+  statistik: [
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ns = pd.Series([10, 20, 30, 1000])\nprint(s.median())',
+      options: ['25.0', '265.0', '20', '30'],
+      explain:
+        'Medianen av fyra värden är snittet av de två i mitten: 20 och 30. Medelvärdet dras upp till 265 av 1000.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ns = pd.Series([5, 5, 5, 5])\nprint(s.std())',
+      options: ['0.0', '5.0', '1.0', '20'],
+      explain: 'Alla värden är lika, så det finns ingen spridning alls.',
+    },
+    {
+      question:
+        'Korrelationen mellan glassförsäljning och drunkningsolyckor är hög. Vad kan du säga?',
+      options: [
+        'De hänger ihop – kanske för att båda ökar när det är varmt',
+        'Glass orsakar drunkning',
+        'Drunkning gör folk sugna på glass',
+        'Korrelationen måste vara fel',
+      ],
+      explain:
+        'Korrelation säger inte vad som orsakar vad. Här styr värmen båda.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ns = pd.Series([100, 150])\nprint(round(s.pct_change()[1] * 100))',
+      options: ['50', '150', '33', '0.5'],
+      explain: 'Från 100 till 150 är en ökning med 50 procent.',
+    },
+  ],
 };

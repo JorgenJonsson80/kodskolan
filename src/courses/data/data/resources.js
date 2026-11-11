@@ -89,4 +89,16 @@ export const RESOURCES = {
       video: 'matplotlib subplots explained',
     },
   ],
+  statistik: [
+    {
+      topic: 'Medel, median och spridning',
+      read: 'https://pandas.pydata.org/docs/getting_started/intro_tutorials/06_calculate_statistics.html',
+      video: 'mean median standard deviation explained',
+    },
+    {
+      topic: 'Korrelation',
+      read: 'https://pandas.pydata.org/docs/reference/api/pandas.Series.corr.html',
+      video: 'correlation explained simply statistics',
+    },
+  ],
 };
