@@ -8,9 +8,9 @@ let pyodideInstance = null;
 export async function nodeRunStudent() {
   if (!runStudent) {
     const pyodide = await loadPyodide();
-    // pandas laddas en gång för alla tester. Första gången hämtas det från
-    // jsDelivr och sparas sedan i node_modules.
-    await pyodide.loadPackage('pandas');
+    // pandas och matplotlib laddas en gång för alla tester. Första gången
+    // hämtas de från jsDelivr och sparas sedan i node_modules.
+    await pyodide.loadPackage(['pandas', 'matplotlib']);
     pyodideInstance = pyodide;
     pyodide.runPython(
       readFileSync(new URL('../runner/harness.py', import.meta.url), 'utf8'),

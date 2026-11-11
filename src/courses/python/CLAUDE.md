@@ -83,6 +83,13 @@ Som i `docs/kurser/python.md`. Utöver det:
   `app`, som `components/AppPreview.jsx` ritar. `components/LiveApp.jsx`
   kör riktig Streamlit med stlite (`lib/stlite.js`) i en iframe, bara
   när eleven trycker. Saknas en st-funktion: lägg till den i `_Place`.
+- matplotlib (används av Dataanalys bana 7): `harness.py` ritar med
+  Agg, skickar varje figur som PNG i `figures` (visas av
+  `ResultPreview.jsx`) och stänger dem efter körningen. Testerna läser
+  `__figur(index=0)`: typ (staplar, liggande staplar, histogram, linje,
+  punkter), titel, x, y, staplar, etiketter, linjer, punkter, forklaring,
+  diagram. Aldrig pixlar. Workern importerar pyplot i förväg, för första
+  importen bygger fontcachen och tar längre än tidsgränsen.
 - pandas laddas när koden importerar det (`loadPackagesFor` i
   pyWorker.js). Tidsgränsen pausas under tiden och statusen visar
   "Laddar pandas…". I testerna laddas pandas en gång i `nodePython.js`.

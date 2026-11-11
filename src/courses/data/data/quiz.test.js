@@ -19,7 +19,7 @@ describe.each(questions)('%s', (_, question) => {
     expect(question.explain.length).toBeGreaterThan(10);
   });
 
-  it('det första svaret är det koden skriver ut', () => {
+  it.runIf(question.code)('det första svaret är det koden skriver ut', () => {
     const result = run({ code: question.code });
     expect(result.error).toBeNull();
     expect(result.output.join('\n')).toBe(question.options[0]);

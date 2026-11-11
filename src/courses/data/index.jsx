@@ -44,12 +44,12 @@ export default {
     onStatus,
     timeoutMs: TIMEOUT_MS,
     // Lekplatsen visar Streamlit-appen i stället för en tom utskrift.
-    hasResult: run => run.app?.length > 0,
+    hasResult: run => run.app?.length > 0 || run.figures?.length > 0,
     statusText: {
       idle: '📊 Python vilar',
       starting: '📊 Startar Python…',
       ready: '📊 Python är redo',
-      loading: '🐼 Laddar pandas…',
+      loading: '📦 Laddar pandas och matplotlib…',
       failed: '📊 Python kunde inte starta',
     },
   },

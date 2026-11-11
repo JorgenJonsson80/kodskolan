@@ -77,4 +77,16 @@ export const RESOURCES = {
       video: 'pandas read_sql sqlite3 tutorial',
     },
   ],
+  diagram: [
+    {
+      topic: 'Kom igång med matplotlib',
+      read: 'https://matplotlib.org/stable/tutorials/pyplot.html',
+      video: 'matplotlib tutorial beginners',
+    },
+    {
+      topic: 'Flera diagram i en figur',
+      read: 'https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html',
+      video: 'matplotlib subplots explained',
+    },
+  ],
 };

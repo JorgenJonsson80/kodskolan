@@ -110,3 +110,52 @@ describe('tester med egna inputs', () => {
     expect(result.tests[0].error.type).toBe('ValueError');
   });
 });
+
+describe('diagram med matplotlib', () => {
+  it('skickar varje figur som PNG och börjar om vid nästa körning', () => {
+    const result = run({
+      code: 'import matplotlib.pyplot as plt\nplt.bar(["a", "b"], [3, 5])\nplt.figure()\nplt.plot([1, 2])',
+    });
+    expect(result.figures).toHaveLength(2);
+    expect(atob(result.figures[0]).slice(1, 4)).toBe('PNG');
+    expect(run({ code: 'print(1)' }).figures).toEqual([]);
+  });
+
+  it('__figur() beskriver diagrammet utan att titta på pixlar', () => {
+    const figur = code =>
+      run({
+        code: `import matplotlib.pyplot as plt\n${code}`,
+        tests: [{ code: '__figur()', expected: null }],
+      }).tests[0].actual;
+    expect(
+      figur(
+        'plt.bar(["Te", "Latte"], [3, 7])\nplt.title("T")\nplt.ylabel("kr")',
+      ),
+    ).toMatchObject({
+      typ: ['staplar'],
+      titel: 'T',
+      y: 'kr',
+      staplar: [3, 7],
+      etiketter: ['Te', 'Latte'],
+    });
+    expect(figur('plt.barh(["a", "b"], [1, 2])').typ).toEqual([
+      'liggande staplar',
+    ]);
+    expect(figur('plt.hist([1, 2, 2, 3], bins=3)').typ).toEqual(['histogram']);
+    expect(figur('plt.scatter([1, 2], [3, 4])')).toMatchObject({
+      typ: ['punkter'],
+      punkter: 2,
+    });
+    expect(
+      figur('plt.plot([1, 2], [3, 4], label="A")\nplt.legend()'),
+    ).toMatchObject({ typ: ['linje'], linjer: [[3, 4]], forklaring: ['A'] });
+  });
+
+  it('__figur() är None utan diagram', () => {
+    const result = run({
+      code: 'x = 1',
+      tests: [{ code: '__figur()', expected: null }],
+    });
+    expect(result.tests[0].passed).toBe(true);
+  });
+});

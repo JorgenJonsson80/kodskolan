@@ -2710,3 +2710,16 @@ a.primary-button {
   margin: 4px 0;
   font-size: 0.9rem;
 }
+
+/* Diagram från matplotlib (Python och Dataanalys). */
+.plot-figure {
+  margin: 12px 0;
+}
+
+.plot-figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: #ffffff;
+}

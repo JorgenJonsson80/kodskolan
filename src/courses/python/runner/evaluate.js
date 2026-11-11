@@ -73,7 +73,11 @@ export function evaluate(lesson, code, raw) {
       results: [],
     };
   }
-  const base = { output: raw.console ?? [], app: raw.app ?? [] };
+  const base = {
+    output: raw.console ?? [],
+    app: raw.app ?? [],
+    figures: raw.figures ?? [],
+  };
 
   if (raw.syntaxError) {
     return {

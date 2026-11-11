@@ -169,4 +169,41 @@ export const QUIZ = {
         'Kolumnen pris finns i båda, så pandas döper om dem till pris_x och pris_y.',
     },
   ],
+  diagram: [
+    {
+      question:
+        'Du vill jämföra hur mycket fem produkter sålt. Vilket diagram passar bäst?',
+      options: ['Staplar', 'En linje', 'Ett histogram', 'Punkter'],
+      explain:
+        'Staplar jämför olika saker. En linje passar när x-axeln är tid.',
+    },
+    {
+      question:
+        'Vilket diagram visar hur stora kvittona brukar vara – formen på datan?',
+      options: [
+        'Ett histogram',
+        'En linje',
+        'Staplar per produkt',
+        'Ett tårtdiagram',
+      ],
+      explain:
+        'Ett histogram delar in värdena i fack och visar hur många som hamnar i varje.',
+    },
+    {
+      question: 'Vad behövs för att namnen på linjerna ska synas?',
+      options: [
+        'label= på varje linje och plt.legend()',
+        'Bara plt.legend()',
+        'plt.title()',
+        'plt.xlabel()',
+      ],
+      explain: 'label= ger linjen ett namn, och plt.legend() visar namnen.',
+    },
+    {
+      question: 'Med plt.barh, var hamnar den första stapeln?',
+      options: ['Längst ner', 'Längst upp', 'Längst till vänster', 'I mitten'],
+      explain:
+        'Liggande staplar ritas nerifrån och upp. Sortera med minst först för att få den största överst.',
+    },
+  ],
 };

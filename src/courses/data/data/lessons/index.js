@@ -1,5 +1,6 @@
 import { BOSSES } from './bossar';
 import { DATUM } from './datum';
+import { DIAGRAM } from './diagram';
 import { FORSTA } from './forsta';
 import { GRUPPERA } from './gruppera';
 import { KOMBINERA } from './kombinera';
@@ -21,4 +22,6 @@ export const LESSONS = [
   BOSSES.gruppera,
   ...KOMBINERA,
   BOSSES.kombinera,
+  ...DIAGRAM,
+  BOSSES.diagram,
 ];

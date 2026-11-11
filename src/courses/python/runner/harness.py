@@ -11,6 +11,9 @@ import sys
 import traceback
 import types
 
+# Diagram ritas till bilder, aldrig till ett fönster.
+os.environ.setdefault('MPLBACKEND', 'Agg')
+
 STUDENT_FILE = '<elev>'
 TEST_FILE = '<test>'
 # En loop som skriver ut i all evighet ska inte fylla minnet innan
@@ -535,6 +538,8 @@ class _Run:
                     # Det en Streamlit-app visade, t.ex. __shown('title').
                     self.namespace['__app'] = [[e['type'], e['text']] for e in self.app.elements]
                     self.namespace['__shown'] = self.shown
+                    # Det ett matplotlib-diagram visar, t.ex. __figur()["titel"].
+                    self.namespace['__figur'] = _figure_info
                     for extra in TEST_GLOBALS:
                         self.namespace.update(extra(self.namespace))
                     actual = eval(compile(test['code'], TEST_FILE, 'eval'), self.namespace)
@@ -544,6 +549,104 @@ class _Run:
             except BaseException as error:
                 entry['error'] = _error_info(error, STUDENT_FILE, self.namespace)
         return entry
+
+
+# --- Diagram (matplotlib) ---
+
+def _pyplot():
+    # Bara om eleven redan använt matplotlib: att importera det är långsamt.
+    return sys.modules.get('matplotlib.pyplot')
+
+
+def _close_figures():
+    plt = _pyplot()
+    if plt is not None:
+        plt.close('all')
+
+
+def _figures():
+    """Varje figur programmet ritade, som PNG i base64."""
+    plt = _pyplot()
+    if plt is None:
+        return []
+    import base64
+    import io
+    images = []
+    for number in plt.get_fignums():
+        buffer = io.BytesIO()
+        plt.figure(number).savefig(buffer, format='png', dpi=80, bbox_inches='tight')
+        images.append(base64.b64encode(buffer.getvalue()).decode('ascii'))
+    return images
+
+
+def _bars(ax):
+    # Staplar från bar, barh och hist: höjden, eller bredden när de ligger ner.
+    from matplotlib.container import BarContainer
+    values = []
+    for container in ax.containers:
+        if isinstance(container, BarContainer):
+            horizontal = getattr(container, 'orientation', 'vertical') == 'horizontal'
+            for patch in container.patches:
+                value = patch.get_width() if horizontal else patch.get_height()
+                values.append(round(float(value), 2))
+    return values
+
+
+def _touching(patches):
+    # hist ritar staplar kant i kant, bar lämnar ett mellanrum.
+    edges = sorted((p.get_x(), p.get_x() + p.get_width()) for p in patches)
+    return len(edges) > 1 and all(
+        abs(right - edges[i + 1][0]) < 1e-9 for i, (_, right) in enumerate(edges[:-1])
+    )
+
+
+def _kinds(ax):
+    from matplotlib.collections import PathCollection
+    from matplotlib.container import BarContainer
+    kinds = []
+    for container in ax.containers:
+        if isinstance(container, BarContainer):
+            if getattr(container, 'orientation', 'vertical') == 'horizontal':
+                kinds.append('liggande staplar')
+            elif _touching(container.patches):
+                kinds.append('histogram')
+            else:
+                kinds.append('staplar')
+    if ax.lines:
+        kinds.append('linje')
+    if any(isinstance(item, PathCollection) for item in ax.collections):
+        kinds.append('punkter')
+    return sorted(set(kinds))
+
+
+def _figure_info(index=0):
+    """__figur() i ett test: det diagrammet visar, utan att titta på pixlar.
+
+    index väljer diagram när en figur har flera (plt.subplots).
+    """
+    plt = _pyplot()
+    if plt is None or not plt.get_fignums():
+        return None
+    figure = plt.gcf()
+    figure.canvas.draw()
+    if index >= len(figure.axes):
+        return None
+    ax = figure.axes[index]
+    legend = ax.get_legend()
+    return {
+        'typ': _kinds(ax),
+        'titel': ax.get_title(),
+        'x': ax.get_xlabel(),
+        'y': ax.get_ylabel(),
+        'staplar': _bars(ax),
+        'etiketter': [label.get_text() for label in ax.get_xticklabels()],
+        'y_etiketter': [label.get_text() for label in ax.get_yticklabels()],
+        'linjer': [[round(float(v), 2) for v in line.get_ydata()] for line in ax.lines],
+        'punkter': sum(len(item.get_offsets()) for item in ax.collections),
+        'forklaring': [text.get_text() for text in legend.get_texts()] if legend else [],
+        'diagram': len(figure.axes),
+        'y_min': round(float(ax.get_ylim()[0]), 2),
+    }
 
 
 def _app_run(compiled, test, answers):
@@ -570,6 +673,7 @@ def run_student(code, tests_json, inputs_json, files_json='{}'):
         result['syntaxError'] = _error_info(error, STUDENT_FILE)
         return json.dumps(result)
 
+    _close_figures()
     main = _Run(compiled, json.loads(inputs_json))
     result['error'] = main.error
     if main.error is None:
@@ -587,6 +691,8 @@ def run_student(code, tests_json, inputs_json, files_json='{}'):
     result['output'] = main.output
     result['console'] = _lines(main.capture.console)
     result['app'] = main.app.elements
+    result['figures'] = _figures()
+    _close_figures()
     return json.dumps(result)
 
 
@@ -594,7 +700,7 @@ def run_student(code, tests_json, inputs_json, files_json='{}'):
 
 MAX_STEPS = 300
 # Namn som finns i namespace men inte är elevens egna variabler.
-_HIDDEN = {'input', '__builtins__', '__name__', '__output', '__raises', '__message', '__app', '__shown'}
+_HIDDEN = {'input', '__builtins__', '__name__', '__output', '__raises', '__message', '__app', '__shown', '__figur'}
 
 
 class _StepLimit(Exception):

@@ -130,4 +130,22 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'diagram',
+    title: 'Diagram',
+    teaches: ['plt.plot', 'plt.bar', 'plt.hist', 'plt.scatter', 'plt.subplots'],
+    reward: { emoji: '📈', name: 'Diagram' },
+    canBuild:
+      'diagram som går att förstå utan att du står bredvid: rätt sort för frågan, sorterade, med titel och enheter',
+    docs: [
+      {
+        title: 'Kom igång med pyplot',
+        url: 'https://matplotlib.org/stable/tutorials/pyplot.html',
+      },
+      {
+        title: 'Diagram från pandas',
+        url: `${PANDAS}getting_started/intro_tutorials/04_plotting.html`,
+      },
+    ],
+  },
 ];

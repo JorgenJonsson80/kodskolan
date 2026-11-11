@@ -421,4 +421,78 @@ print(f"Ägaren har rätt: {snitt[True] >= 2 * snitt[False]}")
       },
     ],
   },
+  diagram: {
+    id: 'da-boss-diagram',
+    track: 'diagram',
+    title: 'Boss: Kaféets vecka i en figur',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Ägaren ska bemanna kaféet nästa år och vill se veckan i en enda figur, som går att sätta upp i personalrummet.',
+    task: `Uppgift: Läs in \`kassan.csv\`, lägg till \`summa\` och gör om datum. Gör en figur med två diagram bredvid varandra:
+  1. Till vänster: staplar med snittintäkten per dag för varje veckodag (som i bana 4, avrundat till heltal), med namnen från \`DAGAR\` under staplarna. Titeln ska vara \`Snitt per dag\` och y-axeln \`Kronor\`.
+  2. Till höger: en linje med antalet kunder (olika kvitton) per timme på lördagar. Titeln ska vara \`Kunder på lördagar\` och x-axeln \`Timme\`.`,
+    starterCode:
+      'import pandas as pd\nimport matplotlib.pyplot as plt\n\nDAGAR = ["mån", "tis", "ons", "tor", "fre", "lör", "sön"]\n\n# Skriv din kod här\n',
+    solution: `import pandas as pd
+import matplotlib.pyplot as plt
+
+DAGAR = ["mån", "tis", "ons", "tor", "fre", "lör", "sön"]
+
+df = pd.read_csv("kassan.csv")
+df["summa"] = df["antal"] * df["pris"]
+df["tidpunkt"] = pd.to_datetime(df["datum"] + " " + df["tid"])
+df["datum"] = pd.to_datetime(df["datum"])
+
+dagar = df.groupby("datum")["summa"].sum().reset_index()
+dagar["veckodag"] = dagar["datum"].dt.dayofweek
+snitt = dagar.groupby("veckodag")["summa"].mean().round()
+
+lordag = df[df["datum"].dt.dayofweek == 5]
+per_timme = lordag.groupby(lordag["tidpunkt"].dt.hour)["kvitto"].nunique()
+
+fig, (vanster, hoger) = plt.subplots(1, 2, figsize=(10, 4))
+vanster.bar(DAGAR, snitt.values)
+vanster.set_title("Snitt per dag")
+vanster.set_ylabel("Kronor")
+hoger.plot(per_timme.index, per_timme.values)
+hoger.set_title("Kunder på lördagar")
+hoger.set_xlabel("Timme")
+`,
+    files: KASSA,
+    hints: [],
+    tests: [
+      {
+        description: 'Två diagram i figuren',
+        code: '__figur()["diagram"]',
+        expected: 2,
+      },
+      {
+        description: 'Vänster: snittet per veckodag som staplar',
+        code: '__figur(0)["staplar"]',
+        expected: [1206, 1190, 1219, 1271, 1447, 1908, 1340],
+      },
+      {
+        description: 'Vänster: veckodagarnas namn under staplarna',
+        code: '__figur(0)["etiketter"]',
+        expected: ['mån', 'tis', 'ons', 'tor', 'fre', 'lör', 'sön'],
+      },
+      {
+        description: 'Vänster: titel och y-axel',
+        code: '[__figur(0)["titel"], __figur(0)["y"]]',
+        expected: ['Snitt per dag', 'Kronor'],
+      },
+      {
+        description: 'Höger: kunder per timme på lördagar som en linje',
+        code: '__figur(1)["linjer"]',
+        expected: [[105, 83, 68, 102, 203, 139, 107, 159, 93, 42]],
+      },
+      {
+        description: 'Höger: titel och x-axel',
+        code: '[__figur(1)["titel"], __figur(1)["x"]]',
+        expected: ['Kunder på lördagar', 'Timme'],
+      },
+    ],
+  },
 };
