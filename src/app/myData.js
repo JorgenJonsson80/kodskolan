@@ -2,7 +2,7 @@ import { supabase } from '../core/lib/supabase';
 import { COURSES } from './courses';
 
 // Det Kodskolan sparar om en elev (GDPR): framstegen i webbläsaren, under
-// kursernas prefix, och i kontot course_progress och diplomas.
+// kursernas prefix, och i kontot course_progress, diplomas och entitlements.
 
 const PREFIXES = COURSES.map(course => course.storagePrefix);
 
@@ -48,17 +48,20 @@ export async function myData(user) {
     browser: localData(),
   };
   if (!supabase || !user) return data;
-  const [progress, diplomas] = await Promise.all([
+  const [progress, diplomas, entitlements] = await Promise.all([
     supabase.from('course_progress').select('*').order('course_id'),
     supabase.from('diplomas').select('*').order('issued_at'),
+    supabase.from('entitlements').select('*').order('created_at'),
   ]);
   if (progress.error) throw progress.error;
   if (diplomas.error) throw diplomas.error;
+  if (entitlements.error) throw entitlements.error;
   return {
     ...data,
     account: { id: user.id, email: user.email, created_at: user.created_at },
     course_progress: progress.data,
     diplomas: diplomas.data,
+    entitlements: entitlements.data,
   };
 }
 

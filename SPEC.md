@@ -65,6 +65,7 @@ export default {
     tracks, lessons, projects, projectSteps, ideas, quiz, resources,
     ideaStarterCode, // Lekplatsens startkod i kursens språk
   },
+  freeTracks?: 2,  // så många banor är gratis när låsningen är på
   progress?: {    // bara om kursen sparade på annat sätt förut (JS)
     legacyCompleted, // () => klara id:n från gamla nycklar
   },
@@ -143,7 +144,9 @@ och databasvalet på Lekplatsen).
 | `py_progress` m.fl.| 1–2   | akademiernas egna, används inte längre           |
 | `course_progress`  | 3     | user_id, course_id, klara id:n, utkast, lägen    |
 | `diplomas`         | –     | kod, user_id, kurs eller spår, namn, innehåll    |
-| `entitlements`     | 5     | user_id, course_id, giltig till, källa           |
+| `entitlements`     | 5     | user_id, course_id ('*' alla), giltig till, källa |
+| `access_codes` …   | 5     | tillgångskoder och vem som löst in dem           |
+| `admins`           | 5     | user_id, tillgång till allt                      |
 | `lesson_content`   | 5     | betalbanornas övningar, läses bara med tillgång  |
 | `schools` …        | 6     | skolor, klasser, medlemmar                       |
 
@@ -166,6 +169,28 @@ databasen kan inte göra det förrän innehållet finns där (etapp 5).
 
 Gratisbanorna ligger kvar i appen. Betalbanorna hämtas från
 `lesson_content`, och RLS bestämmer vem som får läsa dem.
+
+### Tillgång (etapp 5, första steget ✅)
+
+Migrationen `_access.sql`. `my_access()` ger den inloggades kurser
+(`'*'` för alla) med slutdatum, och en admin får `'*'`.
+`redeem_access_code(kod)` löser in en kod och ger tillgång i kodens
+`days` dagar (null: för alltid). Koderna (`access_codes`), admins och
+inlösningarna går bara att ändra i Supabase, se `docs/TILLGANG.md`.
+`has_access(kurs)` är till RLS på `lesson_content`.
+
+I appen: `core/lib/access.js` (reglerna) och `useAccess.js`. Banorna
+efter `freeTracks` (2 om kursen inget säger) är låsta utan tillgång,
+men bara när `VITE_PAYWALL=on`, så att inget ändras innan priset är
+bestämt. En betalbana visar 💎 och går att öppna: då visas
+`PaywallCard` i stället för övningen. Koden skrivs in på
+`/konto#tillgang`, och `/konto?kod=TESTA` fyller i den (den sparas
+under inloggningen). Låset finns än så länge bara i gränssnittet:
+innehållet ligger kvar i appen tills det flyttar till `lesson_content`.
+
+Kvar i etapp 5: Stripe (Checkout och en webhook i en Edge Function som
+skriver `entitlements` med `source = 'stripe'`), priset och vad som är
+gratis, och betalbanorna i `lesson_content`.
 
 ## Adresser
 
@@ -205,7 +230,7 @@ Användaren testar efter varje etapp.
    på under Mina kurser.
 4. **Språkfil.** All text i kärnan i `sv.js`, så att engelska blir en
    ny fil.
-5. **Låst innehåll och Stripe.** Gratisbanor, köp och betalbanor från
+5. **Låst innehåll och Stripe.** Tillgång och koder ✅. Gratisbanor, köp och betalbanor från
    databasen. Stripe via Supabase Edge Functions, testkort först.
    Admin: en tabell `admins` (user_id) som bara går att ändra i
    Supabase. En admin har tillgång till allt, som om allt vore köpt.

@@ -29,6 +29,11 @@ Diplom och spår: `src/app/paths.js` (spåren), `PathsPage.jsx` (`/spar`),
 Varje kurs har `summary.js` med bara banorna och övningarna, så att
 spåren kan räkna utan att ladda kurserna.
 
+Tillgång (etapp 5): `core/lib/access.js` och `useAccess.js`, tabellerna
+`entitlements`, `access_codes` och `admins`. Banorna efter de gratis
+låses bara när `VITE_PAYWALL=on`. Koder och admins skapas i Supabase,
+se `docs/TILLGANG.md`.
+
 ## Kommandon
 
 - `npm run dev` – utvecklingsserver

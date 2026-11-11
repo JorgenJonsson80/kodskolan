@@ -30,6 +30,10 @@ function Privacy() {
         <li>vilka övningar du klarat och din kod, i alla kurser</li>
         <li>dina diplom, med namnet du skrivit på dem</li>
         <li>
+          vilken tillgång du har, hur länge den gäller och koden du löste in den
+          med
+        </li>
+        <li>
           när du loggade in och från vilken IP-adress, i inloggningstjänstens
           loggar
         </li>

@@ -8,6 +8,7 @@ import HelpDialog from './components/HelpDialog';
 import HeroCard from './components/HeroCard';
 import LessonPanel from './components/LessonPanel';
 import DiplomaDialog from './components/DiplomaDialog';
+import PaywallCard from './components/PaywallCard';
 import LevelUp from './components/LevelUp';
 import Playground from './components/Playground';
 import Quiz from './components/Quiz';
@@ -15,6 +16,8 @@ import TrackList from './components/TrackList';
 import { CourseContext } from './course';
 import { copyToPlayground, PLAYGROUND_COPY } from './lib/playground';
 import { facitId, keyStatus } from './lib/keys';
+import { FREE_TRACKS, isPaidTrack } from './lib/access';
+import { useAccess } from './lib/useAccess';
 import { mergeCompleted } from './lib/progress';
 import {
   isStringList,
@@ -130,6 +133,19 @@ function Academy({ course }) {
     setProjectModes,
   });
 
+  const { access } = useAccess(account.user);
+  const freeTracks = course.freeTracks ?? FREE_TRACKS;
+
+  // Betalbanorna låses först när tillgången hämtats (access är null
+  // medan den hämtas), så att den som har tillgång inte ser låset blinka.
+  function isTrackPaid(trackId) {
+    if (access === null) return false;
+    return isPaidTrack(
+      TRACKS.findIndex(item => item.id === trackId),
+      { freeTracks, access, courseId: course.id },
+    );
+  }
+
   // Efter utloggning töms webbläsaren, så att nästa person som loggar in
   // här inte får med sig dina framsteg. De finns kvar i ditt konto.
   async function handleSignOut() {
@@ -212,6 +228,7 @@ function Academy({ course }) {
   }
 
   function isTrackUnlocked(trackId) {
+    if (isTrackPaid(trackId)) return false;
     const index = TRACKS.findIndex(item => item.id === trackId);
     if (index <= 0) return index === 0;
     // En bana man redan nått låses inte igen, även om en tidigare bana
@@ -277,7 +294,12 @@ function Academy({ course }) {
   // isExerciseUnlocked.
   function selectLesson(id, force = false) {
     const item = EXERCISES.find(other => other.id === id);
-    if (!item || (!force && !isExerciseUnlocked(item))) return;
+    if (!item) return;
+    // En betalbana går att öppna: då visas PaywallCard i stället för
+    // övningen.
+    if (!force && !isExerciseUnlocked(item) && !isTrackPaid(item.track)) {
+      return;
+    }
     setShowPlayground(false);
     setLessonId(id);
     window.scrollTo({ top: 0 });
@@ -536,6 +558,8 @@ function Academy({ course }) {
               trackStatusById={trackStatusById}
               passedTrackIds={passedTrackIds}
               isTrackUnlocked={isTrackUnlocked}
+              isTrackPaid={isTrackPaid}
+              freeTracks={freeTracks}
               activeTrackId={track.id}
               activeLessonId={lesson.id}
               onSelectTrack={trackId => {
@@ -562,6 +586,15 @@ function Academy({ course }) {
               onSelectIdea={setPlaygroundIdeaId}
               onBack={() => setShowPlayground(false)}
             />
+          ) : isTrackPaid(lesson.track) ? (
+            <div className="lesson-column">
+              <PaywallCard
+                track={track}
+                freeTracks={freeTracks}
+                isSignedIn={Boolean(account.user)}
+                onBack={() => selectLesson((nextUncompleted ?? LESSONS[0]).id)}
+              />
+            </div>
           ) : (
             <div className="lesson-column">
               <LessonPanel

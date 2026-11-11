@@ -93,6 +93,8 @@ export default function TrackList({
   trackStatusById,
   passedTrackIds,
   isTrackUnlocked,
+  isTrackPaid,
+  freeTracks,
   activeTrackId,
   activeLessonId,
   onSelectTrack,
@@ -108,7 +110,7 @@ export default function TrackList({
     <section className="card">
       <h2 className="card-title">Dina banor</h2>
       <ul className="track-list">
-        {tracks.map(item => {
+        {tracks.map((item, trackIndex) => {
           const items = lessons.filter(lesson => lesson.track === item.id);
           const completed = items.filter(lesson =>
             completedIds.includes(lesson.id),
@@ -118,15 +120,26 @@ export default function TrackList({
           const isActive = item.id === activeTrackId;
           const isPassed = passedTrackIds.includes(item.id);
           const needsBoss = isPassed && !status.isComplete;
+          const isPaid = isTrackPaid(item.id);
+          // Upplysningen står en gång, ovanför första låsta betalbanan.
+          const isFirstPaid = isPaid && trackIndex === freeTracks;
           return (
             <li
               key={item.id}
               className={isActive ? 'track-card active' : 'track-card'}
             >
+              {isFirstPaid && (
+                <p className="paywall-note muted">
+                  💎 Banorna härifrån ingår i full tillgång.{' '}
+                  <a href={`${import.meta.env.BASE_URL}konto#tillgang`}>
+                    Har du en kod?
+                  </a>
+                </p>
+              )}
               <button
                 className="track-button"
                 type="button"
-                disabled={!isUnlocked}
+                disabled={!isUnlocked && !isPaid}
                 onClick={() => onSelectTrack(item.id)}
                 aria-current={isActive ? 'true' : undefined}
               >
@@ -137,14 +150,21 @@ export default function TrackList({
                       ? '⚡'
                       : isUnlocked
                         ? '▶'
-                        : '🔒'}
+                        : isPaid
+                          ? '💎'
+                          : '🔒'}
                 </span>
                 <span className="track-title">{item.title}</span>
                 <span className="track-count">
                   {completed}/{items.length}
                   <span className="visually-hidden">
                     {' '}
-                    klarade{isUnlocked ? '' : ', låst'}
+                    klarade
+                    {isPaid
+                      ? ', kräver full tillgång'
+                      : isUnlocked
+                        ? ''
+                        : ', låst'}
                   </span>
                 </span>
               </button>

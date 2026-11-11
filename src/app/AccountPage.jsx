@@ -1,9 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AccountPanel from '../core/components/AccountPanel';
 import SiteFooter from '../core/components/SiteFooter';
 import { contactUrl } from '../core/lib/contact';
 import { errorText, MIN_PASSWORD } from '../core/lib/authText';
 import { NEW_PASSWORD, useAccount } from '../core/lib/useAccount';
+import { useAccess } from '../core/lib/useAccess';
+import {
+  accessSummary,
+  CODE_PARAM,
+  PENDING_CODE_KEY,
+} from '../core/lib/access';
+import { readJson, writeJson } from '../core/lib/storage';
+import { COURSES } from './courses';
 import {
   clearLocalData,
   deleteMyAccount,
@@ -68,6 +76,111 @@ function PasswordForm({ account }) {
           </button>
           {error && <p className="feedback-error">{error}</p>}
         </form>
+      )}
+    </section>
+  );
+}
+
+const dateText = date =>
+  date.toLocaleDateString('sv-SE', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+const courseName = courseId =>
+  courseId === '*'
+    ? 'Alla kurser'
+    : (COURSES.find(course => course.id === courseId)?.name ?? courseId);
+
+// Koden från /konto?kod=TESTA, eller den som sparats innan inloggningen
+// (som leder tillbaka hit utan ?kod).
+function initialCode() {
+  const fromUrl = new URLSearchParams(window.location.search).get(CODE_PARAM);
+  if (fromUrl) {
+    writeJson(PENDING_CODE_KEY, fromUrl);
+    return fromUrl;
+  }
+  return readJson(PENDING_CODE_KEY, '', value => typeof value === 'string');
+}
+
+// Full tillgång: vad man har och rutan för en tillgångskod.
+function AccessSection({ account }) {
+  const { access, redeem } = useAccess(account.user);
+  const [code, setCode] = useState(initialCode);
+  const [state, setState] = useState('idle');
+  const [error, setError] = useState(null);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setState('saving');
+    setError(null);
+    const failed = await redeem(code.trim());
+    if (failed) {
+      setError(failed);
+      setState('idle');
+    } else {
+      writeJson(PENDING_CODE_KEY, null);
+      setCode('');
+      setState('saved');
+    }
+  }
+
+  // Sidan ritas först när inloggningen är klar, så webbläsaren hinner inte
+  // hoppa till #tillgang själv.
+  useEffect(() => {
+    if (window.location.hash === '#tillgang') {
+      document.getElementById('tillgang')?.scrollIntoView();
+    }
+  }, []);
+
+  const summary = access ? accessSummary(access) : [];
+
+  return (
+    <section id="tillgang">
+      <h2>Full tillgång</h2>
+      {!account.user ? (
+        <p className="muted">
+          {code
+            ? `Logga in ovanför för att lösa in koden ${code}.`
+            : 'Har du en kod? Logga in ovanför, så kan du skriva in den här.'}
+        </p>
+      ) : (
+        <>
+          {access === null ? (
+            <p className="muted">Hämtar…</p>
+          ) : summary.length === 0 ? (
+            <p className="muted">
+              Du har de gratis banorna. Har du en kod kan du skriva in den här.
+            </p>
+          ) : (
+            <ul>
+              {summary.map(({ courseId, until }) => (
+                <li key={`access-${courseId}`}>
+                  <strong>{courseName(courseId)}</strong>
+                  {until ? ` till och med ${dateText(until)}` : ', för alltid'}
+                </li>
+              ))}
+            </ul>
+          )}
+          {state === 'saved' && <p role="status">✓ Klart! Koden är inlöst.</p>}
+          <form className="password-form" onSubmit={handleSubmit}>
+            <input
+              required
+              placeholder="Din kod, t.ex. TESTA-2026"
+              aria-label="Kod"
+              autoComplete="off"
+              autoCapitalize="characters"
+              spellCheck={false}
+              value={code}
+              onChange={event => setCode(event.target.value)}
+            />
+            <button type="submit" disabled={state === 'saving'}>
+              {state === 'saving' ? 'Löser in…' : 'Lös in koden'}
+            </button>
+            {error && <p className="feedback-error">{error}</p>}
+          </form>
+        </>
       )}
     </section>
   );
@@ -199,8 +312,9 @@ export default function AccountPage() {
                 </li>
                 <li>
                   <strong>I ditt konto</strong> (om du loggar in): din
-                  mejladress, samma framsteg och kod, och dina diplom med namnet
-                  du valt.
+                  mejladress, samma framsteg och kod, dina diplom med namnet du
+                  valt och vilken tillgång du har (och koden du löste in den
+                  med).
                 </li>
               </ul>
               <p className="muted">
@@ -234,6 +348,10 @@ export default function AccountPage() {
             )}
 
             {account.user && <PasswordForm account={account} />}
+
+            {account.isAvailable && account.isReady && (
+              <AccessSection account={account} />
+            )}
 
             <section>
               <h2>Ladda ner din data</h2>

@@ -34,6 +34,8 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
           VITE_SUPPORT_EMAIL: ${{ vars.VITE_SUPPORT_EMAIL }}
           VITE_POSTHOG_KEY: ${{ vars.VITE_POSTHOG_KEY }}
+          # on låser betalbanorna (docs/TILLGANG.md).
+          VITE_PAYWALL: ${{ vars.VITE_PAYWALL }}
           # Tomma tills sajten har en egen domän (se docs/DOMAN.md).
           VITE_SITE_URL: ${{ vars.VITE_SITE_URL }}
           VITE_BASE: ${{ vars.VITE_BASE }}

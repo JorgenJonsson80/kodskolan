@@ -251,3 +251,108 @@ describe('delete_my_account', () => {
     expect(await count('auth.users', ANNA)).toBe(1);
   });
 });
+
+describe('tillgång', () => {
+  beforeEach(async () => {
+    db = new PGlite();
+    await db.exec(SUPABASE);
+    await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
+    for (const migration of migrations) await db.exec(migration);
+    await db.exec(`
+      insert into access_codes (code, days, max_uses) values ('TESTA', 30, 1);
+      insert into access_codes (code, course_id) values ('PYTHON', 'python');
+      insert into access_codes (code, redeem_by) values ('GAMMAL', now() - interval '1 day');
+    `);
+  });
+
+  const as = user =>
+    db.exec(
+      `reset role; set role authenticated; set request.jwt.claim.sub = '${user}'`,
+    );
+  const redeem = async code =>
+    (await db.query(`select * from public.redeem_access_code('${code}')`))
+      .rows[0];
+  const myAccess = async () =>
+    (await db.query('select course_id from public.my_access() order by 1'))
+      .rows;
+  const hasAccess = async course =>
+    (await db.query(`select public.has_access('${course}') as ok`)).rows[0]
+      .ok;
+
+  it('ger tillgång i så många dagar som koden säger', async () => {
+    await as(ANNA);
+    expect(await myAccess()).toEqual([]);
+    const { course_id, valid_until } = await redeem(' testa ');
+    expect(course_id).toBe('*');
+    const days = (new Date(valid_until) - Date.now()) / 86_400_000;
+    expect(days).toBeGreaterThan(29.9);
+    expect(days).toBeLessThan(30.1);
+    expect(await myAccess()).toEqual([{ course_id: '*' }]);
+    expect(await hasAccess('sql')).toBe(true);
+  });
+
+  it('en kod för en kurs ger bara den kursen, för alltid', async () => {
+    await as(BO);
+    const { valid_until } = await redeem('PYTHON');
+    expect(valid_until).toBeNull();
+    expect(await hasAccess('python')).toBe(true);
+    expect(await hasAccess('sql')).toBe(false);
+  });
+
+  it('tillgången slutar gälla efter sista dagen', async () => {
+    await as(ANNA);
+    await redeem('TESTA');
+    await db.exec(
+      `reset role; update entitlements set valid_until = now() - interval '1 second'`,
+    );
+    await as(ANNA);
+    expect(await myAccess()).toEqual([]);
+  });
+
+  it('säger ifrån när koden inte går att använda', async () => {
+    await as(ANNA);
+    await expect(redeem('FINNSINTE')).rejects.toThrow(/finns inte/);
+    await expect(redeem('GAMMAL')).rejects.toThrow(/gått ut/);
+    await redeem('TESTA');
+    await expect(redeem('TESTA')).rejects.toThrow(/redan använt/);
+    await as(BO);
+    await expect(redeem('TESTA')).rejects.toThrow(/så många/);
+    expect(await myAccess()).toEqual([]);
+  });
+
+  it('en admin har tillgång till allt', async () => {
+    await db.exec(`insert into admins values ('${BO}')`);
+    await as(BO);
+    expect(await myAccess()).toEqual([{ course_id: '*' }]);
+    await as(ANNA);
+    expect(await myAccess()).toEqual([]);
+  });
+
+  it('ingen kan ge sig själv tillgång eller se andras', async () => {
+    await as(ANNA);
+    await redeem('PYTHON');
+    await as(BO);
+    expect((await db.query('select * from entitlements')).rows).toEqual([]);
+    for (const sql of [
+      `insert into entitlements (user_id, course_id, source) values ('${BO}', '*', 'manual')`,
+      `insert into admins values ('${BO}')`,
+      `insert into access_codes (code) values ('EGEN')`,
+    ]) {
+      await expect(db.exec(sql), sql).rejects.toThrow();
+    }
+    expect((await db.query('select * from access_codes')).rows).toEqual([]);
+    await db.exec('reset role; set role anon');
+    await expect(redeem('PYTHON')).rejects.toThrow();
+  });
+
+  it('försvinner med kontot', async () => {
+    await as(ANNA);
+    await redeem('TESTA');
+    await db.query('select public.delete_my_account()');
+    await db.exec('reset role');
+    const left = await db.query(
+      'select (select count(*) from entitlements)::int + (select count(*) from code_redemptions)::int as n',
+    );
+    expect(left.rows[0].n).toBe(0);
+  });
+});

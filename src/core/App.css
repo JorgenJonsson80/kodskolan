@@ -2676,3 +2676,37 @@
   color: var(--text);
   font: inherit;
 }
+
+/* Banor som kräver tillgång (etapp 5). */
+.paywall-card {
+  display: grid;
+  gap: 12px;
+  border-color: var(--accent);
+}
+
+.paywall-card h2,
+.paywall-card p {
+  margin: 0;
+}
+
+.paywall-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+a.primary-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.paywall-note {
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
