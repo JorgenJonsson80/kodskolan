@@ -1,4 +1,4 @@
-import { KASSA, RORIG_OCH_REN } from '../filer';
+import { KASSA, KASSA_OCH_VADER, RORIG_OCH_REN } from '../filer';
 
 // En boss per bana: en större uppgift som använder allt från banan, utan
 // ledtrådar. Banan räknas inte som klar förrän bossen är besegrad.
@@ -346,6 +346,77 @@ print(f"Snittkvitto: {snittkvitto} kr")
           '3. Soppa: 4845 kr (11.6 %)',
           'Totalt: 41712 kr på 470 kvitton',
           'Snittkvitto: 88.7 kr',
+        ],
+      },
+    ],
+  },
+  kombinera: {
+    id: 'da-boss-kombinera',
+    track: 'kombinera',
+    title: 'Boss: Iskaffe och värme',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Ägaren tror att iskaffet säljer när det är varmt. Ta reda på om det stämmer, med kassan och vädret.',
+    task: `Uppgift: Läs in \`kassan.csv\` och \`vadret.csv\`.
+  1. Spara antalet sålda iskaffe per datum i en tabell, \`iskaffe\`, med kolumnerna datum och antal.
+  2. Spara alla dagar kaféet hade öppet, med temperaturen och antalet iskaffe, i \`dagar\`. En öppen dag utan iskaffe ska ha antal 0.
+  3. Lägg till kolumnen \`varmt\`: True när det var 20 grader eller mer.
+  4. Spara snittet av iskaffe per dag för svala och varma dagar, avrundat till en decimal, i \`snitt\`.
+  5. Skriv ut:
+\`\`\`
+Varma dagar: 18 st, 4.4 iskaffe per dag
+Svala dagar: 338 st, 0.4 iskaffe per dag
+Ägaren har rätt: True
+\`\`\`
+(Ägaren har rätt om varma dagar säljer minst dubbelt så mycket.)`,
+    starterCode: 'import pandas as pd\n\n# Skriv din kod här\n',
+    solution: `import pandas as pd
+
+df = pd.read_csv("kassan.csv")
+vadret = pd.read_csv("vadret.csv")
+
+iskaffe = df[df["produkt"] == "Iskaffe"]
+iskaffe = iskaffe.groupby("datum")["antal"].sum().reset_index()
+
+oppna = df.groupby("datum")["kvitto"].nunique().reset_index()
+dagar = oppna.merge(vadret, on="datum")
+dagar = dagar.merge(iskaffe, on="datum", how="left")
+dagar = dagar.fillna({"antal": 0})
+dagar["varmt"] = dagar["temperatur"] >= 20
+
+snitt = dagar.groupby("varmt")["antal"].mean().round(1)
+antal = dagar["varmt"].value_counts()
+print(f"Varma dagar: {antal[True]} st, {snitt[True]} iskaffe per dag")
+print(f"Svala dagar: {antal[False]} st, {snitt[False]} iskaffe per dag")
+print(f"Ägaren har rätt: {snitt[True] >= 2 * snitt[False]}")
+`,
+    files: KASSA_OCH_VADER,
+    hints: [],
+    tests: [
+      {
+        description: 'dagar har en rad per öppen dag',
+        code: 'len(dagar)',
+        expected: 356,
+      },
+      {
+        description: 'alla iskaffe är med',
+        code: 'dagar["antal"].sum()',
+        expected: 209,
+      },
+      {
+        description: 'snitt är 0.4 svala och 4.4 varma dagar',
+        code: '[snitt[False], snitt[True]]',
+        expected: [0.4, 4.4],
+      },
+      {
+        description: 'Svaret skrivs ut',
+        code: '__output',
+        expected: [
+          'Varma dagar: 18 st, 4.4 iskaffe per dag',
+          'Svala dagar: 338 st, 0.4 iskaffe per dag',
+          'Ägaren har rätt: True',
         ],
       },
     ],

@@ -65,4 +65,16 @@ export const RESOURCES = {
       video: 'pandas pivot table tutorial',
     },
   ],
+  kombinera: [
+    {
+      topic: 'merge',
+      read: 'https://pandas.pydata.org/docs/getting_started/intro_tutorials/08_combine_dataframes.html',
+      video: 'pandas merge tutorial left join',
+    },
+    {
+      topic: 'SQL i pandas',
+      read: 'https://pandas.pydata.org/docs/reference/api/pandas.read_sql.html',
+      video: 'pandas read_sql sqlite3 tutorial',
+    },
+  ],
 };

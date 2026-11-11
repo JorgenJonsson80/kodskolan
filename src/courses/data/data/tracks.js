@@ -112,4 +112,22 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'kombinera',
+    title: 'Kombinera tabeller',
+    teaches: ['merge', 'how="left"', 'concat', 'read_sql'],
+    reward: { emoji: '🧩', name: 'Pusselbit' },
+    canBuild:
+      'svar som kräver flera källor: vinst med inköpspriser, försäljning mot vädret och data direkt ur en databas',
+    docs: [
+      {
+        title: 'merge, join och concat',
+        url: `${PANDAS}user_guide/merging.html`,
+      },
+      {
+        title: 'Kombinera tabeller',
+        url: `${PANDAS}getting_started/intro_tutorials/08_combine_dataframes.html`,
+      },
+    ],
+  },
 ];

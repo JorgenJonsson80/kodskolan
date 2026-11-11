@@ -136,4 +136,37 @@ export const QUIZ = {
       explain: 'Ingen rad har både Latte och swish, så crosstab räknar 0.',
     },
   ],
+  kombinera: [
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\na = pd.DataFrame({"p": ["Te", "Latte", "Semla"]})\nb = pd.DataFrame({"p": ["Te", "Latte"], "k": ["dryck", "kaffe"]})\nprint(len(a.merge(b, on="p")))',
+      options: ['2', '3', '5', '1'],
+      explain:
+        'En vanlig merge tar bara med nycklar som finns i båda. Semla saknas i b.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\na = pd.DataFrame({"p": ["Te", "Latte", "Semla"]})\nb = pd.DataFrame({"p": ["Te", "Latte"], "k": ["dryck", "kaffe"]})\nprint(a.merge(b, on="p", how="left")["k"].isna().sum())',
+      options: ['1', '0', '2', '3'],
+      explain: 'how="left" behåller Semla, men den får ingen kategori.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\na = pd.DataFrame({"n": [1, 2]})\nb = pd.DataFrame({"n": [3, 4, 5]})\nprint(len(pd.concat([a, b])))',
+      options: ['5', '2', '3', '6'],
+      explain: 'concat lägger tabellerna på varandra: 2 + 3 rader.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\na = pd.DataFrame({"p": ["Te"], "pris": [30]})\nb = pd.DataFrame({"p": ["Te"], "pris": [32]})\nprint(list(a.merge(b, on="p").columns))',
+      options: [
+        "['p', 'pris_x', 'pris_y']",
+        "['p', 'pris']",
+        "['p', 'pris', 'pris']",
+        "['pris_x', 'pris_y']",
+      ],
+      explain:
+        'Kolumnen pris finns i båda, så pandas döper om dem till pris_x och pris_y.',
+    },
+  ],
 };

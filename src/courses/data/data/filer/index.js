@@ -17,3 +17,10 @@ export const RORIG_OCH_REN = {
   'kassan_rorig.csv': KASSAN_RORIG,
   'kassan_mars.csv': KASSAN_MARS,
 };
+
+// Kassan med prislistan och vädret (bana 6).
+export const KASSA_OCH_PRODUKTER = {
+  'kassan.csv': KASSAN,
+  'produkter.csv': PRODUKTER,
+};
+export const KASSA_OCH_VADER = { 'kassan.csv': KASSAN, 'vadret.csv': VADRET };
