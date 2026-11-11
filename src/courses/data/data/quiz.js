@@ -109,4 +109,31 @@ export const QUIZ = {
       explain: 'De två datumen i januari är före 1 februari: 1 + 2 = 3.',
     },
   ],
+  gruppera: [
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"p": ["Te", "Te", "Latte"], "b": ["kort", "swish", "kort"], "n": [1, 2, 3]})\nprint(len(df.groupby(["p", "b"])["n"].sum()))',
+      options: ['3', '2', '4', '6'],
+      explain: 'Kombinationerna är Te/kort, Te/swish och Latte/kort.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"kvitto": [1, 1, 2], "summa": [30, 50, 40]})\nprint(df.groupby("kvitto")["summa"].sum().mean())',
+      options: ['60.0', '40.0', '120', '80'],
+      explain:
+        'Kvitto 1 är 80 kr och kvitto 2 är 40 kr. Snittet per kvitto är 60.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ns = pd.Series({"a": 30, "b": 10})\nprint((s / s.sum() * 100)["a"])',
+      options: ['75.0', '30', '0.75', '25.0'],
+      explain: '30 av 40 är 75 procent.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ndf = pd.DataFrame({"p": ["Te", "Te", "Latte"], "b": ["kort", "swish", "kort"]})\nprint(pd.crosstab(df["p"], df["b"]).loc["Latte", "swish"])',
+      options: ['0', '1', '2', 'NaN'],
+      explain: 'Ingen rad har både Latte och swish, så crosstab räknar 0.',
+    },
+  ],
 };

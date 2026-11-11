@@ -88,4 +88,28 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'gruppera',
+    title: 'Gruppera på riktigt',
+    teaches: [
+      'groupby med flera nycklar',
+      'agg',
+      'pivot_table',
+      'crosstab',
+      'andelar',
+    ],
+    reward: { emoji: '🧮', name: 'Kulram' },
+    canBuild:
+      'en månadsrapport med topplista, andelar och snittkvitto, och pivottabeller utan Excel',
+    docs: [
+      {
+        title: 'Gruppera: split-apply-combine',
+        url: `${PANDAS}user_guide/groupby.html`,
+      },
+      {
+        title: 'pivot_table och crosstab',
+        url: `${PANDAS}user_guide/reshaping.html`,
+      },
+    ],
+  },
 ];

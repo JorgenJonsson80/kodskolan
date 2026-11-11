@@ -53,4 +53,16 @@ export const RESOURCES = {
       video: 'pandas resample explained',
     },
   ],
+  gruppera: [
+    {
+      topic: 'groupby och agg',
+      read: 'https://pandas.pydata.org/docs/user_guide/groupby.html',
+      video: 'pandas groupby agg multiple columns',
+    },
+    {
+      topic: 'pivot_table',
+      read: 'https://pandas.pydata.org/docs/user_guide/reshaping.html',
+      video: 'pandas pivot table tutorial',
+    },
+  ],
 };

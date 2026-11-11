@@ -270,4 +270,84 @@ print(f"Rusning på lördagar: kl {timme} ({per_timme.tolist()[0]} kunder)")
       },
     ],
   },
+  gruppera: {
+    id: 'da-boss-gruppera',
+    track: 'gruppera',
+    title: 'Boss: Månadsrapporten',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Varje månad vill ägaren ha en kort rapport. Gör den för mars.',
+    task: `Uppgift: Läs in \`kassan.csv\`, lägg till \`summa\` och spara marsraderna i \`mars\`.
+  1. Spara en tabell per produkt i \`rapport\` med kolumnerna \`antal\` (summan av antal) och \`intakt\` (summan av summa), sorterad med störst intäkt först.
+  2. Lägg till kolumnen \`andel\`: produktens del av marsintäkterna i procent, avrundad till en decimal.
+  3. Spara snittkvittot i mars, avrundat till en decimal, i \`snittkvitto\`.
+  4. Skriv ut rapporten:
+\`\`\`
+Månadsrapport: mars
+1. Bryggkaffe: 6755 kr (16.2 %)
+2. Smörgås: 5525 kr (13.2 %)
+3. Soppa: 4845 kr (11.6 %)
+Totalt: 41712 kr på 470 kvitton
+Snittkvitto: 88.7 kr
+\`\`\``,
+    starterCode: 'import pandas as pd\n\n# Skriv din kod här\n',
+    solution: `import pandas as pd
+
+df = pd.read_csv("kassan.csv")
+df["summa"] = df["antal"] * df["pris"]
+df["datum"] = pd.to_datetime(df["datum"])
+mars = df[df["datum"].dt.month == 3]
+
+rapport = mars.groupby("produkt").agg(
+    antal=("antal", "sum"),
+    intakt=("summa", "sum"),
+).sort_values("intakt", ascending=False)
+rapport["andel"] = (rapport["intakt"] / rapport["intakt"].sum() * 100).round(1)
+
+kvitton = mars.groupby("kvitto")["summa"].sum()
+snittkvitto = round(kvitton.mean(), 1)
+
+print("Månadsrapport: mars")
+topp = rapport.head(3)
+plats = 1
+for produkt, intakt, andel in zip(topp.index, topp["intakt"], topp["andel"]):
+    print(f"{plats}. {produkt}: {intakt} kr ({andel} %)")
+    plats += 1
+print(f"Totalt: {rapport['intakt'].sum()} kr på {len(kvitton)} kvitton")
+print(f"Snittkvitto: {snittkvitto} kr")
+`,
+    files: KASSA,
+    hints: [],
+    tests: [
+      {
+        description: 'rapport har kolumnerna antal, intakt och andel',
+        code: 'list(rapport.columns)',
+        expected: ['antal', 'intakt', 'andel'],
+      },
+      {
+        description: 'rapport är sorterad med störst intäkt först',
+        code: 'list(rapport.index[:3])',
+        expected: ['Bryggkaffe', 'Smörgås', 'Soppa'],
+      },
+      {
+        description: 'snittkvitto är 88.7',
+        code: 'snittkvitto',
+        expected: 88.7,
+      },
+      {
+        description: 'Rapporten skrivs ut',
+        code: '__output',
+        expected: [
+          'Månadsrapport: mars',
+          '1. Bryggkaffe: 6755 kr (16.2 %)',
+          '2. Smörgås: 5525 kr (13.2 %)',
+          '3. Soppa: 4845 kr (11.6 %)',
+          'Totalt: 41712 kr på 470 kvitton',
+          'Snittkvitto: 88.7 kr',
+        ],
+      },
+    ],
+  },
 };
