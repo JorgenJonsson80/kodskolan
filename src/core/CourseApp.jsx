@@ -199,7 +199,12 @@ function Academy({ course }) {
   // Banor man testat sig förbi. De sparas bland de klara id:na.
   const passedTrackIds = passedTrackIdsFrom(completedIds, TRACKS);
   const growth = getGrowth(TRACKS, LESSONS, completedIds, passedTrackIds);
-  const completion = courseCompletion(TRACKS, LESSONS, completedIds);
+  const completion = courseCompletion(
+    TRACKS,
+    LESSONS,
+    completedIds,
+    course.plannedTracks,
+  );
   const statusFor = (ids, passed) =>
     Object.fromEntries(
       TRACKS.map(item => [item.id, trackProgress(item, LESSONS, ids, passed)]),
@@ -516,6 +521,7 @@ function Academy({ course }) {
                 LESSONS.filter(item => completedIds.includes(item.id)).length
               }
               lessonCount={LESSONS.length}
+              moreComing={completion.moreComing}
             />
             <button
               className="primary-button continue-button"

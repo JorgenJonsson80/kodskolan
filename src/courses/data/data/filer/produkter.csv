@@ -1,0 +1,13 @@
+produkt,kategori,pris,inkop
+Bryggkaffe,kaffe,35,6
+Latte,kaffe,45,9
+Cappuccino,kaffe,42,8
+Iskaffe,kaffe,49,10
+Te,dryck,30,4
+Juice,dryck,39,14
+Kanelbulle,bakverk,32,8
+Kardemummabulle,bakverk,34,9
+Kladdkaka,bakverk,45,12
+Semla,bakverk,55,18
+Smörgås,mat,65,24
+Soppa,mat,95,30

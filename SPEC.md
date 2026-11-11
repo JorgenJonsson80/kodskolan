@@ -60,6 +60,8 @@ om ett språk står här, och inget annat.
 export default {
   ...meta, // id (adressen /python och course_id i kontot), name,
   // icon, tagline, storagePrefix (localStorage)
+  // plannedTracks?: så många banor kursen ska ha. Medan den byggs bana
+  // för bana kan ingen bli klar eller få diplom (core/lib/completion.js)
 
   content: {
     tracks, lessons, projects, projectSteps, ideas, quiz, resources,

@@ -42,7 +42,12 @@ export function CourseInfo({ course, summary }) {
           <p>{info.intro}</p>
           <ul className="course-facts">
             <li>📚 {summary.lessons.length} övningar</li>
-            <li>🛤️ {summary.tracks.length} banor</li>
+            <li>
+              🛤️ {summary.tracks.length}{' '}
+              {summary.tracks.length === 1 ? 'bana' : 'banor'}
+              {course.plannedTracks > summary.tracks.length &&
+                ` av ${course.plannedTracks}, fler kommer`}
+            </li>
             <li>💻 I webbläsaren</li>
             <li>🆓 Gratis att börja</li>
           </ul>

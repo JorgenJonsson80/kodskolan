@@ -6,6 +6,7 @@ export default function HeroCard({
   totalXp,
   completedCount,
   lessonCount,
+  moreComing = false,
 }) {
   const { stage, nextStage, currentTrack } = growth;
 
@@ -41,7 +42,11 @@ export default function HeroCard({
           />
         </div>
       ) : (
-        <p className="feedback-success">Du har klarat alla banor! 🎉</p>
+        <p className="feedback-success">
+          {moreComing
+            ? 'Du har klarat alla banor som finns hittills! 🎉 Fler kommer snart.'
+            : 'Du har klarat alla banor! 🎉'}
+        </p>
       )}
     </section>
   );

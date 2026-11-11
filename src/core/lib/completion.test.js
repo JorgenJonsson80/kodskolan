@@ -22,6 +22,15 @@ describe('courseCompletion', () => {
     ).toBe(true);
   });
 
+  it('är inte klar förrän alla planerade banor finns', () => {
+    const all = ['a1', 'a2', 'b1', 'b2'];
+    const result = courseCompletion(tracks, lessons, all, 3);
+    expect(result.isComplete).toBe(false);
+    expect(result.moreComing).toBe(true);
+    expect(result.total).toBe(3);
+    expect(courseCompletion(tracks, lessons, all, 2).isComplete).toBe(true);
+  });
+
   it('räknar en bana man testat sig förbi, när bossen är klar', () => {
     const result = courseCompletion(tracks, lessons, [
       'a1',

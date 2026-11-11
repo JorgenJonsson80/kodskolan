@@ -83,6 +83,24 @@ function kvitto(b: Betalning): string {
   return b.sätt === 'kort' ? 'Kort ' + b.nummer : 'Swish ' + b.telefon;
 }`,
   },
+  data: {
+    title: 'Lär dig dataanalys med Python och pandas',
+    description:
+      'En kurs i dataanalys på svenska. Läs in, städa och räkna på riktig data med pandas, rita diagram och dra slutsatser – direkt i webbläsaren.',
+    intro:
+      'Du följer Kafé Kanel genom ett helt år: tusentals kvitton, vädret och personalen. Vad säljer mest, när är det mest folk och säljs det mer iskaffe när det är varmt? Du skriver riktig Python med pandas och ser svaren direkt.',
+    forWhom:
+      'Dig som kan grunderna i Python och vill använda det till något i vardagen: Excel-filer, rapporter och frågor om siffror.',
+    before:
+      'Grunderna i Python, gärna hela Python-kursen. SQL-kursen hjälper i banan om att kombinera tabeller.',
+    example: `import pandas as pd
+
+df = pd.read_csv("kassan.csv")
+df["summa"] = df["antal"] * df["pris"]
+
+per_produkt = df.groupby("produkt")["summa"].sum()
+print(per_produkt.sort_values(ascending=False).head(5))`,
+  },
   ai: {
     title: 'Lär dig bygga med AI i Python',
     description:

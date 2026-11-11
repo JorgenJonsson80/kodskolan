@@ -116,7 +116,10 @@ export default function PathsPage() {
               );
         const ids = mergeCompleted(local, cloud?.byCourse[course.id]);
         const { tracks, lessons } = summaries[course.id];
-        return [course.id, courseCompletion(tracks, lessons, ids)];
+        return [
+          course.id,
+          courseCompletion(tracks, lessons, ids, course.plannedTracks),
+        ];
       }),
     );
 
