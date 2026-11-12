@@ -1,5 +1,6 @@
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
+import ErrorBoundary from '../core/components/ErrorBoundary';
 import { startAnalytics } from '../core/lib/analytics';
 import { COURSE_INFO } from './courseInfo';
 import { COURSES, courseFromPath, pathParts } from './courses';
@@ -61,15 +62,17 @@ if (infoCourse) {
 } else {
   root.render(
     <StrictMode>
-      {Course ? (
-        <Suspense fallback={<p className="course-loading">Laddar kursen…</p>}>
-          <Course />
-        </Suspense>
-      ) : (
-        <Suspense fallback={<p className="course-loading">Laddar…</p>}>
-          <Page page={page} code={code} />
-        </Suspense>
-      )}
+      <ErrorBoundary>
+        {Course ? (
+          <Suspense fallback={<p className="course-loading">Laddar kursen…</p>}>
+            <Course />
+          </Suspense>
+        ) : (
+          <Suspense fallback={<p className="course-loading">Laddar…</p>}>
+            <Page page={page} code={code} />
+          </Suspense>
+        )}
+      </ErrorBoundary>
     </StrictMode>,
   );
 }

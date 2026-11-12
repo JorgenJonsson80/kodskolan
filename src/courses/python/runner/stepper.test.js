@@ -82,3 +82,22 @@ describe('step_student', () => {
     expect(step({ code: 'if x\n' }).syntaxError.type).toBe('SyntaxError');
   });
 });
+
+describe('radnummer', () => {
+  // Python 3.13 ger rad 0 för kod som bara är kommentarer. CodeMirror
+  // kastar då ett fel och hela sidan försvann (rapporterat i ett projekt,
+  // där första steget börjar med "# Steg 1: …").
+  it('ger aldrig rad 0, inte ens för bara kommentarer', () => {
+    for (const code of [
+      '# Steg 1: menyn\n',
+      '',
+      'x = [i for i in range(3)]\n',
+    ]) {
+      const lines = step({ code }).steps.map(item => item.line);
+      expect(
+        lines.every(line => line === null || line >= 1),
+        code,
+      ).toBe(true);
+    }
+  });
+});

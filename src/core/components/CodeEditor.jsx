@@ -110,7 +110,9 @@ class StepNoteWidget extends WidgetType {
 }
 
 function stepDecorations(doc, { line, note }) {
-  const inDoc = number => number !== null && number <= doc.lines;
+  // CodeMirror kastar ett fel för rad 0, och då försvinner hela sidan.
+  const inDoc = number =>
+    Number.isInteger(number) && number >= 1 && number <= doc.lines;
   const ranges = [];
   if (inDoc(line)) {
     ranges.push(
@@ -367,7 +369,11 @@ export default function CodeEditor({
     if (!view) return;
     const note = noteText ? { line: noteLine, text: noteText } : null;
     const effects = [setStepLine.of({ line: activeLine, note })];
-    if (activeLine !== null && activeLine <= view.state.doc.lines) {
+    if (
+      Number.isInteger(activeLine) &&
+      activeLine >= 1 &&
+      activeLine <= view.state.doc.lines
+    ) {
       effects.push(
         EditorView.scrollIntoView(view.state.doc.line(activeLine).from, {
           y: 'nearest',

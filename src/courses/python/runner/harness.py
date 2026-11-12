@@ -874,6 +874,10 @@ def step_student(code, inputs_json, example, files_json='{}'):
         return flow
 
     def record(frame, line, **extra):
+        # Python 3.13 ger rad 0 för kod som bara är kommentarer, och None
+        # i vissa avslut. Ett steg utan riktig rad går inte att visa.
+        if not line:
+            return
         if len(steps) >= MAX_STEPS:
             raise _StepLimit()
         name = frame.f_code.co_name
