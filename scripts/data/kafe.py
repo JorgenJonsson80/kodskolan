@@ -135,6 +135,7 @@ def main():
             skriv.writerow([produkt, kategori, pris, inkop])
 
     rorig(kassan)
+    city()
     print(len(kassan), 'rader,', kvitto - 1000, 'kvitton')
 
 
@@ -189,6 +190,69 @@ def rorig(kassan):
         skriv = csv.writer(fil, lineterminator='\n')
         skriv.writerow(huvud)
         skriv.writerows(ut)
+
+
+
+
+# Det nya kaféet vid kontoren i city, första kvartalet 2026 (slutprojektet,
+# bana 10). Öppet bara måndag–fredag, mycket lunch, inga semlor efter
+# fettisdagen. Exporten har ett annat format: semikolon, decimalkomma och
+# datum och tid i samma kolumn – och några fel att städa.
+def city():
+    slump = random.Random(2026)
+    timmar = {7: 5, 8: 9, 9: 4, 10: 2, 11: 7, 12: 16, 13: 9, 14: 3, 15: 4, 16: 3}
+    fettisdag = date(2026, 2, 17)
+    rader = []
+    kvitto = 50000
+    dag = date(2026, 1, 2)
+    while dag <= date(2026, 3, 31):
+        if dag.weekday() < 5:
+            temp = temperatur(dag)
+            for timme, bas in timmar.items():
+                kunder = max(0, round(slump.gauss(bas * 0.55, 1.0)))
+                for _ in range(kunder):
+                    kvitto += 1
+                    minut = slump.randrange(60)
+                    betal = slump.choices(['kort', 'swish', 'kontant'], [85, 14, 1])[0]
+                    vikt = vikter(dag, timme, temp, temp)
+                    if dag > fettisdag or dag < date(2026, 2, 1):
+                        vikt['Semla'] = 0
+                    elif dag == fettisdag:
+                        vikt['Semla'] = 200
+                    if timme in (11, 12, 13):
+                        vikt['Smörgås'] *= 2
+                        vikt['Soppa'] = max(vikt['Soppa'], 20)
+                    namn = [p for p in vikt if vikt[p] > 0]
+                    antal_varor = slump.choices([1, 2, 3], [50, 40, 10])[0]
+                    valda = []
+                    while len(valda) < antal_varor:
+                        produkt = slump.choices(namn, [vikt[p] for p in namn])[0]
+                        if produkt not in valda:
+                            valda.append(produkt)
+                    for produkt in valda:
+                        antal = slump.choices([1, 2], [88, 12])[0]
+                        pris = PRODUKTER[produkt][1]
+                        rader.append([kvitto, f'{dag.isoformat()} {timme:02d}:{minut:02d}', produkt, antal, pris, betal])
+        dag += timedelta(days=1)
+
+    ut = []
+    for kvitto, tid, produkt, antal, pris, betal in rader:
+        r = slump.random()
+        if r < 0.03:
+            produkt = produkt.lower()
+        elif r < 0.05:
+            produkt = produkt + ' '
+        rad = [kvitto, tid, produkt, antal, f'{pris},00', betal]
+        ut.append(rad)
+        if slump.random() < 0.01:
+            ut.append(list(rad))
+        if slump.random() < 0.005:
+            ut.append([''] * 6)
+    with open(OUT / 'city_q1.csv', 'w', newline='', encoding='utf-8') as fil:
+        skriv = csv.writer(fil, delimiter=';', lineterminator='\n')
+        skriv.writerow(['kvitto', 'tidpunkt', 'produkt', 'antal', 'pris', 'betalsatt'])
+        skriv.writerows(ut)
+    print(len(rader), 'rader i city,', kvitto - 50000, 'kvitton')
 
 
 main()

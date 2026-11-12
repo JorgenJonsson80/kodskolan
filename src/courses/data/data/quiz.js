@@ -282,4 +282,44 @@ export const QUIZ = {
         'Från, till och procent: då kan läsaren själv bedöma hur stort det är.',
     },
   ],
+  slutprojekt: [
+    {
+      question: 'Raden ser ut så här: 50001;Latte;45,00. Vad behöver read_csv?',
+      options: [
+        'sep=";" och decimal=","',
+        'Bara sep=";"',
+        'Bara decimal=","',
+        'Inget särskilt',
+      ],
+      explain: 'Semikolon skiljer värdena och komma är decimaltecknet.',
+    },
+    {
+      question: 'Vad gör du först med en ny fil?',
+      options: [
+        'Tittar på storlek, typer, tomma värden och kopior',
+        'Ritar ett diagram',
+        'Räknar medelvärden',
+        'Skriver slutsatsen',
+      ],
+      explain:
+        'Första mötet (bana 2) och städningen (bana 3) kommer före all räkning.',
+    },
+    {
+      question:
+        'Kafé A har öppet 5 dagar i veckan, kafé B 7. Hur jämför du dem rättvist?',
+      options: [
+        'Per öppen dag',
+        'Summan per månad',
+        'Summan per år',
+        'Antalet produkter',
+      ],
+      explain: 'Olika många öppna dagar gör summor orättvisa.',
+    },
+    {
+      question: 'Vad skrivs ut?',
+      code: 'import pandas as pd\n\ns = pd.Series([11, 12, 15, 13])\nprint(s.isin([11, 12, 13]).sum())',
+      options: ['3', '4', '1', '36'],
+      explain: 'isin ger True för 11, 12 och 13, och sum() räknar dem.',
+    },
+  ],
 };

@@ -25,7 +25,7 @@ Datan är påhittad men ser verklig ut, och den växer med kursen:
 | `kassan.csv`     | kvitto, datum, tid, produkt, antal, pris, betalsatt           | 1         |
 | `produkter.csv`  | produkt, kategori (kaffe, bakverk, mat, dryck), inkop, pris   | 6         |
 | `vadret.csv`     | datum, temperatur, regn                                       | 6         |
-| `personal.csv`   | datum, pass (förmiddag, eftermiddag), personer                | 10         |
+| `city_q1.csv`    | nya kaféet i city, jan–mars 2026: semikolon, decimalkomma, tidpunkt, fel | 10 |
 | `kassan_rorig.csv` | mars med fel som riktig data har (och `kassan_mars.csv` ren) | 3         |
 
 `kassan_rorig.csv` är mars med "kanelbulle", "Latte " och
@@ -61,7 +61,7 @@ semlor bara i februari, en vecka i juli när kaféet är stängt.
 | 10 | `slutprojekt`| Slutprojektet           | en analys från rå fil till slutsats och diagram                        |
 | 11 | `app`        | Från analys till app    | analysen som en Streamlit-sida: filter, diagram och siffror som ändras |
 
-Bana 1–9 är klara ✅. Excel (`read_excel`) är inte med: CSV räcker, och
+Bana 1–10 är klara ✅. Excel (`read_excel`) är inte med: CSV räcker, och
 `openpyxl` vore ännu ett paket att ladda.
 
 De två första banorna är gratis när låsningen slås på.

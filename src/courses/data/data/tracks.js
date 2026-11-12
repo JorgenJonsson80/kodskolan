@@ -189,4 +189,22 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'slutprojekt',
+    title: 'Slutprojektet',
+    teaches: ['hela analysen'],
+    reward: { emoji: '🏆', name: 'Pokal' },
+    canBuild:
+      'en hel analys av en fil du aldrig sett: läsa in, städa, räkna, jämföra, rita och skriva slutsatsen',
+    docs: [
+      {
+        title: 'read_csv och alla dess argument',
+        url: `${PANDAS}reference/api/pandas.read_csv.html`,
+      },
+      {
+        title: 'pandas kokbok',
+        url: `${PANDAS}user_guide/cookbook.html`,
+      },
+    ],
+  },
 ];

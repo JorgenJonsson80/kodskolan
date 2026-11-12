@@ -113,4 +113,16 @@ export const RESOURCES = {
       video: 'correlation does not imply causation explained',
     },
   ],
+  slutprojekt: [
+    {
+      topic: 'Läsa in svenska CSV-filer',
+      read: 'https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html',
+      video: 'pandas read_csv sep decimal',
+    },
+    {
+      topic: 'En hel analys',
+      read: 'https://pandas.pydata.org/docs/user_guide/cookbook.html',
+      video: 'pandas data analysis project beginners',
+    },
+  ],
 };

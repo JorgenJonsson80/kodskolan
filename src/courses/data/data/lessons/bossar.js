@@ -1,4 +1,9 @@
-import { KASSA, KASSA_OCH_VADER, RORIG_OCH_REN } from '../filer';
+import {
+  CITY_OCH_PRODUKTER,
+  KASSA,
+  KASSA_OCH_VADER,
+  RORIG_OCH_REN,
+} from '../filer';
 
 // En boss per bana: en större uppgift som använder allt från banan, utan
 // ledtrådar. Banan räknas inte som klar förrän bossen är besegrad.
@@ -638,6 +643,100 @@ print(f"Regn: {regn['ja']} kunder per dag, mot {regn['nej']} utan regn")
       {
         description: 'Skriver inte in 87.4 för hand',
         pattern: /^(?![\s\S]*87\.4)/,
+      },
+    ],
+  },
+  slutprojekt: {
+    id: 'da-boss-slutprojekt',
+    track: 'slutprojekt',
+    title: 'Boss: Rapporten om city',
+    isBoss: true,
+    xp: 60,
+    description:
+      BOSS_INTRO +
+      'Hela vägen själv: från den råa exporten till rapporten som ägaren läser. Allt du lärt dig i kursen.',
+    task: `Uppgift: Utgå från \`city_q1.csv\` och \`produkter.csv\`.
+  1. Läs in exporten rätt, städa den (tomma rader, kopior, produktnamn, heltal) och lägg till \`summa\`.
+  2. Gör om tidpunkten och räkna öppna dagar.
+  3. Slå ihop med prislistan och räkna intäkten per kategori.
+  4. Räkna andelen kunder som kommer kl 11–13, och snittkvittot.
+  5. Skriv ut rapporten:
+\`\`\`
+City, första kvartalet 2026
+Intäkt: 174494 kr på 63 dagar (2770 kr per dag)
+Största kategori: mat (40.2 %)
+Lunch (11–13): 51.6 % av kunderna
+Snittkvitto: 82.5 kr
+\`\`\`
+Spara siffrorna i \`intakt\`, \`dagar\`, \`lunch_procent\` och \`snittkvitto\`. Inga siffror får skrivas in för hand.`,
+    starterCode: 'import pandas as pd\n\n# Skriv din kod här\n',
+    solution: `import pandas as pd
+
+city = pd.read_csv("city_q1.csv", sep=";", decimal=",")
+city = city.dropna(how="all").drop_duplicates()
+city["produkt"] = city["produkt"].str.strip().str.capitalize()
+for kolumn in ["kvitto", "antal", "pris"]:
+    city[kolumn] = city[kolumn].astype("int64")
+city["summa"] = city["antal"] * city["pris"]
+
+city["tidpunkt"] = pd.to_datetime(city["tidpunkt"])
+city["datum"] = city["tidpunkt"].dt.strftime("%Y-%m-%d")
+city["timme"] = city["tidpunkt"].dt.hour
+intakt = city["summa"].sum()
+dagar = city["datum"].nunique()
+
+produkter = pd.read_csv("produkter.csv")
+ihop = city.merge(produkter[["produkt", "kategori"]], on="produkt")
+per_kategori = ihop.groupby("kategori")["summa"].sum().sort_values(ascending=False)
+storst = per_kategori.index[0]
+andel = round(per_kategori.tolist()[0] / intakt * 100, 1)
+
+kunder = city["kvitto"].nunique()
+lunch = city[city["timme"].isin([11, 12, 13])]["kvitto"].nunique()
+lunch_procent = round(lunch / kunder * 100, 1)
+snittkvitto = round(city.groupby("kvitto")["summa"].sum().mean(), 1)
+
+print("City, första kvartalet 2026")
+print(f"Intäkt: {intakt} kr på {dagar} dagar ({round(intakt / dagar)} kr per dag)")
+print(f"Största kategori: {storst} ({andel} %)")
+print(f"Lunch (11–13): {lunch_procent} % av kunderna")
+print(f"Snittkvitto: {snittkvitto} kr")
+`,
+    files: CITY_OCH_PRODUKTER,
+    hints: [],
+    tests: [
+      { description: 'intakt är 174494', code: 'intakt', expected: 174494 },
+      { description: 'dagar är 63', code: 'dagar', expected: 63 },
+      {
+        description: 'lunch_procent är 51.6',
+        code: 'lunch_procent',
+        expected: 51.6,
+      },
+      {
+        description: 'snittkvitto är 82.5',
+        code: 'snittkvitto',
+        expected: 82.5,
+      },
+      {
+        description: 'Rapporten skrivs ut',
+        code: '__output',
+        expected: [
+          'City, första kvartalet 2026',
+          'Intäkt: 174494 kr på 63 dagar (2770 kr per dag)',
+          'Största kategori: mat (40.2 %)',
+          'Lunch (11–13): 51.6 % av kunderna',
+          'Snittkvitto: 82.5 kr',
+        ],
+      },
+    ],
+    sourceChecks: [
+      {
+        description: 'Skriver inte in 174494 för hand',
+        pattern: /^(?![\s\S]*174494)/,
+      },
+      {
+        description: 'Skriver inte in 51.6 för hand',
+        pattern: /^(?![\s\S]*51\.6)/,
       },
     ],
   },

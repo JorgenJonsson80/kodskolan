@@ -6,6 +6,7 @@ import { FORSTA } from './forsta';
 import { GRUPPERA } from './gruppera';
 import { KOMBINERA } from './kombinera';
 import { PANDAS } from './pandas';
+import { SLUTPROJEKT } from './slutprojekt';
 import { STADA } from './stada';
 import { STATISTIK } from './statistik';
 
@@ -30,4 +31,6 @@ export const LESSONS = [
   BOSSES.statistik,
   ...BERATTA,
   BOSSES.beratta,
+  ...SLUTPROJEKT,
+  BOSSES.slutprojekt,
 ];
