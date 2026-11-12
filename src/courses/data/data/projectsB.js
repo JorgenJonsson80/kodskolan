@@ -3,7 +3,6 @@ import { FIL, KASSA, KASSA_OCH_PRODUKTER } from './filer';
 // Projekten för bana 5–8. Varje steg bygger vidare på förra stegets kod.
 const PD = 'import pandas as pd\n\n';
 const PLT = 'import pandas as pd\nimport matplotlib.pyplot as plt\n\n';
-const FILL = '__FILL__';
 
 const KONTO_MANAD =
   PD +

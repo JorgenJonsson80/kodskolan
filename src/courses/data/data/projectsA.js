@@ -100,8 +100,6 @@ const VANOR_3 =
   VANOR_2 +
   'df["helg"] = df["tidpunkt"].dt.dayofweek >= 5\nper_dag = (df.groupby("helg").size() / df.groupby("helg")["tidpunkt"].apply(lambda t: t.dt.date.nunique())).round(1)\nprint(per_dag)\n';
 
-const FILL = '__FILL__';
-
 export const PROJECTS_A = [
   // Bana 1: pandas igen
   {
