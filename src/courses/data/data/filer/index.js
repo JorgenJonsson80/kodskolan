@@ -1,6 +1,14 @@
 // Kafé Kanels data, skapad av scripts/data/kafe.py (ändra där, inte här).
 // Övningarna lägger filerna i files, och de skrivs till Pythons filsystem
 // före varje körning.
+import ARTISTER from './artister.csv?raw';
+import BIBLIOTEK from './bibliotek.csv?raw';
+import BUDGET from './budget.csv?raw';
+import ENKAT from './enkat.csv?raw';
+import KONTO from './konto.csv?raw';
+import KONTO_RORIG from './konto_rorig.csv?raw';
+import LYSSNING from './lyssning.csv?raw';
+import VADER_STADER from './vader.csv?raw';
 import CITY_Q1 from './city_q1.csv?raw';
 import KASSAN from './kassan.csv?raw';
 import KASSAN_MARS from './kassan_mars.csv?raw';
@@ -33,3 +41,16 @@ export const CITY_OCH_PRODUKTER = {
   'produkter.csv': PRODUKTER,
 };
 export const CITY_OCH_KASSA = { 'city_q1.csv': CITY_Q1, 'kassan.csv': KASSAN };
+
+// Projektens egna data (scripts/data/projekt.py): ett kontoutdrag, vädret
+// i tre städer, en spellista, bibliotekets lån och en kundenkät.
+export const FIL = {
+  konto: { 'konto.csv': KONTO },
+  kontoRorig: { 'konto_rorig.csv': KONTO_RORIG },
+  kontoBudget: { 'konto.csv': KONTO, 'budget.csv': BUDGET },
+  vader: { 'vader.csv': VADER_STADER },
+  lyssning: { 'lyssning.csv': LYSSNING },
+  lyssningArtister: { 'lyssning.csv': LYSSNING, 'artister.csv': ARTISTER },
+  bibliotek: { 'bibliotek.csv': BIBLIOTEK },
+  enkat: { 'enkat.csv': ENKAT },
+};
