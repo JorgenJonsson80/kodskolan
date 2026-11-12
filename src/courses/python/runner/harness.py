@@ -339,6 +339,24 @@ class _Place:
     def line_chart(self, data=None, x=None, y=None, **kwargs):
         self._chart('line_chart', data, x, y)
 
+    def pyplot(self, fig=None, **kwargs):
+        # Ett matplotlib-diagram i appen. Bilden följer med elementet och
+        # figuren stängs, så att den inte visas en gång till under appen.
+        plt = _pyplot()
+        if plt is None:
+            return
+        import base64
+        import io
+        figure = fig if fig is not None else plt.gcf()
+        titles = [ax.get_title() for ax in figure.axes if ax.get_title()]
+        buffer = io.BytesIO()
+        figure.savefig(buffer, format='png', dpi=80, bbox_inches='tight')
+        _APP.add(
+            self._at(), 'pyplot', ', '.join(titles) or 'diagram',
+            png=base64.b64encode(buffer.getvalue()).decode('ascii'),
+        )
+        plt.close(figure)
+
     def divider(self):
         _APP.add(self._at(), 'divider')
 
@@ -516,6 +534,10 @@ class _Run:
         sys.stdout = self._old_stdout
         return False
 
+    def element(self, kind, index=0):
+        found = [e for e in self.app.elements if e['type'] == kind]
+        return found[index] if index < len(found) else None
+
     def shown(self, kind=None):
         return [e['text'] for e in self.app.elements if kind is None or e['type'] == kind]
 
@@ -538,6 +560,8 @@ class _Run:
                     # Det en Streamlit-app visade, t.ex. __shown('title').
                     self.namespace['__app'] = [[e['type'], e['text']] for e in self.app.elements]
                     self.namespace['__shown'] = self.shown
+                    # Hela elementet, t.ex. __element('bar_chart')['labels'].
+                    self.namespace['__element'] = self.element
                     # Det ett matplotlib-diagram visar, t.ex. __figur()["titel"].
                     self.namespace['__figur'] = _figure_info
                     for extra in TEST_GLOBALS:
@@ -700,7 +724,7 @@ def run_student(code, tests_json, inputs_json, files_json='{}'):
 
 MAX_STEPS = 300
 # Namn som finns i namespace men inte är elevens egna variabler.
-_HIDDEN = {'input', '__builtins__', '__name__', '__output', '__raises', '__message', '__app', '__shown', '__figur'}
+_HIDDEN = {'input', '__builtins__', '__name__', '__output', '__raises', '__message', '__app', '__shown', '__figur', '__element'}
 
 
 class _StepLimit(Exception):

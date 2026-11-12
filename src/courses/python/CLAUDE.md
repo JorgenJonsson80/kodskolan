@@ -82,7 +82,9 @@ Som i `docs/kurser/python.md`. Utöver det:
   `st.session_state`. `st.stop()` och `st.rerun()` fungerar. Svaret har
   `app`, som `components/AppPreview.jsx` ritar. `components/LiveApp.jsx`
   kör riktig Streamlit med stlite (`lib/stlite.js`) i en iframe, bara
-  när eleven trycker. Saknas en st-funktion: lägg till den i `_Place`.
+  när eleven trycker. Saknas en st-funktion: lägg till den i `_Place`. `st.pyplot(fig)` lägger
+  figuren som PNG i elementet (`pyplot`). `__element(sort, index=0)` ger
+  hela elementet till ett test, t.ex. `__element('bar_chart')['labels']`.
 - matplotlib (används av Dataanalys bana 7): `harness.py` ritar med
   Agg, skickar varje figur som PNG i `figures` (visas av
   `ResultPreview.jsx`) och stänger dem efter körningen. Testerna läser

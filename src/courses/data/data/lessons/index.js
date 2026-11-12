@@ -1,3 +1,4 @@
+import { APP } from './app';
 import { BERATTA } from './beratta';
 import { BOSSES } from './bossar';
 import { DATUM } from './datum';
@@ -33,4 +34,6 @@ export const LESSONS = [
   BOSSES.beratta,
   ...SLUTPROJEKT,
   BOSSES.slutprojekt,
+  ...APP,
+  BOSSES.app,
 ];

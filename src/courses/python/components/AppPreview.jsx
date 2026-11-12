@@ -160,6 +160,15 @@ function Element({ element, groups }) {
     case 'bar_chart':
     case 'line_chart':
       return <Chart element={element} />;
+    case 'pyplot':
+      return (
+        <figure className="plot-figure">
+          <img
+            src={`data:image/png;base64,${element.png}`}
+            alt={`Diagram: ${element.text}`}
+          />
+        </figure>
+      );
     case 'divider':
       return <hr />;
     case 'balloons':

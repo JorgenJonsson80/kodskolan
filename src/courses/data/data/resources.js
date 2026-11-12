@@ -125,4 +125,16 @@ export const RESOURCES = {
       video: 'pandas data analysis project beginners',
     },
   ],
+  app: [
+    {
+      topic: 'Streamlit på tio minuter',
+      read: 'https://docs.streamlit.io/get-started/fundamentals/main-concepts',
+      video: 'streamlit tutorial dashboard pandas',
+    },
+    {
+      topic: 'Widgets: selectbox och slider',
+      read: 'https://docs.streamlit.io/develop/api-reference/widgets',
+      video: 'streamlit selectbox slider filter dataframe',
+    },
+  ],
 };

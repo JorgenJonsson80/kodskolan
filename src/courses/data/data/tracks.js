@@ -207,4 +207,29 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'app',
+    title: 'Från analys till app',
+    teaches: [
+      'streamlit',
+      'st.metric',
+      'st.bar_chart',
+      'selectbox',
+      'slider',
+      'st.pyplot',
+    ],
+    reward: { emoji: '🚀', name: 'Raket' },
+    canBuild:
+      'en dashboard som andra kan använda själva: nyckeltal, diagram och filter, uppdaterad med ny data',
+    docs: [
+      {
+        title: 'Streamlit: kom igång',
+        url: 'https://docs.streamlit.io/get-started',
+      },
+      {
+        title: 'Diagram i Streamlit',
+        url: 'https://docs.streamlit.io/develop/api-reference/charts',
+      },
+    ],
+  },
 ];

@@ -22,8 +22,8 @@ export const PATHS = [
     icon: '📊',
     title: 'Data',
     summary:
-      'Räkna, sortera och visa data: Python med pandas och Streamlit, och SQL för att fråga databaser.',
-    courses: ['python', 'sql'],
+      'Ta reda på saker med data: Python, SQL för att fråga databaser och sist hela analysen med pandas, diagram, statistik och en egen dashboard.',
+    courses: ['python', 'sql', 'data'],
   },
   {
     id: 'fullstack',

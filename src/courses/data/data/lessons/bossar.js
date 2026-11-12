@@ -740,4 +740,79 @@ print(f"Snittkvitto: {snittkvitto} kr")
       },
     ],
   },
+  app: {
+    id: 'da-boss-app',
+    track: 'app',
+    title: 'Boss: Kaféets dashboard',
+    isBoss: true,
+    xp: 60,
+    description:
+      BOSS_INTRO +
+      'Sista uppgiften: en sida som ägaren kan använda själv, varje morgon, utan att fråga dig.',
+    task: `Uppgift: Bygg dashboarden från \`kassan.csv\`:
+  1. Rubriken \`Kafé Kanel\`.
+  2. I sidopanelen (\`st.sidebar\`): en selectbox med etiketten \`Betalsätt\` och alternativen \`Alla\`, \`kort\`, \`swish\` och \`kontant\`. Väljs något annat än Alla räknas bara de raderna.
+  3. Tre nyckeltal i tre kolumner: \`Intäkt\` (t.ex. \`487373 kr\`), \`Kunder\` och \`Snittkvitto\` (t.ex. \`87.4 kr\`).
+  4. En \`st.subheader\` med \`Intäkt per produkt\` och staplar med intäkten per produkt, störst först.`,
+    starterCode:
+      'import streamlit as st\nimport pandas as pd\n\n# Skriv din kod här\n',
+    solution: `import streamlit as st
+import pandas as pd
+
+df = pd.read_csv("kassan.csv")
+df["summa"] = df["antal"] * df["pris"]
+
+st.title("Kafé Kanel")
+val = st.sidebar.selectbox("Betalsätt", ["Alla", "kort", "swish", "kontant"])
+if val != "Alla":
+    df = df[df["betalsatt"] == val]
+
+intakt = df["summa"].sum()
+kunder = df["kvitto"].nunique()
+snitt = round(df.groupby("kvitto")["summa"].sum().mean(), 1)
+
+kol1, kol2, kol3 = st.columns(3)
+kol1.metric("Intäkt", f"{intakt} kr")
+kol2.metric("Kunder", kunder)
+kol3.metric("Snittkvitto", f"{snitt} kr")
+
+st.subheader("Intäkt per produkt")
+per_produkt = df.groupby("produkt")["summa"].sum().sort_values(ascending=False)
+st.bar_chart(per_produkt)
+`,
+    files: KASSA,
+    hints: [],
+    tests: [
+      {
+        description: 'Rubriken är Kafé Kanel',
+        code: "__shown('title')",
+        expected: ['Kafé Kanel'],
+      },
+      {
+        description: 'Alla: nyckeltalen för hela året',
+        code: "__shown('metric')",
+        expected: ['Intäkt: 487373 kr', 'Kunder: 5578', 'Snittkvitto: 87.4 kr'],
+      },
+      {
+        description: 'Swish: bara swishkunderna',
+        code: "__shown('metric')",
+        expected: ['Intäkt: 88346 kr', 'Kunder: 977', 'Snittkvitto: 90.4 kr'],
+        widgets: { Betalsätt: 'swish' },
+      },
+      {
+        description: 'Kontant: Smörgås och Latte överst',
+        code: "__element('bar_chart')['labels'][:2]",
+        expected: ['Smörgås', 'Latte'],
+        widgets: { Betalsätt: 'kontant' },
+      },
+      {
+        description: 'Rubriken över diagrammet',
+        code: "__shown('subheader')",
+        expected: ['Intäkt per produkt'],
+      },
+    ],
+    sourceChecks: [
+      { description: 'Använder st.sidebar', pattern: /st\.sidebar/ },
+    ],
+  },
 };

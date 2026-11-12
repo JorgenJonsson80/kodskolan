@@ -61,7 +61,7 @@ semlor bara i februari, en vecka i juli när kaféet är stängt.
 | 10 | `slutprojekt`| Slutprojektet           | en analys från rå fil till slutsats och diagram                        |
 | 11 | `app`        | Från analys till app    | analysen som en Streamlit-sida: filter, diagram och siffror som ändras |
 
-Bana 1–10 är klara ✅. Excel (`read_excel`) är inte med: CSV räcker, och
+Alla elva banor är klara ✅, och kursen ligger sist i spåret Data. Excel (`read_excel`) är inte med: CSV räcker, och
 `openpyxl` vore ännu ett paket att ladda.
 
 De två första banorna är gratis när låsningen slås på.
@@ -113,7 +113,10 @@ Nio per bana och en boss, som i de andra kurserna.
 10. **Slutprojektet:** tre projekt med tre steg, som slutprojekten i
     de andra kurserna (se nedan).
 
-### Projekt
+### Projekt (inte byggda än)
+
+Kursen har inga projekt eller idéer på Lekplatsen ännu. De kommer i ett
+eget pass, enligt förslaget nedan.
 
 Tre per bana med tre steg, enligt `docs/NY-KURS.md`. Exempel:
 

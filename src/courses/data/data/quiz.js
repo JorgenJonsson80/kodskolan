@@ -322,4 +322,49 @@ export const QUIZ = {
       explain: 'isin ger True för 11, 12 och 13, och sum() räknar dem.',
     },
   ],
+  app: [
+    {
+      question: 'Vad händer när någon väljer ett nytt värde i en st.selectbox?',
+      options: [
+        'Hela programmet körs om med det nya värdet',
+        'Bara raden med selectboxen körs om',
+        'Inget, man måste ladda om sidan',
+        'Streamlit sparar värdet i en fil',
+      ],
+      explain:
+        'Streamlit kör om hela skriptet uppifrån varje gång något ändras.',
+    },
+    {
+      question: 'Hur visar du ett matplotlib-diagram i en Streamlit-app?',
+      options: [
+        'st.pyplot(fig)',
+        'plt.show()',
+        'st.write(plt)',
+        'st.image(fig)',
+      ],
+      explain: 'st.pyplot tar figuren och visar den på sidan.',
+    },
+    {
+      question:
+        'Vad får du tillbaka från st.slider("Månader", 1, 12, (1, 12))?',
+      options: [
+        'Två tal, början och slut',
+        'Ett tal',
+        'En lista med tolv månader',
+        'True eller False',
+      ],
+      explain:
+        'Med ett par som startvärde får slidern två handtag och ger två tal.',
+    },
+    {
+      question: 'Var hamnar st.sidebar.selectbox(...)?',
+      options: [
+        'I panelen till vänster',
+        'Överst på sidan',
+        'Längst ner',
+        'I en ny flik',
+      ],
+      explain: 'st.sidebar är panelen vid sidan av, bra för filter.',
+    },
+  ],
 };
