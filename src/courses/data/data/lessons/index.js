@@ -1,3 +1,4 @@
+import { BERATTA } from './beratta';
 import { BOSSES } from './bossar';
 import { DATUM } from './datum';
 import { DIAGRAM } from './diagram';
@@ -27,4 +28,6 @@ export const LESSONS = [
   BOSSES.diagram,
   ...STATISTIK,
   BOSSES.statistik,
+  ...BERATTA,
+  BOSSES.beratta,
 ];

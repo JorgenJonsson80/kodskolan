@@ -101,4 +101,16 @@ export const RESOURCES = {
       video: 'correlation explained simply statistics',
     },
   ],
+  beratta: [
+    {
+      topic: 'Diagram som lurar',
+      read: 'https://callingbullshit.org/tools/tools_misleading_axes.html',
+      video: 'misleading graphs explained',
+    },
+    {
+      topic: 'Korrelation och orsak',
+      read: 'https://www.tylervigen.com/spurious-correlations',
+      video: 'correlation does not imply causation explained',
+    },
+  ],
 };

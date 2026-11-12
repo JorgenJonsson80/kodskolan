@@ -270,9 +270,9 @@ export const DATUM = [
     title: 'Snitt per dag, inte summa',
     xp: 20,
     description:
-      'Onsdag drar in mer än tisdag under året. Men 2025 hade fler onsdagar. Jämför rättvist.',
+      'Summan per veckodag beror på hur många sådana dagar kaféet hade öppet. Jämför rättvist: snittet per dag.',
     explain:
-      '2025 började på en onsdag, så det fanns 53 onsdagar men bara 52 tisdagar. Summan per veckodag gynnar då onsdagen. Jämför i stället **snittet per dag**:\n\n1. Summera per datum: `df.groupby("datum")["summa"].sum()`.\n2. `.reset_index()` gör om svaret till en tabell igen, med datum som kolumn.\n3. Lägg till veckodagen och ta medelvärdet per veckodag.',
+      'Veckodagarna har inte lika många dagar i datan: 2025 hade 53 onsdagar men 52 av de andra, och kaféet var stängt en vecka i juli och över jul. En veckodag med fler öppna dagar får en större summa, utan att den är en bättre dag. Jämför i stället **snittet per dag**:\n\n1. Summera per datum: `df.groupby("datum")["summa"].sum()`.\n2. `.reset_index()` gör om svaret till en tabell igen, med datum som kolumn.\n3. Lägg till veckodagen och ta medelvärdet per veckodag.',
     example:
       'dagar = df.groupby("datum")["summa"].sum().reset_index()\nprint(dagar.head())',
     task: 'Uppgift: Spara en tabell med intäkterna per datum i `dagar`, med kolumnerna datum och summa. Lägg till kolumnen `veckodag`. Spara snittet per veckodag, avrundat till heltal med `.round()`, i `snitt`.',

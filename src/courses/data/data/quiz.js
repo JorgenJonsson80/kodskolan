@@ -239,4 +239,47 @@ export const QUIZ = {
       explain: 'Från 100 till 150 är en ökning med 50 procent.',
     },
   ],
+  beratta: [
+    {
+      question:
+        'Ett stapeldiagram börjar y-axeln på 95. Staplarna är 96 och 100. Vad är problemet?',
+      options: [
+        'Skillnaden ser mycket större ut än den är',
+        'Inget, så blir det tydligare',
+        'Staplarna borde vara en linje',
+        'Det borde vara ett histogram',
+      ],
+      explain:
+        'Ögat jämför staplarnas längd. 1 mot 5 ser ut som en femdubbling, fast skillnaden är 4 procent.',
+    },
+    {
+      question:
+        'Butik A sålde för 300 000 kr på 30 dagar, butik B för 200 000 kr på 10 dagar. Vilken sålde mest per dag?',
+      options: ['B', 'A', 'Lika mycket', 'Går inte att säga'],
+      explain: 'A: 10 000 kr per dag. B: 20 000 kr per dag.',
+    },
+    {
+      question:
+        'Antalet sålda paraplyer och antalet förseningar i kollektivtrafiken följer varandra. Vad är troligast?',
+      options: [
+        'Regnet styr båda',
+        'Paraplyer orsakar förseningar',
+        'Förseningar gör att folk köper paraplyer',
+        'Det är en slump',
+      ],
+      explain:
+        'En tredje sak, vädret, påverkar båda. Det kallas en förväxlingsfaktor.',
+    },
+    {
+      question: 'Vilken slutsats är bäst?',
+      options: [
+        'Kunderna ökade från 120 till 150 per vecka (+25 %).',
+        'Kunderna ökade kraftigt.',
+        'Kunderna ökade med 25 %.',
+        'Det kom 30 fler.',
+      ],
+      explain:
+        'Från, till och procent: då kan läsaren själv bedöma hur stort det är.',
+    },
+  ],
 };

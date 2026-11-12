@@ -554,4 +554,91 @@ for datum, veckodag, summa, avvikelse in zip(konstiga["datum"], konstiga["veckod
       },
     ],
   },
+  beratta: {
+    id: 'da-boss-beratta',
+    track: 'beratta',
+    title: 'Boss: Skriv om rapporten',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Praktikantens rapport har tre fel som ser rimliga ut. Räkna rätt och skriv om den.',
+    task: `Praktikanten skrev:
+  - "Bästa veckodagen är lördag, med 97 297 kr." (en summa – men dagarna är inte lika många)
+  - "Ett snittkvitto är 52.3 kr." (snittet per rad, inte per kvitto)
+  - "Regn halverar kunderna: 1 719 mot 3 859." (summor – men det regnade bara 122 dagar av 356)
+
+Uppgift: Räkna ut de rätta siffrorna och skriv ut rapporten, rad för rad:
+\`\`\`
+Bästa veckodagen: lördag (1908 kr per dag)
+Snittkvitto: 87.4 kr
+Regn: 14.1 kunder per dag, mot 16.5 utan regn
+\`\`\`
+Spara siffrorna i \`basta_snitt\` (avrundat till heltal), \`snittkvitto\` och \`regn_kunder\` (snittet med och utan regn, avrundat till en decimal, som en lista [med, utan]). Inga siffror får skrivas in för hand.`,
+    starterCode:
+      'import pandas as pd\n\nDAGAR = ["måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag", "söndag"]\n\ndf = pd.read_csv("kassan.csv")\ndf["summa"] = df["antal"] * df["pris"]\nvadret = pd.read_csv("vadret.csv")\n\n# Skriv din kod här\n',
+    solution: `import pandas as pd
+
+DAGAR = ["måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag", "söndag"]
+
+df = pd.read_csv("kassan.csv")
+df["summa"] = df["antal"] * df["pris"]
+vadret = pd.read_csv("vadret.csv")
+
+per_dag = df.groupby("datum").agg(summa=("summa", "sum"), kunder=("kvitto", "nunique")).reset_index()
+per_dag["veckodag"] = pd.to_datetime(per_dag["datum"]).dt.dayofweek
+snitt = per_dag.groupby("veckodag")["summa"].mean().sort_values(ascending=False)
+basta = snitt.index[0]
+basta_snitt = round(snitt.tolist()[0])
+
+kvitton = df.groupby("kvitto")["summa"].sum()
+snittkvitto = round(kvitton.mean(), 1)
+
+dagar = per_dag.merge(vadret, on="datum")
+regn = dagar.groupby("regn")["kunder"].mean().round(1)
+regn_kunder = [regn["ja"], regn["nej"]]
+
+print(f"Bästa veckodagen: {DAGAR[basta]} ({basta_snitt} kr per dag)")
+print(f"Snittkvitto: {snittkvitto} kr")
+print(f"Regn: {regn['ja']} kunder per dag, mot {regn['nej']} utan regn")
+`,
+    files: KASSA_OCH_VADER,
+    hints: [],
+    tests: [
+      {
+        description: 'basta_snitt är 1908',
+        code: 'basta_snitt',
+        expected: 1908,
+      },
+      {
+        description: 'snittkvitto är 87.4',
+        code: 'snittkvitto',
+        expected: 87.4,
+      },
+      {
+        description: 'regn_kunder är [14.1, 16.5]',
+        code: 'regn_kunder',
+        expected: [14.1, 16.5],
+      },
+      {
+        description: 'Rapporten skrivs ut',
+        code: '__output',
+        expected: [
+          'Bästa veckodagen: lördag (1908 kr per dag)',
+          'Snittkvitto: 87.4 kr',
+          'Regn: 14.1 kunder per dag, mot 16.5 utan regn',
+        ],
+      },
+    ],
+    sourceChecks: [
+      {
+        description: 'Skriver inte in 1908 för hand',
+        pattern: /^(?![\s\S]*1908)/,
+      },
+      {
+        description: 'Skriver inte in 87.4 för hand',
+        pattern: /^(?![\s\S]*87\.4)/,
+      },
+    ],
+  },
 };

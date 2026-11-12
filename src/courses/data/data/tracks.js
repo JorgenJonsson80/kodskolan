@@ -166,4 +166,27 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'beratta',
+    title: 'Berätta med data',
+    teaches: [
+      'rätt diagram',
+      'rättvisa jämförelser',
+      'orsak och samband',
+      'slutsatser',
+    ],
+    reward: { emoji: '📣', name: 'Megafon' },
+    canBuild:
+      'slutsatser som håller: rätt diagram, rättvisa jämförelser, ärliga om osäkerheten och utan fällorna som lurar läsaren',
+    docs: [
+      {
+        title: 'Välja diagram (Data Viz Project)',
+        url: 'https://datavizproject.com/',
+      },
+      {
+        title: 'Diagram som lurar (Calling Bullshit)',
+        url: 'https://callingbullshit.org/tools/tools_misleading_axes.html',
+      },
+    ],
+  },
 ];
