@@ -134,9 +134,11 @@ export default function Playground({ ideas, ideaId, onSelectIdea, onBack }) {
               </li>
             ))}
           </ol>
-          <p>
-            <strong>Extra:</strong> <CodeText text={idea.extra} />
-          </p>
+          {idea.extra && (
+            <p>
+              <strong>Extra:</strong> <CodeText text={idea.extra} />
+            </p>
+          )}
         </aside>
       )}
 
