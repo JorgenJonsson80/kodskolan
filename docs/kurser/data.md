@@ -113,20 +113,16 @@ Nio per bana och en boss, som i de andra kurserna.
 10. **Slutprojektet:** tre projekt med tre steg, som slutprojekten i
     de andra kurserna (se nedan).
 
-### Projekt (inte byggda än)
+### Projekt och idéer
 
-Kursen har inga projekt eller idéer på Lekplatsen ännu. De kommer i ett
-eget pass, enligt förslaget nedan.
-
-Tre per bana med tre steg, enligt `docs/NY-KURS.md`. Exempel:
-
-- Bana 3: _Kundenkäten_ (städa svar med fritext och betyg).
-- Bana 4: _Öppettiderna_ (ska kaféet öppna en timme tidigare?).
-- Bana 6: _Inköpslistan_ (vad behöver beställas inför nästa vecka?).
-- Bana 7: _Dashboarden_ (fyra diagram i en figur).
-- Bana 10: _Sortimentet_ (vad ska kaféet sluta sälja?),
-  _Bemanningen_ (när behövs en person till?) och _Din egen fråga_
-  (eleven väljer frågan själv och skriver slutsatsen).
+Tre projekt per bana med tre steg, och tre idéer på Lekplatsen per bana.
+De använder kaféet och egen data från `scripts/data/projekt.py`: ett
+kontoutdrag (`konto.csv`, och bankens röriga export `konto_rorig.csv`
+med `budget.csv`), vädret i tre städer i juni (`vader.csv`), en
+spellista (`lyssning.csv` och `artister.csv`), bibliotekets lån
+(`bibliotek.csv`) och kaféets kundenkät (`enkat.csv`). Projekten ligger
+i `data/projectsA.js` (bana 1–4), `projectsB.js` (5–8) och
+`projectsC.js` (9–11), och testas som övningarna i `projects.test.js`.
 
 ## Teknik
 

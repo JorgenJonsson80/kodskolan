@@ -1,4 +1,4 @@
-import { FIL, KASSA } from './filer';
+import { CITY_OCH_KASSA, FIL, KASSA } from './filer';
 
 // Egna analyser att göra på Lekplatsen när ett projekt på banan är klart.
 // Här finns inga tester – eleven bestämmer själv när det är klart.
@@ -323,6 +323,127 @@ export const IDEAS = [
       'Summera utgifterna per datum.',
       'Räkna ett rullande medelvärde över sju dagar.',
       'Rita båda i samma diagram.',
+    ],
+  },
+
+  // Bana 9: berätta med data
+  {
+    id: 'idea-da-hitta-fel',
+    track: 'beratta',
+    emoji: '🕵️',
+    title: 'Hitta felet i nyheterna',
+    summary: 'Leta upp ett diagram i en tidning eller på nätet som lurar.',
+    goals: [
+      'Hitta ett diagram som inte börjar på noll, eller jämför summor orättvist.',
+      'Skriv in siffrorna i en DataFrame.',
+      'Rita om det rättvist och skriv en mening om skillnaden.',
+    ],
+  },
+  {
+    id: 'idea-da-tva-meningar',
+    track: 'beratta',
+    emoji: '✍️',
+    title: 'Samma data, två berättelser',
+    summary: 'Skriv en ärlig och en vilseledande slutsats om kaféet.',
+    files: KASSA,
+    goals: [
+      'Räkna fram siffrorna för en fråga om kaféet.',
+      'Skriv en slutsats som lurar – med sanna siffror.',
+      'Skriv en ärlig slutsats och förklara skillnaden.',
+    ],
+  },
+  {
+    id: 'idea-da-enkat-osaker',
+    track: 'beratta',
+    emoji: '🤔',
+    title: 'Hur säker är skillnaden?',
+    summary: 'Är City verkligen sämre, eller är det slumpen?',
+    files: FIL.enkat,
+    goals: [
+      'Städa enkäten och räkna snitt och antal per kafé.',
+      'Räkna standardavvikelsen per kafé.',
+      'Skriv en mening om hur säker du är, och varför.',
+    ],
+  },
+
+  // Bana 10: slutprojektet
+  {
+    id: 'idea-da-eget-projekt',
+    track: 'slutprojekt',
+    emoji: '🧭',
+    title: 'Din egen analys',
+    summary: 'Välj en fråga om kaféet och gör hela analysen själv.',
+    files: KASSA,
+    goals: [
+      'Skriv frågan överst som en kommentar.',
+      'Räkna, rita och jämför rättvist.',
+      'Avsluta med en slutsats i en mening.',
+    ],
+  },
+  {
+    id: 'idea-da-kontoutdrag-eget',
+    track: 'slutprojekt',
+    emoji: '💳',
+    title: 'Ditt eget kontoutdrag',
+    summary: 'Exportera ditt eget kontoutdrag och analysera det på din dator.',
+    goals: [
+      'Exportera en CSV från banken och läs in den med rätt sep och decimal.',
+      'Städa texterna och sätt kategorier med en egen uppslagstabell.',
+      'Vart tar pengarna vägen? Gör en rapport med ett diagram.',
+    ],
+  },
+  {
+    id: 'idea-da-city-helg',
+    track: 'slutprojekt',
+    emoji: '🏙️',
+    title: 'Ska city öppna på helgen?',
+    summary: 'City har bara öppet på vardagar. Skulle helgen löna sig?',
+    files: CITY_OCH_KASSA,
+    goals: [
+      'Jämför vardagarna i city med vardagarna i gamla kaféet.',
+      'Uppskatta en helgdag i city från gamla kaféets helger.',
+      'Skriv ett förslag med siffror och förbehåll.',
+    ],
+  },
+
+  // Bana 11: från analys till app
+  {
+    id: 'idea-da-app-bibliotek',
+    track: 'app',
+    emoji: '📚',
+    title: 'Bibliotekets app',
+    summary: 'En app där bibliotekarien väljer genre och ser lånen.',
+    files: FIL.bibliotek,
+    goals: [
+      'En selectbox med genrerna.',
+      'Nyckeltal: lån, olika titlar och snittlånetid.',
+      'En tabell med de mest lånade böckerna i genren.',
+    ],
+  },
+  {
+    id: 'idea-da-app-city',
+    track: 'app',
+    emoji: '🏙️',
+    title: 'Två kaféer i en app',
+    summary: 'Välj kafé och jämför.',
+    files: CITY_OCH_KASSA,
+    goals: [
+      'Städa city-filen och läs in gamla kaféet.',
+      'En radio för kaféet och nyckeltal för det valda.',
+      'Flikar med produkter och tider.',
+    ],
+  },
+  {
+    id: 'idea-da-app-egen',
+    track: 'app',
+    emoji: '🚀',
+    title: 'Din egen dashboard',
+    summary: 'Gör en app av din egen analys från slutprojektet.',
+    files: KASSA,
+    goals: [
+      'Välj de tre viktigaste siffrorna som nyckeltal.',
+      'Ett filter i sidopanelen.',
+      'Ett diagram som ändras med filtret.',
     ],
   },
 ];
