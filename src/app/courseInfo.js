@@ -83,6 +83,22 @@ function kvitto(b: Betalning): string {
   return b.sätt === 'kort' ? 'Kort ' + b.nummer : 'Swish ' + b.telefon;
 }`,
   },
+  kodamedai: {
+    title: 'Lär dig koda med AI – på svenska',
+    description:
+      'En kurs i att koda med AI-assistenter. Beställ rätt, granska koden du får, hitta felen och testa – så att du styr AI:n och inte tvärtom.',
+    intro:
+      'De flesta skriver kod tillsammans med en AI-assistent i dag. Det som avgör om det blir bra är du: hur du beställer, och att du läser, testar och lagar det som kommer tillbaka. Här tränar du på svar från en låtsasassistent, med de fel riktiga assistenter gör.',
+    forWhom:
+      'Dig som kan grunderna i Python och vill använda AI-verktyg som Claude, ChatGPT och Copilot på riktigt – utan att lita blint på dem.',
+    before: 'Grunderna i Python, till och med funktioner och listor.',
+    example: `# Assistentens förslag – hittar du felet?
+def medel(tal):
+    return sum(tal) / len(tal)
+
+assert medel([2, 4]) == 3
+medel([])  # ZeroDivisionError!`,
+  },
   git: {
     title: 'Lär dig Git och terminalen på svenska',
     description:

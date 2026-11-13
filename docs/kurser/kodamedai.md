@@ -1,6 +1,6 @@
 # Koda med AI
 
-**Förslag – inte byggt.** År 2026 skriver de flesta kod tillsammans med
+År 2026 skriver de flesta kod tillsammans med
 en AI-assistent. Den här kursen lär ut det som avgör om det blir bra:
 att be om rätt sak, att **läsa och granska** koden som kommer tillbaka,
 att hitta felen och att testa. Säljargument: _lär dig koda så att du
@@ -35,6 +35,7 @@ från kod, men tyngdpunkten ligger på eleven som granskare.
 
 | # | id | Bana | Lär ut |
 | -- | -- | -- | -- |
+| 0 | `verktyg` | AI-verktygen | chatt, editor och agent, vad man får skicka, påhittade funktioner och paket, ansvar |
 | 1 | `bestall` | Beställ rätt | tydlig uppgift, exempel på indata och utdata, kantfall, en sak i taget |
 | 2 | `las` | Läs koden du får | förutsäga vad koden gör, följa den rad för rad, fråga när något är oklart |
 | 3 | `fel` | AI:ns vanliga fel | gränser (`<` mot `<=`), tomma listor, fel typ, påhittade funktioner och bibliotek |
@@ -43,10 +44,4 @@ från kod, men tyngdpunkten ligger på eleven som granskare.
 | 6 | `refaktor` | Gör om och förbättra | be om mindre ändringar, behålla testerna gröna, läsbar kod |
 | 7 | `slutprojekt` | Slutprojektet | bygg ett litet program tillsammans med "assistenten": beställ, granska, testa och laga |
 
-Bana 1–2 gratis.
-
-## Frågor
-
-- Ska en bana handla om AI-verktygen själva (Copilot, Claude Code,
-  Cursor) – vad de är och hur man använder dem säkert – med quiz och
-  förklaringar i stället för kod?
+AI-verktygen och Beställ rätt är gratis (`freeTracks: 2`), och de är klara ✅. Banorna numreras 1–8 i appen. När kursen är klar läggs spåret **Proffsverktygen** till: Git och terminalen → Koda med AI.

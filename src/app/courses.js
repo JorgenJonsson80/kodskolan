@@ -6,6 +6,7 @@ import { meta as git } from '../courses/git/meta';
 import { meta as fullstack } from '../courses/fullstack/meta';
 import { meta as html } from '../courses/html/meta';
 import { meta as js } from '../courses/js/meta';
+import { meta as kodamedai } from '../courses/kodamedai/meta';
 import { meta as python } from '../courses/python/meta';
 import { meta as sql } from '../courses/sql/meta';
 import { meta as ts } from '../courses/ts/meta';
@@ -44,6 +45,11 @@ export const COURSES = [
     ...git,
     load: () => import('../courses/git'),
     summary: () => import('../courses/git/summary'),
+  },
+  {
+    ...kodamedai,
+    load: () => import('../courses/kodamedai'),
+    summary: () => import('../courses/kodamedai/summary'),
   },
   {
     ...flask,
