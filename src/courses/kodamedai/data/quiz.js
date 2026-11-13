@@ -190,4 +190,42 @@ export const QUIZ = {
         'Tester skrivna efter koden testar ofta bara det koden redan gör.',
     },
   ],
+  sakerhet: [
+    {
+      question: 'Var ska en API-nyckel stå?',
+      options: [
+        'I en miljövariabel, utanför koden',
+        'Överst i koden',
+        'I README.md',
+        'I ett commit-meddelande',
+      ],
+      explain: 'Allt i koden hamnar i Git och kanske på GitHub.',
+    },
+    {
+      question: 'Hur skyddar du dig mot SQL-injektion?',
+      options: [
+        'Med ? och värdena som parametrar',
+        'Med f-strängar',
+        'Med stora bokstäver i SQL',
+        'Med fler WHERE',
+      ],
+      explain: 'Då sätter databasen in värdet som data, aldrig som SQL.',
+    },
+    {
+      question:
+        'Vilken modul använder du för en kod som inte ska gå att gissa?',
+      options: ['secrets', 'random', 'math', 'time'],
+      explain: 'random går att förutsäga. secrets är gjord för säkerhet.',
+    },
+    {
+      question: 'Varför ska inloggningen inte säga "Användaren finns inte"?',
+      options: [
+        'Då kan någon ta reda på vilka konton som finns',
+        'Det är för långt',
+        'Det blir fel på engelska',
+        'Det spelar ingen roll',
+      ],
+      explain: 'Samma meddelande för alla fel avslöjar ingenting.',
+    },
+  ],
 };

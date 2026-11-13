@@ -196,4 +196,57 @@ Testet ska underkänna \`fel_1\`, \`fel_2\` och \`fel_3\` och godkänna \`lagad\
       },
     ],
   },
+  sakerhet: {
+    id: 'kmai-boss-sakerhet',
+    track: 'sakerhet',
+    title: 'Boss: Granska inloggningen',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Assistenten skrev en inloggning med tre säkerhetshål. Laga alla.',
+    task: `Uppgift: Laga koden så att:
+  1. Admin-lösenordet inte står i koden – det läses från miljövariabeln \`ADMIN_LOSENORD\`.
+  2. Användarnas lösenord sparas som sha256-hashar, och \`registrera\` och \`logga_in\` använder hashen.
+  3. \`logga_in\` ger \`"Fel användarnamn eller lösenord"\` vid alla fel och \`"Välkommen"\` när det stämmer.`,
+    starterCode:
+      '# Assistentens förslag:\nANVANDARE = {}\nADMIN = "admin123"\n\ndef registrera(namn, losenord):\n    ANVANDARE[namn] = losenord\n\ndef logga_in(namn, losenord):\n    if namn == "admin":\n        return "Välkommen" if losenord == ADMIN else "Fel lösenord"\n    if namn not in ANVANDARE:\n        return "Användaren finns inte"\n    if ANVANDARE[namn] != losenord:\n        return "Fel lösenord"\n    return "Välkommen"\n',
+    solution:
+      'import hashlib\nimport os\n\nANVANDARE = {}\n\ndef hasha(losenord):\n    return hashlib.sha256(losenord.encode()).hexdigest()\n\ndef registrera(namn, losenord):\n    ANVANDARE[namn] = hasha(losenord)\n\ndef logga_in(namn, losenord):\n    if namn == "admin":\n        ratt = os.environ.get("ADMIN_LOSENORD")\n        if ratt and losenord == ratt:\n            return "Välkommen"\n        return "Fel användarnamn eller lösenord"\n    if ANVANDARE.get(namn) != hasha(losenord):\n        return "Fel användarnamn eller lösenord"\n    return "Välkommen"\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Lösenordet sparas som en hash',
+        code: '(registrera("ada", "kanel"), ANVANDARE["ada"] != "kanel" and len(ANVANDARE["ada"]) == 64)[1]',
+        expected: true,
+      },
+      {
+        description: 'Rätt lösenord loggar in',
+        code: '(registrera("ada", "kanel"), logga_in("ada", "kanel"))[1]',
+        expected: 'Välkommen',
+      },
+      {
+        description: 'Fel lösenord',
+        code: '(registrera("ada", "kanel"), logga_in("ada", "x"))[1]',
+        expected: 'Fel användarnamn eller lösenord',
+      },
+      {
+        description: 'Okänd användare',
+        code: 'logga_in("okand", "x")',
+        expected: 'Fel användarnamn eller lösenord',
+      },
+      {
+        description: 'Admin läses från miljön',
+        code: '(os.environ.__setitem__("ADMIN_LOSENORD", "superhemligt"), logga_in("admin", "superhemligt"))[1]',
+        expected: 'Välkommen',
+      },
+    ],
+    sourceChecks: [
+      {
+        description: 'Admin-lösenordet står inte i koden',
+        pattern: /admin123/,
+        forbidden: true,
+      },
+    ],
+  },
 };

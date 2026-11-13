@@ -95,4 +95,25 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'sakerhet',
+    title: 'Säker kod',
+    teaches: [
+      'hemligheter i miljön',
+      'SQL-injektion',
+      'kontrollera indata',
+      'hasha lösenord',
+      'aldrig eval',
+    ],
+    reward: { emoji: '🔐', name: 'Hänglås' },
+    canBuild:
+      'kod som håller när någon försöker ta sig in: inga hemligheter i koden, inga injektioner och inga lösenord i klartext',
+    docs: [
+      { title: 'OWASP Top 10', url: 'https://owasp.org/www-project-top-ten/' },
+      {
+        title: 'secrets i Python',
+        url: 'https://docs.python.org/3/library/secrets.html',
+      },
+    ],
+  },
 ];

@@ -60,4 +60,16 @@ export const RESOURCES = {
       video: 'boundary value analysis explained',
     },
   ],
+  sakerhet: [
+    {
+      topic: 'De vanligaste säkerhetshålen',
+      read: 'https://owasp.org/www-project-top-ten/',
+      video: 'owasp top 10 explained beginners',
+    },
+    {
+      topic: 'SQL-injektion',
+      read: 'https://owasp.org/www-community/attacks/SQL_Injection',
+      video: 'sql injection explained',
+    },
+  ],
 };

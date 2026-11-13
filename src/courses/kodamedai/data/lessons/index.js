@@ -2,6 +2,7 @@ import { BESTALL } from './bestall';
 import { BOSSES } from './bossar';
 import { FEL } from './fel';
 import { LAS } from './las';
+import { SAKERHET } from './sakerhet';
 import { TESTA } from './testa';
 import { VERKTYG } from './verktyg';
 
@@ -17,4 +18,6 @@ export const LESSONS = [
   BOSSES.fel,
   ...TESTA,
   BOSSES.testa,
+  ...SAKERHET,
+  BOSSES.sakerhet,
 ];
