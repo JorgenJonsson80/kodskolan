@@ -276,8 +276,7 @@ describe('tillgång', () => {
     (await db.query('select course_id from public.my_access() order by 1'))
       .rows;
   const hasAccess = async course =>
-    (await db.query(`select public.has_access('${course}') as ok`)).rows[0]
-      .ok;
+    (await db.query(`select public.has_access('${course}') as ok`)).rows[0].ok;
 
   it('ger tillgång i så många dagar som koden säger', async () => {
     await as(ANNA);
@@ -354,5 +353,61 @@ describe('tillgång', () => {
       'select (select count(*) from entitlements)::int + (select count(*) from code_redemptions)::int as n',
     );
     expect(left.rows[0].n).toBe(0);
+  });
+});
+
+describe('lesson_feedback', () => {
+  beforeEach(async () => {
+    db = new PGlite();
+    await db.exec(SUPABASE);
+    await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
+    for (const migration of migrations) await db.exec(migration);
+  });
+
+  const as = user =>
+    db.exec(
+      user
+        ? `reset role; set role authenticated; set request.jwt.claim.sub = '${user}'`
+        : `reset role; set role anon; set request.jwt.claim.sub = ''`,
+    );
+  const send = (message = 'Testet godkänner fel svar', extra = '') =>
+    db.exec(
+      `insert into lesson_feedback (course_id, lesson_id, kind, message${extra ? ', user_id' : ''}) values ('data', 'da-01', 'fel', '${message}'${extra ? `, '${extra}'` : ''})`,
+    );
+
+  it('vem som helst kan skicka, men ingen kan läsa andras', async () => {
+    await as(null);
+    await send();
+    await as(ANNA);
+    await send();
+    expect(
+      (await db.query('select user_id from lesson_feedback')).rows,
+    ).toEqual([{ user_id: ANNA }]);
+    await as(BO);
+    expect((await db.query('select * from lesson_feedback')).rows).toEqual([]);
+    await db.exec('reset role');
+    expect(
+      (await db.query('select count(*)::int as n from lesson_feedback')).rows[0]
+        .n,
+    ).toBe(2);
+  });
+
+  it('går inte att skicka i någon annans namn eller tomt', async () => {
+    await as(BO);
+    await expect(send('Hej', ANNA)).rejects.toThrow();
+    await expect(send('   ')).rejects.toThrow();
+    await as(null);
+    await expect(send('Hej', ANNA)).rejects.toThrow();
+  });
+
+  it('raderas med kontot', async () => {
+    await as(ANNA);
+    await send();
+    await db.query('select public.delete_my_account()');
+    await db.exec('reset role');
+    expect(
+      (await db.query('select count(*)::int as n from lesson_feedback')).rows[0]
+        .n,
+    ).toBe(0);
   });
 });

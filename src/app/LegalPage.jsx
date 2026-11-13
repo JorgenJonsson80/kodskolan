@@ -45,6 +45,14 @@ function Privacy() {
         det.
       </p>
 
+      <h2>Felrapporter</h2>
+      <p>
+        Skickar du en felrapport från en övning sparas vilken övning det gäller,
+        det du skrev och – bara om du kryssar i det – din kod. Är du inloggad
+        kopplas rapporten till ditt konto och raderas med det. Rapporterna
+        används bara för att laga övningarna.
+      </p>
+
       <h2>Statistik och fel</h2>
       <p>
         För att se var kurserna är för svåra och hitta fel räknas besök, klarade

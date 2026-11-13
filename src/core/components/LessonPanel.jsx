@@ -9,6 +9,7 @@ import FeedbackPanel from './FeedbackPanel';
 import HintPanel from './HintPanel';
 import SolutionCompare from './SolutionCompare';
 import StuckPanel from './StuckPanel';
+import ReportProblem from './ReportProblem';
 
 // Visa lösning dyker upp efter så här många felaktiga försök. Utan
 // ledtrådar (projekt utan ledtrådar) dröjer den lite längre. Bossar har
@@ -383,6 +384,7 @@ export default function LessonPanel({
           {project ? 'Nästa steg' : 'Nästa övning'}
         </button>
       </div>
+      <ReportProblem course={course} lesson={lesson} code={code} />
     </section>
   );
 }

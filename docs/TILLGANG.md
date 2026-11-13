@@ -69,3 +69,14 @@ Variables), och sedan en push. Utan den är allt öppet som förut.
 Hur många banor som är gratis står i `FREE_TRACKS` i
 `src/core/lib/access.js` (2), och en kurs kan ändra det med `freeTracks`
 i sin `index.jsx`.
+
+## Felrapporter från övningarna
+
+Knappen 🐞 Något fel i övningen? sparar i `lesson_feedback` (migrationen
+`20261113000000_feedback.sql`). Läs dem i SQL Editor:
+
+```sql
+select created_at, course_id, lesson_id, kind, message, code
+from lesson_feedback
+order by created_at desc;
+```

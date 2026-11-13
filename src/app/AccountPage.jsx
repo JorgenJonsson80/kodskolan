@@ -313,8 +313,8 @@ export default function AccountPage() {
                 <li>
                   <strong>I ditt konto</strong> (om du loggar in): din
                   mejladress, samma framsteg och kod, dina diplom med namnet du
-                  valt och vilken tillgång du har (och koden du löste in den
-                  med).
+                  valt, vilken tillgång du har (och koden du löste in den med)
+                  och felrapporter du skickat.
                 </li>
               </ul>
               <p className="muted">
