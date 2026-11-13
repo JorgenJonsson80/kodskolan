@@ -83,6 +83,22 @@ function kvitto(b: Betalning): string {
   return b.sätt === 'kort' ? 'Kort ' + b.nummer : 'Swish ' + b.telefon;
 }`,
   },
+  git: {
+    title: 'Lär dig Git och terminalen på svenska',
+    description:
+      'En kurs i terminalen, Git och GitHub på svenska. Skriv riktiga kommandon i webbläsaren: mappar, filer, commits, grenar och push – utan att installera något.',
+    intro:
+      'Alla som kodar på riktigt använder terminalen och Git varje dag, men få kurser lär ut det från början. Här skriver du riktiga kommandon i en terminal i webbläsaren och ser direkt vad som händer – utan risk att förstöra något.',
+    forWhom:
+      'Dig som har börjat koda och vill jobba som proffsen: spara versioner, prova saker på en egen gren och lägga upp koden på GitHub.',
+    before: 'Inget, men det är lättare om du har gått en annan kurs först.',
+    example: `mkdir hemsida
+cd hemsida
+git init
+echo "<h1>Hej</h1>" > index.html
+git add index.html
+git commit -m "Första versionen"`,
+  },
   data: {
     title: 'Lär dig dataanalys med Python och pandas',
     description:

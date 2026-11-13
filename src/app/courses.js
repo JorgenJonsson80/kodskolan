@@ -2,6 +2,7 @@ import { meta as ai } from '../courses/ai/meta';
 import { meta as data } from '../courses/data/meta';
 import { meta as fastapi } from '../courses/fastapi/meta';
 import { meta as flask } from '../courses/flask/meta';
+import { meta as git } from '../courses/git/meta';
 import { meta as fullstack } from '../courses/fullstack/meta';
 import { meta as html } from '../courses/html/meta';
 import { meta as js } from '../courses/js/meta';
@@ -38,6 +39,11 @@ export const COURSES = [
     ...ts,
     load: () => import('../courses/ts'),
     summary: () => import('../courses/ts/summary'),
+  },
+  {
+    ...git,
+    load: () => import('../courses/git'),
+    summary: () => import('../courses/git/summary'),
   },
   {
     ...flask,
