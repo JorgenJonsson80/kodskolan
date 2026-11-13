@@ -667,6 +667,47 @@ function mergeCommits(world, root, repo, theirsId, label, out) {
   void id;
 }
 
+// git revert: en ny commit som tar tillbaka det en tidigare commit
+// ändrade. Historiken skrivs aldrig om, så det går bra även efter push.
+function revert(world, root, repo, args, out) {
+  const given = args.find(arg => !arg.startsWith('-'));
+  if (!given)
+    throw new ShellError('missingArg', 'usage: git revert <commit>', {
+      command: 'git revert',
+    });
+  const id =
+    given === 'HEAD'
+      ? headId(repo)
+      : [...repo.commits.keys()].find(key => key.startsWith(given));
+  if (!id)
+    throw new ShellError('badRevision', `fatal: bad revision '${given}'`, {
+      revision: given,
+    });
+  if (hasChanges(world, root, repo)) {
+    throw new ShellError(
+      'dirtyMerge',
+      'error: your local changes would be overwritten by revert.',
+    );
+  }
+  const target = repo.commits.get(id);
+  const before = treeOf(repo, target.parents[0] ?? null);
+  const current = treeOf(repo, headId(repo));
+  const next = new Map(current);
+  const paths = new Set([...before.keys(), ...target.tree.keys()]);
+  for (const path of paths) {
+    if (before.get(path) === target.tree.get(path)) continue;
+    if (before.has(path)) next.set(path, before.get(path));
+    else next.delete(path);
+  }
+  checkoutTree(world, root, repo, current, next);
+  const message = `Revert "${target.message}"`;
+  const newId = newCommit(world, repo, message, [headId(repo)]);
+  out.push(
+    `[${repo.head} ${short(newId)}] ${message}`,
+    ` ${changedCount(current, next)} file${changedCount(current, next) === 1 ? '' : 's'} changed`,
+  );
+}
+
 // --- Servern (GitHub på låtsas) ---
 
 function server(world, url) {
@@ -833,6 +874,7 @@ export function gitCommand(world, args, out) {
     'pull',
     'rm',
     'mv',
+    'revert',
   ];
   if (!KNOWN.includes(sub)) {
     throw new ShellError(
@@ -930,6 +972,9 @@ export function gitCommand(world, args, out) {
     }
     case 'push':
       push(world, repo, rest, out);
+      return;
+    case 'revert':
+      revert(world, root, repo, rest, out);
       return;
     case 'pull':
       pull(world, root, repo, rest, out);

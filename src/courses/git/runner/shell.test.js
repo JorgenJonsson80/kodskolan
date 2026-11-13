@@ -186,3 +186,19 @@ describe('git', () => {
     });
   });
 });
+
+describe('git revert', () => {
+  it('ångrar en commit med en ny commit', () => {
+    const result = runGit({
+      code: 'git init\necho "blå" > f.txt\ngit add .\ngit commit -m "A"\necho "röd" > f.txt\ntouch ny.txt\ngit add .\ngit commit -m "B"\ngit revert HEAD',
+      tests: [
+        { file: 'f.txt', content: 'blå' },
+        { missing: 'ny.txt' },
+        { commits: 3 },
+        { message: 'Revert "B"' },
+      ],
+    });
+    expect(result.error).toBeNull();
+    expect(result.tests.every(test => test.passed)).toBe(true);
+  });
+});

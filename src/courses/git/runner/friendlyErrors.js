@@ -52,6 +52,8 @@ const TEXTS = {
     'Du har ändringar som inte är committade. Committa dem innan du slår ihop grenar.',
   unmerged: e =>
     `Det finns olösta konflikter i ${(e.paths ?? []).map(code).join(', ')}. Ta bort markeringarna (<<<<<<<, ======= och >>>>>>>), spara filen och kör ${code('git add')} innan du committar.`,
+  badRevision: e =>
+    `Hittar ingen commit som heter ${code(e.revision)}. Se id:na med ${code('git log --oneline')}.`,
   badUrl: () => 'Adressen ska se ut som https://github.com/namn/repo.',
   noRemote: e =>
     `Repot har ingen fjärr som heter ${code(e.remote)}. Lägg till den med ${code('git remote add origin https://github.com/…')}.`,

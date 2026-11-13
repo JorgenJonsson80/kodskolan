@@ -54,4 +54,4 @@ projekt som redan finns) och `tests` med kontroller av läget efteråt:
 | 7 | `github` | GitHub | `remote add`, `push`, `clone`, `pull`, README |
 | 8 | `arbetsflode` | Arbetsflödet | en gren per ändring, bra commit-meddelanden, pull requests (förklaras), slutprojekt |
 
-Bana 1–3 är klara ✅ (de tre gratisbanorna).
+Alla åtta banorna är klara ✅.
