@@ -55,3 +55,7 @@ projekt som redan finns) och `tests` med kontroller av läget efteråt:
 | 8 | `arbetsflode` | Arbetsflödet | en gren per ändring, bra commit-meddelanden, pull requests (förklaras), slutprojekt |
 
 Alla åtta banorna är klara ✅.
+
+Varje bana har tre projekt med tre steg (`data/projects.js`). Ett steg kör om
+`setup` och förra stegets kommandon, så steget bygger vidare på dem. Tre
+idéer per bana till Lekplatsen (`data/ideas.js`).
