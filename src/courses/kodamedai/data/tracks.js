@@ -38,4 +38,38 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'las',
+    title: 'Läs koden du får',
+    teaches: ['förutsäga', 'följa loopar', 'gränser i villkor', 'sidoeffekter'],
+    reward: { emoji: '🔎', name: 'Lupp' },
+    canBuild:
+      'läsa AI-kod och veta vad den gör innan du kör den – och hitta det som inte stämmer',
+    docs: [
+      {
+        title: 'Python Tutor: se koden köras',
+        url: 'https://pythontutor.com/',
+      },
+    ],
+  },
+  {
+    id: 'fel',
+    title: 'AI:ns vanliga fel',
+    teaches: [
+      'gränser',
+      'tomma listor och texter',
+      'text eller tal',
+      'off by one',
+      'sidoeffekter',
+    ],
+    reward: { emoji: '🐛', name: 'Bugg' },
+    canBuild:
+      'hitta och laga felen assistenter gör oftast, innan de hamnar hos någon annan',
+    docs: [
+      {
+        title: 'Vanliga fel i Python',
+        url: 'https://docs.python.org/3/tutorial/errors.html',
+      },
+    ],
+  },
 ];

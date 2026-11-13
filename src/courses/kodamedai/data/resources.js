@@ -24,4 +24,28 @@ export const RESOURCES = {
       video: 'few shot prompting examples explained',
     },
   ],
+  las: [
+    {
+      topic: 'Se koden köras steg för steg',
+      read: 'https://pythontutor.com/',
+      video: 'how to read code beginners trace',
+    },
+    {
+      topic: 'Kodgranskning',
+      read: 'https://google.github.io/eng-practices/review/reviewer/looking-for.html',
+      video: 'code review for beginners',
+    },
+  ],
+  fel: [
+    {
+      topic: 'Kantfall och gränser',
+      read: 'https://en.wikipedia.org/wiki/Off-by-one_error',
+      video: 'off by one error explained',
+    },
+    {
+      topic: 'Decimaltal i datorn',
+      read: 'https://docs.python.org/3/tutorial/floatingpoint.html',
+      video: 'floating point 0.1 + 0.2 explained',
+    },
+  ],
 };

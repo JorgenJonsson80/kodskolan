@@ -81,4 +81,75 @@ export const QUIZ = {
       explain: 'Små bitar går att läsa, förstå och testa.',
     },
   ],
+  las: [
+    {
+      question: 'Vad returnerar en Python-funktion som når slutet utan return?',
+      options: ['None', '0', 'Ett fel', 'En tom lista'],
+      explain: 'Utan return blir svaret None.',
+    },
+    {
+      question:
+        'Vilket tal ska du testa först i huvudet när ett villkor säger poang > 90?',
+      options: ['90, precis på gränsen', '0', '1000', '-1'],
+      explain: 'Gränsen är där felen gömmer sig.',
+    },
+    {
+      question:
+        'En funktion gör lista.append(0) på listan den får. Vad händer med din lista?',
+      options: [
+        'Den får en nolla till',
+        'Inget, funktionen får en kopia',
+        'Den töms',
+        'Ett fel',
+      ],
+      explain: 'Listan skickas som den är, inte som en kopia.',
+    },
+    {
+      question: 'Return ligger indraget inne i en for-loop. Vad händer?',
+      options: [
+        'Funktionen returnerar redan efter första varvet',
+        'Loopen körs klart först',
+        'Ett syntaxfel',
+        'Inget alls',
+      ],
+      explain: 'return avslutar funktionen direkt, mitt i loopen.',
+    },
+  ],
+  fel: [
+    {
+      question: 'Vad ger range(1, 5)?',
+      options: ['1, 2, 3, 4', '1, 2, 3, 4, 5', '0, 1, 2, 3, 4', '2, 3, 4, 5'],
+      explain: 'range går till men inte med slutet.',
+    },
+    {
+      question: 'Vad ger input() alltid?',
+      options: [
+        'Text',
+        'Ett tal',
+        'Ett tal eller text beroende på vad man skriver',
+        'En lista',
+      ],
+      explain: 'Gör om med int() om du vill räkna.',
+    },
+    {
+      question: 'Vad skiljer lista.sort() från sorted(lista)?',
+      options: [
+        'sort ändrar listan, sorted gör en ny',
+        'Inget',
+        'sorted ändrar listan, sort gör en ny',
+        'sort sorterar baklänges',
+      ],
+      explain: 'sorted låter originalet vara.',
+    },
+    {
+      question: 'Varför kan 0.1 + 0.2 == 0.3 bli False?',
+      options: [
+        'Decimaltal lagras inte exakt',
+        'Python räknar fel med flit',
+        'Det är ett syntaxfel',
+        'Man måste skriva 0,1',
+      ],
+      explain: 'Avrunda innan du jämför decimaltal.',
+    },
+  ],
 };

@@ -77,4 +77,81 @@ export const BOSSES = {
       },
     ],
   },
+  las: {
+    id: 'kmai-boss-las',
+    track: 'las',
+    title: 'Boss: Läs innan du litar',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Assistenten skrev en funktion för kundvagnen. Förutsäg vad den gör – utan att köra den.',
+    task: `Uppgift: Läs \`total\` och skriv svaren själv:
+  - \`svar_1\`: vad ger \`total([("bulle", 25, 2), ("kaffe", 30, 1)], False)\`?
+  - \`svar_2\`: vad ger samma vagn med \`True\`?
+  - \`svar_3\`: vad ger \`total([], True)\`?
+  - \`rabattrad\`: på vilken rad (def är rad 1) dras rabatten av?`,
+    starterCode:
+      '# Assistentens kod:\ndef total(vagn, kampanj):\n    summa = 0\n    for namn, pris, antal in vagn:\n        summa += pris * antal\n    if kampanj and summa >= 50:\n        summa -= 10\n    return summa\n\nsvar_1 = None\nsvar_2 = None\nsvar_3 = None\nrabattrad = None\n',
+    solution:
+      '# Assistentens kod:\ndef total(vagn, kampanj):\n    summa = 0\n    for namn, pris, antal in vagn:\n        summa += pris * antal\n    if kampanj and summa >= 50:\n        summa -= 10\n    return summa\n\nsvar_1 = 80\nsvar_2 = 70\nsvar_3 = 0\nrabattrad = 6\n',
+    hints: [],
+    tests: [
+      {
+        description: 'svar_1',
+        code: 'svar_1 == total([("bulle", 25, 2), ("kaffe", 30, 1)], False)',
+        expected: true,
+      },
+      {
+        description: 'svar_2',
+        code: 'svar_2 == total([("bulle", 25, 2), ("kaffe", 30, 1)], True)',
+        expected: true,
+      },
+      {
+        description: 'svar_3',
+        code: 'svar_3 == total([], True)',
+        expected: true,
+      },
+      { description: 'rabattrad', code: 'rabattrad', expected: 6 },
+    ],
+    sourceChecks: [
+      {
+        description: 'Gissningarna är skrivna för hand',
+        pattern: /^\s*svar_\d\s*=\s*total\(/m,
+        forbidden: true,
+      },
+    ],
+  },
+  fel: {
+    id: 'kmai-boss-fel',
+    track: 'fel',
+    title: 'Boss: Tre fel i en funktion',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Assistenten skrev en funktion för biljettpriser. Den har tre av felen från banan.',
+    task: `Uppgift: \`biljettpris(alder_text)\` får åldern som text från ett formulär och ska returnera priset:
+  - 0 kr för barn under 7 år
+  - 60 kr från och med 7 till och med 17 år
+  - 120 kr från och med 18 år
+  - \`None\` om texten är tom
+Laga funktionen.`,
+    starterCode:
+      '# Assistentens förslag – hitta och laga felen:\ndef biljettpris(alder_text):\n    alder = alder_text\n    if alder < 7:\n        return 0\n    elif alder < 17:\n        return 60\n    else:\n        return 120\n',
+    solution:
+      'def biljettpris(alder_text):\n    if not alder_text:\n        return None\n    alder = int(alder_text)\n    if alder < 7:\n        return 0\n    elif alder <= 17:\n        return 60\n    else:\n        return 120\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Tom text ger None',
+        code: 'biljettpris("")',
+        expected: null,
+      },
+      { description: '"6" ger 0', code: 'biljettpris("6")', expected: 0 },
+      { description: '"7" ger 60', code: 'biljettpris("7")', expected: 60 },
+      { description: '"17" ger 60', code: 'biljettpris("17")', expected: 60 },
+      { description: '"18" ger 120', code: 'biljettpris("18")', expected: 120 },
+    ],
+  },
 };
