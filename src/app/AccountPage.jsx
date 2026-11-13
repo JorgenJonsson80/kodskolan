@@ -8,6 +8,7 @@ import { useAccess } from '../core/lib/useAccess';
 import {
   accessSummary,
   CODE_PARAM,
+  PRICE_TEXT,
   PENDING_CODE_KEY,
 } from '../core/lib/access';
 import { readJson, writeJson } from '../core/lib/storage';
@@ -106,7 +107,24 @@ function initialCode() {
 
 // Full tillgång: vad man har och rutan för en tillgångskod.
 function AccessSection({ account }) {
-  const { access, redeem } = useAccess(account.user);
+  const { access, redeem, buy, reload } = useAccess(account.user);
+  const [buyError, setBuyError] = useState(null);
+  const [buying, setBuying] = useState(false);
+  // Tillbaka från Stripe: webhooken kan ta några sekunder, så tillgången
+  // hämtas igen en stund senare.
+  const justBought = new URLSearchParams(window.location.search).has('kopt');
+  useEffect(() => {
+    if (!justBought) return;
+    const timer = setTimeout(reload, 4000);
+    return () => clearTimeout(timer);
+  }, [justBought]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function handleBuy() {
+    setBuying(true);
+    setBuyError(await buy());
+    setBuying(false);
+  }
+
   const [code, setCode] = useState(initialCode);
   const [state, setState] = useState('idle');
   const [error, setError] = useState(null);
@@ -162,6 +180,28 @@ function AccessSection({ account }) {
                 </li>
               ))}
             </ul>
+          )}
+          {justBought && (
+            <p role="status">
+              🎉 Tack för köpet! Tillgången syns här om en liten stund.
+            </p>
+          )}
+          {PRICE_TEXT && !summary.some(item => item.courseId === '*') && (
+            <div className="buy-box">
+              <p>
+                <strong>Full tillgång: {PRICE_TEXT}</strong> – en gång, för alla
+                kurser och för alltid.
+              </p>
+              <button
+                type="button"
+                className="primary-button"
+                onClick={handleBuy}
+                disabled={buying}
+              >
+                {buying ? 'Öppnar betalningen…' : `Köp för ${PRICE_TEXT}`}
+              </button>
+              {buyError && <p className="feedback-error">{buyError}</p>}
+            </div>
           )}
           {state === 'saved' && <p role="status">✓ Klart! Koden är inlöst.</p>}
           <form className="password-form" onSubmit={handleSubmit}>

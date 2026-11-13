@@ -34,10 +34,25 @@ export function useAccess(user) {
     return null;
   }
 
+  // Till Stripes betalsida (supabase/functions/create-checkout). Ger felet
+  // som text, annars lämnar sidan.
+  async function buy() {
+    const { data, error } = await supabase.functions.invoke('create-checkout');
+    if (error || !data?.url)
+      return 'Det gick inte att öppna betalningen. Försök igen om en stund.';
+    window.location.assign(data.url);
+    return null;
+  }
+
+  // Hämtar tillgången igen, t.ex. strax efter ett köp.
+  const reload = () => setVersion(count => count + 1);
+
   // Efter en inlöst kod visas den gamla tillgången tills den nya kommit.
   const isFirstLoad = !loaded.key?.startsWith(`${userId}-`);
   return {
     access: !supabase || !userId ? [] : isFirstLoad ? null : loaded.access,
     redeem,
+    buy,
+    reload,
   };
 }

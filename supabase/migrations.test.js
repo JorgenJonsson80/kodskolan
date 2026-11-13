@@ -411,3 +411,40 @@ describe('lesson_feedback', () => {
     ).toBe(0);
   });
 });
+
+describe('grant_purchase', () => {
+  beforeEach(async () => {
+    db = new PGlite();
+    await db.exec(SUPABASE);
+    await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
+    for (const migration of migrations) await db.exec(migration);
+  });
+
+  it('ger tillgång till allt för alltid, en gång per köp', async () => {
+    await db.query(`select public.grant_purchase('${ANNA}', 'cs_test_1')`);
+    await db.query(`select public.grant_purchase('${ANNA}', 'cs_test_1')`);
+    const { rows } = await db.query(
+      'select user_id, course_id, valid_until, source from entitlements',
+    );
+    expect(rows).toEqual([
+      { user_id: ANNA, course_id: '*', valid_until: null, source: 'stripe' },
+    ]);
+    await db.exec(
+      `set role authenticated; set request.jwt.claim.sub = '${ANNA}'`,
+    );
+    expect(
+      (await db.query(`select public.has_access('sql') as ok`)).rows[0].ok,
+    ).toBe(true);
+  });
+
+  it('kan inte anropas av elever', async () => {
+    for (const role of ['anon', 'authenticated']) {
+      await db.exec(
+        `reset role; set role ${role}; set request.jwt.claim.sub = '${BO}'`,
+      );
+      await expect(
+        db.query(`select public.grant_purchase('${BO}', 'cs_fusk')`),
+      ).rejects.toThrow();
+    }
+  });
+});

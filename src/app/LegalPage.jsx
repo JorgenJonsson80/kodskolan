@@ -77,6 +77,11 @@ function Privacy() {
           <strong>PostHog</strong> – statistik och fel, i Frankfurt.
         </li>
         <li>
+          <strong>Stripe</strong> – betalningen, om du köper full tillgång.
+          Stripe får din mejladress och kortuppgifter. Kodskolan sparar bara att
+          köpet är gjort.
+        </li>
+        <li>
           <strong>GitHub Pages</strong> och <strong>Cloudflare</strong> – visar
           sajten och sköter domänen. Som alla webbservrar ser de din IP-adress
           när sidan hämtas.
@@ -124,6 +129,28 @@ function Terms() {
           till andra.
         </li>
         <li>Konton som missbrukas kan stängas.</li>
+      </ul>
+
+      <h2>Köp av full tillgång</h2>
+      <ul>
+        <li>
+          Full tillgång är ett engångsköp. Det öppnar alla banor i alla kurser,
+          även kurser som kommer senare, så länge Kodskolan finns.
+        </li>
+        <li>
+          Betalningen sköts av Stripe. Kodskolan ser aldrig ditt kortnummer.
+          Kvittot kommer från Stripe till din mejladress.
+        </li>
+        <li>
+          Tillgången börjar direkt efter betalningen. Eftersom det är digitalt
+          innehåll godkänner du vid köpet att ångerrätten på 14 dagar upphör när
+          tillgången börjar (lagen om distansavtal, 2 kap. 11 §).
+        </li>
+        <li>
+          Fungerar något inte som det ska, hör av dig så löser vi det – och går
+          det inte, får du pengarna tillbaka.
+        </li>
+        <li>Tillgången hör till ditt konto och kan inte delas med andra.</li>
       </ul>
 
       <h2>Ditt och vårt</h2>

@@ -36,6 +36,8 @@ jobs:
           VITE_POSTHOG_KEY: ${{ vars.VITE_POSTHOG_KEY }}
           # on låser betalbanorna (docs/TILLGANG.md).
           VITE_PAYWALL: ${{ vars.VITE_PAYWALL }}
+          # Priset för full tillgång, t.ex. 990 kr (docs/BETALNING.md).
+          VITE_PRICE_TEXT: ${{ vars.VITE_PRICE_TEXT }}
           # Tomma tills sajten har en egen domän (se docs/DOMAN.md).
           VITE_SITE_URL: ${{ vars.VITE_SITE_URL }}
           VITE_BASE: ${{ vars.VITE_BASE }}

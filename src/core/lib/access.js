@@ -4,6 +4,10 @@
 // betalbanorna flyttar till databasen (lesson_content) i ett senare steg.
 export const PAYWALL = import.meta.env.VITE_PAYWALL === 'on';
 
+// Priset för full tillgång, t.ex. "990 kr" (engångsköp för allt, för
+// alltid). Utan det visas ingen köpknapp – bara tillgångskoder.
+export const PRICE_TEXT = import.meta.env.VITE_PRICE_TEXT || null;
+
 // Så många banor i början av varje kurs är gratis, om kursen inte säger
 // något annat med freeTracks i index.jsx.
 export const FREE_TRACKS = 2;
