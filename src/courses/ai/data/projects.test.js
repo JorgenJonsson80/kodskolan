@@ -5,7 +5,6 @@ import { nodeRunAi } from '../test/nodeAi';
 import { PROJECT_STEPS, PROJECTS } from './projects';
 import { TRACKS } from './tracks';
 
-// Ett funktionssvar från beforeAll körs som städning, så inget får returneras.
 beforeAll(async () => {
   await nodeRunAi();
 }, 120000);
@@ -26,23 +25,21 @@ describe.each(PROJECT_STEPS.map(step => [step.id, step]))('%s', (_, step) => {
     expect(conceptsTooEarly(step.solution, step.track)).toEqual([]);
   });
 
-  it('har why, tre ledtrådar och xp', () => {
+  it('har why, tre ledtrådar, xp och tester', () => {
     expect(step.why.length).toBeGreaterThan(20);
     expect(step.hints).toHaveLength(3);
     expect(step.xp).toBeGreaterThan(0);
+    expect(step.tests.length).toBeGreaterThan(0);
+    expect(JSON.stringify(step.tests)).not.toContain('__FILL__');
   });
 });
 
 describe('projekten', () => {
-  it('har tre projekt per bana med 3–4 steg (de banor som har börjat)', () => {
+  it('har tre projekt med tre steg per bana', () => {
     for (const track of TRACKS) {
       const projects = PROJECTS.filter(item => item.track === track.id);
-      if (projects.length === 0) continue;
       expect(projects, track.id).toHaveLength(3);
-      for (const project of projects) {
-        expect(project.steps.length).toBeGreaterThanOrEqual(3);
-        expect(project.steps.length).toBeLessThanOrEqual(4);
-      }
+      for (const project of projects) expect(project.steps).toHaveLength(3);
     }
   });
 

@@ -80,3 +80,10 @@ AI). Bana 6 bygger därför enkla vektorer själv i Python, och säger det.
 Som i Python-kursen, plus `modell` (låtsasmodellens regler) och, i
 slutprojektet, `request` som i FastAPI-kursen. Id börjar med `ai-`.
 Facit får inte använda något före sin bana (`test/concepts.js`).
+
+## Projekten
+
+Tre projekt med tre steg per bana (`data/projectsA.js` för bana 1–5,
+`projectsB.js` för 6–10). `data/projectHelper.js` bygger stegen: `add` är
+koden steget lägger till, `change` ändringar i koden som redan finns, och
+`modell` gäller hela projektet. Tre idéer per bana (`data/ideas.js`).
