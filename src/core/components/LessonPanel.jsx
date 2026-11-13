@@ -9,6 +9,7 @@ import FeedbackPanel from './FeedbackPanel';
 import HintPanel from './HintPanel';
 import SolutionCompare from './SolutionCompare';
 import StuckPanel from './StuckPanel';
+import TutorPanel from './TutorPanel';
 import ReportProblem from './ReportProblem';
 
 // Visa lösning dyker upp efter så här många felaktiga försök. Utan
@@ -33,6 +34,7 @@ export default function LessonPanel({
   facitKeys,
   onUseFacit,
   code,
+  tutor,
   onCodeChange,
   onSolved,
   runtimeReady,
@@ -374,6 +376,15 @@ export default function LessonPanel({
             feedback,
             learnedTracks,
           })}
+        />
+      )}
+      {!isCompleted && !lesson.isBoss && tutor && (
+        <TutorPanel
+          lesson={lesson}
+          code={code}
+          feedback={feedback}
+          user={tutor.user}
+          access={tutor.access}
         />
       )}
       <div className="lesson-navigation">

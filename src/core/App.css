@@ -2772,3 +2772,50 @@ a.primary-button {
   font-family: inherit;
   font-size: 0.95rem;
 }
+
+/* AI-handledaren (TutorPanel.jsx). */
+.tutor-panel {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.tutor-panel h3,
+.tutor-panel p {
+  margin: 0;
+}
+
+.tutor-answer {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.tutor-form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.tutor-form textarea {
+  flex: 1;
+  min-height: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+}
+
+.tutor-note {
+  font-size: 0.85rem;
+}
+
+.tutor-teaser {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+}

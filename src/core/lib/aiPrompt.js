@@ -2,7 +2,7 @@
 // vara handledare, inte ge lösningen, och bara använda det eleven lärt
 // sig hittills – annars försvinner lärandet.
 
-function whatHappened(feedback, explainError) {
+export function whatHappened(feedback, explainError) {
   if (!feedback) return 'Jag har inte kört koden än.';
   const lines = [];
   if (feedback.error) {

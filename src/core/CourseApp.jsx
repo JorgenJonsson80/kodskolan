@@ -619,6 +619,7 @@ function Academy({ course }) {
                 facitKeys={facitKeys}
                 onUseFacit={() => handleUseFacit(lesson)}
                 code={startCodeFor(lesson)}
+                tutor={{ user: account.user, access }}
                 onCodeChange={newCode =>
                   setDrafts(previous => ({ ...previous, [lesson.id]: newCode }))
                 }

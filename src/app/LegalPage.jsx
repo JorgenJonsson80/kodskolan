@@ -53,6 +53,15 @@ function Privacy() {
         används bara för att laga övningarna.
       </p>
 
+      <h2>AI-handledaren</h2>
+      <p>
+        Frågar du AI-handledaren skickas din fråga, övningen, din kod och vad
+        som hände när du körde den till Anthropic, som gör AI-modellen Claude.
+        Kodskolan sparar inte frågorna, bara hur många du ställt i dag, så att
+        taket per dag fungerar. Anthropic använder inte det som skickas via
+        deras API för att träna sina modeller.
+      </p>
+
       <h2>Statistik och fel</h2>
       <p>
         För att se var kurserna är för svåra och hitta fel räknas besök, klarade
@@ -75,6 +84,10 @@ function Privacy() {
         </li>
         <li>
           <strong>PostHog</strong> – statistik och fel, i Frankfurt.
+        </li>
+        <li>
+          <strong>Anthropic</strong> – AI-handledaren, om du använder den. Din
+          fråga och kod skickas dit för att få ett svar.
         </li>
         <li>
           <strong>Stripe</strong> – betalningen, om du köper full tillgång.

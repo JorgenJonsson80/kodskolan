@@ -448,3 +448,38 @@ describe('grant_purchase', () => {
     }
   });
 });
+
+describe('use_tutor_question', () => {
+  beforeEach(async () => {
+    db = new PGlite();
+    await db.exec(SUPABASE);
+    await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
+    for (const migration of migrations) await db.exec(migration);
+    await db.query(`select public.grant_purchase('${ANNA}', 'cs_1')`);
+  });
+
+  const ask = async (user, limit = 2) => {
+    await db.exec(
+      `reset role; set role authenticated; set request.jwt.claim.sub = '${user}'`,
+    );
+    return (
+      await db.query(
+        `select public.use_tutor_question('sql', ${limit}) as kvar`,
+      )
+    ).rows[0].kvar;
+  };
+
+  it('räknar ner dagens frågor för den som har tillgång', async () => {
+    expect(await ask(ANNA)).toBe(1);
+    expect(await ask(ANNA)).toBe(0);
+    await expect(ask(ANNA)).rejects.toThrow(/slut/);
+  });
+
+  it('kräver full tillgång och inloggning', async () => {
+    await expect(ask(BO)).rejects.toThrow(/full tillgång/);
+    await db.exec('reset role; set role anon');
+    await expect(
+      db.query(`select public.use_tutor_question('sql')`),
+    ).rejects.toThrow();
+  });
+});
