@@ -84,4 +84,16 @@ export const RESOURCES = {
       video: 'clean code python naming',
     },
   ],
+  slutprojekt: [
+    {
+      topic: 'Arbeta med AI-assistenter',
+      read: 'https://code.claude.com/docs/en/best-practices',
+      video: 'ai pair programming workflow',
+    },
+    {
+      topic: 'Kodgranskning',
+      read: 'https://google.github.io/eng-practices/review/',
+      video: 'how to review a pull request',
+    },
+  ],
 };

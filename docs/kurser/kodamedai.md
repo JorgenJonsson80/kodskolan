@@ -31,7 +31,7 @@ ska göra något med det:
 AI-kursens låtsasmodell kan användas i några övningar om att använda AI
 från kod, men tyngdpunkten ligger på eleven som granskare.
 
-## Banorna (förslag)
+## Banorna
 
 | # | id | Bana | Lär ut |
 | -- | -- | -- | -- |
@@ -44,4 +44,4 @@ från kod, men tyngdpunkten ligger på eleven som granskare.
 | 6 | `refaktor` | Gör om och förbättra | be om mindre ändringar, behålla testerna gröna, läsbar kod |
 | 7 | `slutprojekt` | Slutprojektet | bygg ett litet program tillsammans med "assistenten": beställ, granska, testa och laga |
 
-AI-verktygen och Beställ rätt är gratis (`freeTracks: 2`), och de är klara ✅. Banorna numreras 1–8 i appen. När kursen är klar läggs spåret **Proffsverktygen** till: Git och terminalen → Koda med AI.
+Alla åtta banorna är klara ✅. AI-verktygen och Beställ rätt är gratis (`freeTracks: 2`). Banorna numreras 1–8 i appen. Kursen ligger sist i spåret **Proffsverktygen**: Git och terminalen → Koda med AI.

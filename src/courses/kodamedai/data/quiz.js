@@ -270,4 +270,48 @@ export const QUIZ = {
       explain: 'En ändring i taget, och säg vad som ska vara kvar.',
     },
   ],
+  slutprojekt: [
+    {
+      question:
+        'Assistenten ändrade koden och ett test går inte igenom. Vad gör du?',
+      options: [
+        'Lagar koden',
+        'Tar bort testet',
+        'Ändrar testet så att det går igenom',
+        'Struntar i det',
+      ],
+      explain:
+        'Testerna beskriver vad koden ska göra. Ändra dem bara om reglerna har ändrats.',
+    },
+    {
+      question: 'Vad är rätt ordning?',
+      options: [
+        'Beställ, läs, testa, laga, committa',
+        'Committa, testa, beställ',
+        'Läs, committa, beställ',
+        'Testa, beställ, committa',
+      ],
+      explain: 'Kursens arbetssätt, steg för steg.',
+    },
+    {
+      question: 'Assistentens granskning säger att koden är säker. Räcker det?',
+      options: [
+        'Nej, du avgör och testar själv',
+        'Ja, alltid',
+        'Ja, om den låter säker',
+        'Bara på fredagar',
+      ],
+      explain: 'En AI-granskning är förslag, inte sanning.',
+    },
+    {
+      question: 'Varför ska ett lagat fel få ett test?',
+      options: [
+        'Så att det märks om felet kommer tillbaka',
+        'För att få fler rader kod',
+        'Python kräver det',
+        'För att det ser proffsigt ut',
+      ],
+      explain: 'Testet vaktar mot att samma fel smyger tillbaka.',
+    },
+  ],
 };

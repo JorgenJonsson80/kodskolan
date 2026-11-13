@@ -41,4 +41,12 @@ export const PATHS = [
       'Bygg egna AI-tjänster: Python, API:er med FastAPI, och sist språkmodeller med prompter, verktyg, egna dokument och agenter.',
     courses: ['python', 'fastapi', 'ai'],
   },
+  {
+    id: 'proffs',
+    icon: '🧰',
+    title: 'Proffsverktygen',
+    summary:
+      'Det som skiljer en nybörjare från ett proffs: terminalen, Git och GitHub, och att koda med AI-assistenter utan att lita blint på dem.',
+    courses: ['git', 'kodamedai'],
+  },
 ];

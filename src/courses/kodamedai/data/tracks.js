@@ -137,4 +137,18 @@ export const TRACKS = [
       { title: 'Refaktorering', url: 'https://refactoring.guru/refactoring' },
     ],
   },
+  {
+    id: 'slutprojekt',
+    title: 'Slutprojektet',
+    teaches: ['hela arbetssättet'],
+    reward: { emoji: '🏆', name: 'Pokal' },
+    canBuild:
+      'ett helt program tillsammans med en AI-assistent: beställt, granskat, testat och säkert',
+    docs: [
+      {
+        title: 'Claude Code: bästa sätten att jobba',
+        url: 'https://code.claude.com/docs/en/best-practices',
+      },
+    ],
+  },
 ];

@@ -4,6 +4,7 @@ import { FEL } from './fel';
 import { LAS } from './las';
 import { REFAKTOR } from './refaktor';
 import { SAKERHET } from './sakerhet';
+import { SLUTPROJEKT } from './slutprojekt';
 import { TESTA } from './testa';
 import { VERKTYG } from './verktyg';
 
@@ -23,4 +24,6 @@ export const LESSONS = [
   BOSSES.sakerhet,
   ...REFAKTOR,
   BOSSES.refaktor,
+  ...SLUTPROJEKT,
+  BOSSES.slutprojekt,
 ];

@@ -298,4 +298,67 @@ Testet ska underkänna \`fel_1\`, \`fel_2\` och \`fel_3\` och godkänna \`lagad\
       },
     ],
   },
+  slutprojekt: {
+    id: 'kmai-boss-slutprojekt',
+    track: 'slutprojekt',
+    title: 'Boss: Assistentens pull request',
+    isBoss: true,
+    xp: 60,
+    description:
+      BOSS_INTRO +
+      'Assistenten har skickat en hel ny modul för kafékortet: stämplar och en gratis kaffe. Granska den som en riktig pull request.',
+    task: `Uppgift: Kafékortet ska fungera så här:
+  - \`stampla(kort, antal_kaffe)\` lägger till en stämpel per köpt kaffe och returnerar kortet (en dictionary med \`"stamplar"\`). Antalet måste vara ett heltal från 1 till 10, annars returneras \`None\` och kortet ändras inte.
+  - \`gratis(kort)\` returnerar \`True\` när kortet har **minst** 10 stämplar.
+  - \`los_in(kort)\` drar av 10 stämplar och returnerar \`True\` om det fanns minst 10, annars \`False\` utan att ändra kortet.
+Assistentens förslag har fel. Laga koden och skriv \`test_kort()\` med minst ett assert per regel.`,
+    starterCode:
+      '# Assistentens förslag:\ndef stampla(kort, antal_kaffe):\n    kort["stamplar"] = kort["stamplar"] + antal_kaffe\n    return kort\n\ndef gratis(kort):\n    return kort["stamplar"] > 10\n\ndef los_in(kort):\n    kort["stamplar"] = kort["stamplar"] - 10\n    return True\n\n# Skriv test_kort() här\n',
+    solution:
+      'def stampla(kort, antal_kaffe):\n    if not isinstance(antal_kaffe, int) or antal_kaffe < 1 or antal_kaffe > 10:\n        return None\n    kort["stamplar"] = kort["stamplar"] + antal_kaffe\n    return kort\n\ndef gratis(kort):\n    return kort["stamplar"] >= 10\n\ndef los_in(kort):\n    if kort["stamplar"] < 10:\n        return False\n    kort["stamplar"] = kort["stamplar"] - 10\n    return True\n\ndef test_kort():\n    assert stampla({"stamplar": 0}, 3) == {"stamplar": 3}\n    assert stampla({"stamplar": 0}, 0) is None\n    assert gratis({"stamplar": 10}) is True\n    assert gratis({"stamplar": 9}) is False\n    kort = {"stamplar": 4}\n    assert los_in(kort) is False\n    assert kort == {"stamplar": 4}\n\ntest_kort()\n',
+    hints: [],
+    tests: [
+      {
+        description: 'stampla lägger till',
+        code: 'stampla({"stamplar": 2}, 3)',
+        expected: { stamplar: 5 },
+      },
+      {
+        description: 'stampla nekar 0 och 11',
+        code: '[stampla({"stamplar": 0}, 0), stampla({"stamplar": 0}, 11)]',
+        expected: [null, null],
+      },
+      {
+        description: 'stampla nekar text',
+        code: 'stampla({"stamplar": 0}, "3")',
+        expected: null,
+      },
+      {
+        description: 'gratis vid exakt 10',
+        code: 'gratis({"stamplar": 10})',
+        expected: true,
+      },
+      {
+        description: 'los_in med 12 stämplar',
+        code: '(lambda k: (los_in(k), k))({"stamplar": 12})',
+        expected: [true, { stamplar: 2 }],
+      },
+      {
+        description: 'los_in med för få',
+        code: '(lambda k: (los_in(k), k))({"stamplar": 4})',
+        expected: [false, { stamplar: 4 }],
+      },
+      {
+        description: 'Ditt test går igenom',
+        code: '__raises(test_kort) is None',
+        expected: true,
+      },
+    ],
+    sourceChecks: [
+      {
+        description: 'Har test_kort',
+        pattern: /def test_kort\(\):[\s\S]*assert/,
+      },
+    ],
+  },
 };
