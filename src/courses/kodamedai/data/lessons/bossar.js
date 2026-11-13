@@ -249,4 +249,53 @@ Testet ska underkänna \`fel_1\`, \`fel_2\` och \`fel_3\` och godkänna \`lagad\
       },
     ],
   },
+  refaktor: {
+    id: 'kmai-boss-refaktor',
+    track: 'refaktor',
+    title: 'Boss: Städa kassan',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Assistentens kassakod fungerar, men ingen vågar röra den. Städa den – testet ska gå igenom hela tiden.',
+    task: `Uppgift: Gör om koden så att:
+  1. Funktionen heter \`att_betala\` och parametrarna \`rader\` och \`medlem\`.
+  2. Talen ligger i konstanterna \`MOMS = 0.25\` och \`MEDLEMSRABATT = 0.1\`.
+  3. Summan räknas i en egen funktion \`summera(rader)\`.
+  4. Testet längst ner går igenom (byt namnet i anropet).`,
+    starterCode:
+      'def test_kassan(f):\n    assert f([(100, 2)], False) == 250\n    assert f([(100, 2)], True) == 225\n    assert f([], True) == 0\n\n# Assistentens kod:\ndef k(r, m):\n    s = 0\n    for x in r:\n        s = s + x[0] * x[1]\n    if m == True:\n        s = s - s * 0.1\n    return s + s * 0.25\n\ntest_kassan(k)\n',
+    solution:
+      'MOMS = 0.25\nMEDLEMSRABATT = 0.1\n\ndef test_kassan(f):\n    assert f([(100, 2)], False) == 250\n    assert f([(100, 2)], True) == 225\n    assert f([], True) == 0\n\ndef summera(rader):\n    return sum(pris * antal for pris, antal in rader)\n\ndef att_betala(rader, medlem):\n    summa = summera(rader)\n    if medlem:\n        summa = summa * (1 - MEDLEMSRABATT)\n    return summa * (1 + MOMS)\n\ntest_kassan(att_betala)\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Testet går igenom',
+        code: '__raises(test_kassan, att_betala) is None',
+        expected: true,
+      },
+      {
+        description: 'summera finns',
+        code: 'summera([(30, 2)])',
+        expected: 60,
+      },
+      {
+        description: 'Konstanterna',
+        code: '[MOMS, MEDLEMSRABATT]',
+        expected: [0.25, 0.1],
+      },
+    ],
+    sourceChecks: [
+      {
+        description: 'Den gamla funktionen k är borta',
+        pattern: /def k\(/,
+        forbidden: true,
+      },
+      {
+        description: 'Inga magiska tal i att_betala',
+        pattern: /def att_betala[\s\S]*(0\.25|0\.1)/,
+        forbidden: true,
+      },
+    ],
+  },
 };

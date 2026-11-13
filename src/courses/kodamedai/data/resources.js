@@ -72,4 +72,16 @@ export const RESOURCES = {
       video: 'sql injection explained',
     },
   ],
+  refaktor: [
+    {
+      topic: 'Refaktorering',
+      read: 'https://refactoring.guru/refactoring',
+      video: 'refactoring python for beginners',
+    },
+    {
+      topic: 'Läsbar kod',
+      read: 'https://peps.python.org/pep-0008/',
+      video: 'clean code python naming',
+    },
+  ],
 };

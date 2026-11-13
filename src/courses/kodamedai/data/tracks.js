@@ -116,4 +116,25 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'refaktor',
+    title: 'Gör om och förbättra',
+    teaches: [
+      'bra namn',
+      'konstanter',
+      'ta bort upprepning',
+      'dela upp funktioner',
+      'docstrings',
+    ],
+    reward: { emoji: '🧽', name: 'Svamp' },
+    canBuild:
+      'kod från AI som går att läsa och ändra, utan att något går sönder på vägen',
+    docs: [
+      {
+        title: 'PEP 8: läsbar Python',
+        url: 'https://peps.python.org/pep-0008/',
+      },
+      { title: 'Refaktorering', url: 'https://refactoring.guru/refactoring' },
+    ],
+  },
 ];

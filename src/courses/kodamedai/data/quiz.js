@@ -228,4 +228,46 @@ export const QUIZ = {
       explain: 'Samma meddelande för alla fel avslöjar ingenting.',
     },
   ],
+  refaktor: [
+    {
+      question: 'Vad betyder att refaktorera?',
+      options: [
+        'Göra om koden utan att ändra vad den gör',
+        'Lägga till nya funktioner',
+        'Ta bort alla tester',
+        'Byta språk',
+      ],
+      explain: 'Koden blir lättare att läsa, men gör samma sak.',
+    },
+    {
+      question: 'Hur vet du att en refaktorering inte förstörde något?',
+      options: [
+        'Testerna går fortfarande igenom',
+        'Koden ser snyggare ut',
+        'Den blev kortare',
+        'Assistenten sa det',
+      ],
+      explain: 'Tester är skyddsnätet.',
+    },
+    {
+      question: 'Vad är ett magiskt tal?',
+      options: [
+        'Ett tal i koden utan namn eller förklaring',
+        'Ett slumptal',
+        'Ett mycket stort tal',
+        'Talet 42',
+      ],
+      explain: 'Ge det ett namn som en konstant.',
+    },
+    {
+      question: 'Vilken beställning ger minst att läsa igen?',
+      options: [
+        'Döp om x till pris. Ändra inget annat.',
+        'Gör koden bättre.',
+        'Skriv om allt.',
+        'Fixa det.',
+      ],
+      explain: 'En ändring i taget, och säg vad som ska vara kvar.',
+    },
+  ],
 };
