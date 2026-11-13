@@ -37,15 +37,11 @@ describe.each(PROJECT_STEPS.map(step => [step.id, step]))('%s', (_, step) => {
 });
 
 describe('projekten', () => {
-  it('har tre projekt med 3–4 steg per bana som har börjat', () => {
+  it('har tre projekt med tre steg per bana', () => {
     for (const track of TRACKS) {
       const projects = PROJECTS.filter(item => item.track === track.id);
-      if (projects.length === 0) continue;
       expect(projects, track.id).toHaveLength(3);
-      for (const project of projects) {
-        expect(project.steps.length).toBeGreaterThanOrEqual(3);
-        expect(project.steps.length).toBeLessThanOrEqual(4);
-      }
+      for (const project of projects) expect(project.steps).toHaveLength(3);
     }
   });
 

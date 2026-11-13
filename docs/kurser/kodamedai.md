@@ -45,3 +45,7 @@ från kod, men tyngdpunkten ligger på eleven som granskare.
 | 7 | `slutprojekt` | Slutprojektet | bygg ett litet program tillsammans med "assistenten": beställ, granska, testa och laga |
 
 Alla åtta banorna är klara ✅. AI-verktygen och Beställ rätt är gratis (`freeTracks: 2`). Banorna numreras 1–8 i appen. Kursen ligger sist i spåret **Proffsverktygen**: Git och terminalen → Koda med AI.
+
+Varje bana har tre projekt med tre steg (`data/projects.js`). Stegen bygger
+vidare på varandra och tränar banans sak; `ai` i ett steg är assistentens
+förslag, som bara står i startkoden. Tre idéer per bana (`data/ideas.js`).
