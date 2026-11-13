@@ -2819,3 +2819,121 @@ a.primary-button {
   margin: 12px 0 0;
   font-size: 0.9rem;
 }
+
+/* Dagens mål och streaken (DailyGoal.jsx). */
+.daily-goal {
+  display: grid;
+  gap: 8px;
+}
+
+.daily-goal p {
+  margin: 0;
+}
+
+.daily-goal progress {
+  width: 100%;
+}
+
+.daily-text {
+  font-size: 0.9rem;
+}
+
+.chip-streak {
+  background: rgba(251, 146, 60, 0.15);
+  border-color: rgba(251, 146, 60, 0.5);
+  color: #fdba74;
+}
+
+.home-goal {
+  max-width: 420px;
+  margin-bottom: 16px;
+}
+
+/* Profilen, klasserna och lärarvyn (/konto, /profil, /klass, /larare). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.profile-form {
+  display: grid;
+  gap: 12px;
+  max-width: 420px;
+  margin-top: 12px;
+}
+
+.profile-form label {
+  display: grid;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.profile-form input {
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface-sunken);
+  color: var(--text);
+  font: inherit;
+  font-weight: 400;
+}
+
+.profile-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-diplomas {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.class-view {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.class-view h3,
+.class-view p {
+  margin: 0;
+}
+
+.class-table-wrap {
+  overflow-x: auto;
+}
+
+.class-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.class-table th,
+.class-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.class-table thead th {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.class-table progress {
+  display: block;
+  width: 90px;
+  height: 6px;
+  margin-top: 4px;
+  accent-color: var(--accent);
+}

@@ -4,7 +4,11 @@ import { COURSES } from './courses';
 // Det Kodskolan sparar om en elev (GDPR): framstegen i webbläsaren, under
 // kursernas prefix, och i kontot course_progress, diplomas och entitlements.
 
-const PREFIXES = COURSES.map(course => course.storagePrefix);
+// kodskolan-aktivitet är streaken, som gäller alla kurser.
+const PREFIXES = [
+  ...COURSES.map(course => course.storagePrefix),
+  'kodskolan-aktivitet',
+];
 
 function localKeys() {
   try {
@@ -48,23 +52,28 @@ export async function myData(user) {
     browser: localData(),
   };
   if (!supabase || !user) return data;
-  const [progress, diplomas, entitlements, feedback] = await Promise.all([
-    supabase.from('course_progress').select('*').order('course_id'),
-    supabase.from('diplomas').select('*').order('issued_at'),
-    supabase.from('entitlements').select('*').order('created_at'),
-    supabase.from('lesson_feedback').select('*').order('created_at'),
-  ]);
-  if (progress.error) throw progress.error;
-  if (diplomas.error) throw diplomas.error;
-  if (entitlements.error) throw entitlements.error;
-  if (feedback.error) throw feedback.error;
+  // Bara egna rader: en lärare kan läsa sina elevers framsteg, men de hör
+  // inte till lärarens data.
+  const own = query => query.eq('user_id', user.id);
+  const tables = {
+    course_progress: own(supabase.from('course_progress').select('*')),
+    diplomas: own(supabase.from('diplomas').select('*')),
+    entitlements: own(supabase.from('entitlements').select('*')),
+    lesson_feedback: own(supabase.from('lesson_feedback').select('*')),
+    daily_activity: own(supabase.from('daily_activity').select('*')),
+    profiles: own(supabase.from('profiles').select('*')),
+    classes: supabase.from('classes').select('*').eq('teacher_id', user.id),
+    class_members: own(supabase.from('class_members').select('*')),
+  };
+  const results = await Promise.all(Object.values(tables));
+  const failed = results.find(result => result.error);
+  if (failed) throw failed.error;
   return {
     ...data,
     account: { id: user.id, email: user.email, created_at: user.created_at },
-    course_progress: progress.data,
-    diplomas: diplomas.data,
-    entitlements: entitlements.data,
-    lesson_feedback: feedback.data,
+    ...Object.fromEntries(
+      Object.keys(tables).map((name, index) => [name, results[index].data]),
+    ),
   };
 }
 

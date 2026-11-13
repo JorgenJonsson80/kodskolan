@@ -11,16 +11,24 @@ import { cors } from '../_shared/cors.ts';
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!);
 
 Deno.serve(async request => {
-  if (request.method === 'OPTIONS') return new Response('ok', { headers: cors });
+  if (request.method === 'OPTIONS')
+    return new Response('ok', { headers: cors });
 
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_ANON_KEY')!,
-    { global: { headers: { Authorization: request.headers.get('Authorization') ?? '' } } },
+    {
+      global: {
+        headers: { Authorization: request.headers.get('Authorization') ?? '' },
+      },
+    },
   );
   const { data } = await supabase.auth.getUser();
   if (!data.user) {
-    return Response.json({ error: 'Logga in först' }, { status: 401, headers: cors });
+    return Response.json(
+      { error: 'Logga in först' },
+      { status: 401, headers: cors },
+    );
   }
 
   const site = Deno.env.get('SITE_URL')!;

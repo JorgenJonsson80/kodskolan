@@ -8,6 +8,8 @@ import HelpDialog from './components/HelpDialog';
 import HeroCard from './components/HeroCard';
 import LessonPanel from './components/LessonPanel';
 import DiplomaDialog from './components/DiplomaDialog';
+import DailyGoal from './components/DailyGoal';
+import ReviewDialog from './components/ReviewDialog';
 import PaywallCard from './components/PaywallCard';
 import LevelUp from './components/LevelUp';
 import Playground from './components/Playground';
@@ -18,6 +20,14 @@ import { copyToPlayground, PLAYGROUND_COPY } from './lib/playground';
 import { facitId, keyStatus } from './lib/keys';
 import { FREE_TRACKS, isPaidTrack } from './lib/access';
 import { useAccess } from './lib/useAccess';
+import { recordExercise } from './lib/activity';
+import { useActivity } from './lib/useActivity';
+import {
+  answerQuestion,
+  dueQuestions,
+  isReviewState,
+  SESSION_SIZE,
+} from './lib/review';
 import { mergeCompleted } from './lib/progress';
 import {
   isStringList,
@@ -100,6 +110,11 @@ function Academy({ course }) {
   // eller {} för nivåtestet.
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [showDiploma, setShowDiploma] = useState(false);
+  // Repetitionen: läget per fråga, och frågorna i en pågående omgång.
+  const [review, setReview] = useState(() =>
+    readJson(KEYS.review, {}, isReviewState),
+  );
+  const [reviewing, setReviewing] = useState(null);
 
   useEffect(
     () => writeJson(KEYS.completed, completedIds),
@@ -134,6 +149,7 @@ function Academy({ course }) {
   });
 
   const { access } = useAccess(account.user);
+  const activity = useActivity(account.user);
   const freeTracks = course.freeTracks ?? FREE_TRACKS;
 
   // Betalbanorna låses först när tillgången hämtats (access är null
@@ -216,6 +232,7 @@ function Academy({ course }) {
   const completedTrackIds = TRACKS.filter(
     item => trackStatusById[item.id].isComplete,
   ).map(item => item.id);
+  const dueReview = QUIZ ? dueQuestions(QUIZ, completedTrackIds, review) : [];
 
   // null tills man valt. Har man redan klarat ett steg utan att välja
   // bygger man med ledtrådar.
@@ -348,6 +365,7 @@ function Academy({ course }) {
   function handleSolved(solved, failedAttempts = 0) {
     if (completedIds.includes(solved.id)) return;
     const newIds = [...completedIds, solved.id];
+    recordExercise(account.user);
     trackEvent('ovning_klar', {
       kurs: course.id,
       ovning: solved.id,
@@ -505,6 +523,14 @@ function Academy({ course }) {
         <p className="header-stats">
           <Avatar stage={growth.stage} size={28} />
           <span className="header-label">{growth.stage.title}</span>
+          {activity.streak > 0 && (
+            <span
+              className="chip chip-streak"
+              title={`${activity.streak} dagar i rad`}
+            >
+              🔥 {activity.streak}
+            </span>
+          )}
           <span className="chip chip-xp">⭐ {totalXp} XP</span>
         </p>
       </header>
@@ -523,6 +549,16 @@ function Academy({ course }) {
               lessonCount={LESSONS.length}
               moreComing={completion.moreComing}
             />
+            <DailyGoal {...activity} />
+            {dueReview.length > 0 && (
+              <button
+                className="quiz-start"
+                type="button"
+                onClick={() => setReviewing(dueReview.slice(0, SESSION_SIZE))}
+              >
+                🔁 Repetera ({Math.min(dueReview.length, SESSION_SIZE)} frågor)
+              </button>
+            )}
             <button
               className="primary-button continue-button"
               type="button"
@@ -694,6 +730,20 @@ function Academy({ course }) {
           }
           onFinish={handleQuizFinish}
           onClose={handleQuizClose}
+        />
+      )}
+      {reviewing && (
+        <ReviewDialog
+          questions={reviewing}
+          tracks={TRACKS}
+          onAnswer={(key, correct) =>
+            setReview(state => {
+              const next = answerQuestion(state, key, correct);
+              writeJson(KEYS.review, next);
+              return next;
+            })
+          }
+          onClose={() => setReviewing(null)}
         />
       )}
       {showDiploma && (

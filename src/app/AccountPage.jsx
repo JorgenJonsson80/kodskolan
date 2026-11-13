@@ -13,6 +13,8 @@ import {
 } from '../core/lib/access';
 import { readJson, writeJson } from '../core/lib/storage';
 import { COURSES } from './courses';
+import ProfileSection from './ProfileSection';
+import MyClasses from './MyClasses';
 import {
   clearLocalData,
   deleteMyAccount,
@@ -353,8 +355,10 @@ export default function AccountPage() {
                 <li>
                   <strong>I ditt konto</strong> (om du loggar in): din
                   mejladress, samma framsteg och kod, dina diplom med namnet du
-                  valt, vilken tillgång du har (och koden du löste in den med)
-                  och felrapporter du skickat.
+                  valt, vilken tillgång du har (och koden du löste in den med),
+                  felrapporter du skickat, hur många övningar du klarat per dag
+                  (för din streak), din profil om du skapat en och klasser du
+                  gått med i eller skapat.
                 </li>
               </ul>
               <p className="muted">
@@ -392,6 +396,9 @@ export default function AccountPage() {
             {account.isAvailable && account.isReady && (
               <AccessSection account={account} />
             )}
+
+            {account.user && <ProfileSection account={account} />}
+            {account.user && <MyClasses account={account} />}
 
             <section>
               <h2>Ladda ner din data</h2>

@@ -36,6 +36,13 @@ export async function prerenderPages() {
         'Det Kodskolan sparar om dig, och hur du laddar ner eller raderar det.',
       noindex: true,
     },
+    {
+      path: 'larare/',
+      title: 'För lärare – Kodskolan',
+      description:
+        'Skapa en klass, dela en länk med eleverna och följ hur långt varje elev kommit i kurserna.',
+      sitemap: true,
+    },
     ...Object.entries(LEGAL).map(([kind, legal]) => ({
       path: `${kind}/`,
       title: `${legal.title} – Kodskolan`,

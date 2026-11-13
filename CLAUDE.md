@@ -31,6 +31,15 @@ Diplom och spår: `src/app/paths.js` (spåren), `PathsPage.jsx` (`/spar`),
 Varje kurs har `summary.js` med bara banorna och övningarna, så att
 spåren kan räkna utan att ladda kurserna.
 
+Engagemang: streak och dagens mål (`core/lib/activity.js`,
+`useActivity.js`, `DailyGoal.jsx`, tabellen `daily_activity`), repetition
+av quizfrågor från klara banor (`core/lib/review.js`, `ReviewDialog.jsx`,
+bara i localStorage), publik profil `/profil/<namn>` (`src/app/profile.js`,
+`ProfilePage.jsx`, `ProfileSection.jsx` på /konto) och lärarvyn `/larare`
+med `/klass/<kod>` (`src/app/classes.js`, `TeacherPage.jsx`,
+`JoinClassPage.jsx`, `MyClasses.jsx`). Läraren läser framstegen med
+`class_progress()`, aldrig `course_progress` direkt – där ligger elevens kod.
+
 Tillgång (etapp 5): `core/lib/access.js` och `useAccess.js`, tabellerna
 `entitlements`, `access_codes` och `admins`. Banorna efter de gratis
 låses bara när `VITE_PAYWALL=on`. Koder och admins skapas i Supabase,

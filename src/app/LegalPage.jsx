@@ -29,6 +29,7 @@ function Privacy() {
         <li>din mejladress, för att du ska kunna logga in</li>
         <li>vilka övningar du klarat och din kod, i alla kurser</li>
         <li>dina diplom, med namnet du skrivit på dem</li>
+        <li>hur många övningar du klarat varje dag, för din streak</li>
         <li>
           vilken tillgång du har, hur länge den gäller och koden du löste in den
           med
@@ -43,6 +44,16 @@ function Privacy() {
         i GDPR). Uppgifterna sparas tills du raderar kontot. Ett diplom du
         väljer att dela kan ses av alla som har länken, med namnet du skrivit på
         det.
+      </p>
+
+      <h2>Profil och klasser</h2>
+      <p>
+        Skapar du en profil syns namnet du valt och dina diplom för alla som har
+        adressen. Går du med i en lärares klass sparas namnet du skrev, och
+        läraren ser vilka övningar du klarat och hur många du klarat per dag –
+        inte din kod eller mejladress. Lärare som skapar en klass sparar
+        klassens namn. Du tar bort profilen och lämnar klasser under{' '}
+        <a href={`${BASE}konto`}>Mitt konto och data</a>.
       </p>
 
       <h2>Felrapporter</h2>

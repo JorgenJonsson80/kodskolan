@@ -483,3 +483,127 @@ describe('use_tutor_question', () => {
     ).rejects.toThrow();
   });
 });
+
+describe('streak, profil och klasser', () => {
+  const CY = '00000000-0000-0000-0000-00000000000c';
+  beforeEach(async () => {
+    db = new PGlite();
+    await db.exec(SUPABASE);
+    await db.exec(
+      `insert into auth.users values ('${ANNA}'), ('${BO}'), ('${CY}')`,
+    );
+    for (const migration of migrations) await db.exec(migration);
+    await db.exec(`
+      insert into course_progress (user_id, course_id, completed_ids)
+        values ('${ANNA}', 'python', '{hej}'), ('${CY}', 'python', '{hej,loop}');
+      insert into diplomas (user_id, kind, subject, name)
+        values ('${ANNA}', 'course', 'sql', 'Anna');
+    `);
+  });
+
+  const as = user =>
+    db.exec(
+      user
+        ? `reset role; set role authenticated; set request.jwt.claim.sub = '${user}'`
+        : `reset role; set role anon; set request.jwt.claim.sub = ''`,
+    );
+  const one = async sql => (await db.query(sql)).rows[0];
+
+  it('räknar dagens övningar och bara nära dagar', async () => {
+    await as(ANNA);
+    expect((await one('select public.log_activity(current_date) as n')).n).toBe(
+      1,
+    );
+    expect((await one('select public.log_activity(current_date) as n')).n).toBe(
+      2,
+    );
+    await expect(
+      db.query('select public.log_activity(current_date - 5)'),
+    ).rejects.toThrow(/Fel dag/);
+    await as(BO);
+    expect((await db.query('select * from daily_activity')).rows).toEqual([]);
+  });
+
+  it('visar en publik profil med diplomen, och bara den egna går att ändra', async () => {
+    await as(ANNA);
+    await db.exec(
+      `insert into profiles (user_id, slug, display_name) values ('${ANNA}', 'anna-a', 'Anna A')`,
+    );
+    await expect(
+      db.exec(
+        `insert into profiles (user_id, slug, display_name) values ('${BO}', 'bo', 'Bo')`,
+      ),
+    ).rejects.toThrow();
+    await as(null);
+    const profile = (await one(`select public.public_profile('ANNA-A') as p`))
+      .p;
+    expect(profile.name).toBe('Anna A');
+    expect(profile.diplomas.map(d => d.subject)).toEqual(['sql']);
+    expect(
+      (await one(`select public.public_profile('finns-inte') as p`)).p,
+    ).toBeNull();
+    await expect(
+      db.exec(
+        `insert into profiles (user_id, slug, display_name) values ('${BO}', 'Ogiltig Slug', 'Bo')`,
+      ),
+    ).rejects.toThrow();
+  });
+
+  it('läraren ser bara sina elevers framsteg', async () => {
+    await as(BO);
+    const { join_code: code } = await one(
+      `insert into classes (name) values ('7B') returning join_code`,
+    );
+    expect(code).toMatch(/^[0-9A-F]{6}$/);
+    await as(null);
+    expect(
+      (await one(`select public.class_by_code('${code.toLowerCase()}') as n`))
+        .n,
+    ).toBe('7B');
+    await as(ANNA);
+    expect(
+      (await one(`select public.join_class('${code}', 'Anna') as n`)).n,
+    ).toBe('7B');
+    await as(BO);
+    const { id: classId } = await one(`select id from classes`);
+    const seen = await db.query(
+      `select * from public.class_progress('${classId}')`,
+    );
+    expect(seen.rows.map(row => row.user_id)).toEqual([ANNA]);
+    expect(Object.keys(seen.rows[0])).not.toContain('drafts');
+    // Elevens kod (drafts) går inte att läsa direkt.
+    expect(
+      (
+        await db.query(
+          `select * from course_progress where user_id = '${ANNA}'`,
+        )
+      ).rows,
+    ).toEqual([]);
+    const members = await db.query('select display_name from class_members');
+    expect(members.rows).toEqual([{ display_name: 'Anna' }]);
+    await as(CY);
+    expect((await db.query('select * from classes')).rows).toEqual([]);
+    expect(
+      (await db.query(`select * from public.class_progress('${classId}')`))
+        .rows,
+    ).toEqual([]);
+    await expect(
+      db.query(`select public.join_class('FEL123', 'Cy')`),
+    ).rejects.toThrow(/ingen klass/);
+  });
+
+  it('eleven kan lämna klassen', async () => {
+    await as(BO);
+    const { id, join_code: code } = await one(
+      `insert into classes (name) values ('8A') returning id, join_code`,
+    );
+    await as(ANNA);
+    await db.query(`select public.join_class('${code}', 'Anna')`);
+    expect(
+      (await db.query('select name from public.my_classes()')).rows,
+    ).toEqual([{ name: '8A' }]);
+    await db.exec(`delete from class_members where class_id = '${id}'`);
+    await as(BO);
+    expect((await db.query('select * from class_members')).rows).toEqual([]);
+  });
+});

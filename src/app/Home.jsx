@@ -12,6 +12,8 @@ import {
 import { fetchMyDiplomas } from '../core/lib/diplomas';
 import { supabase } from '../core/lib/supabase';
 import { useAccount } from '../core/lib/useAccount';
+import { useActivity } from '../core/lib/useActivity';
+import DailyGoal from '../core/components/DailyGoal';
 import { COURSE_INFO, courseInfoUrl } from './courseInfo';
 import { COURSES } from './courses';
 import { Faq, ForWhom, HowItWorks } from './Landing';
@@ -81,6 +83,7 @@ function CourseCard({ course, done, toInfo }) {
 // webbläsaren eller i kontot) står först under Mina kurser.
 export default function Home() {
   const account = useAccount();
+  const activity = useActivity(account.user);
   const cloud = useCloudCompleted(account.user?.id ?? null);
   const diplomas = useMyDiplomas(account.user?.id ?? null);
   // Ökar vid utloggning, så att räkningen läses om från webbläsaren
@@ -182,6 +185,9 @@ export default function Home() {
         {mine.length > 0 && (
           <section aria-labelledby="mine-title">
             <h2 id="mine-title">Mina kurser</h2>
+            <div className="home-goal">
+              <DailyGoal {...activity} />
+            </div>
             <ul className="course-cards">
               {mine.map(({ course, done }) => (
                 <CourseCard
