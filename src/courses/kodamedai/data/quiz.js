@@ -152,4 +152,42 @@ export const QUIZ = {
       explain: 'Avrunda innan du jämför decimaltal.',
     },
   ],
+  testa: [
+    {
+      question: 'Vad händer när assert-villkoret är falskt?',
+      options: [
+        'Ett AssertionError stoppar koden',
+        'Ingenting',
+        'Det skrivs ut en varning',
+        'Villkoret blir sant',
+      ],
+      explain: 'assert stoppar direkt när något inte stämmer.',
+    },
+    {
+      question: 'dubbla(x) räknar x * x. Vilket test avslöjar felet?',
+      options: [
+        'assert f(3) == 6',
+        'assert f(2) == 4',
+        'assert f(0) == 0',
+        'assert f(1) == 1',
+      ],
+      explain: '2·2 och 2+2 är båda 4. Med 3 skiljer de sig.',
+    },
+    {
+      question: 'Var ska du testa när regeln är "från och med 18"?',
+      options: ['17, 18 och 19', 'Bara 30', '0 och 100', 'Bara 18'],
+      explain: 'På gränsen och precis bredvid.',
+    },
+    {
+      question: 'Varför skriva testerna först, utifrån beskrivningen?',
+      options: [
+        'Då testar du vad koden ska göra, inte vad den råkar göra',
+        'Det går fortare att skriva',
+        'Python kräver det',
+        'Då behövs ingen kod',
+      ],
+      explain:
+        'Tester skrivna efter koden testar ofta bara det koden redan gör.',
+    },
+  ],
 };

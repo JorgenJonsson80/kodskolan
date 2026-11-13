@@ -2,6 +2,7 @@ import { BESTALL } from './bestall';
 import { BOSSES } from './bossar';
 import { FEL } from './fel';
 import { LAS } from './las';
+import { TESTA } from './testa';
 import { VERKTYG } from './verktyg';
 
 // Alla övningar i banornas ordning, med bossen sist i varje bana.
@@ -14,4 +15,6 @@ export const LESSONS = [
   BOSSES.las,
   ...FEL,
   BOSSES.fel,
+  ...TESTA,
+  BOSSES.testa,
 ];

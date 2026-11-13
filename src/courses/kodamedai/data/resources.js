@@ -48,4 +48,16 @@ export const RESOURCES = {
       video: 'floating point 0.1 + 0.2 explained',
     },
   ],
+  testa: [
+    {
+      topic: 'Tester i Python',
+      read: 'https://docs.pytest.org/en/stable/getting-started.html',
+      video: 'python testing assert pytest beginners',
+    },
+    {
+      topic: 'Bra testfall',
+      read: 'https://en.wikipedia.org/wiki/Boundary-value_analysis',
+      video: 'boundary value analysis explained',
+    },
+  ],
 };

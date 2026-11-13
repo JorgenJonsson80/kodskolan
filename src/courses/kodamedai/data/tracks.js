@@ -72,4 +72,27 @@ export const TRACKS = [
       },
     ],
   },
+  {
+    id: 'testa',
+    title: 'Testa AI:ns kod',
+    teaches: [
+      'assert',
+      'testfall för gränser och kantfall',
+      'sidoeffekter',
+      'låta testerna styra',
+    ],
+    reward: { emoji: '✅', name: 'Bock' },
+    canBuild:
+      'tester som avslöjar felen i AI-kod, så att du vet att den fungerar i stället för att hoppas',
+    docs: [
+      {
+        title: 'assert i Python',
+        url: 'https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement',
+      },
+      {
+        title: 'pytest: kom igång',
+        url: 'https://docs.pytest.org/en/stable/getting-started.html',
+      },
+    ],
+  },
 ];

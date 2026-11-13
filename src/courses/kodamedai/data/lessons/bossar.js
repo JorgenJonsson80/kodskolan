@@ -154,4 +154,46 @@ Laga funktionen.`,
       { description: '"18" ger 120', code: 'biljettpris("18")', expected: 120 },
     ],
   },
+  testa: {
+    id: 'kmai-boss-testa',
+    track: 'testa',
+    title: 'Boss: Testet som fångar allt',
+    isBoss: true,
+    xp: 40,
+    description:
+      BOSS_INTRO +
+      'Assistenten har gett tre versioner av biljettpris, alla med olika fel. Skriv ett test som fångar alla tre.',
+    task: `Uppgift: Skriv \`test_biljett(f)\`. Reglerna för \`f(alder)\` (ett heltal):
+  - 0 kr under 7 år
+  - 60 kr från och med 7 till och med 17 år
+  - 120 kr från och med 18 år
+Testet ska underkänna \`fel_1\`, \`fel_2\` och \`fel_3\` och godkänna \`lagad\`.`,
+    starterCode:
+      '# Rör inte de här:\ndef fel_1(alder):\n    return 0 if alder <= 7 else 60 if alder <= 17 else 120\n\ndef fel_2(alder):\n    return 0 if alder < 7 else 60 if alder < 17 else 120\n\ndef fel_3(alder):\n    return 0 if alder < 7 else 60 if alder <= 18 else 120\n\ndef lagad(alder):\n    return 0 if alder < 7 else 60 if alder <= 17 else 120\n\n# Skriv test_biljett(f) här\n',
+    solution:
+      '# Rör inte de här:\ndef fel_1(alder):\n    return 0 if alder <= 7 else 60 if alder <= 17 else 120\n\ndef fel_2(alder):\n    return 0 if alder < 7 else 60 if alder < 17 else 120\n\ndef fel_3(alder):\n    return 0 if alder < 7 else 60 if alder <= 18 else 120\n\ndef lagad(alder):\n    return 0 if alder < 7 else 60 if alder <= 17 else 120\n\ndef test_biljett(f):\n    fall = [(6, 0), (7, 60), (17, 60), (18, 120)]\n    for alder, pris in fall:\n        assert f(alder) == pris\n',
+    hints: [],
+    tests: [
+      {
+        description: 'Fångar fel_1',
+        code: '__raises(test_biljett, fel_1) is not None',
+        expected: true,
+      },
+      {
+        description: 'Fångar fel_2',
+        code: '__raises(test_biljett, fel_2) is not None',
+        expected: true,
+      },
+      {
+        description: 'Fångar fel_3',
+        code: '__raises(test_biljett, fel_3) is not None',
+        expected: true,
+      },
+      {
+        description: 'Godkänner lagad',
+        code: '__raises(test_biljett, lagad) is None',
+        expected: true,
+      },
+    ],
+  },
 };
