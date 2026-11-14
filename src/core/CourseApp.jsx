@@ -19,6 +19,8 @@ import { CourseContext } from './course';
 import { copyToPlayground, PLAYGROUND_COPY } from './lib/playground';
 import { facitId, keyStatus } from './lib/keys';
 import { FREE_TRACKS, isPaidTrack } from './lib/access';
+import { useCourseContent } from './lib/useCourseContent';
+import { useAccount } from './lib/useAccount';
 import { useAccess } from './lib/useAccess';
 import { recordExercise } from './lib/activity';
 import { useActivity } from './lib/useActivity';
@@ -48,7 +50,26 @@ const isModeMap = value =>
 
 // En kurs. Allt som beror på språket kommer från course, se Kontraktet i
 // SPEC.md. Komponenterna under når kursen med useCourse().
-export default function CourseApp({ course }) {
+export default function CourseApp({ course: base }) {
+  const account = useAccount();
+  const { access } = useAccess(account.user);
+  // Betalbanornas innehåll hämtas för den som har tillgång. Medan det
+  // hämtas visas inte kursen, så att ingen övning hinner visas som skal.
+  const { course, status, retry } = useCourseContent(base, access);
+
+  if (status === 'waiting' || status === 'loading') {
+    return <p className="course-loading">Laddar kursen…</p>;
+  }
+  if (status === 'error') {
+    return (
+      <div className="course-loading">
+        <p>Kursen kunde inte hämtas. Kolla nätet och försök igen.</p>
+        <button type="button" className="primary-button" onClick={retry}>
+          Försök igen
+        </button>
+      </div>
+    );
+  }
   return (
     <CourseContext.Provider value={course}>
       <Academy course={course} />

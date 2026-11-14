@@ -1,7 +1,7 @@
 import ResultTable from './components/ResultTable';
 import { IDEAS, ideaStarterCode } from './data/ideas';
-import { LESSONS } from './data/lessons';
-import { PROJECT_STEPS, PROJECTS } from './data/projects';
+import { CONTENT_LOCK, LESSONS } from './content';
+import { PROJECT_STEPS, PROJECTS } from './content';
 import { QUIZ } from './data/quiz';
 import { RESOURCES } from './data/resources';
 import { TRACKS } from './data/tracks';
@@ -23,6 +23,7 @@ export default {
   ...meta,
 
   content: {
+    lock: CONTENT_LOCK,
     tracks: TRACKS,
     lessons: LESSONS,
     projects: PROJECTS,

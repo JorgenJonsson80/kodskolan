@@ -68,7 +68,30 @@ Variables), och sedan en push. Utan den är allt öppet som förut.
 
 Hur många banor som är gratis står i `FREE_TRACKS` i
 `src/core/lib/access.js` (2), och en kurs kan ändra det med `freeTracks`
-i sin `index.jsx`.
+i sin `meta.js`.
+
+### Skydda innehållet
+
+Med låsningen på skalar bygget bort betalbanornas övningar och projekt
+(`scripts/content.mjs`): i JavaScript-filerna finns bara titel, bana och
+xp. Resten ligger krypterat i `content/<kurs>-<hash>.bin`, och nyckeln
+lämnas bara ut av databasen (`content_key`) till den som har tillgång.
+Det kräver en hemlighet som både GitHub och databasen känner till. Gör
+så här en gång, innan `VITE_PAYWALL` sätts till `on`:
+
+1. Kör migrationen `20261114030000_content_key.sql` i Supabase.
+2. Skapa en hemlighet i terminalen: `openssl rand -hex 32`. Den visas
+   bara där – klistra inte in den någon annanstans än i steg 3 och 4.
+3. GitHub → Settings → Secrets and variables → Actions → **Secrets** →
+   New repository secret: namnet `CONTENT_KEY` och hemligheten som värde.
+4. Supabase → SQL Editor:
+   `insert into public.content_secret (secret) values (decode('HEMLIGHETEN', 'hex'));`
+5. Sätt variabeln `VITE_PAYWALL` till `on` och pusha.
+
+Med `VITE_PAYWALL=on` men utan `CONTENT_KEY` stoppar bygget på GitHub, så
+att inget publiceras oskyddat av misstag. Lokalt blir det bara en varning
+(och allt innehåll följer med). Byts hemligheten måste den bytas på båda
+ställena (`update public.content_secret set secret = decode('…', 'hex')`).
 
 ## Felrapporter från övningarna
 

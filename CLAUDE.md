@@ -50,6 +50,13 @@ Diplom kräver alla bossar i kontots `course_progress`
 genereras av `src/app/diplomaRequirements.test.js` – kör om när en kurs
 får nya bossar).
 
+Betalinnehållet: varje kurs laddar övningar och projekt bara via
+`content.js`. Med `VITE_PAYWALL=on` och `CONTENT_KEY` byter bygget ut den
+(`scripts/content.mjs`, pluginen i `vite.config.js`): betalbanorna blir
+skal och resten krypteras till `public/content`. `core/lib/useCourseContent.js`
+hämtar nyckeln (`content_key`) och packar upp. Importera aldrig
+`data/lessons` eller `data/projects` någon annanstans än i `content.js`.
+
 Tillgång (etapp 5): `core/lib/access.js` och `useAccess.js`, tabellerna
 `entitlements`, `access_codes` och `admins`. Banorna efter de gratis
 låses bara när `VITE_PAYWALL=on`. Koder och admins skapas i Supabase,

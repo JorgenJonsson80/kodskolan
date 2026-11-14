@@ -1,5 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
+import { Buffer } from 'node:buffer';
+import { createHmac } from 'node:crypto';
 import { PGlite } from '@electric-sql/pglite';
+import { pgcrypto } from '@electric-sql/pglite/contrib/pgcrypto';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 // Kör alla migrationer i ordning i en riktig Postgres (PGlite), med det
@@ -21,6 +24,7 @@ const courseProgress = migrations[indexOf('_course_progress.sql')];
 
 const SUPABASE = `
   create schema auth;
+  create schema extensions;
   create table auth.users (id uuid primary key);
   create function auth.uid() returns uuid language sql stable as
     $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
@@ -39,7 +43,7 @@ let db;
 // Kör migrationerna fram till course_progress, med gamla rader i
 // akademiernas tabeller.
 async function withOldRows(sql) {
-  db = new PGlite();
+  db = new PGlite({ extensions: { pgcrypto } });
   await db.exec(SUPABASE);
   await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
   for (const migration of migrations.slice(
@@ -139,7 +143,7 @@ describe('course_progress', () => {
 
 describe('diplomas', () => {
   beforeEach(async () => {
-    db = new PGlite();
+    db = new PGlite({ extensions: { pgcrypto } });
     await db.exec(SUPABASE);
     await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
     for (const migration of migrations) await db.exec(migration);
@@ -217,7 +221,7 @@ describe('diplomas', () => {
 
 describe('diplom kräver en klar kurs', () => {
   beforeEach(async () => {
-    db = new PGlite();
+    db = new PGlite({ extensions: { pgcrypto } });
     await db.exec(SUPABASE);
     await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
     for (const migration of migrations) await db.exec(migration);
@@ -296,7 +300,7 @@ describe('diplom kräver en klar kurs', () => {
 
 describe('delete_my_account', () => {
   beforeEach(async () => {
-    db = new PGlite();
+    db = new PGlite({ extensions: { pgcrypto } });
     await db.exec(SUPABASE);
     await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
     for (const migration of migrations) await db.exec(migration);
@@ -345,7 +349,7 @@ describe('delete_my_account', () => {
 
 describe('tillgång', () => {
   beforeEach(async () => {
-    db = new PGlite();
+    db = new PGlite({ extensions: { pgcrypto } });
     await db.exec(SUPABASE);
     await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
     for (const migration of migrations) await db.exec(migration);
@@ -449,7 +453,7 @@ describe('tillgång', () => {
 
 describe('lesson_feedback', () => {
   beforeEach(async () => {
-    db = new PGlite();
+    db = new PGlite({ extensions: { pgcrypto } });
     await db.exec(SUPABASE);
     await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
     for (const migration of migrations) await db.exec(migration);
@@ -505,7 +509,7 @@ describe('lesson_feedback', () => {
 
 describe('grant_purchase', () => {
   beforeEach(async () => {
-    db = new PGlite();
+    db = new PGlite({ extensions: { pgcrypto } });
     await db.exec(SUPABASE);
     await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
     for (const migration of migrations) await db.exec(migration);
@@ -568,7 +572,7 @@ describe('grant_purchase', () => {
 
 describe('use_tutor_question', () => {
   beforeEach(async () => {
-    db = new PGlite();
+    db = new PGlite({ extensions: { pgcrypto } });
     await db.exec(SUPABASE);
     await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
     for (const migration of migrations) await db.exec(migration);
@@ -604,7 +608,7 @@ describe('use_tutor_question', () => {
 describe('streak, profil och klasser', () => {
   const CY = '00000000-0000-0000-0000-00000000000c';
   beforeEach(async () => {
-    db = new PGlite();
+    db = new PGlite({ extensions: { pgcrypto } });
     await db.exec(SUPABASE);
     await db.exec(
       `insert into auth.users values ('${ANNA}'), ('${BO}'), ('${CY}')`,
@@ -722,5 +726,42 @@ describe('streak, profil och klasser', () => {
     await db.exec(`delete from class_members where class_id = '${id}'`);
     await as(BO);
     expect((await db.query('select * from class_members')).rows).toEqual([]);
+  });
+});
+
+describe('content_key', () => {
+  const SECRET = 'ab'.repeat(32);
+  beforeEach(async () => {
+    db = new PGlite({ extensions: { pgcrypto } });
+    await db.exec(SUPABASE);
+    await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
+    for (const migration of migrations) await db.exec(migration);
+    await db.exec(
+      `insert into content_secret (secret) values (decode('${SECRET}', 'hex'))`,
+    );
+    await db.query(`select public.grant_purchase('${ANNA}', 'cs_1')`);
+  });
+
+  const keyAs = async (user, course) => {
+    await db.exec(
+      `reset role; set role authenticated; set request.jwt.claim.sub = '${user}'`,
+    );
+    return (await db.query(`select public.content_key('${course}') as k`))
+      .rows[0].k;
+  };
+
+  it('ger samma nyckel som bygget, bara med tillgång', async () => {
+    const expected = createHmac('sha256', Buffer.from(SECRET, 'hex'))
+      .update('kodskolan-content:sql')
+      .digest('hex');
+    expect(await keyAs(ANNA, 'sql')).toBe(expected);
+    await expect(keyAs(BO, 'sql')).rejects.toThrow(/Ingen tillgång/);
+  });
+
+  it('hemligheten går inte att läsa', async () => {
+    await db.exec(
+      `reset role; set role authenticated; set request.jwt.claim.sub = '${ANNA}'`,
+    );
+    await expect(db.query('select * from content_secret')).rejects.toThrow();
   });
 });

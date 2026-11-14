@@ -3,7 +3,7 @@ import { TIMEOUT_MS } from '../python/runner/python';
 import * as tsErrors from '../ts/runner/friendlyErrors';
 import FullstackResult from './components/FullstackResult';
 import { PLAYGROUND_API, PLAYGROUND_PAGE } from './data/files';
-import { LESSONS } from './data/lessons';
+import { CONTENT_LOCK, LESSONS } from './content';
 import { QUIZ } from './data/quiz';
 import { RESOURCES } from './data/resources';
 import { TRACKS } from './data/tracks';
@@ -25,6 +25,7 @@ export default {
   ...meta,
 
   content: {
+    lock: CONTENT_LOCK,
     tracks: TRACKS,
     lessons: LESSONS,
     projects: [],

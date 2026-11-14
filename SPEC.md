@@ -66,8 +66,12 @@ export default {
   content: {
     tracks, lessons, projects, projectSteps, ideas, quiz, resources,
     ideaStarterCode, // Lekplatsens startkod i kursens språk
+    lock,          // CONTENT_LOCK från kursens content.js: null, eller
+                   // { courseId, url } i bygget med betalvägg (se nedan)
   },
-  freeTracks?: 2,  // så många banor är gratis när låsningen är på
+  // freeTracks?: 2 står i meta.js: så många banor är gratis när låsningen
+  // är på. Övningarna och projekten laddas bara via kursens content.js, som
+  // bygget byter ut (scripts/content.mjs, docs/TILLGANG.md).
   progress?: {    // bara om kursen sparade på annat sätt förut (JS)
     legacyCompleted, // () => klara id:n från gamla nycklar
   },

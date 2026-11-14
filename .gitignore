@@ -28,3 +28,7 @@ supabase/.temp
 
 # Byggs av npm run build:sandbox
 public/sandbox/preview.js
+
+# Byggs av scripts/content.mjs (betalbanornas innehåll)
+.content
+public/content

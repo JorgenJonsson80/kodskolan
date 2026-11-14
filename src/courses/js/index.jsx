@@ -1,8 +1,13 @@
 import { isStringList, readJson } from '../../core/lib/storage';
 import ResultPreview from './components/ResultPreview';
 import { ideaStarterCode, ideas } from './data/ideas';
-import { lessons } from './data/lesson';
-import { projects, projectSteps } from './data/projects';
+import {
+  CONTENT_LOCK,
+  LESSONS as lessons,
+  PROJECT_STEPS as projectSteps,
+  PROJECTS as projects,
+} from './content';
+
 import { quiz } from './data/quiz';
 import { resources } from './data/resources';
 import { tracks } from './data/tracks';
@@ -42,6 +47,7 @@ export default {
   ...meta,
 
   content: {
+    lock: CONTENT_LOCK,
     tracks,
     lessons,
     projects,

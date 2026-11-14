@@ -36,6 +36,9 @@ jobs:
           VITE_POSTHOG_KEY: ${{ vars.VITE_POSTHOG_KEY }}
           # on låser betalbanorna (docs/TILLGANG.md).
           VITE_PAYWALL: ${{ vars.VITE_PAYWALL }}
+          # Krypterar betalbanornas innehåll (scripts/content.mjs). Måste
+          # finnas när VITE_PAYWALL är on, annars stoppar bygget.
+          CONTENT_KEY: ${{ secrets.CONTENT_KEY }}
           # Priset för full tillgång, t.ex. 990 kr (docs/BETALNING.md).
           VITE_PRICE_TEXT: ${{ vars.VITE_PRICE_TEXT }}
           # Tomma tills sajten har en egen domän (se docs/DOMAN.md).
