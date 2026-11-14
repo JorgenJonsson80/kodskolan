@@ -16,7 +16,8 @@ import { useActivity } from '../core/lib/useActivity';
 import DailyGoal from '../core/components/DailyGoal';
 import { COURSE_INFO, courseInfoUrl } from './courseInfo';
 import { COURSES } from './courses';
-import { Faq, ForWhom, HowItWorks } from './Landing';
+import HeroDemo from './HeroDemo';
+import { BuildShowcase, Faq, ForWhom, HowItWorks, Stats } from './Landing';
 import { PATHS } from './paths';
 import { useCloudCompleted } from './useCloudCompleted';
 
@@ -53,6 +54,28 @@ function useMyDiplomas(userId) {
 
 // En ny besökare kommer till sidan om kursen först, den som redan börjat
 // rakt in i kursen.
+// Ett kompakt kort för kurserna man inte börjat på: ikon, namn och en rad.
+function CourseRow({ course, toInfo }) {
+  const href =
+    course.href ??
+    (toInfo && COURSE_INFO[course.id]
+      ? courseInfoUrl(course.id)
+      : `${import.meta.env.BASE_URL}${course.id}`);
+  return (
+    <li>
+      <a className="course-row" href={href}>
+        <span className="course-row-icon" aria-hidden="true">
+          {course.icon}
+        </span>
+        <span>
+          <strong>{course.name}</strong>
+          <span className="muted">{course.tagline}</span>
+        </span>
+      </a>
+    </li>
+  );
+}
+
 function CourseCard({ course, done, toInfo }) {
   const href =
     course.href ??
@@ -137,6 +160,33 @@ export default function Home() {
     </div>
   );
 
+  const paths = (
+    <section aria-labelledby="paths-title">
+      <h2 id="paths-title">Spår</h2>
+      <p className="muted">
+        Kurser i en ordning som leder mot ett mål. Det enklaste sättet att
+        välja.
+      </p>
+      <ul className="course-cards">
+        {PATHS.map(path => (
+          <li key={`path-${path.id}`}>
+            <a
+              className="course-card"
+              href={`${import.meta.env.BASE_URL}spar#${path.id}`}
+            >
+              <span className="course-icon" aria-hidden="true">
+                {path.icon}
+              </span>
+              <strong>{path.title}</strong>
+              <span className="muted">{path.summary}</span>
+              <span className="course-progress">Se spåret →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+
   return (
     <>
       <header className="app-header">
@@ -150,41 +200,51 @@ export default function Home() {
           />
           Kodskolan
         </h1>
+        {account.isReady && !account.user && account.isAvailable && (
+          <a className="header-login" href={`${import.meta.env.BASE_URL}konto`}>
+            Logga in
+          </a>
+        )}
       </header>
       <main className="home">
-        <section className="home-intro">
-          <img
-            className="home-logo"
-            src={`${import.meta.env.BASE_URL}logo.webp`}
-            alt="Kodskolan – lär dig koda från noll"
-            width="960"
-            height="640"
-          />
-          <h2>Lär dig koda på svenska, från noll</h2>
-          <p>
-            Du skriver riktig kod direkt i webbläsaren och ser på en gång om den
-            fungerar. Ledtrådar när du kör fast, förklaringar av felen på
-            svenska och projekt att bygga själv. Du behöver inte installera
-            något.
-          </p>
-          {isNew && (
-            <div className="home-start">
-              <a
-                className="primary-button start-button"
-                href={`${import.meta.env.BASE_URL}${FIRST_COURSE}`}
-              >
-                ▶ Skriv din första kod
-              </a>
-              <p className="muted">
-                Gratis och inget konto behövs. Den första övningen tar en minut.
+        {isNew && (
+          <section className="hero" aria-labelledby="hero-title">
+            <div className="hero-text">
+              <p className="hero-kicker">Programmering på svenska, från noll</p>
+              <h2 id="hero-title">
+                Skriv din <span className="hero-accent">första kod</span> om en
+                minut
+              </h2>
+              <p className="hero-lead">
+                Du skriver riktig kod direkt i webbläsaren och ser på en gång om
+                den fungerar. Felen förklaras på svenska, du får ledtrådar när
+                du kör fast, och du bygger egna projekt längs vägen.
+              </p>
+              <div className="hero-buttons">
+                <a
+                  className="primary-button start-button"
+                  href={`${import.meta.env.BASE_URL}${FIRST_COURSE}`}
+                >
+                  ▶ Skriv din första kod
+                </a>
+                <a className="hero-secondary" href="#kurser">
+                  Se alla kurser
+                </a>
+              </div>
+              <p className="muted hero-note">
+                Gratis att börja · inget konto behövs · inget att installera
               </p>
             </div>
-          )}
-        </section>
-        {account.isReady && !isNew && accountPanel}
+            <HeroDemo />
+            <Stats courses={COURSES.length} />
+          </section>
+        )}
         {mine.length > 0 && (
           <section aria-labelledby="mine-title">
-            <h2 id="mine-title">Mina kurser</h2>
+            <h2 id="mine-title" className="home-welcome">
+              Välkommen tillbaka 👋
+            </h2>
+            <p className="muted">Fortsätt där du slutade.</p>
             <div className="home-goal">
               <DailyGoal {...activity} />
             </div>
@@ -199,6 +259,7 @@ export default function Home() {
             </ul>
           </section>
         )}
+        {account.isReady && !isNew && accountPanel}
         {diplomas.length > 0 && (
           <section aria-labelledby="diplomas-title">
             <h2 id="diplomas-title">Mina diplom</h2>
@@ -213,53 +274,28 @@ export default function Home() {
             </ul>
           </section>
         )}
+        {isNew && <BuildShowcase />}
         {isNew && <HowItWorks />}
+        {isNew && paths}
         {more.length > 0 && (
-          <section aria-labelledby="more-title">
+          <section id="kurser" aria-labelledby="more-title">
             <h2 id="more-title">
-              {mine.length > 0 ? 'Fler kurser' : 'Kurser'}
+              {mine.length > 0 ? 'Fler kurser' : 'Alla kurser'}
             </h2>
-            <ul className="course-cards">
+            <ul className="course-rows">
               {more.map(({ course }) => (
-                <CourseCard
+                <CourseRow
                   key={`more-${course.id}`}
                   course={course}
-                  done={0}
                   toInfo={isNew}
                 />
               ))}
             </ul>
           </section>
         )}
-        <section aria-labelledby="paths-title">
-          <h2 id="paths-title">Spår</h2>
-          <p className="muted">Kurser i en ordning som leder mot ett mål.</p>
-          <ul className="course-cards">
-            {PATHS.map(path => (
-              <li key={`path-${path.id}`}>
-                <a
-                  className="course-card"
-                  href={`${import.meta.env.BASE_URL}spar#${path.id}`}
-                >
-                  <span className="course-icon" aria-hidden="true">
-                    {path.icon}
-                  </span>
-                  <strong>{path.title}</strong>
-                  <span className="muted">{path.summary}</span>
-                  <span className="course-progress">Se spåret →</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {!isNew && paths}
         {isNew && <ForWhom />}
         {isNew && <Faq />}
-        {account.isReady && isNew && (
-          <section aria-labelledby="account-title">
-            <h2 id="account-title">Har du redan ett konto?</h2>
-            {accountPanel}
-          </section>
-        )}
       </main>
       <SiteFooter />
     </>

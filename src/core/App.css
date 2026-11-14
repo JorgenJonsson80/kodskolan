@@ -1900,7 +1900,7 @@
 }
 
 .home {
-  max-width: 900px;
+  max-width: 1100px;
 }
 
 .home-intro h2 {
@@ -1919,7 +1919,7 @@
 
 .course-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
   margin: 24px 0 0;
   padding: 0;
@@ -2485,7 +2485,7 @@
 /* Startsidan för nya besökare och sidorna om kurserna */
 .landing-steps {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
   margin: 24px 0 0;
   padding: 0;
@@ -2936,4 +2936,514 @@ a.primary-button {
   height: 6px;
   margin-top: 4px;
   accent-color: var(--accent);
+}
+
+/* Startsidan för nya besökare: första skärmen med kodfönstret, siffrorna,
+   Det här kan du bygga och kurserna som en kompakt lista. */
+.header-login {
+  padding: 8px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.header-login:hover,
+.header-login:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.hero {
+  display: grid;
+  gap: 32px;
+  align-items: center;
+  padding: 24px 0 8px;
+}
+
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: 1.05fr 1fr;
+    gap: 48px;
+    padding-top: 48px;
+  }
+
+  .hero-stats {
+    grid-column: 1 / -1;
+  }
+}
+
+.hero-kicker {
+  display: inline-block;
+  margin: 0 0 12px;
+  padding: 4px 12px;
+  border: 1px solid var(--accent-soft);
+  border-radius: 999px;
+  background: rgb(167 139 250 / 0.08);
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.hero h2 {
+  margin: 0;
+  font-size: clamp(2.3rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.hero-accent {
+  background: linear-gradient(90deg, #c4b5fd, #a78bfa 40%, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-lead {
+  max-width: 36em;
+  margin: 18px 0 0;
+  color: #cbd5e1;
+  font-size: 1.15rem;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin-top: 28px;
+}
+
+.hero-buttons .start-button {
+  box-shadow: 0 10px 30px rgb(167 139 250 / 0.35);
+}
+
+.hero-secondary {
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 2px solid var(--border-strong);
+}
+
+.hero-secondary:hover {
+  border-color: var(--accent);
+}
+
+.hero-note {
+  margin: 14px 0 0;
+  font-size: 0.95rem;
+}
+
+/* Kodfönstret */
+.hero-demo {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  background: var(--surface-sunken);
+  box-shadow:
+    0 30px 80px rgb(0 0 0 / 0.45),
+    0 0 0 1px rgb(167 139 250 / 0.08),
+    0 0 60px rgb(124 58 237 / 0.18);
+  overflow: hidden;
+}
+
+.hero-demo-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 0.85rem;
+}
+
+.hero-demo-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.hero-demo-dots i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #f87171;
+}
+
+.hero-demo-dots i:nth-child(2) {
+  background: #fbbf24;
+}
+
+.hero-demo-dots i:nth-child(3) {
+  background: #4ade80;
+}
+
+.hero-demo-file {
+  color: var(--muted);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.hero-demo-lang {
+  margin-left: auto;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.hero-demo-code {
+  min-height: 7.5em;
+  margin: 0;
+  padding: 18px 20px 8px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 1rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.tok-kw {
+  color: #c4b5fd;
+}
+
+.tok-str {
+  color: #86efac;
+}
+
+.tok-num {
+  color: #fdba74;
+}
+
+.tok-fn {
+  color: #7dd3fc;
+}
+
+.hero-demo-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--accent);
+  animation: hero-blink 1s steps(1) infinite;
+}
+
+@keyframes hero-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.hero-demo-actions {
+  padding: 0 20px 14px;
+}
+
+.hero-demo-run {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #1e1b4b;
+  font-weight: 800;
+  font-size: 0.95rem;
+  transition: transform 0.15s;
+}
+
+.hero-demo-run.is-running {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.hero-demo-output,
+.hero-demo-success {
+  margin: 0 14px 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.hero-demo-output {
+  min-height: 4.6em;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.hero-demo-output samp {
+  display: block;
+}
+
+.hero-demo-output table {
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.hero-demo-output th,
+.hero-demo-output td {
+  padding: 1px 18px 1px 0;
+  text-align: left;
+}
+
+.hero-demo-output th {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.hero-demo-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hero-demo-success {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgb(134 239 172 / 0.1);
+  border: 1px solid rgb(134 239 172 / 0.35);
+  color: var(--success);
+  font-weight: 800;
+}
+
+.hero-demo-xp {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgb(251 191 36 / 0.15);
+  color: var(--xp);
+  font-size: 0.9rem;
+}
+
+.hero-demo-output.is-shown,
+.hero-demo-success.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-demo-output,
+  .hero-demo-success,
+  .hero-demo-run {
+    transition: none;
+  }
+}
+
+/* Siffrorna */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--border);
+  overflow: hidden;
+}
+
+@media (min-width: 700px) {
+  .hero-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.hero-stats li {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  background: var(--surface);
+}
+
+.hero-stats strong {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.hero-stats span {
+  color: var(--muted);
+}
+
+/* Det här kan du bygga */
+.build-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.build-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 16px 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
+}
+
+.build-card:hover,
+.build-card:focus-visible {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.build-card strong {
+  margin-top: 8px;
+  font-size: 1.25rem;
+}
+
+.build-art {
+  height: 150px;
+  padding: 14px;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #1e1b4b, #0b1220 70%);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.build-site {
+  display: grid;
+  grid-template-rows: 10px 1fr 34px;
+  gap: 10px;
+}
+
+.build-site .site-nav {
+  border-radius: 4px;
+  background: linear-gradient(90deg, #a78bfa 20%, #334155 20%);
+}
+
+.build-site .site-hero {
+  border-radius: 6px;
+  background: linear-gradient(120deg, #7c3aed, #0ea5e9);
+}
+
+.build-site .site-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.build-site .site-cards i {
+  border-radius: 5px;
+  background: #334155;
+}
+
+.build-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.build-chart i {
+  flex: 1;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(180deg, #38bdf8, #6366f1);
+}
+
+.build-chart i:nth-child(4) {
+  background: linear-gradient(180deg, #fbbf24, #f97316);
+}
+
+.build-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.build-chat span {
+  max-width: 80%;
+  padding: 6px 10px;
+  border-radius: 12px;
+}
+
+.chat-me {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #1e1b4b;
+  font-weight: 700;
+}
+
+.chat-bot {
+  align-self: flex-start;
+  background: #334155;
+}
+
+/* Kurserna som en kompakt lista */
+.course-rows {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.course-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgb(30 41 59 / 0.6);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.course-row:hover,
+.course-row:focus-visible {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.course-row-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  font-size: 1.4rem;
+}
+
+.course-row strong,
+.course-row .muted {
+  display: block;
+}
+
+.course-row .muted {
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.home-welcome {
+  font-size: 2rem;
+}
+
+.home-welcome + .muted {
+  margin: 4px 0 0;
 }

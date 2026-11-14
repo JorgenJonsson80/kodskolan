@@ -21,6 +21,97 @@ const STEPS = [
   },
 ];
 
+// Antalet övningar på startsidan. landing.test.js kollar att det stämmer.
+export const EXERCISES_TEXT = '1 300+';
+
+export function Stats({ courses }) {
+  const items = [
+    [`${courses}`, 'kurser'],
+    [EXERCISES_TEXT, 'övningar'],
+    ['Direkt', 'rättning av din kod'],
+    ['100 %', 'på svenska'],
+  ];
+  return (
+    <ul className="hero-stats" aria-label="Kodskolan i siffror">
+      {items.map(([value, label]) => (
+        <li key={`stat-${label}`}>
+          <strong>{value}</strong>
+          <span>{label}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// Det man kan bygga, med en liten bild av resultatet i stället för text
+// om kurserna. Varje kort leder till sitt spår.
+const BUILDS = [
+  {
+    id: 'webb',
+    title: 'Din egen hemsida',
+    text: 'HTML, CSS och React – från första rubrik till en riktig app.',
+    path: 'Webbutvecklare',
+    art: (
+      <div className="build-art build-site" aria-hidden="true">
+        <span className="site-nav" />
+        <span className="site-hero" />
+        <span className="site-cards">
+          <i />
+          <i />
+          <i />
+        </span>
+      </div>
+    ),
+  },
+  {
+    id: 'data',
+    title: 'En dashboard med riktig data',
+    text: 'Python, SQL och pandas – ta reda på saker och visa dem i diagram.',
+    path: 'Data',
+    art: (
+      <div className="build-art build-chart" aria-hidden="true">
+        {[45, 70, 55, 90, 65, 80].map((height, index) => (
+          <i key={`stapel-${index}`} style={{ height: `${height}%` }} />
+        ))}
+      </div>
+    ),
+  },
+  {
+    id: 'ai',
+    title: 'En egen AI-chattbot',
+    text: 'Språkmodeller, egna dokument och verktyg – bakom ditt eget API.',
+    path: 'AI-utvecklare',
+    art: (
+      <div className="build-art build-chat" aria-hidden="true">
+        <span className="chat-me">Vad har ni för öppettider?</span>
+        <span className="chat-bot">Vi har öppet 7–18 alla dagar! ☕</span>
+        <span className="chat-me">Och glutenfritt?</span>
+      </div>
+    ),
+  },
+];
+
+export function BuildShowcase() {
+  const base = import.meta.env.BASE_URL;
+  return (
+    <section aria-labelledby="build-title">
+      <h2 id="build-title">Det här kan du bygga</h2>
+      <ul className="build-cards">
+        {BUILDS.map(build => (
+          <li key={`bygg-${build.id}`}>
+            <a className="build-card" href={`${base}spar#${build.id}`}>
+              {build.art}
+              <strong>{build.title}</strong>
+              <span className="muted">{build.text}</span>
+              <span className="course-progress">Spåret {build.path} →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function HowItWorks() {
   return (
     <section aria-labelledby="how-title">
