@@ -12,9 +12,13 @@ tillgångskod. Bygg och testa i Stripes **testläge** tills företaget
   till betalsidan. Köparen måste godkänna villkoren och att ångerrätten
   upphör när tillgången börjar.
 - `supabase/functions/stripe-webhook` – när `checkout.session.completed`
-  är betald anropas `grant_purchase` (bara service_role får det).
-- Migrationen `20261113010000_purchase.sql` – `grant_purchase`, och att
-  samma köp bara ger en rad.
+  (eller `checkout.session.async_payment_succeeded`) är betald anropas
+  `grant_purchase`. Full återbetalning (`charge.refunded`) och en tvist
+  (`charge.dispute.created`) stänger tillgången med `revoke_purchase`; en
+  vunnen tvist (`charge.dispute.closed`) öppnar den igen med
+  `restore_purchase`. Bara service_role får anropa dem.
+- Migrationerna `20261113010000_purchase.sql` (`grant_purchase`, och att
+  samma köp bara ger en rad) och `20261114010000_refund.sql`.
 - I appen: köpknappen på `/konto#tillgang` och i rutan på betalbanorna.
   Den syns bara när `VITE_PRICE_TEXT` finns, t.ex. `990 kr`.
 
@@ -39,12 +43,16 @@ tillgångskod. Bygg och testa i Stripes **testläge** tills företaget
    ```
 8. **Stripe → Developers → Webhooks → Add endpoint:**
    `https://<projektets ref>.supabase.co/functions/v1/stripe-webhook`,
-   händelsen `checkout.session.completed`. Kopiera signeringshemligheten
+   händelserna `checkout.session.completed`,
+   `checkout.session.async_payment_succeeded`, `charge.refunded`,
+   `charge.dispute.created` och `charge.dispute.closed`. Kopiera signeringshemligheten
    (`whsec_…`) och kör
    `npx supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_…`.
 9. Lokalt: `VITE_PRICE_TEXT=990 kr` i `.env.local`. Köp med testkortet
    `4242 4242 4242 4242`, valfritt datum framåt och valfri CVC.
-   `/konto` ska visa "Alla kurser, för alltid".
+   `/konto` ska visa "Alla kurser, för alltid". Återbetala sedan köpet i
+   Stripe (Payments → köpet → Refund): tillgången ska försvinna från
+   `/konto` inom någon sekund.
 
 ## Live
 

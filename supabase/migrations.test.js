@@ -442,10 +442,36 @@ describe('grant_purchase', () => {
       await db.exec(
         `reset role; set role ${role}; set request.jwt.claim.sub = '${BO}'`,
       );
-      await expect(
-        db.query(`select public.grant_purchase('${BO}', 'cs_fusk')`),
-      ).rejects.toThrow();
+      for (const fn of [
+        `grant_purchase('${BO}', 'cs_fusk')`,
+        `revoke_purchase('cs_fusk')`,
+        `restore_purchase('cs_fusk')`,
+      ]) {
+        await expect(db.query(`select public.${fn}`)).rejects.toThrow();
+      }
     }
+  });
+
+  it('återbetalning stänger tillgången, en vunnen tvist öppnar den igen', async () => {
+    await db.query(`select public.grant_purchase('${ANNA}', 'cs_1')`);
+    await db.query(`select public.grant_purchase('${BO}', 'cs_2')`);
+    await db.query(`select public.revoke_purchase('cs_1')`);
+    const access = async user => {
+      await db.exec(
+        `reset role; set role authenticated; set request.jwt.claim.sub = '${user}'`,
+      );
+      const ok = (await db.query(`select public.has_access('sql') as ok`))
+        .rows[0].ok;
+      await db.exec('reset role');
+      return ok;
+    };
+    expect(await access(ANNA)).toBe(false);
+    expect(await access(BO)).toBe(true);
+    expect(
+      (await db.query('select count(*)::int as n from entitlements')).rows[0].n,
+    ).toBe(2);
+    await db.query(`select public.restore_purchase('cs_1')`);
+    expect(await access(ANNA)).toBe(true);
   });
 });
 
