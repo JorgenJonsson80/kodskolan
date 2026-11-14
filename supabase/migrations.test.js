@@ -11,6 +11,11 @@ const files = readdirSync(dir)
   .filter(name => name.endsWith('.sql'))
   .sort();
 const migrations = files.map(name => readFileSync(new URL(name, dir), 'utf8'));
+// Bossarna som krävs för diplomen (genereras, se diplomaRequirements.test.js).
+const requirements = readFileSync(
+  new URL('./diploma_requirements.sql', import.meta.url),
+  'utf8',
+);
 const indexOf = suffix => files.findIndex(name => name.endsWith(suffix));
 const courseProgress = migrations[indexOf('_course_progress.sql')];
 
@@ -138,6 +143,13 @@ describe('diplomas', () => {
     await db.exec(SUPABASE);
     await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
     for (const migration of migrations) await db.exec(migration);
+    await db.exec(requirements);
+    // Anna och Bo har klarat alla kurser.
+    await db.exec(`
+      insert into course_progress (user_id, course_id, completed_ids)
+      select u.id, r.course_id, r.lesson_ids
+      from auth.users u, diploma_requirements r
+      where r.kind = 'course'`);
   });
 
   const as = user =>
@@ -200,6 +212,85 @@ describe('diplomas', () => {
   it('kräver ett namn', async () => {
     await as(ANNA);
     await expect(issue('sql', '  ')).rejects.toThrow();
+  });
+});
+
+describe('diplom kräver en klar kurs', () => {
+  beforeEach(async () => {
+    db = new PGlite();
+    await db.exec(SUPABASE);
+    await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
+    for (const migration of migrations) await db.exec(migration);
+    await db.exec(requirements);
+  });
+
+  const as = user =>
+    db.exec(
+      `reset role; set role authenticated; set request.jwt.claim.sub = '${user}'`,
+    );
+  const issue = (kind, subject) =>
+    db.query(`select public.issue_diploma('${kind}', '${subject}', 'Anna')`);
+  const complete = (courseId, drop = 0) =>
+    db.exec(`
+      reset role;
+      insert into course_progress (user_id, course_id, completed_ids)
+      select '${ANNA}', '${courseId}', lesson_ids[${drop + 1}:]
+      from diploma_requirements where kind = 'course' and subject = '${courseId}'
+      on conflict (user_id, course_id) do update set completed_ids = excluded.completed_ids`);
+
+  it('nekar utan sparade framsteg', async () => {
+    await as(ANNA);
+    await expect(issue('course', 'sql')).rejects.toThrow(/inte klar/);
+  });
+
+  it('nekar när en boss saknas, och ger diplomet när alla är klara', async () => {
+    await complete('sql', 1);
+    await as(ANNA);
+    await expect(issue('course', 'sql')).rejects.toThrow(/inte klar/);
+    await complete('sql');
+    await as(ANNA);
+    await issue('course', 'sql');
+    expect((await db.query('select subject from diplomas')).rows).toEqual([
+      { subject: 'sql' },
+    ]);
+  });
+
+  it('ett spår kräver alla spårets kurser', async () => {
+    await complete('html');
+    await complete('js');
+    await as(ANNA);
+    await expect(issue('path', 'webb')).rejects.toThrow(/inte klar/);
+    await complete('ts');
+    await as(ANNA);
+    await issue('path', 'webb');
+  });
+
+  it('nekar diplom som inte finns', async () => {
+    await as(ANNA);
+    await expect(issue('course', 'hittepa')).rejects.toThrow(/inget sådant/);
+  });
+
+  it('den som redan har diplomet får byta namn', async () => {
+    await complete('sql');
+    await as(ANNA);
+    await issue('course', 'sql');
+    await db.exec(`reset role; delete from course_progress`);
+    await as(ANNA);
+    await issue('course', 'sql');
+  });
+
+  it('eleven kan inte läsa eller ändra kraven', async () => {
+    await as(ANNA);
+    expect((await db.query('select * from diploma_requirements')).rows).toEqual(
+      [],
+    );
+    // I Supabase stoppar RLS raderingen (inga rader), i PGlite saknas rätten.
+    await db.exec(`delete from diploma_requirements`).catch(() => {});
+    await db.exec('reset role');
+    expect(
+      (await db.query('select count(*)::int as n from diploma_requirements'))
+        .rows[0].n,
+    ).toBeGreaterThan(0);
   });
 });
 

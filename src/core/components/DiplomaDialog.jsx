@@ -26,10 +26,15 @@ export default function DiplomaDialog({
     try {
       const code = await issueDiploma(kind, subject, name, details);
       window.location.assign(diplomaUrl(code));
-    } catch {
+    } catch (error) {
+      // Databasen kollar att kontots sparade framsteg har alla bossar. Har
+      // de klarats i en annan webbläsare utan inloggning finns de inte där.
+      const notDone = /inte klar/.test(error?.message ?? '');
       setState({
         busy: false,
-        error: 'Diplomet kunde inte skapas. Försök igen om en stund.',
+        error: notDone
+          ? 'Ditt konto har inte alla bossar sparade än. Vänta några sekunder och försök igen. Klarade du någon kurs utan att vara inloggad: öppna den här, inloggad, så sparas den i kontot.'
+          : 'Diplomet kunde inte skapas. Försök igen om en stund.',
       });
     }
   }
