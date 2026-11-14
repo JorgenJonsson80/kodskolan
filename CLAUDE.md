@@ -40,6 +40,16 @@ med `/klass/<kod>` (`src/app/classes.js`, `TeacherPage.jsx`,
 `JoinClassPage.jsx`, `MyClasses.jsx`). Läraren läser framstegen med
 `class_progress()`, aldrig `course_progress` direkt – där ligger elevens kod.
 
+Säkerhet: JS-kursens förhandsvisning körs i en sandlåda utan origin
+(`public/sandbox/preview.html`, skriptet byggs av `npm run build:sandbox`
+från `src/courses/js/sandbox/main.js`) och pratar med appen via
+`postMessage`. Python-kursens Streamlit-iframe har också `sandbox` utan
+`allow-same-origin`. Elevkod får aldrig köras i appens fönster.
+Diplom kräver alla bossar i kontots `course_progress`
+(`diploma_requirements`, fylls av `supabase/diploma_requirements.sql`, som
+genereras av `src/app/diplomaRequirements.test.js` – kör om när en kurs
+får nya bossar).
+
 Tillgång (etapp 5): `core/lib/access.js` och `useAccess.js`, tabellerna
 `entitlements`, `access_codes` och `admins`. Banorna efter de gratis
 låses bara när `VITE_PAYWALL=on`. Koder och admins skapas i Supabase,
