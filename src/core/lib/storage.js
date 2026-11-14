@@ -53,3 +53,6 @@ export const belongsTo = (prefix, userId) => {
   const owner = localOwner(prefix);
   return owner === null || owner === userId;
 };
+
+// Kursen eleven senast öppnade, så att startsidan kan säga "Fortsätt med …".
+export const LAST_COURSE_KEY = 'kodskolan-senaste-kurs';

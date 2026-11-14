@@ -8,6 +8,9 @@ export default function SiteFooter({ course, lesson }) {
   const contact = contactUrl();
   return (
     <footer className="site-footer">
+      <span className="footer-slogan">
+        <strong>Kodskolan</strong> · Koda på svenska. Bygg på riktigt.
+      </span>
       {report && <a href={report}>🐞 Något fungerar inte?</a>}
       {contact && <a href={contact}>✉️ Kontakt</a>}
       <a href={`${import.meta.env.BASE_URL}konto`}>Mitt konto och data</a>

@@ -10,6 +10,7 @@ import {
   writeJson,
 } from '../core/lib/storage';
 import { fetchMyDiplomas } from '../core/lib/diplomas';
+import { LAST_COURSE_KEY } from '../core/lib/storage';
 import { supabase } from '../core/lib/supabase';
 import { useAccount } from '../core/lib/useAccount';
 import { useActivity } from '../core/lib/useActivity';
@@ -20,6 +21,8 @@ import HeroDemo from './HeroDemo';
 import { BuildShowcase, Faq, ForWhom, HowItWorks, Stats } from './Landing';
 import { PATHS } from './paths';
 import { useCloudCompleted } from './useCloudCompleted';
+
+export const SLOGAN = 'Koda på svenska. Bygg på riktigt.';
 
 // Första övningen för den som aldrig kodat: print i Python.
 const FIRST_COURSE = 'python';
@@ -123,6 +126,12 @@ export default function Home() {
     ),
   }));
   const mine = courses.filter(item => item.done > 0);
+  // Kursen man senast öppnade (sparas av kursen), annars den man kommit
+  // längst i.
+  const lastId = readJson(LAST_COURSE_KEY, null, id => typeof id === 'string');
+  const latest =
+    mine.find(item => item.course.id === lastId) ??
+    [...mine].sort((a, b) => b.done - a.done)[0];
   const more = courses.filter(item => item.done === 0);
 
   // Som i en kurs: efter utloggning töms webbläsaren, så att nästa person
@@ -210,7 +219,7 @@ export default function Home() {
         {isNew && (
           <section className="hero" aria-labelledby="hero-title">
             <div className="hero-text">
-              <p className="hero-kicker">Programmering på svenska, från noll</p>
+              <p className="hero-kicker">{SLOGAN}</p>
               <h2 id="hero-title">
                 Skriv din <span className="hero-accent">första kod</span> om en
                 minut
@@ -241,12 +250,39 @@ export default function Home() {
         )}
         {mine.length > 0 && (
           <section aria-labelledby="mine-title">
-            <h2 id="mine-title" className="home-welcome">
-              Välkommen tillbaka 👋
-            </h2>
-            <p className="muted">Fortsätt där du slutade.</p>
-            <div className="home-goal">
+            <div className="home-welcome-row">
+              <div>
+                <h2 id="mine-title" className="home-welcome">
+                  Välkommen tillbaka 👋
+                </h2>
+                <p className="muted">Fortsätt där du slutade.</p>
+              </div>
+              <a
+                className="primary-button start-button"
+                href={`${import.meta.env.BASE_URL}${latest.course.id}`}
+              >
+                ▶ Fortsätt med {latest.course.name}
+              </a>
+            </div>
+            <div className="home-dashboard">
               <DailyGoal {...activity} />
+              {account.isReady && account.user && accountPanel}
+              {account.isReady && !account.user && account.isAvailable && (
+                // Utloggad: en påminnelse i stället för hela formuläret.
+                <div className="card save-nudge-card">
+                  <strong>☁️ Spara dina framsteg</strong>
+                  <span className="muted">
+                    Med ett konto följer de med till mobilen och andra datorer.
+                    Gratis.
+                  </span>
+                  <a
+                    className="hero-secondary"
+                    href={`${import.meta.env.BASE_URL}konto`}
+                  >
+                    Logga in eller skapa konto →
+                  </a>
+                </div>
+              )}
             </div>
             <ul className="course-cards">
               {mine.map(({ course, done }) => (
@@ -259,7 +295,7 @@ export default function Home() {
             </ul>
           </section>
         )}
-        {account.isReady && !isNew && accountPanel}
+        {account.isReady && !isNew && mine.length === 0 && accountPanel}
         {diplomas.length > 0 && (
           <section aria-labelledby="diplomas-title">
             <h2 id="diplomas-title">Mina diplom</h2>

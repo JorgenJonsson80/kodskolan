@@ -19,7 +19,7 @@ export async function prerenderPages() {
       path: '',
       title: 'Kodskolan – lär dig programmera på svenska',
       description:
-        'Lär dig koda på svenska, från noll. Python, HTML och CSS, JavaScript, React, SQL, TypeScript och Flask, med riktig kod direkt i webbläsaren. Gratis att börja.',
+        'Koda på svenska. Bygg på riktigt. Lär dig koda från noll. Python, HTML och CSS, JavaScript, React, SQL, TypeScript och Flask, med riktig kod direkt i webbläsaren. Gratis att börja.',
       html: renderToString(<Home />),
       sitemap: true,
     },

@@ -34,6 +34,7 @@ import { mergeCompleted } from './lib/progress';
 import {
   isStringList,
   isStringMap,
+  LAST_COURSE_KEY,
   progressKeys,
   readJson,
   writeJson,
@@ -171,6 +172,7 @@ function Academy({ course }) {
 
   const { access } = useAccess(account.user);
   const activity = useActivity(account.user);
+  useEffect(() => writeJson(LAST_COURSE_KEY, course.id), [course.id]);
   const freeTracks = course.freeTracks ?? FREE_TRACKS;
 
   // Betalbanorna låses först när tillgången hämtats (access är null
