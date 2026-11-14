@@ -45,6 +45,9 @@ export default function LiveApp({ code, files }) {
       <iframe
         key={`live-${shown.round}`}
         title="Streamlit-appen"
+        // Utan allow-same-origin kommer elevens Python (via js-modulen)
+        // inte åt appens inloggning eller localStorage.
+        sandbox="allow-scripts allow-forms allow-popups allow-downloads"
         srcDoc={stliteDocument(shown.code, files)}
       />
     </section>

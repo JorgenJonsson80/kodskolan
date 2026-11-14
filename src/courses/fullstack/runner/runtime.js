@@ -110,7 +110,8 @@ export function createFullstack({ flask, check, runJsTests }) {
     if (previewSource) {
       // Testerna har bokat och loggat in. Sidan börjar från noll.
       await serve(backend, files);
-      previewSource = { ...previewSource, fetch: createBridgeFetch(request) };
+      // Förhandsvisningen kör i en sandlåda och skickar anropen hit.
+      previewSource = { ...previewSource, request };
     }
     return {
       ...raw,
