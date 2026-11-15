@@ -18,6 +18,7 @@ const [page, code] = pathParts(window.location.pathname);
 const TITLES = {
   diplom: 'Diplom – Kodskolan',
   profil: 'Profil – Kodskolan',
+  bygg: 'Byggstudion – Kodskolan',
   larare: 'För lärare – Kodskolan',
   klass: 'Gå med i en klass – Kodskolan',
   spar: 'Spår – Kodskolan',

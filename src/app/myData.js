@@ -8,6 +8,8 @@ import { COURSES } from './courses';
 const PREFIXES = [
   ...COURSES.map(course => course.storagePrefix),
   'kodskolan-aktivitet',
+  // Apparna i Byggstudion.
+  'kodskolan-bygg',
 ];
 
 function localKeys() {

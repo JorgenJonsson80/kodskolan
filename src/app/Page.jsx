@@ -9,10 +9,11 @@ const PathsPage = lazy(() => import('./PathsPage'));
 const AccountPage = lazy(() => import('./AccountPage'));
 const CoursePage = lazy(() => import('./CoursePage'));
 const ProfilePage = lazy(() => import('./ProfilePage'));
+const StudioPage = lazy(() => import('./StudioPage'));
 const TeacherPage = lazy(() => import('./TeacherPage'));
 const JoinClassPage = lazy(() => import('./JoinClassPage'));
 
-// Sidorna som inte är en kurs: /diplom/<kod>, /profil/<namn>, /larare, /klass/<kod>, /spar, /konto, /kurser/<id>,
+// Sidorna som inte är en kurs: /diplom/<kod>, /profil/<namn>, /larare, /klass/<kod>, /bygg, /spar, /konto, /kurser/<id>,
 // /integritet, /villkor och startsidan. LegalPage laddas direkt, så att
 // den färdiga HTML:en inte blinkar till "Laddar…".
 export default function Page({ page, code }) {
@@ -20,6 +21,7 @@ export default function Page({ page, code }) {
   if (page === 'profil' && code) return <ProfilePage slug={code} />;
   if (page === 'larare') return <TeacherPage />;
   if (page === 'klass' && code) return <JoinClassPage code={code} />;
+  if (page === 'bygg') return <StudioPage />;
   if (page === 'spar') return <PathsPage />;
   if (page === 'konto') return <AccountPage />;
   if (LEGAL[page]) return <LegalPage kind={page} />;

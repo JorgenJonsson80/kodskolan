@@ -57,6 +57,10 @@ skal och resten krypteras till `public/content`. `core/lib/useCourseContent.js`
 hämtar nyckeln (`content_key`) och packar upp. Importera aldrig
 `data/lessons` eller `data/projects` någon annanstans än i `content.js`.
 
+Byggstudion (`/bygg`, prototyp): `src/app/StudioPage.jsx` och
+`src/app/studio/` – mallar som bygger hela appar utan AI, och AI-delen via
+`supabase/functions/app-builder`. Se `docs/BYGGSTUDION.md`.
+
 Tillgång (etapp 5): `core/lib/access.js` och `useAccess.js`, tabellerna
 `entitlements`, `access_codes` och `admins`. Banorna efter de gratis
 låses bara när `VITE_PAYWALL=on`. Koder och admins skapas i Supabase,

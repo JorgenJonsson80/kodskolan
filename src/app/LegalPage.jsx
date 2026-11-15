@@ -73,6 +73,15 @@ function Privacy() {
         deras API för att träna sina modeller.
       </p>
 
+      <h2>Byggstudion</h2>
+      <p>
+        Apparna du bygger i Byggstudion sparas bara i din webbläsare. Använder
+        du AI-delen skickas din beskrivning eller ändring, och appens kod, till
+        Anthropic, som gör AI-modellen Claude. Kodskolan sparar inte det som
+        skickas, bara hur många gånger du använt AI-delen i dag, så att taket
+        per dag fungerar.
+      </p>
+
       <h2>Statistik och fel</h2>
       <p>
         För att se var kurserna är för svåra och hitta fel räknas besök, klarade

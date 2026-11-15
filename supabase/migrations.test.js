@@ -765,3 +765,32 @@ describe('content_key', () => {
     await expect(db.query('select * from content_secret')).rejects.toThrow();
   });
 });
+
+describe('use_builder_request', () => {
+  beforeEach(async () => {
+    db = new PGlite({ extensions: { pgcrypto } });
+    await db.exec(SUPABASE);
+    await db.exec(`insert into auth.users values ('${ANNA}'), ('${BO}')`);
+    for (const migration of migrations) await db.exec(migration);
+    await db.query(`select public.grant_purchase('${ANNA}', 'cs_1')`);
+  });
+
+  const build = async (user, limit = 2) => {
+    await db.exec(
+      `reset role; set role authenticated; set request.jwt.claim.sub = '${user}'`,
+    );
+    return (
+      await db.query(`select public.use_builder_request(${limit}) as kvar`)
+    ).rows[0].kvar;
+  };
+
+  it('räknar ner och stoppar vid taket', async () => {
+    expect(await build(ANNA)).toBe(1);
+    expect(await build(ANNA)).toBe(0);
+    await expect(build(ANNA)).rejects.toThrow(/slut/);
+  });
+
+  it('kräver full tillgång', async () => {
+    await expect(build(BO)).rejects.toThrow(/full tillgång/);
+  });
+});
