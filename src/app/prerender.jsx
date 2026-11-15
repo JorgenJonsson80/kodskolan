@@ -37,6 +37,14 @@ export async function prerenderPages() {
       noindex: true,
     },
     {
+      path: 'bygg/',
+      title: 'Byggstudion – Kodskolan',
+      description:
+        'Klicka ihop en egen app – ett personalschema, en bokning eller en att göra-lista – och lär dig hur den funkar.',
+      // Prototyp: inte i sökmotorerna än.
+      noindex: true,
+    },
+    {
       path: 'larare/',
       title: 'För lärare – Kodskolan',
       description:
