@@ -3780,6 +3780,29 @@ a.primary-button {
   margin: 0 0 10px;
 }
 
+.studio-next {
+  padding: 16px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.studio-next h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.studio-next p {
+  margin: 0 0 12px;
+}
+
+.studio-next-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
 .studio-ai.is-locked {
   opacity: 0.85;
 }

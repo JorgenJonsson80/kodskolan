@@ -236,6 +236,12 @@ export default function Home() {
                 >
                   ▶ Skriv din första kod
                 </a>
+                <a
+                  className="hero-secondary"
+                  href={`${import.meta.env.BASE_URL}bygg`}
+                >
+                  🛠️ Eller bygg en app på två minuter
+                </a>
                 <a className="hero-secondary" href="#kurser">
                   Se alla kurser
                 </a>

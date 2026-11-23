@@ -85,12 +85,13 @@ function Privacy() {
       <h2>Statistik och fel</h2>
       <p>
         För att se var kurserna är för svåra och hitta fel räknas besök, klarade
-        övningar och banor, använda facit och fel som uppstår i sidan. Ingen kod
-        och ingen mejladress skickas. Inget sparas i din webbläsare, och
-        IP-adressen används bara för att räkna fram en kod som byts varje dygn,
-        sedan kastas den. Statistiken går alltså inte att koppla till dig. Det
-        görs för att förbättra Kodskolan (berättigat intresse, artikel 6.1 f).
-        Har du slagit på Do Not Track skickas ingenting.
+        övningar och banor, använda facit, vilken mall som används i Byggstudion
+        och fel som uppstår i sidan. Ingen kod och ingen mejladress skickas.
+        Inget sparas i din webbläsare, och IP-adressen används bara för att
+        räkna fram en kod som byts varje dygn, sedan kastas den. Statistiken går
+        alltså inte att koppla till dig. Det görs för att förbättra Kodskolan
+        (berättigat intresse, artikel 6.1 f). Har du slagit på Do Not Track
+        skickas ingenting.
       </p>
 
       <h2>Tjänster som används</h2>

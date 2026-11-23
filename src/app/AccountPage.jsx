@@ -368,12 +368,12 @@ export default function AccountPage() {
               <h3>Statistik</h3>
               <p className="muted">
                 För att se var kurserna är för svåra och hitta fel räknar vi
-                besök, klarade övningar och banor, använda facit och fel som
-                uppstår i sidan. Det skickas till PostHog i EU utan cookies och
-                utan något som sparas i din webbläsare, så vi kan inte känna
-                igen dig från dag till dag. Din kod och din mejladress skickas
-                aldrig. Har du slagit på Do Not Track i webbläsaren skickas
-                ingenting.
+                besök, klarade övningar och banor, använda facit, vilken mall
+                som används i Byggstudion och fel som uppstår i sidan. Det
+                skickas till PostHog i EU utan cookies och utan något som sparas
+                i din webbläsare, så vi kan inte känna igen dig från dag till
+                dag. Din kod och din mejladress skickas aldrig. Har du slagit på
+                Do Not Track i webbläsaren skickas ingenting.
               </p>
               <p>
                 <a href={`${import.meta.env.BASE_URL}integritet`}>

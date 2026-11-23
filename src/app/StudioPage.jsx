@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import SiteFooter from '../core/components/SiteFooter';
 import { hasAccess } from '../core/lib/access';
 import { useAccess } from '../core/lib/useAccess';
+import { trackEvent } from '../core/lib/analytics';
 import { useAccount } from '../core/lib/useAccount';
 import { askBuilder, EXAMPLES } from './studio/ai';
 import { DATA_MESSAGE, withStorage } from './studio/preview';
@@ -108,6 +109,37 @@ function Explain({ parts, isCustom }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+// Bygg först, förstå sen: efter mallen leder rutan vidare till kursen där
+// man lär sig ändra appen själv. Allt i mallarna är HTML, CSS och JavaScript.
+function NextStep({ templateId }) {
+  const go = kurs => trackEvent('bygg_till_kurs', { kurs, mall: templateId });
+  return (
+    <div className="studio-next">
+      <h2>🎓 Vill du kunna ändra appen själv?</h2>
+      <p className="muted">
+        Appen är byggd med HTML, CSS och JavaScript. Börja med HTML & CSS – du
+        skriver din första kod direkt, gratis och utan konto.
+      </p>
+      <div className="studio-next-links">
+        <a
+          className="primary-button"
+          href={`${BASE}html`}
+          onClick={() => go('html')}
+        >
+          Börja med HTML & CSS →
+        </a>
+        <a
+          className="hero-secondary"
+          href={`${BASE}js`}
+          onClick={() => go('js')}
+        >
+          Kan du lite redan? JavaScript
+        </a>
+      </div>
+    </div>
   );
 }
 
@@ -240,7 +272,17 @@ export default function StudioPage() {
     return () => clearTimeout(timer);
   }, [projects]);
 
+  // app_byggd räknas en gång per besök, första gången man väljer något –
+  // inte för att sidan bara öppnas.
+  const tracked = useRef(false);
+  function trackBuilt(mall) {
+    if (tracked.current) return;
+    tracked.current = true;
+    trackEvent('app_byggd', { mall });
+  }
+
   function update(changes) {
+    trackBuilt(changes.template ?? project.template);
     setProjects(list =>
       list.map(item =>
         item.id === project.id
@@ -293,6 +335,7 @@ export default function StudioPage() {
   }
 
   function handleAiResult(result, request) {
+    trackEvent('app_ai', { mall: project.template });
     update({
       html: result.html,
       // null betyder mallen, så att Ångra kan gå tillbaka hela vägen.
@@ -312,6 +355,7 @@ export default function StudioPage() {
   }
 
   function handleDownload() {
+    trackEvent('app_nedladdad', { mall: project.template });
     const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
     const link = document.createElement('a');
     link.href = url;
@@ -485,6 +529,8 @@ export default function StudioPage() {
               aria-label="Appens namn"
             />
           </section>
+
+          {template && <NextStep templateId={template.id} />}
 
           <AiBox
             key={project.id}
