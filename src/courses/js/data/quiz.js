@@ -964,7 +964,7 @@ setTodos(todos);`,
       question: 'Varför bryter onClick={() => …} memo?',
       options: [
         'En ny funktion skapas vid varje ritning',
-        'Pilfunktioner är långsamma',
+        'Arrow functions är långsamma',
         'memo fungerar inte med funktioner',
         'Det gör den inte',
       ],

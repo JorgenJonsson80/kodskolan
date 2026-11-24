@@ -398,7 +398,7 @@ export const IDEAS = [
     track: 'data',
     emoji: '🐢',
     title: 'Den långsamma servern',
-    summary: 'Löften som tar tid, och flera på en gång.',
+    summary: 'Promises som tar tid, och flera på en gång.',
     goals: [
       'Skriv `vanta(ms: number): Promise<void>` med `setTimeout`.',
       'Hämta tre användare en i taget, och sedan med `Promise.all`.',

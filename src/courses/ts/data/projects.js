@@ -501,10 +501,10 @@ export const PROJECTS = [
       },
       {
         title: 'Versaler',
-        why: 'En pilfunktion med typer är kort. TypeScript vet att toUpperCase finns, eftersom text har typen string.',
+        why: 'En arrow function med typer är kort. TypeScript vet att toUpperCase finns, eftersom text har typen string.',
         xp: 15,
         description: 'Rubriken ska stå med stora bokstäver.',
-        task: 'Uppgift: Skriv `rubrik` som en pilfunktion: `(text: string): string => …` som ger texten med versaler.',
+        task: 'Uppgift: Skriv `rubrik` som en arrow function: `(text: string): string => …` som ger texten med versaler.',
         solution:
           'function halsning(namn: string, alder?: number): string {\n  if (alder) {\n    return `Grattis ${namn}, ${alder} år!`;\n  }\n  return `Grattis ${namn}!`;\n}\n\nconst rubrik = (text: string): string => text.toUpperCase();\n',
         hints: [

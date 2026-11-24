@@ -597,7 +597,7 @@ export const PROJECTS_SLUT = [
         KONTO_OK,
         [
           'Det finns en KontoUt som inte används här.',
-          'response_model i dekoratorn.',
+          'response_model i decoratorn.',
           "@app.post('/konton', status_code=201, response_model=KontoUt)",
         ],
         [
@@ -629,7 +629,7 @@ export const PROJECTS_SLUT = [
       ),
       step(
         'Flask-vanan',
-        'I FastAPI står statuskoden i dekoratorn. return x, 201 blir en lista.',
+        'I FastAPI står statuskoden i decoratorn. return x, 201 blir en lista.',
         '`POST /konton` kraschar. Laga det, så att den svarar 201 med kontot.',
         KONTO_OK,
         [
@@ -658,7 +658,7 @@ export const PROJECTS_SLUT = [
     steps: [
       step(
         'Glömt await',
-        'Utan await får man ett löfte om ett svar, och det går inte att göra JSON av.',
+        'Utan await får man ett Promise i stället för svaret, och det går inte att göra JSON av.',
         '`/ett` kraschar. Laga det.',
         SNABB_OK,
         [

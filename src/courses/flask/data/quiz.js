@@ -14,7 +14,7 @@ export const QUIZ = {
         'Startar en server på /om',
       ],
       explain:
-        'Dekoratorn kopplar adressen till funktionen. Det funktionen returnerar är svaret.',
+        'Decoratorn kopplar adressen till funktionen. Det funktionen returnerar är svaret.',
     },
     {
       question: 'Vilken statuskod får en adress som appen inte har?',
@@ -375,7 +375,7 @@ export const QUIZ = {
         'Appen kraschade',
         'Fel data skickades',
       ],
-      explain: 'Kolla om dekoratorn är get eller post.',
+      explain: 'Kolla om decoratorn är get eller post.',
     },
     {
       question: 'Vilken statuskod får anropet?',

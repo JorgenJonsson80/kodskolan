@@ -473,7 +473,7 @@ export const PROJECTS = [
       },
       {
         title: 'Första sidan',
-        why: '/sida utan nummer ska visa första sidan. Två dekoratorer och ett standardvärde gör det utan en till funktion.',
+        why: '/sida utan nummer ska visa första sidan. Två decorators och ett standardvärde gör det utan en till funktion.',
         xp: 15,
         description: 'Utan nummer ska första sidan visas.',
         task: 'Uppgift: Låt `/sida` också gå till `sida`, med `nr=1` som standard.',
@@ -1683,7 +1683,7 @@ export const PROJECTS = [
         solution:
           "from flask import Flask, abort, request\n\napp = Flask(__name__)\n\nforestallningar = [{'id': 1, 'namn': 'Hamlet', 'kvar': 3}]\n\n\ndef hitta(id):\n    for f in forestallningar:\n        if f['id'] == id:\n            return f\n    abort(404, description='Ingen sådan föreställning')\n\n\n@app.get('/forestallningar/<int:id>')\ndef en(id):\n    return hitta(id)\n\n\n@app.post('/forestallningar/<int:id>/kop')\ndef kop(id):\n    f = hitta(id)\n    antal = request.get_json().get('antal')\n    if not isinstance(antal, int) or antal < 1:\n        abort(400, description='antal ska vara ett heltal, minst 1')\n    if antal > f['kvar']:\n        abort(409, description='Slutsålt')\n    f['kvar'] -= antal\n    return {'kopt': antal, 'kvar': f['kvar']}\n\n\n@app.errorhandler(400)\n@app.errorhandler(404)\n@app.errorhandler(405)\n@app.errorhandler(409)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code\n",
         hints: [
-          'En dekorator till.',
+          'En decorator till.',
           '@app.errorhandler(405)',
           'Ingen annan ändring behövs.',
         ],

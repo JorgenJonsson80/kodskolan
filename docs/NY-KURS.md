@@ -81,6 +81,8 @@ Användaren testar efter varje steg.
 - [ ] `test/concepts.js`: regel för det nya begreppet, om det inte får
       användas tidigare
 - [ ] Hover och felförklaringar för det nya begreppet, med tester
+- [ ] Fackorden heter som på jobbet: engelska där utvecklare säger
+      engelska, förklarat på svenska första gången (se `CLAUDE.md`)
 - [ ] `npx vitest run`, `npm run lint`, `npx prettier --check src`,
       `npm run build`
 - [ ] Lös hela banan i Chrome med Playwright: alla övningar, bossen,

@@ -25,7 +25,7 @@ export const FELSOK = [
     solution: `${IMPORT}\nMENY = ['Kaffe', 'Te', 'Bulle']\n\n\n@app.get('/meny')\ndef meny():\n    return MENY\n`,
     hints: [
       'Vilka vägar står under svaret?',
-      'En dekorator börjar med ett speciellt tecken.',
+      'En decorator börjar med ett speciellt tecken.',
       "@app.get('/meny')",
     ],
     tests: [
@@ -134,7 +134,7 @@ export const FELSOK = [
     description:
       'Den här koden skrevs av någon som är van vid Flask. POST /hundar svarar konstigt.',
     explain:
-      'I Flask skriver man `return data, 201` för att sätta statuskoden. I FastAPI blir det en **lista** med två saker – och statuskoden blir fortfarande 200.\n\nI FastAPI sätts statuskoden i dekoratorn.',
+      'I Flask skriver man `return data, 201` för att sätta statuskoden. I FastAPI blir det en **lista** med två saker – och statuskoden blir fortfarande 200.\n\nI FastAPI sätts statuskoden i decoratorn.',
     example:
       "@app.post('/bocker', status_code=201)\ndef ny(bok: Bok):\n    return bok",
     task: 'Uppgift: Laga `POST /hundar` så att den svarar 201 med bara hunden.',

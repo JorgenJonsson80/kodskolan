@@ -19,14 +19,14 @@ export const SVAR = [
     description:
       'När något nytt skapas ska svaret säga det: 201 Created, i stället för 200 OK.',
     explain:
-      "Statuskoden sätts i dekoratorn:\n\n`@app.post('/hundar', status_code=201)`\n\nDen som anropar ser då direkt att något skapades. Det är en vanlig regel för API:er:\n- `200` – OK, här är det du bad om\n- `201` – skapad",
+      "Statuskoden sätts i decoratorn:\n\n`@app.post('/hundar', status_code=201)`\n\nDen som anropar ser då direkt att något skapades. Det är en vanlig regel för API:er:\n- `200` – OK, här är det du bad om\n- `201` – skapad",
     example:
       "@app.post('/bocker', status_code=201)\ndef ny_bok(bok: Bok):\n    return bok",
     task: 'Uppgift: `POST /hundar` finns redan. Gör så att den svarar 201.',
     starterCode: `${IMPORT}\n\nclass Hund(BaseModel):\n    namn: str\n\n\n@app.post('/hundar')\ndef ny_hund(hund: Hund):\n    return hund\n`,
     solution: `${IMPORT}\n\nclass Hund(BaseModel):\n    namn: str\n\n\n@app.post('/hundar', status_code=201)\ndef ny_hund(hund: Hund):\n    return hund\n`,
     hints: [
-      'Ändra bara dekoratorn.',
+      'Ändra bara decoratorn.',
       'status_code=201',
       "@app.post('/hundar', status_code=201)",
     ],
@@ -223,7 +223,7 @@ export const SVAR = [
     description:
       'Ett lösenord ska skickas in, men aldrig skickas tillbaka. response_model bestämmer vad som syns.',
     explain:
-      'Gör två modeller: en för det som **kommer in** och en för det som **går ut**.\n\n```\nclass AnvandareIn(BaseModel):\n    namn: str\n    losenord: str\n\nclass AnvandareUt(BaseModel):\n    namn: str\n```\n\nMed `response_model=AnvandareUt` i dekoratorn skickar FastAPI bara fälten i `AnvandareUt` – även om funktionen returnerar mer.',
+      'Gör två modeller: en för det som **kommer in** och en för det som **går ut**.\n\n```\nclass AnvandareIn(BaseModel):\n    namn: str\n    losenord: str\n\nclass AnvandareUt(BaseModel):\n    namn: str\n```\n\nMed `response_model=AnvandareUt` i decoratorn skickar FastAPI bara fälten i `AnvandareUt` – även om funktionen returnerar mer.',
     example:
       "@app.post('/konton', response_model=KontoUt)\ndef nytt_konto(konto: KontoIn):\n    return konto",
     task: 'Uppgift: Gör `AnvandareUt` med bara `namn`, och använd den som `response_model` på `POST /anvandare`, så att lösenordet inte skickas tillbaka.',
@@ -231,7 +231,7 @@ export const SVAR = [
     solution: `${IMPORT}\n\nclass AnvandareIn(BaseModel):\n    namn: str\n    losenord: str\n\n\nclass AnvandareUt(BaseModel):\n    namn: str\n\n\n@app.post('/anvandare', status_code=201, response_model=AnvandareUt)\ndef ny(anvandare: AnvandareIn):\n    return anvandare\n`,
     hints: [
       'class AnvandareUt(BaseModel):\n    namn: str',
-      'response_model=AnvandareUt i dekoratorn.',
+      'response_model=AnvandareUt i decoratorn.',
       "@app.post('/anvandare', status_code=201, response_model=AnvandareUt)",
     ],
     tests: [

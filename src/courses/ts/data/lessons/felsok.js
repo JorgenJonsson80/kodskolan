@@ -91,7 +91,7 @@ export const FELSOK = [
     description:
       'Felet säger att ett `Promise<string>` inte är en `string`. Det betyder nästan alltid en glömd `await`.',
     explain:
-      'Utan `await` är `namn` löftet om en text, inte texten. TypeScript ser det på typen.\n\nI vanlig JavaScript hade `namn.toUpperCase` blivit "is not a function" när koden kördes.',
+      'Utan `await` är `namn` ett Promise, inte texten. TypeScript ser det på typen.\n\nI vanlig JavaScript hade `namn.toUpperCase` blivit "is not a function" när koden kördes.',
     example: 'const svar = await hamta();',
     task: 'Uppgift: Laga `visa` så att den ger namnet med versaler.',
     starterCode:

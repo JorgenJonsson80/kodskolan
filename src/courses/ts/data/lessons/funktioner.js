@@ -259,13 +259,14 @@ export const FUNKTIONER = [
   {
     id: 'funktioner-08',
     track: 'funktioner',
-    title: 'Pilfunktioner med typer',
+    title: 'Arrow functions med typer',
     xp: 15,
-    description: 'Pilfunktioner får typer på samma sätt.',
+    description:
+      'Arrow functions – korta funktioner med `=>` – får typer på samma sätt.',
     explain:
       'Parametern får typen inom parentesen, och returtypen står efter den: `(x: number): number => x * x`.\n\nMed en typ måste parentesen vara med, även när det bara finns en parameter.',
     example: 'const dubbla = (tal: number): number => tal * 2;',
-    task: 'Uppgift: Skriv `kvadrat` som en pilfunktion som tar `x` (`number`) och returnerar `x * x`, med returtypen `number`.',
+    task: 'Uppgift: Skriv `kvadrat` som en arrow function som tar `x` (`number`) och returnerar `x * x`, med returtypen `number`.',
     starterCode: '// Skriv din kod här\n',
     solution: 'const kvadrat = (x: number): number => x * x;\n',
     hints: [
@@ -284,7 +285,7 @@ export const FUNKTIONER = [
       },
     ],
     sourceChecks: [
-      { description: 'kvadrat är en pilfunktion', pattern: /=>/ },
+      { description: 'kvadrat är en arrow function', pattern: /=>/ },
       { description: 'Returtypen är skriven', pattern: /\)\s*:\s*number\s*=>/ },
     ],
   },
@@ -296,7 +297,7 @@ export const FUNKTIONER = [
     description:
       'En parameter kan vara en funktion. Då skrivs dess typ som en liten pil: `(x: number) => number`.',
     explain:
-      '`f: (x: number) => number` betyder "en funktion som tar ett tal och ger ett tal".\n\nNär någon anropar `tillampa(3, x => x + 1)` vet TypeScript redan att `x` är ett tal – det står ju i typen. Därför behöver pilfunktionen i anropet ingen egen typ.',
+      '`f: (x: number) => number` betyder "en funktion som tar ett tal och ger ett tal".\n\nNär någon anropar `tillampa(3, x => x + 1)` vet TypeScript redan att `x` är ett tal – det står ju i typen. Därför behöver arrow function i anropet ingen egen typ.',
     example:
       "function tvaGanger(f: () => void) {\n  f();\n  f();\n}\n\ntvaGanger(() => console.log('hej'));",
     task: 'Uppgift: Skriv `tillampa(tal: number, f: (x: number) => number): number` som returnerar `f(tal)`.',

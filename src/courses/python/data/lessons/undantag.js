@@ -1,4 +1,4 @@
-// Bana 8: fel och undantag – fånga fel med try/except och skapa egna med raise.
+// Bana 8: fel och exceptions – fånga fel med try/except och skapa egna med raise.
 export const UNDANTAG = [
   {
     id: 'und-01',

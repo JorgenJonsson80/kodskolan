@@ -457,7 +457,7 @@ export const IDEAS = [
       'Användare, moderatorer och admin – var och en får göra olika mycket.',
     goals: [
       'Ge varje användare en roll.',
-      'Skriv en dekorator kraver_roll(roll).',
+      'Skriv en decorator kraver_roll(roll).',
       'Använd den på tre vägar med olika krav.',
     ],
     extra: 'Låt admin ändra andras roller.',

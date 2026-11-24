@@ -232,12 +232,12 @@ export const BEROENDEN = [
   {
     id: 'fa-beroenden-06',
     track: 'beroenden',
-    title: 'Beroenden i dekoratorn',
+    title: 'Beroenden i decoratorn',
     xp: 20,
     description:
-      'Behöver vägen inte värdet från beroendet kan det stå i dekoratorn i stället.',
+      'Behöver vägen inte värdet från beroendet kan det stå i decoratorn i stället.',
     explain:
-      "`_=Depends(kolla_nyckel)` fungerar, men ser konstigt ut när värdet aldrig används. Skriv det i dekoratorn:\n\n`@app.get('/saldo', dependencies=[Depends(kolla_nyckel)])`\n\nOch ska **alla** vägar kräva nyckeln, sätt den på hela appen:\n\n`app = FastAPI(dependencies=[Depends(kolla_nyckel)])`",
+      "`_=Depends(kolla_nyckel)` fungerar, men ser konstigt ut när värdet aldrig används. Skriv det i decoratorn:\n\n`@app.get('/saldo', dependencies=[Depends(kolla_nyckel)])`\n\nOch ska **alla** vägar kräva nyckeln, sätt den på hela appen:\n\n`app = FastAPI(dependencies=[Depends(kolla_nyckel)])`",
     example:
       "@app.post('/backup', dependencies=[Depends(admin)])\ndef backup():\n    return {'klart': True}",
     task: 'Uppgift: Alla vägar i appen ska kräva nyckeln. Flytta `Depends(kolla_nyckel)` till `FastAPI(...)` och ta bort `_=` från vägarna.',

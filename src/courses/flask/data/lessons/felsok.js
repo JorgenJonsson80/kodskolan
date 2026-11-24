@@ -37,7 +37,7 @@ export const FELSOK = [
     xp: 10,
     description: 'Appen som skickar nya hundar får 405. Vägen finns ju?',
     explain:
-      '405 betyder att adressen finns, men inte för den metoden. Kolla dekoratorn: `get` eller `post`?',
+      '405 betyder att adressen finns, men inte för den metoden. Kolla decoratorn: `get` eller `post`?',
     example: "@app.post('/hundar')",
     task: 'Uppgift: Laga så att en ny hund kan skickas med POST.',
     starterCode:

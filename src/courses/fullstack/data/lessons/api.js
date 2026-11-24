@@ -93,7 +93,7 @@ export const API = [
     description:
       'Klicka på en hund som inte finns, så ser sidan bara "404". Den vill läsa felet ur svaret, men Flasks egna felsidor är HTML.',
     explain:
-      'Sidan läser `fel` ur svaret: `{"fel": "Ingen sådan hund"}`. Med `@app.errorhandler(404)` bestämmer du själv vad ett 404-svar innehåller. Felet har `description` (texten från abort) och `code` (statuskoden).\n\nEn funktion kan ha flera dekoratorer. Lägg felhanteraren på 400, 401, 404 och 409 – de kommer att behövas.',
+      'Sidan läser `fel` ur svaret: `{"fel": "Ingen sådan hund"}`. Med `@app.errorhandler(404)` bestämmer du själv vad ett 404-svar innehåller. Felet har `description` (texten från abort) och `code` (statuskoden).\n\nEn funktion kan ha flera decorators. Lägg felhanteraren på 400, 401, 404 och 409 – de kommer att behövas.',
     example:
       "@app.errorhandler(404)\ndef felsvar(fel):\n    return {'fel': fel.description}, fel.code",
     task: 'Uppgift: Alla fel med 400, 401, 404 och 409 svarar med JSON: `{"fel": beskrivningen}` och samma statuskod.',

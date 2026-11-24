@@ -3736,7 +3736,7 @@ const namePromise = getUser().then(user => user.name);`,
     track: 'async',
     isBoss: false,
     description:
-      'Med async och await skriver du samma sak som med then, fast det läses uppifrån och ned. I en async-funktion pausar await tills löftet är uppfyllt och ger dig värdet. En async-funktion returnerar alltid ett Promise.',
+      'Med async och await skriver du samma sak som med then, fast det läses uppifrån och ned. I en async-funktion pausar await tills promiset är klart och ger dig värdet. En async-funktion returnerar alltid ett Promise.',
     task: 'Uppgift: Skriv async-funktionen `getName` som väntar på getUser() med await och returnerar användarens namn.',
     starterCode: `function getUser() {
   return Promise.resolve({ id: 1, name: 'Ada' });
@@ -6034,7 +6034,7 @@ function Counter() {
     track: 'state',
     isBoss: false,
     description:
-      'Flera knappar kan ändra samma state på olika sätt. Varje knapp får en egen liten funktion: onClick={() => setCount(count - 1)}. Pilfunktionen behövs eftersom setCount ska anropas med ett värde först när man klickar.',
+      'Flera knappar kan ändra samma state på olika sätt. Varje knapp får en egen liten funktion: onClick={() => setCount(count - 1)}. Funktionen – en arrow function, en kort funktion som skrivs med => – behövs eftersom setCount ska anropas med ett värde först när man klickar.',
     task: 'Uppgift: Bygg ut `Counter` med tre knappar: "-1" minskar count, "+1" ökar count och "Nollställ" sätter count till 0.',
     fileName: 'App.jsx',
     preview: '<Counter />',
@@ -6663,7 +6663,7 @@ function TodoApp() {
 }`,
     hints: [
       'Returnera en div med tre knappar.',
-      'Varje knapp behöver en egen pilfunktion i onClick.',
+      'Varje knapp behöver en egen arrow function i onClick.',
       'Första knappen: <button onClick={() => onRate(1)}>1</button>',
     ],
     tests: [

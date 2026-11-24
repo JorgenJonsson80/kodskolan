@@ -29,7 +29,7 @@ export const DATA = [
     description:
       'En `async`-funktion ger alltid ett `Promise`. Typen säger vad det blir när man väntat: `Promise<string>`.',
     explain:
-      '`async function halsning(): Promise<string>` lovar att svaret, efter `await`, är en `string`.\n\nUtan `await` har du bara löftet, inte texten. Därför går det inte att spara svaret direkt i en `string` – TypeScript säger till.',
+      '`async function halsning(): Promise<string>` lovar att svaret, efter `await`, är en `string`.\n\nUtan `await` har du bara ett Promise, inte texten. Därför går det inte att spara svaret direkt i en `string` – TypeScript säger till.',
     example: 'async function svar(): Promise<number> {\n  return 42;\n}',
     task: 'Uppgift: Skriv `async function halsning(namn: string): Promise<string>` som ger `` `Hej ${namn}` ``.',
     starterCode: '// Skriv din kod här\n',
@@ -49,7 +49,7 @@ export const DATA = [
     ],
     typeTests: [
       {
-        description: 'Svaret är ett löfte om text',
+        description: 'Svaret är ett Promise med text',
         code: "halsning('a').then(s => s.toUpperCase());",
       },
       {
@@ -71,7 +71,7 @@ export const DATA = [
     title: 'await ger T',
     xp: 15,
     description:
-      'Med `await` får du ut värdet ur löftet. Ett `Promise<string>` blir en `string`.',
+      'Med `await` får du ut värdet ur promiset. Ett `Promise<string>` blir en `string`.',
     explain:
       'Inne i en `async`-funktion gör `await` om `Promise<T>` till `T`. Håll musen över `text` i lösningen – det är en `string`.\n\nGlömmer du `await` blir `text` ett `Promise<string>`, och `text.length` blir typfel.',
     example:
@@ -281,7 +281,7 @@ export const DATA = [
     title: 'Flera på en gång',
     xp: 20,
     description:
-      '`Promise.all` väntar på många löften samtidigt – och TypeScript vet typen på varje svar.',
+      '`Promise.all` väntar på många promises samtidigt – och TypeScript vet typen på varje svar.',
     explain:
       '`Promise.all([a, b])` med två `Promise<Anvandare>` ger `Promise<Anvandare[]>`. Med `await` får du en `Anvandare[]`.\n\nAnropen görs samtidigt, så det går snabbare än att vänta på ett i taget.',
     example: 'const [a, b] = await Promise.all([hamta(1), hamta(2)]);',
@@ -289,7 +289,7 @@ export const DATA = [
     starterCode: `${ANVANDARE}\nasync function hamtaAnvandare(id: number): Promise<Anvandare> {\n  const svar = await fetch(\`/api/users/\${id}\`);\n  return svar.json();\n}\n`,
     solution: `${ANVANDARE}\nasync function hamtaAnvandare(id: number): Promise<Anvandare> {\n  const svar = await fetch(\`/api/users/\${id}\`);\n  return svar.json();\n}\n\nasync function namnFor(idn: number[]): Promise<string[]> {\n  const anvandare = await Promise.all(idn.map(hamtaAnvandare));\n  return anvandare.map(a => a.name);\n}\n`,
     hints: [
-      'idn.map(hamtaAnvandare) ger en lista med löften.',
+      'idn.map(hamtaAnvandare) ger en lista med promises.',
       'await Promise.all( … )',
       'return anvandare.map(a => a.name);',
     ],

@@ -13,7 +13,7 @@ export const FORSTA = [
     description:
       'En webbapp väntar på att någon ska fråga efter en adress, och svarar. Med Flask räcker det med några rader.',
     explain:
-      "`app = Flask(__name__)` skapar appen. `@app.get('/')` säger att funktionen under ska köras när någon frågar efter adressen `/` – startsidan. Det funktionen returnerar är svaret.\n\nEn sådan funktion kallas en **vägfunktion** (view). Raden med `@` framför kallas en **dekorator**.\n\nI Kodskolan startas ingen riktig server. Appen anropas direkt, och svaret visas under **📮 Svaret** när du kört koden.",
+      "`app = Flask(__name__)` skapar appen. `@app.get('/')` säger att funktionen under ska köras när någon frågar efter adressen `/` – startsidan. Det funktionen returnerar är svaret.\n\nEn sådan funktion kallas en **vägfunktion** (view). Raden med `@` framför kallas en **decorator**.\n\nI Kodskolan startas ingen riktig server. Appen anropas direkt, och svaret visas under **📮 Svaret** när du kört koden.",
     example:
       "from flask import Flask\n\napp = Flask(__name__)\n\n@app.get('/')\ndef start():\n    return 'Välkommen!'",
     task: "Uppgift: Gör så att startsidan `/` svarar `'Hej, webben!'`.",

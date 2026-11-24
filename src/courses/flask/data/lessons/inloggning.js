@@ -1,5 +1,5 @@
 // Bana 12: inloggning. session, hashade lösenord, skyddade vägar och en
-// egen dekorator. Testerna använder __klient(), som behåller cookies.
+// egen decorator. Testerna använder __klient(), som behåller cookies.
 
 export const INLOGGNING = [
   {
@@ -199,15 +199,15 @@ export const INLOGGNING = [
   {
     id: 'inloggning-06',
     track: 'inloggning',
-    title: 'En egen dekorator',
+    title: 'En egen decorator',
     xp: 20,
     description:
-      'Kollen behövs i många vägar. Med en egen dekorator `@inloggad` skrivs den en gång.',
+      'Kollen behövs i många vägar. Med en egen decorator `@inloggad` skrivs den en gång.',
     explain:
-      'En dekorator är en funktion som tar en funktion och ger en ny. `@wraps(vag)` behåller vägens namn, som Flask behöver.\n\nDekoratorn står *under* `@app.get`.',
+      'En decorator är en funktion som tar en funktion och ger en ny. `@wraps(vag)` behåller vägens namn, som Flask behöver.\n\nDecoratorn står *under* `@app.get`.',
     example:
       "def inloggad(vag):\n    @wraps(vag)\n    def kontroll(*args, **kwargs):\n        if 'namn' not in session:\n            return {'fel': 'Logga in först'}, 401\n        return vag(*args, **kwargs)\n    return kontroll",
-    task: "Uppgift: Skriv dekoratorn `inloggad` och använd den på `/mina-sidor` och `/installningar` (som svarar `{'tema': 'mörkt'}`).",
+    task: "Uppgift: Skriv decoratorn `inloggad` och använd den på `/mina-sidor` och `/installningar` (som svarar `{'tema': 'mörkt'}`).",
     starterCode:
       "from functools import wraps\n\nfrom flask import Flask, request, session\n\napp = Flask(__name__)\napp.secret_key = 'byt-mig-i-en-riktig-app'\n\n\n@app.post('/logga-in')\ndef logga_in():\n    session['namn'] = request.form['namn']\n    return {'inloggad': session['namn']}\n",
     solution:

@@ -388,7 +388,7 @@ export const QUIZ = {
       code: 'async function tal(): Promise<number> {\n  return 5;\n}\ntal().then(n => console.log(n * 2));',
       check: 'log',
       options: ['10', '5', '[object Promise]', 'NaN'],
-      explain: 'then får värdet 5 när löftet är klart.',
+      explain: 'then får värdet 5 när promiset är klart.',
     },
   ],
   felsok: [
@@ -411,7 +411,8 @@ export const QUIZ = {
         'Att Promise är felstavat',
         'Att funktionen saknar return',
       ],
-      explain: 'Ett Promise är löftet om en text. await ger texten.',
+      explain:
+        'Ett Promise<string> är en text som kommer senare. await ger texten.',
     },
     {
       question: 'Vad är typeof null?',

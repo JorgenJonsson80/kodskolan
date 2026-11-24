@@ -375,7 +375,7 @@ export const SLUTPROJEKT = [
     description:
       'Alla får läsa, men bara den med nyckeln får skapa, ändra och ta bort.',
     explain:
-      "Läsvägarna (GET) ska vara öppna. Skrivvägarna (POST, PATCH, DELETE) får `dependencies=[Depends(kolla_nyckel)]` i dekoratorn.\n\nNyckeln är `'hemlig'` och skickas i headern `x-api-nyckel`. Saknas den eller är fel: 401.",
+      "Läsvägarna (GET) ska vara öppna. Skrivvägarna (POST, PATCH, DELETE) får `dependencies=[Depends(kolla_nyckel)]` i decoratorn.\n\nNyckeln är `'hemlig'` och skickas i headern `x-api-nyckel`. Saknas den eller är fel: 401.",
     example:
       "@app.post('/x', status_code=201, dependencies=[Depends(kolla_nyckel)])",
     task: 'Uppgift: Skriv `kolla_nyckel` och lägg den på de tre skrivvägarna.',

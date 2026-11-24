@@ -145,13 +145,13 @@ export const TRACKS = [
   },
   {
     id: 'undantag',
-    title: 'Fel och undantag',
+    title: 'Fel och exceptions',
     teaches: ['try', 'except', 'raise'],
     reward: { emoji: '🪖', name: 'Hjälm' },
     canBuild:
       'en bankomat eller ett formulär som aldrig kraschar, vad användaren än skriver',
     docs: [
-      { title: 'Fel och undantag', url: `${TUTORIAL}errors.html` },
+      { title: 'Fel och exceptions', url: `${TUTORIAL}errors.html` },
       {
         title: 'Fånga fel med try',
         url: `${TUTORIAL}errors.html#handling-exceptions`,

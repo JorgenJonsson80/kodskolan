@@ -131,3 +131,9 @@ Push till `main` kör testerna och publicerar via
 - Testa i en riktig webbläsare (Playwright mot `npx vite`) innan commit.
   Selektorer: `button:has-text(…)`, inte `text=…`.
 - Svara användaren på svenska. Föreslå nytt innehåll innan det byggs.
+- Fackord i kurserna: använd ordet man googlar på och hör på jobbet.
+  Engelska där utvecklare säger engelska (arrow function, Promise,
+  exception, decorator, callback, dictionary) – förklara det på svenska
+  första gången. Svenska där svenskan är etablerad (funktion, variabel,
+  lista, loop, metod, modul, egenskap, nyckelord). Översätt aldrig ett
+  fackord som inte används på svenska.

@@ -142,9 +142,9 @@ export const VAGAR = [
     title: 'Två adresser, en funktion',
     xp: 15,
     description:
-      'En funktion kan ha flera dekoratorer – och en parameter med standardvärde.',
+      'En funktion kan ha flera decorators – och en parameter med standardvärde.',
     explain:
-      "`/hej` har inget namn, men `/hej/<namn>` har. Med båda dekoratorerna på samma funktion och `namn='du'` som standardvärde fungerar båda.",
+      "`/hej` har inget namn, men `/hej/<namn>` har. Med båda decoratorerna på samma funktion och `namn='du'` som standardvärde fungerar båda.",
     example:
       "@app.get('/sida')\n@app.get('/sida/<int:nr>')\ndef sida(nr=1):\n    return f'Sida {nr}'",
     task: "Uppgift: Låt både `/hej` och `/hej/<namn>` gå till samma funktion. Utan namn svarar den `'Hej du!'`.",
