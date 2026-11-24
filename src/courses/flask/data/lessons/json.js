@@ -13,7 +13,7 @@ export const JSON_BANA = [
     title: 'Svara med en dictionary',
     xp: 10,
     description:
-      'Returnerar vägfunktionen en dictionary blir svaret JSON – det språk appar använder för att skicka data till varandra.',
+      'Returnerar route-funktionen en dictionary blir svaret JSON – det språk appar använder för att skicka data till varandra.',
     explain:
       'JSON ser nästan ut som en Python-dictionary: `{"namn": "Bryggkaffe", "pris": 35}`. Skillnaden är bara detaljer, som `true` i stället för `True`.\n\nFlask gör om en `dict` till JSON och säger att svaret är `application/json`. En app eller en annan sajt kan sedan läsa det.',
     example:
@@ -103,7 +103,7 @@ export const JSON_BANA = [
     title: 'Hitta en med id',
     xp: 15,
     description:
-      'Ett API har nästan alltid en väg för att hämta en enda sak med dess id.',
+      'Ett API har nästan alltid en route för att hämta en enda sak med dess id.',
     explain:
       "`next((h for h in hundar if h['id'] == id), None)` letar upp den första hunden med rätt id, eller ger `None`.\n\nEn vanlig for-loop som returnerar när den hittar fungerar lika bra.",
     example:
@@ -135,7 +135,7 @@ export const JSON_BANA = [
     explain:
       "Returnera två saker med komma emellan: `return {'fel': 'Finns inte'}, 404`. Det första är innehållet och det andra statuskoden.\n\nUtan den svarar Flask `200 OK` – fast det inte gick bra.",
     example: "return {'fel': 'Ingen sådan bok'}, 404",
-    task: "Uppgift: Laga vägen så att en hund som inte finns ger `{'fel': 'Finns inte'}` med statuskoden 404.",
+    task: "Uppgift: Laga routen så att en hund som inte finns ger `{'fel': 'Finns inte'}` med statuskoden 404.",
     starterCode: `${MED_HUNDAR}\n\n@app.get('/hundar/<int:id>')\ndef hund(id):\n    for hund in hundar:\n        if hund['id'] == id:\n            return hund\n    return {'fel': 'Finns inte'}\n`,
     solution: `${MED_HUNDAR}\n\n@app.get('/hundar/<int:id>')\ndef hund(id):\n    for hund in hundar:\n        if hund['id'] == id:\n            return hund\n    return {'fel': 'Finns inte'}, 404\n`,
     hints: [
@@ -165,7 +165,7 @@ export const JSON_BANA = [
     description:
       'Ett svar behöver inte vara sparad data. Det kan räknas ut vid varje anrop.',
     explain:
-      'En väg som `/statistik` sammanfattar datan. Allt räknas ut när någon frågar, så svaret stämmer alltid med listan.',
+      'En route som `/statistik` sammanfattar datan. Allt räknas ut när någon frågar, så svaret stämmer alltid med listan.',
     example: "return {'antal': len(hundar)}",
     task: "Uppgift: `/statistik` ska svara med `{'antal': 3, 'snittalder': 4.33}` – antalet hundar och medelåldern avrundad till två decimaler.",
     starterCode: MED_HUNDAR,
@@ -190,7 +190,7 @@ export const JSON_BANA = [
     title: 'Bara en del av listan',
     xp: 15,
     description:
-      'Ett API kan ha vägar som filtrerar listan på något i adressen.',
+      'Ett API kan ha routes som filtrerar listan på något i adressen.',
     explain:
       'En list comprehension med `if` plockar ut hundarna av en viss ras. En tom lista är ett helt okej svar – det finns bara inga.',
     example: "[h for h in hundar if h['alder'] > 5]",
@@ -224,10 +224,10 @@ export const JSON_BANA = [
     description:
       'Appen kraschar med `TypeError: The view function … did not return a valid response`.',
     explain:
-      'En vägfunktion måste alltid returnera något. Här finns en väg genom funktionen där inget returneras – då returnerar Python `None`, och det kan Flask inte skicka.\n\nAnropa `/hundar/9` med 📮 och läs felet.',
+      'En route-funktion måste alltid returnera något. Här finns en route genom funktionen där inget returneras – då returnerar Python `None`, och det kan Flask inte skicka.\n\nAnropa `/hundar/9` med 📮 och läs felet.',
     example:
       "for hund in hundar:\n    if …:\n        return hund\nreturn {'fel': 'Finns inte'}, 404",
-    task: 'Uppgift: Laga vägen så att den alltid svarar. En hund som inte finns ska ge 404.',
+    task: 'Uppgift: Laga routen så att den alltid svarar. En hund som inte finns ska ge 404.',
     starterCode: `${MED_HUNDAR}\n\n@app.get('/hundar/<int:id>')\ndef hund(id):\n    for hund in hundar:\n        if hund['id'] == id:\n            return hund\n`,
     solution: `${MED_HUNDAR}\n\n@app.get('/hundar/<int:id>')\ndef hund(id):\n    for hund in hundar:\n        if hund['id'] == id:\n            return hund\n    return {'fel': 'Finns inte'}, 404\n`,
     hints: [

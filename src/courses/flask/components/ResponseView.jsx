@@ -40,7 +40,7 @@ function Body({ response }) {
 }
 
 // Svaret på 📮 Anropa: statuskoden, innehållet (JSON, HTML eller text)
-// och vägarna appen har.
+// och routes appen har.
 export default function ResponseView({ result }) {
   const response = result.response;
   if (!response) return null;
@@ -72,7 +72,7 @@ export default function ResponseView({ result }) {
       )}
       {response.routes?.length > 0 && (
         <p className="response-routes muted">
-          Vägar i appen:{' '}
+          Routes i appen:{' '}
           {response.routes.map(([methods, path], index) => (
             <span key={`route-${path}`}>
               {index > 0 && ' · '}

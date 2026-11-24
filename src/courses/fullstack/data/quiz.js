@@ -4,7 +4,7 @@
 export const QUIZ = {
   api: [
     {
-      question: 'Vad gör Flask om en vägfunktion returnerar en lista?',
+      question: 'Vad gör Flask om en route-funktion returnerar en lista?',
       options: [
         'Gör om den till JSON',
         'Gör om den till HTML',

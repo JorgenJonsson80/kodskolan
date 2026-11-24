@@ -580,7 +580,7 @@ export const PROJECTS_MITTEN = [
       ),
       step(
         'Bocka av',
-        'En egen väg för en vanlig handling gör appen enkel: ett tryck, ett anrop.',
+        'En egen route för en vanlig handling gör appen enkel: ett tryck, ett anrop.',
         '`PATCH /varor/{id}/kopt` sätter `kopt` till True och svarar med varan. Okänt id: 404.',
         HANDLA2,
         [
@@ -628,7 +628,7 @@ export const PROJECTS_MITTEN = [
     steps: [
       step(
         'Skriv och läs',
-        'hitta(id) finns redan och svarar 404 – alla vägar med id kan använda den.',
+        'hitta(id) finns redan och svarar 404 – alla routes med id kan använda den.',
         '`POST /inlagg` (201, nytt id) och `GET /inlagg/{id}`.',
         DAGBOK1,
         [
@@ -868,7 +868,7 @@ export const PROJECTS_MITTEN = [
       ),
       step(
         'Rimliga sidor',
-        'Kontrollen i beroendet gäller automatiskt alla vägar som använder det.',
+        'Kontrollen i beroendet gäller automatiskt alla routes som använder det.',
         '`sidor` ska svara 400 om `sida` är mindre än 1 eller `per_sida` inte är 1–50.',
         SIDOR2,
         [
@@ -915,7 +915,7 @@ export const PROJECTS_MITTEN = [
     steps: [
       step(
         'Källan som beroende',
-        'Vägen frågar inte vädertjänsten själv – den får en källa. Det är det som gör nästa steg möjligt.',
+        'Routen frågar inte vädertjänsten själv – den får en källa. Det är det som gör nästa steg möjligt.',
         "Skriv `hamta_vader()` som ger en `RiktigVader()`, och `/vader/{stad}` som svarar `{'stad': …, 'vader': kalla.idag(stad)}`.",
         VADER1,
         [
@@ -935,7 +935,7 @@ export const PROJECTS_MITTEN = [
       ),
       step(
         'Låtsasvädret',
-        'I Kodskolan finns ingen vädertjänst. dependency_overrides byter källan utan att röra vägen.',
+        'I Kodskolan finns ingen vädertjänst. dependency_overrides byter källan utan att röra routen.',
         'Skriv `LatsasVader` (sol i Malmö, annars regn) och lägg in den i `app.dependency_overrides` för `hamta_vader`.',
         VADER2,
         [
@@ -954,7 +954,7 @@ export const PROJECTS_MITTEN = [
       ),
       step(
         'Vad ska jag ha på mig?',
-        'Den nya vägen får också låtsasvädret, utan att du gör något extra.',
+        'Den nya routen får också låtsasvädret, utan att du gör något extra.',
         "`/klader/{stad}` svarar `{'klader': 'shorts'}` vid sol, annars `{'klader': 'regnjacka'}`.",
         VADER3,
         [

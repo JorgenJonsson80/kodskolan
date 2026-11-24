@@ -40,7 +40,7 @@ const RULES = [
   },
   {
     track: 'delfragor',
-    name: 'delfrågor och WITH',
+    name: 'subqueries och WITH',
     pattern: /\(\s*SELECT\b|\bWITH\b|\bEXISTS\b/i,
   },
   { track: 'fonster', name: 'fönsterfunktioner', pattern: /\bOVER\s*\(/i },

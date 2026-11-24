@@ -1,4 +1,4 @@
-// Bana 12: inloggning. session, hashade lösenord, skyddade vägar och en
+// Bana 12: inloggning. session, hashade lösenord, skyddade routes och en
 // egen decorator. Testerna använder __klient(), som behåller cookies.
 
 export const INLOGGNING = [
@@ -20,7 +20,7 @@ export const INLOGGNING = [
     hints: [
       "session['namn'] = request.form['namn']",
       "session.get('namn')",
-      'Två vägar.',
+      'Två routes.',
     ],
     tests: [
       {
@@ -165,7 +165,7 @@ export const INLOGGNING = [
   {
     id: 'inloggning-05',
     track: 'inloggning',
-    title: 'En skyddad väg',
+    title: 'En skyddad route',
     xp: 15,
     description: 'Vissa sidor är bara för inloggade. Kolla sessionen först.',
     explain:
@@ -202,9 +202,9 @@ export const INLOGGNING = [
     title: 'En egen decorator',
     xp: 20,
     description:
-      'Kollen behövs i många vägar. Med en egen decorator `@inloggad` skrivs den en gång.',
+      'Kollen behövs i många routes. Med en egen decorator `@inloggad` skrivs den en gång.',
     explain:
-      'En decorator är en funktion som tar en funktion och ger en ny. `@wraps(vag)` behåller vägens namn, som Flask behöver.\n\nDecoratorn står *under* `@app.get`.',
+      'En decorator är en funktion som tar en funktion och ger en ny. `@wraps(vag)` behåller routens namn, som Flask behöver.\n\nDecoratorn står *under* `@app.get`.',
     example:
       "def inloggad(vag):\n    @wraps(vag)\n    def kontroll(*args, **kwargs):\n        if 'namn' not in session:\n            return {'fel': 'Logga in först'}, 401\n        return vag(*args, **kwargs)\n    return kontroll",
     task: "Uppgift: Skriv decoratorn `inloggad` och använd den på `/mina-sidor` och `/installningar` (som svarar `{'tema': 'mörkt'}`).",
@@ -324,7 +324,7 @@ export const INLOGGNING = [
     hints: [
       "'agare': session['namn']",
       "if a['agare'] == session['namn']",
-      'Båda vägarna kollar inloggningen.',
+      'Båda routes kollar inloggningen.',
     ],
     tests: [
       {

@@ -112,7 +112,7 @@ export const KEYWORDS = {
   ],
   REFERENCES: [
     'REFERENCES – pekar på',
-    'Säger vilken tabell och kolumn en främmande nyckel pekar på.',
+    'Säger vilken tabell och kolumn en foreign key pekar på.',
   ],
   UNIQUE: ['UNIQUE – unik', 'Två rader får inte ha samma värde här.'],
   DEFAULT: ['DEFAULT – standardvärde', 'Värdet om inget annat anges.'],

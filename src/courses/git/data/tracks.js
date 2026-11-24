@@ -61,11 +61,11 @@ export const TRACKS = [
   },
   {
     id: 'grenar',
-    title: 'Grenar',
+    title: 'Brancher',
     teaches: ['git branch', 'git switch', 'git merge'],
     reward: { emoji: '🌳', name: 'Träd' },
     canBuild:
-      'nya delar av ett projekt på egna grenar, och slå ihop dem när de är klara',
+      'nya delar av ett projekt på egna brancher, och merga dem när de är klara',
     docs: [
       {
         title: 'Pro Git: Grenar',
@@ -116,14 +116,14 @@ export const TRACKS = [
     id: 'arbetsflode',
     title: 'Arbetsflödet',
     teaches: [
-      'grenar i team',
+      'brancher i team',
       'pull requests',
       'git pull origin main',
       'git revert',
     ],
     reward: { emoji: '🚀', name: 'Raket' },
     canBuild:
-      'samarbete i ett team som proffsen: en gren per ändring, pull requests och säkra ångringar',
+      'samarbete i ett team som proffsen: en branch per ändring, pull requests och säkra ångringar',
     docs: [
       {
         title: 'GitHub flow',

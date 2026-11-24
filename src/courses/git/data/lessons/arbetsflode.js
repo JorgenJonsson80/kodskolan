@@ -1,5 +1,5 @@
-// Bana 8: arbetsflödet. Så jobbar man i ett team: en gren per ändring,
-// pull requests på GitHub, håll grenen uppdaterad och ångra med revert.
+// Bana 8: arbetsflödet. Så jobbar man i ett team: en branch per ändring,
+// pull requests på GitHub, håll branchen uppdaterad och ångra med revert.
 const START = '# Skriv kommandona här, ett per rad\n';
 const URL = 'https://github.com/team/hemsida';
 const PUBLISHED = `mkdir hemsida\ncd hemsida\ngit init\necho "<h1>Hej</h1>" > index.html\necho "<a href='kontkat.html'>Kontakt</a>" > meny.html\ngit add .\ngit commit -m "Första versionen"\ngit remote add origin ${URL}\ngit push -u origin main`;
@@ -10,15 +10,15 @@ export const ARBETSFLODE = [
   {
     id: 'git-71',
     track: 'arbetsflode',
-    title: 'En gren per ändring',
+    title: 'En branch per ändring',
     xp: 15,
     description:
-      'I ett team committar ingen direkt på main. Varje ändring får en egen gren.',
+      'I ett team committar ingen direkt på main. Varje ändring får en egen branch.',
     explain:
-      'Så här ser det ut nästan överallt:\n\n1. Skapa en gren för ändringen, med ett namn som säger vad den gör.\n2. Gör ändringen och committa.\n3. Pusha grenen.\n\nmain är alltid den fungerande versionen. Det som är halvklart lever på grenar.',
+      'Så här ser det ut nästan överallt:\n\n1. Skapa en branch för ändringen, med ett namn som säger vad den gör.\n2. Gör ändringen och committa.\n3. Pusha branchen.\n\nmain är alltid den fungerande versionen. Det som är halvklart lever på brancher.',
     example:
       'git switch -c rätta-länken\n# … ändra och committa …\ngit push -u origin rätta-länken',
-    task: `Uppgift: Länken i \`meny.html\` är felstavad. Skapa grenen \`ratta-lanken\`, skriv om filen med \`<a href='kontakt.html'>Kontakt</a>\`, committa med \`Rätta länken till kontaktsidan\` och pusha grenen.`,
+    task: `Uppgift: Länken i \`meny.html\` är felstavad. Skapa branchen \`ratta-lanken\`, skriv om filen med \`<a href='kontakt.html'>Kontakt</a>\`, committa med \`Rätta länken till kontaktsidan\` och pusha branchen.`,
     setup: PUBLISHED,
     setupNote:
       '📁 hemsida är pushad till GitHub. meny.html har en felstavad länk.',
@@ -35,8 +35,8 @@ export const ARBETSFLODE = [
         file: 'meny.html',
         content: "<a href='kontakt.html'>Kontakt</a>",
       },
-      { description: 'Du står på grenen', branch: 'ratta-lanken' },
-      { description: 'Grenen är pushad', pushed: true },
+      { description: 'Du står på branchen', branch: 'ratta-lanken' },
+      { description: 'Branchen är pushad', pushed: true },
     ],
   },
   {
@@ -44,23 +44,23 @@ export const ARBETSFLODE = [
     track: 'arbetsflode',
     title: 'Pull request',
     xp: 15,
-    description: 'Grenen är pushad. Nu ber du teamet att ta in den i main.',
+    description: 'Branchen är pushad. Nu ber du teamet att ta in den i main.',
     explain:
-      'En **pull request** (PR) är en förfrågan på GitHub: "Kan ni ta in min gren i main?". Där kan andra läsa ändringen, kommentera och godkänna. Sedan trycker någon på **Merge** – och GitHub gör `git merge` åt er.\n\nPå GitHub dyker knappen _Compare & pull request_ upp direkt efter att du pushat en gren. Här i kursen sköts den delen på låtsas.',
+      'En **pull request** (PR) är en förfrågan på GitHub: "Kan ni ta in min branch i main?". Där kan andra läsa ändringen, kommentera och godkänna. Sedan trycker någon på **Merge** – och GitHub gör `git merge` åt er.\n\nPå GitHub dyker knappen _Compare & pull request_ upp direkt efter att du pushat en branch. Här i kursen sköts den delen på låtsas.',
     example: 'git push -u origin ny-meny\n# Öppna PR:en på github.com',
-    task: 'Uppgift: Skapa grenen `ny-meny`, lägg till länken `<a href="om.html">Om oss</a>` sist i `meny.html`, committa med `Lägg till Om oss i menyn` och pusha grenen så att den kan bli en pull request.',
+    task: 'Uppgift: Skapa branchen `ny-meny`, lägg till länken `<a href="om.html">Om oss</a>` sist i `meny.html`, committa med `Lägg till Om oss i menyn` och pusha branchen så att den kan bli en pull request.',
     setup: PUBLISHED,
     setupNote: '📁 hemsida är pushad till GitHub.',
     starterCode: START,
     solution:
       'git switch -c ny-meny\necho \'<a href="om.html">Om oss</a>\' >> meny.html\ngit commit -am "Lägg till Om oss i menyn"\ngit push -u origin ny-meny\n',
     hints: [
-      'Samma flöde: gren, ändring, commit, push.',
+      'Samma flöde: branch, ändring, commit, push.',
       'Med enkla citattecken runt texten går " att ha inuti.',
       'git push -u origin ny-meny',
     ],
     tests: [
-      { description: 'Grenen är pushad', pushed: true },
+      { description: 'Branchen är pushad', pushed: true },
       { description: 'Meddelandet', message: 'Lägg till Om oss i menyn' },
     ],
   },
@@ -69,20 +69,19 @@ export const ARBETSFLODE = [
     track: 'arbetsflode',
     title: 'Efter pull requesten',
     xp: 15,
-    description:
-      'Din PR är godkänd och ihopslagen på GitHub. Städa upp hos dig.',
+    description: 'Din PR är godkänd och mergad på GitHub. Städa upp hos dig.',
     explain:
-      'När PR:en är ihopslagen finns ändringen i main **på GitHub** – men inte hos dig än. Byt till main, hämta med `git pull`, och ta bort grenen som är klar:\n\n```\ngit switch main\ngit pull\ngit branch -d min-gren\n```',
+      'När PR:en är mergad finns ändringen i main **på GitHub** – men inte hos dig än. Byt till main, hämta med `git pull`, och ta bort branchen som är klar:\n\n```\ngit switch main\ngit pull\ngit branch -d min-gren\n```',
     example: 'git switch main\ngit pull\ngit branch -d ratta-lanken',
-    task: 'Uppgift: Grenen `ratta-lanken` är ihopslagen i main på GitHub. Byt till main, hämta, och ta bort grenen.',
+    task: 'Uppgift: Branchen `ratta-lanken` är mergad i main på GitHub. Byt till main, hämta, och ta bort branchen.',
     setup: `${PUBLISHED}\ngit switch -c ratta-lanken\necho "<a href='kontakt.html'>Kontakt</a>" > meny.html\ngit commit -am "Rätta länken"\ngit push -u origin ratta-lanken\ncd ..\ngit clone ${URL} granskare\ncd granskare\ngit pull origin ratta-lanken\ngit push\ncd ..\nrm -r granskare\ncd hemsida`,
     setupNote:
-      '✅ PR:en för ratta-lanken är ihopslagen på GitHub. Du står kvar på grenen.',
+      '✅ PR:en för ratta-lanken är mergad på GitHub. Du står kvar på branchen.',
     starterCode: START,
     solution: 'git switch main\ngit pull\ngit branch -d ratta-lanken\n',
     hints: [
       'git switch main',
-      'git pull hämtar den ihopslagna ändringen.',
+      'git pull hämtar den mergade ändringen.',
       'git branch -d ratta-lanken',
     ],
     tests: [
@@ -92,32 +91,32 @@ export const ARBETSFLODE = [
         file: 'meny.html',
         content: "<a href='kontakt.html'>Kontakt</a>",
       },
-      { description: 'Grenen är borttagen', branches: ['main'] },
+      { description: 'Branchen är borttagen', branches: ['main'] },
     ],
   },
   {
     id: 'git-74',
     track: 'arbetsflode',
-    title: 'Håll grenen uppdaterad',
+    title: 'Håll branchen uppdaterad',
     xp: 20,
     description:
-      'Medan du jobbade har en kollega lagt till något i main. Ta in det i din gren.',
+      'Medan du jobbade har en kollega lagt till något i main. Ta in det i din branch.',
     explain:
-      '`git pull origin main` hämtar main från GitHub och slår ihop den med **grenen du står på**. Då jobbar du mot det senaste, och eventuella konflikter löser du på din gren – inte i main.',
+      '`git pull origin main` hämtar main från GitHub och mergar den med **branchen du står på**. Då jobbar du mot det senaste, och eventuella konflikter löser du på din branch – inte i main.',
     example: 'git pull origin main',
-    task: 'Uppgift: Du står på grenen `galleri`. Hämta kollegans nya main in i din gren, och lista filerna.',
+    task: 'Uppgift: Du står på branchen `galleri`. Hämta kollegans nya main in i din branch, och lista filerna.',
     setup: `${PUBLISHED}\ngit switch -c galleri\ntouch galleri.html\ngit add .\ngit commit -m "Lägg till galleri"\n${TEAM_PUSHES}`,
     setupNote:
       '📁 Du står på galleri. En kollega har pushat om.html till main.',
     starterCode: START,
     solution: 'git pull origin main\nls\n',
     hints: [
-      'git pull med fjärr och gren.',
+      'git pull med fjärr och branch.',
       'git pull origin main',
       'ls visar om.html.',
     ],
     tests: [
-      { description: 'om.html kom in i din gren', exists: 'om.html' },
+      { description: 'om.html kom in i din branch', exists: 'om.html' },
       { description: 'Du står kvar på galleri', branch: 'galleri' },
     ],
   },
@@ -230,11 +229,11 @@ export const ARBETSFLODE = [
     track: 'arbetsflode',
     title: 'Hela vägen i ett team',
     xp: 20,
-    description: 'Allt på en gång: uppdatera, gren, ändring, push.',
+    description: 'Allt på en gång: uppdatera, branch, ändring, push.',
     explain:
-      'Så ser en vanlig ändring ut från början till slut:\n\n```\ngit switch main\ngit pull\ngit switch -c min-andring\n# ändra och committa\ngit push -u origin min-andring\n```\n\nSedan en pull request – och när den är ihopslagen: `git switch main`, `git pull`, `git branch -d min-andring`.',
+      'Så ser en vanlig ändring ut från början till slut:\n\n```\ngit switch main\ngit pull\ngit switch -c min-andring\n# ändra och committa\ngit push -u origin min-andring\n```\n\nSedan en pull request – och när den är mergad: `git switch main`, `git pull`, `git branch -d min-andring`.',
     example: 'git pull\ngit switch -c ny',
-    task: 'Uppgift: Hämta det senaste på main, skapa grenen `bilder`, lägg till `bilder.html` (tom), committa med `Lägg till bildsida` och pusha grenen.',
+    task: 'Uppgift: Hämta det senaste på main, skapa branchen `bilder`, lägg till `bilder.html` (tom), committa med `Lägg till bildsida` och pusha branchen.',
     setup: `${PUBLISHED}\n${TEAM_PUSHES}`,
     setupNote: '📁 Du står på main, som inte är uppdaterad.',
     starterCode: START,
@@ -246,8 +245,8 @@ export const ARBETSFLODE = [
       'git push -u origin bilder',
     ],
     tests: [
-      { description: 'Grenen har kollegans om.html', exists: 'om.html' },
-      { description: 'Grenen är pushad', pushed: true },
+      { description: 'Branchen har kollegans om.html', exists: 'om.html' },
+      { description: 'Branchen är pushad', pushed: true },
       { description: 'Du står på bilder', branch: 'bilder' },
     ],
   },

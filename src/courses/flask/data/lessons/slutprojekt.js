@@ -45,8 +45,8 @@ export const SLUTPROJEKT = [
     track: 'slutprojekt',
     title: 'Hundarna',
     xp: 10,
-    description: 'Första vägen: alla hundar, i bokstavsordning.',
-    explain: 'Med `fraga` blir vägen en enda rad.',
+    description: 'Första routen: alla hundar, i bokstavsordning.',
+    explain: 'Med `fraga` blir routen en enda rad.',
     example: "return fraga('SELECT * FROM bocker')",
     task: 'Uppgift: `GET /hundar` svarar med alla hundar, sorterade på namn.',
     starterCode:
@@ -78,7 +78,7 @@ export const SLUTPROJEKT = [
     description:
       'Nya hundar ska kunna läggas till, med kontroll och tydliga fel.',
     explain:
-      'Felhanteraren från bana 7 gör alla fel till JSON. `abort(400, description=…)` räcker sedan i vägarna.',
+      'Felhanteraren från bana 7 gör alla fel till JSON. `abort(400, description=…)` räcker sedan i routes.',
     example: "abort(400, description='…')",
     task: "Uppgift: `POST /hundar` kräver `namn` och en `storlek` som är liten, mellan eller stor (annars `abort(400, …)`). Lägg till en felhanterare för 400, 404 och 409 som svarar `{'fel': fel.description}`.",
     starterCode:

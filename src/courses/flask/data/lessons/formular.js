@@ -37,7 +37,7 @@ export const FORMULAR = [
     description:
       'Samma adress visar formuläret med GET och tar emot det med POST.',
     explain:
-      'Formuläret behöver en väg som visar det (GET) och en som tar emot det (POST). `<form method="post">` utan `action` skickar till samma adress.',
+      'Formuläret behöver en route som visar det (GET) och en som tar emot det (POST). `<form method="post">` utan `action` skickar till samma adress.',
     example:
       "@app.get('/kontakt')\ndef visa():\n    return FORMULAR\n\n@app.post('/kontakt')\ndef ta_emot():\n    ...",
     task: "Uppgift: Lägg till `@app.get('/hej')` som svarar med `FORMULAR`.",

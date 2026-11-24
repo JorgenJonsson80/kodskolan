@@ -18,7 +18,7 @@ export const TRACKS = [
   },
   {
     id: 'vagar',
-    title: 'Vägar och typer',
+    title: 'Routes och typer',
     teaches: ['{id} i adressen', 'id: int', 'float', '422', 'Enum'],
     reward: { emoji: '🧭', name: 'Kompass' },
     canBuild: 'ett API med en adress per sak, som /bocker/3 eller /pris/kaffe',

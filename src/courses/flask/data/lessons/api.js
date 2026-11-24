@@ -8,12 +8,12 @@ export const API = [
     title: 'En hjälpfunktion',
     xp: 10,
     description:
-      'Flera vägar behöver hitta en hund med ett id. Skriv det en gång, i en vanlig funktion.',
+      'Flera routes behöver hitta en hund med ett id. Skriv det en gång, i en vanlig funktion.',
     explain:
-      '`hitta(id)` är en vanlig Python-funktion utan `@app`. Den ger hunden eller `None`, och vägfunktionerna använder den.\n\nEtt helt API har fem vägar: hämta alla, hämta en, skapa, ändra och ta bort. Det kallas **CRUD** (Create, Read, Update, Delete).',
+      '`hitta(id)` är en vanlig Python-funktion utan `@app`. Den ger hunden eller `None`, och route-funktionerna använder den.\n\nEtt helt API har fem routes: hämta alla, hämta en, skapa, ändra och ta bort. Det kallas **CRUD** (Create, Read, Update, Delete).',
     example:
       "def hitta(id):\n    for vara in varor:\n        if vara['id'] == id:\n            return vara\n    return None",
-    task: "Uppgift: Skriv `hitta(id)` och vägen `GET /hundar/<int:id>` som använder den (404 med `{'fel': 'Finns inte'}` när hunden saknas).",
+    task: "Uppgift: Skriv `hitta(id)` och routen `GET /hundar/<int:id>` som använder den (404 med `{'fel': 'Finns inte'}` när hunden saknas).",
     starterCode:
       "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'ras': 'berner'},\n    {'id': 2, 'namn': 'Saga', 'ras': 'tax'},\n]\n",
     solution:
@@ -259,8 +259,8 @@ export const API = [
       'Nu kan du alla fem: hämta alla, hämta en, skapa, ändra och ta bort.',
     explain:
       '| Metod | Adress | Gör |\n|---|---|---|\n| GET | /hundar | alla |\n| GET | /hundar/1 | en |\n| POST | /hundar | ny |\n| PUT | /hundar/1 | ändra |\n| DELETE | /hundar/1 | ta bort |\n\nSamma två adresser, fem metoder. Så ser de flesta API:er ut.',
-    example: '# Vägarna i appen står under svaret när du kört koden.',
-    task: 'Uppgift: Lägg till `GET /hundar` och `POST /hundar` (id = högsta + 1, svar 201), så att API:t har alla fem vägarna.',
+    example: '# Routes i appen står under svaret när du kört koden.',
+    task: 'Uppgift: Lägg till `GET /hundar` och `POST /hundar` (id = högsta + 1, svar 201), så att API:t har alla fem routes.',
     starterCode:
       "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse', 'ras': 'berner'},\n    {'id': 2, 'namn': 'Saga', 'ras': 'tax'},\n]\n\n\ndef hitta(id):\n    for hund in hundar:\n        if hund['id'] == id:\n            return hund\n    return None\n\n\n@app.get('/hundar/<int:id>')\ndef en(id):\n    hund = hitta(id)\n    if hund is None:\n        return {'fel': 'Finns inte'}, 404\n    return hund\n\n\n@app.put('/hundar/<int:id>')\ndef ersatt(id):\n    hund = hitta(id)\n    if hund is None:\n        return {'fel': 'Finns inte'}, 404\n    data = request.get_json()\n    hund['namn'] = data['namn']\n    hund['ras'] = data['ras']\n    return hund\n\n\n@app.delete('/hundar/<int:id>')\ndef ta_bort(id):\n    hund = hitta(id)\n    if hund is None:\n        return {'fel': 'Finns inte'}, 404\n    hundar.remove(hund)\n    return '', 204\n",
     solution:

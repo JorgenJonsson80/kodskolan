@@ -88,9 +88,9 @@ export const SVAR = [
     title: 'En hjälpfunktion som stoppar',
     xp: 20,
     description:
-      'Flera vägar behöver hitta en hund eller svara 404. Skriv det en gång.',
+      'Flera routes behöver hitta en hund eller svara 404. Skriv det en gång.',
     explain:
-      '`raise` fungerar i vilken funktion som helst, inte bara i vägfunktionen. Felet går hela vägen upp, och FastAPI svarar 404.\n\nSå kan en hjälpfunktion `hitta(id)` användas av alla vägar som behöver en hund.',
+      '`raise` fungerar i vilken funktion som helst, inte bara i route-funktionen. Felet går hela routen upp, och FastAPI svarar 404.\n\nSå kan en hjälpfunktion `hitta(id)` användas av alla routes som behöver en hund.',
     example:
       "def hitta(id):\n    if id not in BOCKER:\n        raise HTTPException(status_code=404, detail='Boken finns inte')\n    return BOCKER[id]",
     task: 'Uppgift: Skriv `hitta(id)` som ger hunden eller gör raise med 404. Använd den i `/hundar/{id}` och `/hundar/{id}/namn` (som svarar med bara namnet).',
@@ -98,7 +98,7 @@ export const SVAR = [
     solution: `${IMPORT}\n${HUNDAR}\n\ndef hitta(id):\n    for hund in HUNDAR:\n        if hund['id'] == id:\n            return hund\n    raise HTTPException(status_code=404, detail='Hunden finns inte')\n\n\n@app.get('/hundar/{id}')\ndef en_hund(id: int):\n    return hitta(id)\n\n\n@app.get('/hundar/{id}/namn')\ndef namn(id: int):\n    return hitta(id)['namn']\n`,
     hints: [
       'def hitta(id): – samma loop som förra övningen.',
-      'Vägarna anropar bara hitta(id).',
+      'Routes anropar bara hitta(id).',
       "@app.get('/hundar/{id}/namn')\ndef namn(id: int):\n    return hitta(id)['namn']",
     ],
     tests: [
@@ -335,7 +335,7 @@ export const SVAR = [
     description:
       'Den som använder API:et vill veta vilka fel som kan komma. Skriv in dem i dokumentationen.',
     explain:
-      "FastAPI vet inte själv att en väg kan svara 404 – den ser bara din `raise` när den händer. Med `responses` skriver du in det:\n\n`@app.get('/hundar/{id}', responses={404: {'description': 'Hunden finns inte'}})`\n\nNu syns 404 på `/docs`, bredvid 200 och 422.",
+      "FastAPI vet inte själv att en route kan svara 404 – den ser bara din `raise` när den händer. Med `responses` skriver du in det:\n\n`@app.get('/hundar/{id}', responses={404: {'description': 'Hunden finns inte'}})`\n\nNu syns 404 på `/docs`, bredvid 200 och 422.",
     example:
       "@app.post('/rum', status_code=201, responses={409: {'description': 'Rummet är bokat'}})",
     task: "Uppgift: Lägg till `responses` på `/hundar/{id}`, med 404 och beskrivningen `'Hunden finns inte'`.",
@@ -353,7 +353,7 @@ export const SVAR = [
         expected: 'Hunden finns inte',
       },
       {
-        description: 'Vägen fungerar som förut',
+        description: 'Routen fungerar som förut',
         code: "__get('/hundar/1').json['namn']",
         expected: 'Bamse',
       },

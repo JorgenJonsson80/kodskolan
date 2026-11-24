@@ -290,7 +290,7 @@ export const FRAGOR = [
     description:
       '`/sok` utan `?q=` svarar 400. Ingen sökning ska kunna gå fel så.',
     explain:
-      "`request.args['q']` med hakparenteser kräver att `q` finns. Saknas den svarar Flask **400 Bad Request** – och vägfunktionen kommer aldrig längre.\n\n`request.args.get('q', '')` ger en tom text i stället.",
+      "`request.args['q']` med hakparenteser kräver att `q` finns. Saknas den svarar Flask **400 Bad Request** – och route-funktionen kommer aldrig längre.\n\n`request.args.get('q', '')` ger en tom text i stället.",
     example: "q = request.args.get('q', '')",
     task: 'Uppgift: Laga `/sok` så att den fungerar utan `?q=` (och då hittar alla).',
     starterCode:

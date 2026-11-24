@@ -118,7 +118,7 @@ export const PROJECTS = [
       ),
       step(
         'Namn i dokumentationen',
-        'Ett API med namn är lättare att hitta och förstå på /docs. En väg kan också anropa en annan funktion.',
+        'Ett API med namn är lättare att hitta och förstå på /docs. En route kan också anropa en annan funktion.',
         "Ge appen en `title`, och gör `/antal-intressen` som svarar `{'antal': …}` – räkna med `len` på det `intressen()` returnerar.",
         VISIT3,
         [
@@ -151,7 +151,7 @@ export const PROJECTS = [
     steps: [
       step(
         'Dagens skämt',
-        'Skämten ligger i en lista utanför funktionen, så att flera vägar kan använda samma skämt.',
+        'Skämten ligger i en lista utanför funktionen, så att flera routes kan använda samma skämt.',
         "`/skamt` ska svara `{'skamt': …}` med det första skämtet i `SKAMT`.",
         SKAMT1,
         [
@@ -290,11 +290,11 @@ export const PROJECTS = [
       ),
       step(
         'Alla ord',
-        'En fast väg måste stå före vägen med {ord}, annars tror FastAPI att "alla" är ett ord.',
+        'En fast route måste stå före routen med {ord}, annars tror FastAPI att "alla" är ett ord.',
         '`/ord/alla` ska svara med alla svenska ord i bokstavsordning.',
         ORD2,
         [
-          'Vägen /ord/alla ska stå först.',
+          'Routen /ord/alla ska stå först.',
           'sorted(ORD) ger nycklarna i ordning.',
           "@app.get('/ord/alla')\ndef alla():\n    return sorted(ORD)",
         ],
@@ -336,7 +336,7 @@ export const PROJECTS = [
     steps: [
       step(
         'Plus',
-        'Med float tar vägen emot både heltal och decimaltal, och allt annat ger 422.',
+        'Med float tar routen emot både heltal och decimaltal, och allt annat ger 422.',
         "`/plus/{a}/{b}` ska svara `{'svar': a + b}`.",
         RAKNA1,
         [
@@ -353,7 +353,7 @@ export const PROJECTS = [
       ),
       step(
         'Gånger',
-        'Samma mönster, ett nytt räknesätt. Vägarna är lätta att lägga till när den första finns.',
+        'Samma mönster, ett nytt räknesätt. Routes är lätta att lägga till när den första finns.',
         "`/gange/{a}/{b}` ska svara `{'svar': a * b}`.",
         RAKNA2,
         [

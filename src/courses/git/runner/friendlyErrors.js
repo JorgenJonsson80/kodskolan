@@ -37,19 +37,19 @@ const TEXTS = {
   noCommits: () =>
     'Det finns inga commits än. Lägg till filer och gör din första commit först.',
   noBranch: e =>
-    `Grenen ${code(e.branch)} finns inte. Se vilka som finns med ${code('git branch')}.`,
+    `Branchen ${code(e.branch)} finns inte. Se vilka som finns med ${code('git branch')}.`,
   badBranch: e =>
-    `${code(e.branch)} går inte att använda som grennamn. Använd bokstäver, siffror och bindestreck, utan mellanslag.`,
+    `${code(e.branch)} går inte att använda som branchnamn. Använd bokstäver, siffror och bindestreck, utan mellanslag.`,
   branchExists: e =>
-    `Grenen ${code(e.branch)} finns redan. Byt till den med ${code(`git switch ${e.branch}`)}.`,
+    `Branchen ${code(e.branch)} finns redan. Byt till den med ${code(`git switch ${e.branch}`)}.`,
   deleteCurrent: e =>
-    `Du står på ${code(e.branch)}. Byt till en annan gren innan du tar bort den.`,
+    `Du står på ${code(e.branch)}. Byt till en annan branch innan du tar bort den.`,
   notMerged: e =>
-    `${code(e.branch)} har commits som inte finns någon annanstans. Slå ihop den först med ${code(`git merge ${e.branch}`)}, så att inget arbete försvinner.`,
+    `${code(e.branch)} har commits som inte finns någon annanstans. Merga den först med ${code(`git merge ${e.branch}`)}, så att inget arbete försvinner.`,
   dirtySwitch: () =>
-    'Du har ändringar som inte är committade. Committa dem först, annars skulle de skrivas över när du byter gren.',
+    'Du har ändringar som inte är committade. Committa dem först, annars skulle de skrivas över när du byter branch.',
   dirtyMerge: () =>
-    'Du har ändringar som inte är committade. Committa dem innan du slår ihop grenar.',
+    'Du har ändringar som inte är committade. Committa dem innan du mergar brancher.',
   unmerged: e =>
     `Det finns olösta konflikter i ${(e.paths ?? []).map(code).join(', ')}. Ta bort markeringarna (<<<<<<<, ======= och >>>>>>>), spara filen och kör ${code('git add')} innan du committar.`,
   badRevision: e =>

@@ -91,7 +91,7 @@ export default {
     readGuide: '📖 Läs i Flasks guide',
     learning: 'Python med Flask',
     copyNote:
-      'Bryt ner den: anropa en väg i taget med 📮 och lägg in print i vägfunktionen.',
+      'Bryt ner den: anropa en route i taget med 📮 och lägg in print i route-funktionen.',
     encouragement: {
       syntax: [
         'Ingen fara – det är bara ett tecken som fattas eller är för mycket. Kolla kolon och indrag.',
@@ -99,13 +99,13 @@ export default {
       ],
       crash: [
         'Appen stoppade med ett fel. Läs förklaringen – den pekar ut raden.',
-        'Ett fel i en vägfunktion syns först när vägen anropas. Testa den med 📮.',
+        'Ett fel i en route-funktion syns först när routen anropas. Testa den med 📮.',
       ],
       tests: [
         'Inte än – men det är så man lär sig. Kolla testraderna nedan, de visar vilket anrop som svarade fel.',
-        'Nära! Anropa samma väg med 📮 och titta på svaret.',
+        'Nära! Anropa samma route med 📮 och titta på svaret.',
         'Ingen fara, alla API:er svarar fel ibland. Felet är en ledtråd, inte ett betyg.',
-        'Den här är klurig. Kolla statuskoden först: 404 betyder att vägen inte finns, 405 fel metod.',
+        'Den här är klurig. Kolla statuskoden först: 404 betyder att routen inte finns, 405 fel metod.',
         'Du är envis, det är bra! Kika i 🆘 Fastnat? om du vill ha ett annat sätt att tänka.',
       ],
     },
@@ -117,7 +117,7 @@ export default {
     checkResult: (
       <>
         Under <em>📮 Svaret</em> ser du vad appen svarade på anropet, och vilka
-        vägar den har.
+        routes den har.
       </>
     ),
     playground: 'med vilka anrop du vill',
@@ -140,7 +140,7 @@ export default {
     firstTips: (
       <>
         <li>
-          <strong>Läs statuskoden.</strong> 404 betyder att vägen inte finns,
+          <strong>Läs statuskoden.</strong> 404 betyder att routen inte finns,
           405 att den inte tar emot den metoden och 500 att koden kraschade.
         </li>
         <li>
@@ -151,19 +151,19 @@ export default {
     ),
     laterTips: (
       <li>
-        <strong>En väg i taget.</strong> Få en väg att fungera innan du skriver
-        nästa. Det gör proffs också.
+        <strong>En route i taget.</strong> Få en route att fungera innan du
+        skriver nästa. Det gör proffs också.
       </li>
     ),
     stuckTips: (
       <>
         <li>
-          <strong>Kolla vägarna.</strong> Under svaret står alla vägar appen
+          <strong>Kolla routes.</strong> Under svaret står alla routes appen
           har. Saknas den du anropar? Kolla stavningen och metoden.
         </li>
         <li>
           <strong>Skriv ut.</strong> Lägg in <code>print(…)</code> i
-          vägfunktionen. Det som skrivs ut visas under Utskrift.
+          route-funktionen. Det som skrivs ut visas under Utskrift.
         </li>
       </>
     ),

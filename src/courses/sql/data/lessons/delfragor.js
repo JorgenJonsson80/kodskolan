@@ -1,4 +1,4 @@
-// Bana 10: delfrågor i WHERE, IN och NOT IN, i SELECT och i FROM, WITH
+// Bana 10: subqueries i WHERE, IN och NOT IN, i SELECT och i FROM, WITH
 // och EXISTS.
 const START = '-- Skriv din fråga här\n';
 
@@ -46,7 +46,7 @@ export const DELFRAGOR = [
     description:
       'MAX(langd) ger längden, men inte vilken film det är. Hur får man hela raden?',
     explain:
-      'Räkna ut rekordet i en delfråga och leta upp raden som har det: `WHERE langd = (SELECT MAX(langd) FROM filmer)`.\n\nFinns det flera med samma rekord kommer alla med – det gör inte `ORDER BY … LIMIT 1`.',
+      'Räkna ut rekordet i en **subquery** – en fråga inuti en annan fråga – och leta upp raden som har det: `WHERE langd = (SELECT MAX(langd) FROM filmer)`.\n\nFinns det flera med samma rekord kommer alla med – det gör inte `ORDER BY … LIMIT 1`.',
     example:
       'SELECT namn FROM produkter WHERE pris = (SELECT MIN(pris) FROM produkter);',
     task: 'Uppgift: Visa `titel`, `ar` och `langd` för den längsta filmen.',
@@ -74,10 +74,10 @@ export const DELFRAGOR = [
     xp: 15,
     description: 'Vilka kunder har handlat i juni?',
     explain:
-      'En delfråga kan ge en hel lista: `WHERE id IN (SELECT kund_id FROM ordrar WHERE …)`.\n\nDen inre frågan ger kund_id för ordrarna i juni, och den yttre plockar ut kunderna vars id finns i listan.',
+      'En subquery kan ge en hel lista: `WHERE id IN (SELECT kund_id FROM ordrar WHERE …)`.\n\nDen inre frågan ger kund_id för ordrarna i juni, och den yttre plockar ut kunderna vars id finns i listan.',
     example:
       "SELECT titel FROM filmer WHERE regissor_id IN (SELECT id FROM regissorer WHERE land = 'Sverige');",
-    task: "Uppgift: Visa `namn` för kunderna som har en order från juni, alltså med `datum` från och med `'2026-06-01'`. Använd `IN` och en delfråga.",
+    task: "Uppgift: Visa `namn` för kunderna som har en order från juni, alltså med `datum` från och med `'2026-06-01'`. Använd `IN` och en subquery.",
     starterCode: START,
     solution:
       "SELECT namn\nFROM kunder\nWHERE id IN (SELECT kund_id FROM ordrar WHERE datum >= '2026-06-01');\n",
@@ -137,10 +137,10 @@ export const DELFRAGOR = [
     xp: 20,
     description: 'Visa varje film med hur många recensioner den har.',
     explain:
-      'En delfråga i `SELECT` räknar ut ett värde för varje rad. Den kan använda den yttre radens värden:\n\n`(SELECT COUNT(*) FROM recensioner re WHERE re.film_id = f.id)`\n\nFör varje film `f` räknas just dess recensioner. Det kallas en korrelerad delfråga.',
+      'En subquery i `SELECT` räknar ut ett värde för varje rad. Den kan använda den yttre radens värden:\n\n`(SELECT COUNT(*) FROM recensioner re WHERE re.film_id = f.id)`\n\nFör varje film `f` räknas just dess recensioner. Det kallas en korrelerad subquery.',
     example:
       'SELECT namn, (SELECT COUNT(*) FROM ordrar o WHERE o.kund_id = k.id) AS ordrar FROM kunder k;',
-    task: 'Uppgift: Visa `titel` och antalet recensioner som `recensioner` för alla filmer, med en delfråga i `SELECT`.',
+    task: 'Uppgift: Visa `titel` och antalet recensioner som `recensioner` för alla filmer, med en subquery i `SELECT`.',
     starterCode: START,
     solution:
       'SELECT titel,\n  (SELECT COUNT(*) FROM recensioner re WHERE re.film_id = f.id) AS recensioner\nFROM filmer f;\n',
@@ -160,7 +160,7 @@ export const DELFRAGOR = [
     description:
       'Vad är en order värd i snitt? Först behövs summan för varje order.',
     explain:
-      'En delfråga i `FROM` blir en tillfällig tabell som den yttre frågan läser från:\n\n`SELECT AVG(summa) FROM (SELECT order_id, SUM(…) AS summa FROM … GROUP BY order_id)`\n\nSå går det att räkna i två steg: först per order, sedan över alla ordrar.',
+      'En subquery i `FROM` blir en tillfällig tabell som den yttre frågan läser från:\n\n`SELECT AVG(summa) FROM (SELECT order_id, SUM(…) AS summa FROM … GROUP BY order_id)`\n\nSå går det att räkna i två steg: först per order, sedan över alla ordrar.',
     example:
       'SELECT MAX(antal) FROM (SELECT kund_id, COUNT(*) AS antal FROM ordrar GROUP BY kund_id);',
     task: 'Uppgift: Räkna ut snittet av ordrarnas summor, avrundat till heltal, som `snitt`.',
@@ -181,7 +181,7 @@ export const DELFRAGOR = [
     title: 'Ge frågan ett namn',
     xp: 20,
     description:
-      'Delfrågor blir svåra att läsa när de växer. Det finns ett snyggare sätt.',
+      'Subqueries blir svåra att läsa när de växer. Det finns ett snyggare sätt.',
     explain:
       '`WITH namn AS ( … )` först ger en fråga ett namn. Sedan används namnet som en tabell:\n\n`WITH elevsnitt AS (SELECT elev_id, AVG(poang) AS snitt FROM resultat GROUP BY elev_id)`\n`SELECT … FROM elevsnitt …`\n\nDet läses uppifrån och ner, steg för steg.',
     example:
@@ -217,7 +217,7 @@ export const DELFRAGOR = [
     xp: 25,
     description: 'Vilka filmer är längre än snittet i sin egen genre?',
     explain:
-      'En korrelerad delfråga kan räkna ut något för just radens grupp:\n\n`WHERE langd > (SELECT AVG(langd) FROM filmer f2 WHERE f2.genre = f.genre)`\n\nSamma tabell står två gånger, med olika alias: `f` är raden som prövas och `f2` är filmerna i samma genre.',
+      'En korrelerad subquery kan räkna ut något för just radens grupp:\n\n`WHERE langd > (SELECT AVG(langd) FROM filmer f2 WHERE f2.genre = f.genre)`\n\nSamma tabell står två gånger, med olika alias: `f` är raden som prövas och `f2` är filmerna i samma genre.',
     example:
       'SELECT namn, pris FROM produkter p WHERE pris > (SELECT AVG(pris) FROM produkter p2 WHERE p2.kategori = p.kategori);',
     task: 'Uppgift: Visa `titel`, `genre` och `langd` för filmerna som är längre än snittlängden i sin genre.',
@@ -226,7 +226,7 @@ export const DELFRAGOR = [
       'SELECT titel, genre, langd\nFROM filmer f\nWHERE langd > (SELECT AVG(langd) FROM filmer f2 WHERE f2.genre = f.genre);\n',
     hints: [
       'FROM filmer f',
-      'Delfrågan: SELECT AVG(langd) FROM filmer f2 WHERE f2.genre = f.genre',
+      'Subqueryn: SELECT AVG(langd) FROM filmer f2 WHERE f2.genre = f.genre',
       'WHERE langd > ( … )',
     ],
     tests: [{ description: 'Längre än genrens snitt', check: 'rows' }],
@@ -239,7 +239,7 @@ export const DELFRAGOR = [
     xp: 20,
     description: 'Vilka regissörer har gjort en film efter 2015?',
     explain:
-      '`EXISTS ( … )` är sant om delfrågan ger minst en rad. Vad den väljer spelar ingen roll, så man skriver ofta `SELECT 1`.\n\n`WHERE EXISTS (SELECT 1 FROM filmer f WHERE f.regissor_id = r.id AND f.ar > 2015)`',
+      '`EXISTS ( … )` är sant om subqueryn ger minst en rad. Vad den väljer spelar ingen roll, så man skriver ofta `SELECT 1`.\n\n`WHERE EXISTS (SELECT 1 FROM filmer f WHERE f.regissor_id = r.id AND f.ar > 2015)`',
     example:
       "SELECT namn FROM kunder k WHERE EXISTS (SELECT 1 FROM ordrar o WHERE o.kund_id = k.id AND o.status = 'skickad');",
     task: 'Uppgift: Visa `namn` för regissörerna som har minst en film från efter 2015. Använd `EXISTS`.',

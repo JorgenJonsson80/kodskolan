@@ -160,17 +160,17 @@ Stå i \`hemsida\` när du är klar.`,
   grenar: {
     id: 'git-boss-grenar',
     track: 'grenar',
-    title: 'Boss: En ny sida på en egen gren',
+    title: 'Boss: En ny sida på en egen branch',
     isBoss: true,
     xp: 40,
     description:
       BOSS_INTRO +
-      'Bygg en om-sida som proffsen gör: på en egen gren, och in i main när den är klar.',
+      'Bygg en om-sida som proffsen gör: på en egen branch, och in i main när den är klar.',
     task: `Uppgift:
-  1. Skapa grenen \`om-sidan\` och byt till den.
+  1. Skapa branchen \`om-sidan\` och byt till den.
   2. Skapa \`om.html\` med texten \`<h1>Om mig</h1>\` och committa med \`Lägg till om-sidan\`.
   3. Lägg till raden \`<p>Jag gillar att koda.</p>\` sist och committa med \`Skriv om mig\`.
-  4. Slå ihop grenen med main och ta bort grenen.`,
+  4. Merga branchen med main och ta bort branchen.`,
     setup: `mkdir hemsida\ncd hemsida\ngit init\necho "<h1>Hej</h1>" > index.html\ngit add .\ngit commit -m "Första versionen"`,
     setupNote: '📁 Du står på main i repot hemsida.',
     starterCode: '# Skriv kommandona här, ett per rad\n',
@@ -185,7 +185,7 @@ Stå i \`hemsida\` när du är klar.`,
         content: '<h1>Om mig</h1>\n<p>Jag gillar att koda.</p>',
       },
       { description: 'main har tre commits', commits: 3 },
-      { description: 'Grenen är borttagen', branches: ['main'] },
+      { description: 'Branchen är borttagen', branches: ['main'] },
     ],
   },
   konflikter: {
@@ -196,13 +196,13 @@ Stå i \`hemsida\` när du är klar.`,
     xp: 40,
     description:
       BOSS_INTRO +
-      'Ada och Bo har ändrat samma meny på var sin gren. Få ihop det.',
-    task: `Uppgift: Grenarna \`ada\` och \`bo\` har båda ändrat sista raden i \`meny.txt\` (Ada: \`Kontakt\`, Bo: \`Om oss\`).
-  1. Slå ihop \`ada\` med main.
-  2. Slå ihop \`bo\` med main och laga konflikten så att menyn får båda: raderna \`Hem\`, \`Kontakt\` och \`Om oss\`.
-  3. Committa med \`Slå ihop menyerna\` och ta bort båda grenarna.`,
+      'Ada och Bo har ändrat samma meny på var sin branch. Få ihop det.',
+    task: `Uppgift: Brancherna \`ada\` och \`bo\` har båda ändrat sista raden i \`meny.txt\` (Ada: \`Kontakt\`, Bo: \`Om oss\`).
+  1. Merga \`ada\` med main.
+  2. Merga \`bo\` med main och laga konflikten så att menyn får båda: raderna \`Hem\`, \`Kontakt\` och \`Om oss\`.
+  3. Committa med \`Slå ihop menyerna\` och ta bort båda brancherna.`,
     setup: `mkdir hemsida\ncd hemsida\ngit init\necho "Hem" > meny.txt\ngit add .\ngit commit -m "Lägg till meny"\ngit switch -c ada\necho "Kontakt" >> meny.txt\ngit commit -am "Lägg till Kontakt"\ngit switch main\ngit switch -c bo\necho "Om oss" >> meny.txt\ngit commit -am "Lägg till Om oss"\ngit switch main`,
-    setupNote: '📁 Du står på main. Grenarna ada och bo har ändrat meny.txt.',
+    setupNote: '📁 Du står på main. Brancherna ada och bo har ändrat meny.txt.',
     starterCode: '# Skriv kommandona här, ett per rad\n',
     solution:
       'git merge ada\ngit merge bo\necho "Hem" > meny.txt\necho "Kontakt" >> meny.txt\necho "Om oss" >> meny.txt\ngit add meny.txt\ngit commit -m "Slå ihop menyerna"\ngit branch -d ada\ngit branch -d bo\n',
@@ -252,13 +252,13 @@ Stå i \`hemsida\` när du är klar.`,
     xp: 60,
     description:
       BOSS_INTRO +
-      'Hela flödet i ett team, från klon till en gren som är redo för pull request.',
+      'Hela flödet i ett team, från klon till en branch som är redo för pull request.',
     task: `Uppgift: Teamets hemsida finns på \`https://github.com/team/hemsida\`.
-  1. Klona den och skapa grenen \`priser\`.
+  1. Klona den och skapa branchen \`priser\`.
   2. Lägg till \`priser.html\` med \`<h1>Priser</h1>\` och committa med \`Lägg till prissida\`.
   3. Lägg till länken \`<a href='priser.html'>Priser</a>\` sist i \`meny.html\` och committa med \`Länka till prissidan\`.
-  4. Hämta main in i din gren innan du pushar, så att pull requesten utgår från det senaste – gör det till en vana, även när inget är nytt.
-  5. Pusha grenen, så att den kan bli en pull request.`,
+  4. Hämta main in i din branch innan du pushar, så att pull requesten utgår från det senaste – gör det till en vana, även när inget är nytt.
+  5. Pusha branchen, så att den kan bli en pull request.`,
     setup: `mkdir tmp\ncd tmp\ngit init\necho "<h1>Hej</h1>" > index.html\necho "<a href='index.html'>Hem</a>" > meny.html\ngit add .\ngit commit -m "Första versionen"\ngit remote add origin https://github.com/team/hemsida\ngit push -u origin main\ncd ..\nrm -r tmp`,
     setupNote: '☁️ Teamets hemsida finns på GitHub.',
     starterCode: '# Skriv kommandona här, ett per rad\n',
@@ -282,7 +282,7 @@ Stå i \`hemsida\` när du är klar.`,
         content:
           "<a href='index.html'>Hem</a>\n<a href='priser.html'>Priser</a>",
       },
-      { description: 'Grenen är pushad', repo: '/hem/hemsida', pushed: true },
+      { description: 'Branchen är pushad', repo: '/hem/hemsida', pushed: true },
     ],
   },
 };

@@ -271,7 +271,7 @@ export const MALLAR = [
     description:
       '`url_for` finns också i mallarna. Då pekar länkarna alltid rätt.',
     explain:
-      "`{{ url_for('hund', id=h.id) }}` bygger adressen till vägen `hund`. Det är samma `url_for` som i Python.",
+      "`{{ url_for('hund', id=h.id) }}` bygger adressen till routen `hund`. Det är samma `url_for` som i Python.",
     example: '<a href="{{ url_for(\'bok\', id=b.id) }}">{{ b.titel }}</a>',
     task: 'Uppgift: `/` ska visa en `<a>` per hund som länkar till `hund` med hundens id, med namnet som text.',
     starterCode:

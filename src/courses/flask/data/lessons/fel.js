@@ -7,7 +7,7 @@ export const FEL = [
     title: 'abort',
     xp: 10,
     description:
-      '`abort(404)` avbryter vägfunktionen direkt och svarar med statuskoden.',
+      '`abort(404)` avbryter route-funktionen direkt och svarar med statuskoden.',
     explain:
       'Med `abort` behöver du inte returnera felet själv. Funktionen slutar på raden med `abort`, och Flask svarar.\n\nSvaret blir en liten HTML-sida. I nästa övning blir det JSON.',
     example: 'from flask import abort\n\nif bok is None:\n    abort(404)',
@@ -153,9 +153,9 @@ export const FEL = [
     title: 'abort i hjälpfunktionen',
     xp: 15,
     description:
-      'Om `hitta` gör `abort(404)` själv blir vägfunktionerna kortare.',
+      'Om `hitta` gör `abort(404)` själv blir route-funktionerna kortare.',
     explain:
-      '`abort` fungerar var som helst under ett anrop, även i en hjälpfunktion. Då kan varje väg bara skriva `hund = hitta_eller_404(id)`.',
+      '`abort` fungerar var som helst under ett anrop, även i en hjälpfunktion. Då kan varje route bara skriva `hund = hitta_eller_404(id)`.',
     example:
       'def hamta(id):\n    vara = hitta(id)\n    if vara is None:\n        abort(404)\n    return vara',
     task: 'Uppgift: Skriv `hitta_eller_404(id)` och använd den i både `GET` och `DELETE /hundar/<int:id>`.',
@@ -275,7 +275,7 @@ export const FEL = [
     title: '403 – förbjudet',
     xp: 15,
     description:
-      'Vissa vägar är bara för vissa. Utan rätt nyckel svarar appen **403 Forbidden**.',
+      'Vissa routes är bara för vissa. Utan rätt nyckel svarar appen **403 Forbidden**.',
     explain:
       '401 betyder "logga in först", och 403 "du får inte, även om vi vet vem du är". Här finns ingen inloggning än (den kommer i bana 12), så en enkel nyckel i adressen får räcka.',
     example: "if request.args.get('nyckel') != 'hemlig':\n    abort(403)",

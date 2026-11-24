@@ -1,4 +1,4 @@
-// Bana 2: vägar och typer. Variabler i adressen, och typerna som FastAPI
+// Bana 2: routes och typer. Variabler i adressen, och typerna som FastAPI
 // kontrollerar själv (422). Inga HTTPException än – de kommer i bana 5.
 
 const IMPORT = 'from fastapi import FastAPI\n\napp = FastAPI()\n';
@@ -17,7 +17,7 @@ export const VAGAR = [
     title: 'En variabel i adressen',
     xp: 15,
     description:
-      'Adressen kan innehålla en del som ändras, till exempel ett namn. Då räcker en väg för alla namn.',
+      'Adressen kan innehålla en del som ändras, till exempel ett namn. Då räcker en route för alla namn.',
     explain:
       "Skriv en del av adressen inom `{` och `}`, så blir den en **variabel**. Funktionen får en parameter med samma namn:\n\n`@app.get('/hej/{namn}')` och `def hej(namn: str):`\n\nAnropet `/hej/Ada` ger `namn = 'Ada'`. `: str` är en **typ** – den säger vad variabeln ska vara.",
     example:
@@ -200,18 +200,18 @@ export const VAGAR = [
     title: 'Ordningen spelar roll',
     xp: 15,
     description:
-      'Två vägar kan passa samma adress. Då vinner den som står först i koden.',
+      'Två routes kan passa samma adress. Då vinner den som står först i koden.',
     explain:
-      "FastAPI provar vägarna uppifrån och ned och tar den första som passar.\n\n`/anvandare/{namn}` passar också `/anvandare/jag`. Står den först blir `namn = 'jag'`, och vägen för `/anvandare/jag` körs aldrig.\n\nLösningen: skriv den **fasta** vägen före den med en variabel.",
+      "FastAPI provar routes uppifrån och ned och tar den första som passar.\n\n`/anvandare/{namn}` passar också `/anvandare/jag`. Står den först blir `namn = 'jag'`, och routen för `/anvandare/jag` körs aldrig.\n\nLösningen: skriv den **fasta** routen före den med en variabel.",
     example:
       "@app.get('/filmer/senaste')\ndef senaste():\n    return {'titel': 'Ny film'}\n\n@app.get('/filmer/{titel}')\ndef film(titel: str):\n    return {'titel': titel}",
-    task: "Uppgift: Båda vägarna finns redan, men `/anvandare/jag` svarar fel. Flytta på dem så att `/anvandare/jag` svarar `{'namn': 'Du själv'}`.",
+    task: "Uppgift: Båda routes finns redan, men `/anvandare/jag` svarar fel. Flytta på dem så att `/anvandare/jag` svarar `{'namn': 'Du själv'}`.",
     starterCode: `${IMPORT}\n\n@app.get('/anvandare/{namn}')\ndef anvandare(namn: str):\n    return {'namn': namn}\n\n\n@app.get('/anvandare/jag')\ndef jag():\n    return {'namn': 'Du själv'}\n`,
     solution: `${IMPORT}\n\n@app.get('/anvandare/jag')\ndef jag():\n    return {'namn': 'Du själv'}\n\n\n@app.get('/anvandare/{namn}')\ndef anvandare(namn: str):\n    return {'namn': namn}\n`,
     hints: [
-      'Kör /anvandare/jag med 📮 och se vilken väg som svarar.',
-      'Den fasta vägen ska stå först.',
-      "Flytta @app.get('/anvandare/jag') och funktionen jag ovanför den andra vägen.",
+      'Kör /anvandare/jag med 📮 och se vilken route som svarar.',
+      'Den fasta routen ska stå först.',
+      "Flytta @app.get('/anvandare/jag') och funktionen jag ovanför den andra routen.",
     ],
     tests: [
       {

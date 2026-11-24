@@ -154,17 +154,17 @@ export const IDEAS = [
     ],
   },
 
-  // Bana 5: grenar
+  // Bana 5: brancher
   {
     id: 'idea-git-tre-grenar',
     track: 'grenar',
     emoji: '🌿',
     title: 'Tre försök',
-    summary: 'Prova tre olika slut på en berättelse, en gren per slut.',
+    summary: 'Prova tre olika slut på en berättelse, en branch per slut.',
     goals: [
       'Committa början av berättelsen på main.',
-      'Skapa tre grenar och skriv ett slut på varje.',
-      'Välj det bästa, slå ihop det och ta bort de andra grenarna.',
+      'Skapa tre brancher och skriv ett slut på varje.',
+      'Välj det bästa, merga det och ta bort de andra brancherna.',
     ],
   },
   {
@@ -172,11 +172,11 @@ export const IDEAS = [
     track: 'grenar',
     emoji: '🔀',
     title: 'Filer som kommer och går',
-    summary: 'Se hur filerna ändras när du byter gren.',
+    summary: 'Se hur filerna ändras när du byter branch.',
     goals: [
-      'Skapa en fil som bara finns på en gren.',
+      'Skapa en fil som bara finns på en branch.',
       'Byt fram och tillbaka med git switch och kör ls varje gång.',
-      'Slå ihop – nu finns filen på båda.',
+      'Merga – nu finns filen på båda.',
     ],
   },
   {
@@ -184,11 +184,11 @@ export const IDEAS = [
     track: 'grenar',
     emoji: '🏠',
     title: 'Hemsidan växer',
-    summary: 'Bygg en sida med en gren per ny del.',
+    summary: 'Bygg en sida med en branch per ny del.',
     goals: [
       'index.html på main.',
-      'En gren för en meny och en för en sidfot.',
-      'Slå ihop båda med main.',
+      'En branch för en meny och en för en sidfot.',
+      'Merga båda med main.',
     ],
   },
 
@@ -200,8 +200,8 @@ export const IDEAS = [
     title: 'Bygg en krock',
     summary: 'Skapa en konflikt med flit, så att du känner igen den.',
     goals: [
-      'Ändra samma rad på två grenar.',
-      'Slå ihop och läs markeringarna med cat.',
+      'Ändra samma rad på två brancher.',
+      'Merga och läs markeringarna med cat.',
       'Laga på tre olika sätt: välj den ena, den andra och båda.',
     ],
   },
@@ -212,7 +212,7 @@ export const IDEAS = [
     title: 'När blir det ingen krock?',
     summary: 'Ta reda på när Git klarar sig själv.',
     goals: [
-      'Ändra olika filer på två grenar och slå ihop.',
+      'Ändra olika filer på två brancher och merga.',
       'Ändra olika rader i samma fil. Krockar det?',
       'Ändra samma rad. Skriv ner vad du kom fram till.',
     ],
@@ -276,9 +276,9 @@ export const IDEAS = [
     title: 'Din första pull request',
     summary: 'Gör en pull request på riktiga GitHub.',
     goals: [
-      'Gör en gren i ditt eget repo på github.com och pusha den.',
+      'Gör en branch i ditt eget repo på github.com och pusha den.',
       'Öppna en pull request och skriv vad ändringen gör.',
-      'Granska den själv och slå ihop den.',
+      'Granska den själv och merga den.',
     ],
   },
   {

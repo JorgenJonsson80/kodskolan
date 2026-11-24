@@ -27,7 +27,7 @@ export const ASYNC = [
     title: 'async def',
     xp: 15,
     description:
-      'En vägfunktion kan vara async. Det gör ingen skillnad för den som anropar – men stor skillnad för servern.',
+      'En route-funktion kan vara async. Det gör ingen skillnad för den som anropar – men stor skillnad för servern.',
     explain:
       "`async def` gör en funktion **asynkron**: den kan pausa och vänta på något (ett nätverksanrop, en databas, en AI-modell) utan att hela servern står still. Under tiden kan servern ta hand om andra anrop.\n\nFör den som anropar API:et ser det ut precis som förut.\n\nI Kodskolan är tiden på låtsas: en väntan på två sekunder går direkt, men testerna mäter att två sekunder har gått med `__tid('/väg')`.",
     example: "@app.get('/')\nasync def start():\n    return {'async': True}",
@@ -68,7 +68,7 @@ export const ASYNC = [
     starterCode: `${IMPORT}${VADER}`,
     solution: `${IMPORT}${VADER}\n\n@app.get('/vader/{stad}')\nasync def vader(stad: str):\n    return await hamta_vader(stad)\n`,
     hints: [
-      'Vägen måste vara async def för att kunna använda await.',
+      'Routen måste vara async def för att kunna använda await.',
       'await hamta_vader(stad)',
       "@app.get('/vader/{stad}')\nasync def vader(stad: str):\n    return await hamta_vader(stad)",
     ],

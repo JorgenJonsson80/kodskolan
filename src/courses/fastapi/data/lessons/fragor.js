@@ -1,5 +1,5 @@
 // Bana 3: frågor i adressen (query-parametrar). Allt efter ? i adressen.
-// Parametrar som inte står i vägen blir frågor.
+// Parametrar som inte står i routen blir frågor.
 
 const IMPORT = 'from fastapi import FastAPI\n\napp = FastAPI()\n';
 
@@ -21,14 +21,14 @@ export const FRAGOR = [
     description:
       'Efter ? i en adress kommer frågor: /hej?namn=Ada. Så skickar man med extra uppgifter.',
     explain:
-      "En parameter i funktionen som **inte** står i vägen blir en **fråga** (query-parameter):\n\n`@app.get('/hej')` och `def hej(namn: str):`\n\nNu anropas den som `/hej?namn=Ada`. Saknas frågan svarar FastAPI 422 – den är obligatorisk.",
+      "En parameter i funktionen som **inte** står i routen blir en **fråga** (query-parameter):\n\n`@app.get('/hej')` och `def hej(namn: str):`\n\nNu anropas den som `/hej?namn=Ada`. Saknas frågan svarar FastAPI 422 – den är obligatorisk.",
     example:
       "@app.get('/sok')\ndef sok(ord: str):\n    return {'du sokte': ord}",
     task: "Uppgift: `/hej?namn=Ada` ska svara `{'halsning': 'Hej Ada!'}`.",
     starterCode: IMPORT,
     solution: `${IMPORT}\n\n@app.get('/hej')\ndef hej(namn: str):\n    return {'halsning': f'Hej {namn}!'}\n`,
     hints: [
-      "Vägen är bara '/hej' – frågan står inte i vägen.",
+      "Routen är bara '/hej' – frågan står inte i routen.",
       'def hej(namn: str):',
       "return {'halsning': f'Hej {namn}!'}",
     ],
@@ -87,7 +87,7 @@ export const FRAGOR = [
     description:
       'Typerna fungerar likadant för frågor: int och float görs om till tal.',
     explain:
-      'Flera frågor skiljs åt med `&`: `/rakna?a=2&b=3`.\n\nMed `a: int` blir `"2"` talet `2`, och `?a=två` ger 422 – precis som i vägen.',
+      'Flera frågor skiljs åt med `&`: `/rakna?a=2&b=3`.\n\nMed `a: int` blir `"2"` talet `2`, och `?a=två` ger 422 – precis som i routen.',
     example:
       "@app.get('/medel')\ndef medel(a: float, b: float):\n    return {'medel': (a + b) / 2}",
     task: "Uppgift: `/gange?a=6&b=7` ska svara `{'svar': 42}`. Båda är heltal, och `b` ska vara `1` om den inte skickas med.",
@@ -267,12 +267,12 @@ export const FRAGOR = [
   {
     id: 'fa-fragor-08',
     track: 'fragor',
-    title: 'Väg och fråga tillsammans',
+    title: 'Route och fråga tillsammans',
     xp: 20,
     description:
-      'En väg kan ha både en variabel i adressen och frågor efter ?.',
+      'En route kan ha både en variabel i adressen och frågor efter ?.',
     explain:
-      'FastAPI vet vilket som är vilket: står namnet i vägen (`{id}`) kommer det från adressen, annars är det en fråga.\n\n`/bocker/2?kort=true` ger `id = 2` och `kort = True`.',
+      'FastAPI vet vilket som är vilket: står namnet i routen (`{id}`) kommer det från adressen, annars är det en fråga.\n\n`/bocker/2?kort=true` ger `id = 2` och `kort = True`.',
     example:
       "@app.get('/stad/{namn}')\ndef stad(namn: str, versaler: bool = False):\n    return {'stad': namn.upper() if versaler else namn}",
     task: "Uppgift: `/bocker/{id}` ska svara med boken. Med `?kort=true` ska svaret bara vara `{'titel': …}`.",

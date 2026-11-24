@@ -183,9 +183,9 @@ export const DATABAS = [
     title: 'Databasen som beroende',
     xp: 25,
     description:
-      'Vägarna ska inte hämta databasen själva. De får den från ett beroende – med yield.',
+      'Routes ska inte hämta databasen själva. De får den från ett beroende – med yield.',
     explain:
-      "Ett beroende med `yield` delas i två: det före `yield` körs innan vägen, och det efter körs när svaret är skickat.\n\n```\ndef hamta_db():\n    db = sqlite3.connect('butik.db')\n    try:\n        yield db\n    finally:\n        db.close()\n```\n\nSå ser det ut i en riktig app: en anslutning per anrop, som alltid stängs.\n\nHär i webbläsaren delar alla anrop samma databas i minnet (annars vore den tom varje gång), så vårt `hamta_db` bara lämnar ut den. Men vägarna skrivs precis som i en riktig app: `db=Depends(hamta_db)`.",
+      "Ett beroende med `yield` delas i två: det före `yield` körs innan routen, och det efter körs när svaret är skickat.\n\n```\ndef hamta_db():\n    db = sqlite3.connect('butik.db')\n    try:\n        yield db\n    finally:\n        db.close()\n```\n\nSå ser det ut i en riktig app: en anslutning per anrop, som alltid stängs.\n\nHär i webbläsaren delar alla anrop samma databas i minnet (annars vore den tom varje gång), så vårt `hamta_db` bara lämnar ut den. Men routes skrivs precis som i en riktig app: `db=Depends(hamta_db)`.",
     example:
       "@app.get('/djur')\ndef djur(db=Depends(hamta_db)):\n    return [dict(r) for r in db.execute('select * from djur')]",
     task: "Uppgift: `hamta_db` finns. Låt `GET /varor` och `GET /antal` (som svarar `{'antal': …}`) få databasen med `Depends(hamta_db)`. Döp parametern till `anslutning`, så syns det att den kommer från beroendet.",

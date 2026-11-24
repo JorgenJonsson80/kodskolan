@@ -73,7 +73,7 @@ export const CRUD = [
     title: 'Hämta en och alla',
     xp: 15,
     description:
-      'Två GET-vägar hör till nästan varje sak i ett API: alla, och en med id.',
+      'Två GET-routes hör till nästan varje sak i ett API: alla, och en med id.',
     explain:
       'Det här mönstret kommer du se överallt:\n\n- `GET /uppgifter` – alla\n- `GET /uppgifter/{id}` – en\n- `POST /uppgifter` – skapa\n- `PUT /uppgifter/{id}` – byt ut\n- `PATCH /uppgifter/{id}` – ändra en del\n- `DELETE /uppgifter/{id}` – ta bort\n\nTillsammans kallas de **CRUD**: Create, Read, Update, Delete. `hitta(id)` finns redan och svarar 404.',
     example:
@@ -241,19 +241,19 @@ export const CRUD = [
   {
     id: 'fa-crud-06',
     track: 'crud',
-    title: 'Fasta vägar före id',
+    title: 'Fasta routes före id',
     xp: 20,
     description:
-      'Statistik över alla uppgifter är också en väg. Kom ihåg ordningen från bana 2.',
+      'Statistik över alla uppgifter är också en route. Kom ihåg ordningen från bana 2.',
     explain:
-      "`/uppgifter/statistik` passar också `/uppgifter/{id}`. Står `{id}` först försöker FastAPI göra `'statistik'` till ett heltal – och svarar 422.\n\nLösningen är densamma som förut: den fasta vägen först.",
+      "`/uppgifter/statistik` passar också `/uppgifter/{id}`. Står `{id}` först försöker FastAPI göra `'statistik'` till ett heltal – och svarar 422.\n\nLösningen är densamma som förut: den fasta routen först.",
     example:
       "@app.get('/bocker/senaste')\ndef senaste():\n    return BOCKER[-1]\n\n@app.get('/bocker/{id}')\ndef en(id: int):\n    return hitta(id)",
-    task: "Uppgift: Lägg till `GET /uppgifter/statistik` som svarar `{'totalt': …, 'klara': …, 'kvar': …}`, så att den fungerar trots vägen med `{id}`.",
+    task: "Uppgift: Lägg till `GET /uppgifter/statistik` som svarar `{'totalt': …, 'klara': …, 'kvar': …}`, så att den fungerar trots routen med `{id}`.",
     starterCode: `${BAS}\n\n@app.get('/uppgifter/{id}')\ndef en(id: int):\n    return hitta(id)\n`,
     solution: `${BAS}\n\n@app.get('/uppgifter/statistik')\ndef statistik():\n    klara = len([u for u in UPPGIFTER if u['klar']])\n    return {'totalt': len(UPPGIFTER), 'klara': klara, 'kvar': len(UPPGIFTER) - klara}\n\n\n@app.get('/uppgifter/{id}')\ndef en(id: int):\n    return hitta(id)\n`,
     hints: [
-      'Den nya vägen ska stå ovanför /uppgifter/{id}.',
+      'Den nya routen ska stå ovanför /uppgifter/{id}.',
       "klara = len([u for u in UPPGIFTER if u['klar']])",
       "return {'totalt': len(UPPGIFTER), 'klara': klara, 'kvar': len(UPPGIFTER) - klara}",
     ],
@@ -277,7 +277,7 @@ export const CRUD = [
     title: 'En lista i en sak',
     xp: 25,
     description:
-      'En inköpslista har varor. Varorna får egna vägar under listan: /listor/1/varor.',
+      'En inköpslista har varor. Varorna får egna routes under listan: /listor/1/varor.',
     explain:
       'Saker som hör till något annat får adresser **under** det:\n\n- `GET /listor/1/varor` – varorna i lista 1\n- `POST /listor/1/varor` – lägg till en vara i lista 1\n\nHitta listan först (404 om den saknas), och arbeta sedan med dess egen lista.',
     example:
@@ -321,7 +321,7 @@ export const CRUD = [
     description:
       'En knapp som "Rensa klara" tar bort alla som är klara på en gång.',
     explain:
-      "En DELETE-väg kan också ta bort flera saker. Det enklaste är att bygga en ny lista med det som ska **behållas**, och lägga den i den gamla:\n\n`UPPGIFTER[:] = [u for u in UPPGIFTER if not u['klar']]`\n\n`[:] =` byter ut innehållet i listan i stället för att skapa en ny variabel – så att alla som använder `UPPGIFTER` ser ändringen.\n\nEtt bra API berättar hur många som togs bort, så här svarar vi 200 med ett antal i stället för 204.",
+      "En DELETE-route kan också ta bort flera saker. Det enklaste är att bygga en ny lista med det som ska **behållas**, och lägga den i den gamla:\n\n`UPPGIFTER[:] = [u for u in UPPGIFTER if not u['klar']]`\n\n`[:] =` byter ut innehållet i listan i stället för att skapa en ny variabel – så att alla som använder `UPPGIFTER` ser ändringen.\n\nEtt bra API berättar hur många som togs bort, så här svarar vi 200 med ett antal i stället för 204.",
     example:
       "@app.delete('/korg')\ndef tom_korg():\n    antal = len(KORG)\n    KORG.clear()\n    return {'borttagna': antal}",
     task: "Uppgift: `DELETE /uppgifter/klara` ska ta bort alla klara uppgifter och svara `{'borttagna': …}`.",
@@ -357,9 +357,9 @@ export const CRUD = [
     title: 'Hela CRUD:en',
     xp: 30,
     description:
-      'Nu sätter du ihop allt: ett API för anteckningar med alla fem vägarna.',
+      'Nu sätter du ihop allt: ett API för anteckningar med alla fem routes.',
     explain:
-      'Fem vägar, en hjälpfunktion och två modeller. Det här är ryggraden i nästan varje app: en anteckningsapp, en att-göra-lista, en bokhylla.\n\nBörja med `hitta(id)` och modellerna, och lägg sedan till en väg i taget. Testa varje väg med 📮 innan du går vidare.',
+      'Fem routes, en hjälpfunktion och två modeller. Det här är ryggraden i nästan varje app: en anteckningsapp, en att-göra-lista, en bokhylla.\n\nBörja med `hitta(id)` och modellerna, och lägg sedan till en route i taget. Testa varje route med 📮 innan du går vidare.',
     example: '# GET /x, GET /x/{id}, POST /x, PATCH /x/{id}, DELETE /x/{id}',
     task: 'Uppgift: Anteckningar har `id`, `text` och `viktig` (bool, standard False). Gör `GET /anteckningar`, `GET /anteckningar/{id}`, `POST /anteckningar` (201, nytt id), `PATCH /anteckningar/{id}` och `DELETE /anteckningar/{id}` (204). Okända id ger 404.',
     starterCode: `${IMPORT}\nANTECKNINGAR = []\n`,

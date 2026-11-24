@@ -14,17 +14,17 @@ export const FELSOK = [
   {
     id: 'fa-felsok-01',
     track: 'felsok',
-    title: 'Vägen som inte finns',
+    title: 'Routen som inte finns',
     xp: 20,
     description: 'Koden ser rätt ut, men /meny svarar 404.',
     explain:
-      'Felsökning börjar med att **titta på svaret**. 404 betyder att FastAPI inte känner till vägen alls.\n\nUnder svaret står vilka vägar appen har. Saknas `/meny` där har FastAPI aldrig fått reda på den – kolla raden ovanför funktionen.',
+      'Felsökning börjar med att **titta på svaret**. 404 betyder att FastAPI inte känner till routen alls.\n\nUnder svaret står vilka routes appen har. Saknas `/meny` där har FastAPI aldrig fått reda på den – kolla raden ovanför funktionen.',
     example: "@app.get('/meny')\ndef meny():\n    return MENY",
     task: 'Uppgift: Laga appen så att `/meny` svarar med menyn.',
     starterCode: `${IMPORT}\nMENY = ['Kaffe', 'Te', 'Bulle']\n\n\napp.get('/meny')\ndef meny():\n    return MENY\n`,
     solution: `${IMPORT}\nMENY = ['Kaffe', 'Te', 'Bulle']\n\n\n@app.get('/meny')\ndef meny():\n    return MENY\n`,
     hints: [
-      'Vilka vägar står under svaret?',
+      'Vilka routes står under svaret?',
       'En decorator börjar med ett speciellt tecken.',
       "@app.get('/meny')",
     ],
@@ -98,18 +98,18 @@ export const FELSOK = [
   {
     id: 'fa-felsok-04',
     track: 'felsok',
-    title: 'Fel väg svarar',
+    title: 'Fel route svarar',
     xp: 20,
-    description: '/hundar/ny ger 422, fast vägen finns.',
+    description: '/hundar/ny ger 422, fast routen finns.',
     explain:
-      'Läs 422-svaret: det säger att `id` inte är ett heltal. Men vägen `/hundar/ny` har ju inget id?\n\nTitta på ordningen. FastAPI tar den första vägen som passar.',
-    example: '# Fasta vägar först, vägar med {variabler} sist.',
+      'Läs 422-svaret: det säger att `id` inte är ett heltal. Men routen `/hundar/ny` har ju inget id?\n\nTitta på ordningen. FastAPI tar den första routen som passar.',
+    example: '# Fasta routes först, routes med {variabler} sist.',
     task: "Uppgift: Laga appen så att `/hundar/ny` svarar `{'namn': 'Valp'}` och `/hundar/1` fortfarande fungerar.",
     starterCode: `${IMPORT}\n${HUNDAR}\n\n@app.get('/hundar/{id}')\ndef en_hund(id: int):\n    return HUNDAR[id - 1]\n\n\n@app.get('/hundar/ny')\ndef ny_hund():\n    return {'namn': 'Valp'}\n`,
     solution: `${IMPORT}\n${HUNDAR}\n\n@app.get('/hundar/ny')\ndef ny_hund():\n    return {'namn': 'Valp'}\n\n\n@app.get('/hundar/{id}')\ndef en_hund(id: int):\n    return HUNDAR[id - 1]\n`,
     hints: [
       'Läs loc i 422-svaret.',
-      'Vilken väg står först?',
+      'Vilken route står först?',
       'Flytta /hundar/ny ovanför /hundar/{id}.',
     ],
     tests: [
@@ -204,7 +204,7 @@ export const FELSOK = [
     starterCode: `${IMPORT}\nKONTON = [{'namn': 'ada', 'losenord': 'hemligt1'}]\n\n\nclass KontoIn(BaseModel):\n    namn: str\n    losenord: str\n\n\nclass KontoUt(BaseModel):\n    namn: str\n\n\n@app.get('/konton')\ndef konton():\n    return KONTON\n\n\n@app.post('/konton', status_code=201)\ndef nytt(konto: KontoIn):\n    KONTON.append(konto.model_dump())\n    return konto\n`,
     solution: `${IMPORT}\nKONTON = [{'namn': 'ada', 'losenord': 'hemligt1'}]\n\n\nclass KontoIn(BaseModel):\n    namn: str\n    losenord: str\n\n\nclass KontoUt(BaseModel):\n    namn: str\n\n\n@app.get('/konton', response_model=list[KontoUt])\ndef konton():\n    return KONTON\n\n\n@app.post('/konton', status_code=201, response_model=KontoUt)\ndef nytt(konto: KontoIn):\n    KONTON.append(konto.model_dump())\n    return konto\n`,
     hints: [
-      'Båda vägarna behöver response_model.',
+      'Båda routes behöver response_model.',
       'GET svarar med en lista: list[KontoUt].',
       'POST svarar med ett konto: response_model=KontoUt.',
     ],

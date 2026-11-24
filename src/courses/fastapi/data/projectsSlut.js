@@ -514,7 +514,7 @@ export const PROJECTS_SLUT = [
       ),
       step(
         'Billigast',
-        'En async-väg kan anropa en annan med await. min med key=dict.get hittar nyckeln med lägst värde.',
+        'En async-route kan anropa en annan med await. min med key=dict.get hittar nyckeln med lägst värde.',
         "`/billigast` svarar `{'butik': …, 'pris': …}` bland butikerna som svarade.",
         PRIS3,
         [
@@ -555,12 +555,12 @@ export const PROJECTS_SLUT = [
       ),
       step(
         'Antalet',
-        'Vägen med {id} står först och tror att "antal" är ett id.',
+        'Routen med {id} står först och tror att "antal" är ett id.',
         '`/bocker/antal` svarar 422. Laga det.',
         LAGA_OK,
         [
           'Läs 422-svaret: vilken parameter klagar det på?',
-          'Ordningen på vägarna.',
+          'Ordningen på routes.',
           'Flytta /bocker/antal först.',
         ],
         [t('Antal', "__get('/bocker/antal').json", { antal: 2 })],
@@ -854,7 +854,7 @@ export const PROJECTS_SLUT = [
         'Räkna texterna per nyckel i `ANVANT`. Mer än 20 totalt: 429.',
         SAMM3,
         [
-          'x_api_nyckel: str | None = Header(default=None) i vägen också.',
+          'x_api_nyckel: str | None = Header(default=None) i routen också.',
           'ANVANT[nyckel] = ANVANT.get(nyckel, 0) + len(t.texter)',
           'if ANVANT[x_api_nyckel] > 20:\n    raise HTTPException(status_code=429, …)',
         ],

@@ -9,7 +9,7 @@ export const SKICKA = [
     description:
       'GET hämtar. POST skickar något till appen – ett meddelande, en ny hund, en beställning.',
     explain:
-      "`@app.post('/meddelande')` tar bara emot POST. Webbläsarens adressfält gör alltid GET, så POST testar du med 📮 (välj POST).\n\nSamma adress kan ha en GET-väg och en POST-väg med olika funktioner.",
+      "`@app.post('/meddelande')` tar bara emot POST. Webbläsarens adressfält gör alltid GET, så POST testar du med 📮 (välj POST).\n\nSamma adress kan ha en GET-route och en POST-route med olika funktioner.",
     example: "@app.post('/gilla')\ndef gilla():\n    return 'Tack!'",
     task: "Uppgift: Skapa `@app.post('/meddelande')` som svarar `'Tack för ditt meddelande'`.",
     starterCode: 'from flask import Flask, request\n\napp = Flask(__name__)\n',
@@ -209,7 +209,7 @@ export const SKICKA = [
     solution:
       "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [{'id': 1, 'namn': 'Bamse'}]\n\n\n@app.get('/hundar')\ndef lista():\n    return hundar\n\n\n@app.post('/hundar')\ndef ny_hund():\n    data = request.get_json()\n    hund = {'id': len(hundar) + 1, 'namn': data['namn']}\n    hundar.append(hund)\n    return hund, 201\n",
     hints: [
-      'En väg till med @app.get.',
+      'En route till med @app.get.',
       'Funktionen behöver ett eget namn.',
       "@app.get('/hundar')\ndef lista():\n    return hundar",
     ],

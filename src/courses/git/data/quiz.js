@@ -155,26 +155,26 @@ export const QUIZ = {
     {
       question: 'Vad gör git switch -c ny?',
       options: [
-        'Skapar grenen ny och byter till den',
-        'Byter till grenen ny om den finns',
-        'Tar bort grenen ny',
-        'Slår ihop ny med main',
+        'Skapar branchen ny och byter till den',
+        'Byter till branchen ny om den finns',
+        'Tar bort branchen ny',
+        'Mergar ny med main',
       ],
-      explain: '-c skapar grenen först.',
+      explain: '-c skapar branchen först.',
     },
     {
-      question: 'Du vill ta in grenen meny i main. Var ska du stå?',
+      question: 'Du vill ta in branchen meny i main. Var ska du stå?',
       options: [
         'På main',
         'På meny',
         'Det spelar ingen roll',
-        'På en tredje gren',
+        'På en tredje branch',
       ],
       explain:
-        'Man står på grenen som ska få ändringarna och kör git merge med den andra.',
+        'Man står på branchen som ska få ändringarna och kör git merge med den andra.',
     },
     {
-      question: 'Vad är en gren egentligen?',
+      question: 'Vad är en branch egentligen?',
       options: [
         'En etikett som pekar på en commit',
         'En kopia av alla filer',
@@ -182,31 +182,31 @@ export const QUIZ = {
         'En server',
       ],
       explain:
-        'En gren är ett namn på en commit som flyttas fram när du committar.',
+        'En branch är ett namn på en commit som flyttas fram när du committar.',
     },
     {
       question: 'Vad betyder Fast-forward?',
       options: [
         'main flyttades fram utan merge-commit',
         'Det blev en konflikt',
-        'Grenen togs bort',
+        'Branchen togs bort',
         'Allt ångrades',
       ],
       explain:
-        'Har main inte ändrats sedan grenen skapades räcker det att flytta fram main.',
+        'Har main inte ändrats sedan branchen skapades räcker det att flytta fram main.',
     },
   ],
   konflikter: [
     {
       question: 'Vad står mellan <<<<<<< HEAD och =======?',
       options: [
-        'Din version, från grenen du står på',
-        'Den andra grenens version',
+        'Din version, från branchen du står på',
+        'Den andra branchens version',
         'Den gamla versionen',
         'Git:s förslag',
       ],
       explain:
-        'HEAD är där du står. Efter ======= kommer den andra grenens version.',
+        'HEAD är där du står. Efter ======= kommer den andra branchens version.',
     },
     {
       question: 'Hur säger du till Git att en konflikt är lagad?',
@@ -221,9 +221,9 @@ export const QUIZ = {
     {
       question: 'När blir det en konflikt?',
       options: [
-        'När två grenar ändrat samma rad olika',
-        'Varje gång man slår ihop',
-        'När två grenar ändrat olika filer',
+        'När två brancher ändrat samma rad olika',
+        'Varje gång man mergar',
+        'När två brancher ändrat olika filer',
         'När man glömt git status',
       ],
       explain: 'Olika filer och olika rader slår Git ihop själv.',
@@ -233,7 +233,7 @@ export const QUIZ = {
       options: [
         'Markeringarna <<<<<<<, ======= och >>>>>>>',
         'Hela filen',
-        'Grenen',
+        'Branchen',
         'Alla commits',
       ],
       explain: 'Filen ska se ut som den ska, utan Gits markeringar.',
@@ -246,7 +246,7 @@ export const QUIZ = {
         'Hämtar ett helt repo med historik till en ny mapp',
         'Skickar dina commits till GitHub',
         'Kopierar en fil',
-        'Skapar en ny gren',
+        'Skapar en ny branch',
       ],
       explain: 'clone hämtar allt, och kopplar origin åt dig.',
     },
@@ -268,7 +268,7 @@ export const QUIZ = {
         'Tvinga igenom pushen',
         'Ångra senaste push',
       ],
-      explain: '-u sätter upstream: grenen kopplas till origin/main.',
+      explain: '-u sätter upstream: branchen kopplas till origin/main.',
     },
     {
       question: 'Vad heter fjärren nästan alltid?',
@@ -280,12 +280,12 @@ export const QUIZ = {
     {
       question: 'Vad är en pull request?',
       options: [
-        'En förfrågan på GitHub om att ta in en gren i main',
+        'En förfrågan på GitHub om att ta in en branch i main',
         'Ett annat namn för git pull',
-        'En gren som heter pull',
+        'En branch som heter pull',
         'En kopia av repot',
       ],
-      explain: 'I en PR kan teamet läsa, kommentera och sedan slå ihop grenen.',
+      explain: 'I en PR kan teamet läsa, kommentera och sedan merga branchen.',
     },
     {
       question: 'En dålig commit är redan pushad. Hur ångrar du den säkrast?',
@@ -301,22 +301,22 @@ export const QUIZ = {
     {
       question: 'Var ska halvfärdiga ändringar ligga?',
       options: [
-        'På en egen gren',
+        'På en egen branch',
         'På main',
         'I en zip-fil',
         'Bara på din dator utan Git',
       ],
-      explain: 'main ska alltid fungera. Det halvklara bor på grenar.',
+      explain: 'main ska alltid fungera. Det halvklara bor på brancher.',
     },
     {
-      question: 'Din PR är ihopslagen på GitHub. Vad gör du hos dig?',
+      question: 'Din PR är mergad på GitHub. Vad gör du hos dig?',
       options: [
-        'git switch main, git pull och git branch -d grenen',
+        'git switch main, git pull och git branch -d branchen',
         'git push igen',
         'git merge main',
         'Ingenting',
       ],
-      explain: 'Hämta den nya main och ta bort grenen som är klar.',
+      explain: 'Hämta den nya main och ta bort branchen som är klar.',
     },
   ],
 };

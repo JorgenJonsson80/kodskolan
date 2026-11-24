@@ -300,9 +300,9 @@ export const DATABAS = [
     title: 'En hjälpfunktion för frågor',
     xp: 15,
     description:
-      'Samma tre rader i varje väg: execute, fetchall, dict. Lägg dem i en funktion.',
+      'Samma tre rader i varje route: execute, fetchall, dict. Lägg dem i en funktion.',
     explain:
-      '`fraga(sql, parametrar)` ger en lista med dictionaries. Då blir vägfunktionerna en rad långa.',
+      '`fraga(sql, parametrar)` ger en lista med dictionaries. Då blir route-funktionerna en rad långa.',
     example:
       'def fraga(sql, parametrar=()):\n    return [dict(r) for r in db.execute(sql, parametrar).fetchall()]',
     task: 'Uppgift: Skriv `fraga(sql, parametrar=())` och använd den i `GET /ras/<ras>`, som svarar med hundarna av den rasen.',

@@ -17,7 +17,7 @@ export const FORSTA = [
     example:
       "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/')\ndef start():\n    return {'meddelande': 'Välkommen!'}",
     task: "Uppgift: Gör så att `/` svarar `{'meddelande': 'Hej, API!'}`.",
-    starterCode: `${IMPORT}\n# Skriv vägen här\n`,
+    starterCode: `${IMPORT}\n# Skriv routen här\n`,
     solution: `${IMPORT}\n\n@app.get('/')\ndef start():\n    return {'meddelande': 'Hej, API!'}\n`,
     hints: [
       "Raden före funktionen: @app.get('/')",
@@ -42,7 +42,7 @@ export const FORSTA = [
     explain:
       'Ett program skickar ett **anrop** (request), och API:et skickar tillbaka ett **svar** (response). Svaret har en statuskod och ett innehåll.\n\nDe vanligaste:\n- `200` – OK\n- `404` – finns inte\n- `500` – appen kraschade\n\nFastAPI sätter `200` själv när funktionen returnerar något. Statuskoden står först under 📮 Svaret.',
     example: "@app.get('/ping')\ndef ping():\n    return {'svar': 'pong'}",
-    task: "Uppgift: Skapa vägen `/status` som svarar `{'status': 'ok'}`. Ändra adressen i 📮 till `/status` och kör koden för att se svaret.",
+    task: "Uppgift: Skapa routen `/status` som svarar `{'status': 'ok'}`. Ändra adressen i 📮 till `/status` och kör koden för att se svaret.",
     starterCode: IMPORT,
     solution: `${IMPORT}\n\n@app.get('/status')\ndef status():\n    return {'status': 'ok'}\n`,
     hints: [
@@ -67,19 +67,19 @@ export const FORSTA = [
   {
     id: 'fa-forsta-03',
     track: 'forsta',
-    title: 'Flera vägar',
+    title: 'Flera routes',
     xp: 10,
     description:
-      'Ett API kan ha hur många vägar som helst. Varje väg får sin egen funktion.',
+      'Ett API kan ha hur många routes som helst. Varje route får sin egen funktion.',
     explain:
-      'Varje adress får en egen `@app.get` och en egen funktion. Ge funktionerna olika namn, annars skriver den andra över den första.\n\nEn sådan funktion kallas en **vägfunktion**. Under svaret står alla vägar appen har.',
+      'Varje adress får en egen `@app.get` och en egen funktion. Ge funktionerna olika namn, annars skriver den andra över den första.\n\nAdressen och funktionen kallas tillsammans en **route** – en väg in i appen – och funktionen en **route-funktion**. Under svaret står alla routes appen har.',
     example:
       "@app.get('/')\ndef start():\n    return {'sida': 'start'}\n\n@app.get('/hjalp')\ndef hjalp():\n    return {'sida': 'hjälp'}",
     task: "Uppgift: `/` ska svara `{'namn': 'Bokhyllan'}` och `/om` ska svara `{'version': 1, 'skapare': 'Kodskolan'}`.",
     starterCode: IMPORT,
     solution: `${IMPORT}\n\n@app.get('/')\ndef start():\n    return {'namn': 'Bokhyllan'}\n\n\n@app.get('/om')\ndef om():\n    return {'version': 1, 'skapare': 'Kodskolan'}\n`,
     hints: [
-      "Två vägar: @app.get('/') och @app.get('/om').",
+      "Två routes: @app.get('/') och @app.get('/om').",
       'Ge funktionerna olika namn, t.ex. start och om.',
       "@app.get('/om')\ndef om():\n    return {'version': 1, 'skapare': 'Kodskolan'}",
     ],
@@ -131,7 +131,7 @@ export const FORSTA = [
     title: 'Allt blir JSON',
     xp: 10,
     description:
-      'Vad händer om en vägfunktion bara returnerar en text eller ett tal?',
+      'Vad händer om en route-funktion bara returnerar en text eller ett tal?',
     explain:
       'FastAPI svarar **alltid** med JSON. En text blir en JSON-text: `"Hej"` med citattecken. Ett tal blir ett tal, och `True` blir `true`.\n\nTypen står i svarets **content-type**: `application/json`. Det är så programmet som anropar vet hur svaret ska läsas.\n\nListor och dicts kan innehålla allt det här, och andra listor och dicts.',
     example:
@@ -140,7 +140,7 @@ export const FORSTA = [
     starterCode: IMPORT,
     solution: `${IMPORT}\n\n@app.get('/text')\ndef text():\n    return 'Hej'\n\n\n@app.get('/tal')\ndef tal():\n    return 42\n`,
     hints: [
-      'Två vägar: /text och /tal.',
+      'Två routes: /text och /tal.',
       "return 'Hej' fungerar – FastAPI gör om det till JSON.",
       "@app.get('/tal')\ndef tal():\n    return 42",
     ],
@@ -169,9 +169,9 @@ export const FORSTA = [
     title: 'Data utanför funktionen',
     xp: 15,
     description:
-      'Datan behöver inte stå inne i vägfunktionen. Den kan ligga i en variabel som flera vägar delar.',
+      'Datan behöver inte stå inne i route-funktionen. Den kan ligga i en variabel som flera routes delar.',
     explain:
-      'Ett API visar oftast data som finns någon annanstans – i en databas, eller som här, i en variabel högst upp i filen.\n\nFlera vägar kan läsa samma variabel. Ändrar du datan ändras svaret från alla vägar som använder den.\n\nNamn med stora bokstäver, som `MENY`, betyder i Python att värdet inte ska ändras.',
+      'Ett API visar oftast data som finns någon annanstans – i en databas, eller som här, i en variabel högst upp i filen.\n\nFlera routes kan läsa samma variabel. Ändrar du datan ändras svaret från alla routes som använder den.\n\nNamn med stora bokstäver, som `MENY`, betyder i Python att värdet inte ska ändras.',
     example:
       "BOCKER = ['Pippi', 'Emil']\n\n@app.get('/bocker')\ndef bocker():\n    return BOCKER\n\n@app.get('/antal')\ndef antal():\n    return {'antal': len(BOCKER)}",
     task: "Uppgift: `MENY` finns redan. `/meny` ska svara med hela menyn, och `/antal` med `{'antal': 3}` – räkna ut talet med `len`.",
@@ -209,12 +209,12 @@ export const FORSTA = [
   {
     id: 'fa-forsta-07',
     track: 'forsta',
-    title: 'Räkna i vägen',
+    title: 'Räkna i routen',
     xp: 15,
     description:
-      'En vägfunktion är en vanlig Python-funktion. Den kan räkna, loopa och välja innan den svarar.',
+      'En route-funktion är en vanlig Python-funktion. Den kan räkna, loopa och välja innan den svarar.',
     explain:
-      'Allt du kan i Python fungerar i en vägfunktion. Ett API räknar ofta ut något åt den som frågar: en summa, ett medelvärde, det billigaste.\n\nSkriv uträkningen som vanligt och returnera resultatet i en dict, så att svaret har ett namn.',
+      'Allt du kan i Python fungerar i en route-funktion. Ett API räknar ofta ut något åt den som frågar: en summa, ett medelvärde, det billigaste.\n\nSkriv uträkningen som vanligt och returnera resultatet i en dict, så att svaret har ett namn.',
     example:
       "PRISER = [30, 25, 35]\n\n@app.get('/dyrast')\ndef dyrast():\n    return {'pris': max(PRISER)}",
     task: "Uppgift: `/statistik` ska svara med `summa`, `billigast` och `snitt` för `PRISER`. Med priserna i startkoden blir det `{'summa': 90, 'billigast': 25, 'snitt': 30.0}`.",
@@ -245,11 +245,11 @@ export const FORSTA = [
     title: 'GET och andra metoder',
     xp: 15,
     description:
-      'Ett anrop har en metod. GET betyder "hämta". Vad händer med en metod som vägen inte tar emot?',
+      'Ett anrop har en metod. GET betyder "hämta". Vad händer med en metod som routen inte tar emot?',
     explain:
-      'Varje anrop har en **metod** som säger vad den som frågar vill göra:\n- `GET` – hämta\n- `POST` – skicka något nytt\n- `PUT`, `PATCH`, `DELETE` – ändra och ta bort\n\n`@app.get` tar bara emot GET. Får vägen en annan metod svarar FastAPI `405` (fel metod). Finns adressen inte alls blir det `404`.\n\nProva själv: byt metod i 📮 till POST och kör koden.',
+      'Varje anrop har en **metod** som säger vad den som frågar vill göra:\n- `GET` – hämta\n- `POST` – skicka något nytt\n- `PUT`, `PATCH`, `DELETE` – ändra och ta bort\n\n`@app.get` tar bara emot GET. Får routen en annan metod svarar FastAPI `405` (fel metod). Finns adressen inte alls blir det `404`.\n\nProva själv: byt metod i 📮 till POST och kör koden.',
     example: "@app.get('/tid')\ndef tid():\n    return {'klocka': '12:00'}",
-    task: "Uppgift: Gör vägen `/ping` som svarar `{'svar': 'pong'}`. Testerna kollar också att POST till `/ping` ger 405 och att `/pong` ger 404.",
+    task: "Uppgift: Gör routen `/ping` som svarar `{'svar': 'pong'}`. Testerna kollar också att POST till `/ping` ger 405 och att `/pong` ger 404.",
     starterCode: IMPORT,
     solution: `${IMPORT}\n\n@app.get('/ping')\ndef ping():\n    return {'svar': 'pong'}\n`,
     hints: [
@@ -284,10 +284,10 @@ export const FORSTA = [
     description:
       'FastAPI skriver dokumentationen åt dig. Den som ska använda ditt API kan läsa allt på /docs.',
     explain:
-      "FastAPI läser dina vägar och skapar en beskrivning av API:et i formatet **OpenAPI**. I en riktig app visas den som en sida på `/docs`, där man kan prova vägarna direkt.\n\nGe appen ett namn och en beskrivning när du skapar den:\n\n`app = FastAPI(title='Glassbaren', description='Smaker och priser')`\n\nEn **docstring** – en text inom `\"\"\"` först i funktionen – blir vägens beskrivning i dokumentationen.",
+      "FastAPI läser dina routes och skapar en beskrivning av API:et i formatet **OpenAPI**. I en riktig app visas den som en sida på `/docs`, där man kan prova routes direkt.\n\nGe appen ett namn och en beskrivning när du skapar den:\n\n`app = FastAPI(title='Glassbaren', description='Smaker och priser')`\n\nEn **docstring** – en text inom `\"\"\"` först i funktionen – blir routens beskrivning i dokumentationen.",
     example:
       "app = FastAPI(title='Väder', description='Dagens väder')\n\n@app.get('/idag')\ndef idag():\n    \"\"\"Vädret just nu.\"\"\"\n    return {'grader': 18}",
-    task: "Uppgift: Ge appen titeln `'Glassbaren'` och beskrivningen `'Smaker och priser'`. Gör sedan vägen `/smaker` som svarar `['vanilj', 'choklad', 'jordgubb']`, med docstringen `\"\"\"Alla smaker i dag.\"\"\"`.",
+    task: "Uppgift: Ge appen titeln `'Glassbaren'` och beskrivningen `'Smaker och priser'`. Gör sedan routen `/smaker` som svarar `['vanilj', 'choklad', 'jordgubb']`, med docstringen `\"\"\"Alla smaker i dag.\"\"\"`.",
     starterCode: IMPORT,
     solution:
       "from fastapi import FastAPI\n\napp = FastAPI(title='Glassbaren', description='Smaker och priser')\n\n\n@app.get('/smaker')\ndef smaker():\n    \"\"\"Alla smaker i dag.\"\"\"\n    return ['vanilj', 'choklad', 'jordgubb']\n",

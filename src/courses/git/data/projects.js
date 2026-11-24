@@ -28,7 +28,7 @@ const write = (file, lines) =>
     .map((line, index) => `echo "${line}" ${index === 0 ? '>' : '>>'} ${file}`)
     .join('\n');
 
-// Två grenar som ändrar samma rad, så att sammanslagningen krockar.
+// Två brancher som ändrar samma rad, så att mergen krockar.
 const conflict = (dir, file, base, ours, theirs, branch) =>
   [
     `mkdir ${dir}`,
@@ -911,23 +911,23 @@ export const PROJECTS = [
     ],
   }),
 
-  // Bana 5: grenar
+  // Bana 5: brancher
   project({
     id: 'git-proj-tema',
     track: 'grenar',
     title: 'Mörkt tema',
     reward: { emoji: '🌙', name: 'Måne' },
-    summary: 'Prova ett mörkt tema på en egen gren.',
+    summary: 'Prova ett mörkt tema på en egen branch.',
     setup:
       'mkdir sida\ncd sida\ngit init\necho "body { color: black; }" > stil.css\ngit add .\ngit commit -m "Första stilen"',
     setupNote: '📁 Du står på main i repot sida.',
     steps: [
       {
-        title: 'Prova på en gren',
-        why: 'På en egen gren kan du prova vad som helst. main påverkas inte förrän du slår ihop.',
+        title: 'Prova på en branch',
+        why: 'På en egen branch kan du prova vad som helst. main påverkas inte förrän du mergar.',
         xp: 15,
         description: 'Ett mörkt tema, på prov.',
-        task: 'Uppgift: Skapa och byt till grenen `morkt`. Lägg till raden `body { background: black; }` i `stil.css` och committa med `Mörk bakgrund`.',
+        task: 'Uppgift: Skapa och byt till branchen `morkt`. Lägg till raden `body { background: black; }` i `stil.css` och committa med `Mörk bakgrund`.',
         add: 'git switch -c morkt\necho "body { background: black; }" >> stil.css\ngit add .\ngit commit -m "Mörk bakgrund"\n',
         hints: [
           'git switch -c morkt',
@@ -941,7 +941,7 @@ export const PROJECTS = [
       },
       {
         title: 'main är orörd',
-        why: 'Byter du gren byts filerna också. På main finns bara den gamla stilen.',
+        why: 'Byter du branch byts filerna också. På main finns bara den gamla stilen.',
         xp: 10,
         description: 'Kolla att main är som förut.',
         task: 'Uppgift: Byt till `main` och visa `stil.css` med `cat`.',
@@ -962,10 +962,10 @@ export const PROJECTS = [
       },
       {
         title: 'Det blev bra',
-        why: 'När grenen är klar slår du ihop den och tar bort den. Då är main uppdaterad och grenlistan ren.',
+        why: 'När branchen är klar slår du ihop den och tar bort den. Då är main uppdaterad och branchlistan ren.',
         xp: 15,
         description: 'Temat ska in på riktigt.',
-        task: 'Uppgift: Slå ihop `morkt` med main och ta bort grenen `morkt`.',
+        task: 'Uppgift: Merga `morkt` med main och ta bort branchen `morkt`.',
         add: 'git merge morkt\ngit branch -d morkt\n',
         hints: [
           'git merge morkt',
@@ -988,17 +988,17 @@ export const PROJECTS = [
     track: 'grenar',
     title: 'Två idéer samtidigt',
     reward: { emoji: '🍕', name: 'Pizza' },
-    summary: 'Kaféet testar bakverk och drinkar på var sin gren.',
+    summary: 'Kaféet testar bakverk och drinkar på var sin branch.',
     setup:
       'mkdir kafe\ncd kafe\ngit init\necho "Kaffe" > meny.txt\ngit add .\ngit commit -m "Menyn"',
     setupNote: '📁 Du står på main i repot kafe.',
     steps: [
       {
-        title: 'Två grenar',
-        why: 'Du kan ha hur många grenar du vill. Varje idé får en egen.',
+        title: 'Två brancher',
+        why: 'Du kan ha hur många brancher du vill. Varje idé får en egen.',
         xp: 10,
-        description: 'En gren per idé.',
-        task: 'Uppgift: Skapa grenarna `bakverk` och `drinkar` (utan att byta) och lista grenarna.',
+        description: 'En branch per idé.',
+        task: 'Uppgift: Skapa brancherna `bakverk` och `drinkar` (utan att byta) och lista brancherna.',
         add: 'git branch bakverk\ngit branch drinkar\ngit branch\n',
         hints: [
           'git branch bakverk',
@@ -1007,7 +1007,7 @@ export const PROJECTS = [
         ],
         tests: [
           {
-            description: 'Tre grenar',
+            description: 'Tre brancher',
             branches: ['bakverk', 'drinkar', 'main'],
           },
           { description: 'Du står kvar på main', branch: 'main' },
@@ -1015,9 +1015,9 @@ export const PROJECTS = [
       },
       {
         title: 'Jobba på båda',
-        why: 'Filen du skapar på en gren finns bara där. Byter du gren försvinner den – tills du byter tillbaka.',
+        why: 'Filen du skapar på en branch finns bara där. Byter du branch försvinner den – tills du byter tillbaka.',
         xp: 15,
-        description: 'En fil på varje gren.',
+        description: 'En fil på varje branch.',
         task: 'Uppgift: På `bakverk`: skapa `bakverk.txt` med `Bulle` och committa med `Bullar`. På `drinkar`: skapa `drinkar.txt` med `Te` och committa med `Te`.',
         add: 'git switch bakverk\necho "Bulle" > bakverk.txt\ngit add .\ngit commit -m "Bullar"\ngit switch drinkar\necho "Te" > drinkar.txt\ngit add .\ngit commit -m "Te"\n',
         hints: [
@@ -1033,10 +1033,10 @@ export const PROJECTS = [
       },
       {
         title: 'Båda in',
-        why: 'Ändrar grenarna olika filer kan Git slå ihop dem utan att fråga.',
+        why: 'Ändrar brancherna olika filer kan Git merga dem utan att fråga.',
         xp: 15,
         description: 'Båda idéerna blev bra.',
-        task: 'Uppgift: Byt till `main` och slå ihop först `bakverk` och sedan `drinkar`. Lista filerna med `ls`.',
+        task: 'Uppgift: Byt till `main` och merga först `bakverk` och sedan `drinkar`. Lista filerna med `ls`.',
         add: 'git switch main\ngit merge bakverk\ngit merge drinkar\nls\n',
         hints: ['git switch main', 'git merge bakverk', 'git merge drinkar'],
         tests: [
@@ -1052,17 +1052,17 @@ export const PROJECTS = [
     track: 'grenar',
     title: 'Laga buggen',
     reward: { emoji: '🐛', name: 'Skalbagge' },
-    summary: 'Poängen börjar på -1. Laga det på en gren, som proffsen gör.',
+    summary: 'Poängen börjar på -1. Laga det på en branch, som proffsen gör.',
     setup: `mkdir spel\ncd spel\ngit init\n${write('spel.py', ['liv = 3', 'poang = -1'])}\ngit add .\ngit commit -m "Spelet"`,
     setupNote:
       '📁 Du står på main i repot spel. spel.py har en bugg: poang = -1.',
     steps: [
       {
-        title: 'En gren för lagningen',
-        why: 'Även små lagningar görs på en gren. Då kan någon titta på ändringen innan den kommer in.',
+        title: 'En branch för lagningen',
+        why: 'Även små lagningar görs på en branch. Då kan någon titta på ändringen innan den kommer in.',
         xp: 15,
         description: 'Laga och se ändringen.',
-        task: 'Uppgift: Skapa och byt till grenen `laga-poang`. Skriv om `spel.py` så att raderna är `liv = 3` och `poang = 0`, och visa ändringen med `git diff`.',
+        task: 'Uppgift: Skapa och byt till branchen `laga-poang`. Skriv om `spel.py` så att raderna är `liv = 3` och `poang = 0`, och visa ändringen med `git diff`.',
         add: `git switch -c laga-poang\n${write('spel.py', ['liv = 3', 'poang = 0'])}\ngit diff\n`,
         hints: [
           'git switch -c laga-poang',
@@ -1078,7 +1078,7 @@ export const PROJECTS = [
         title: 'Committa',
         why: 'Ett meddelande som säger vad som lagades hjälper den som läser historien sedan.',
         xp: 10,
-        description: 'Spara lagningen på grenen.',
+        description: 'Spara lagningen på branchen.',
         task: 'Uppgift: Committa med `Poängen börjar på 0`.',
         add: 'git add .\ngit commit -m "Poängen börjar på 0"\n',
         hints: [
@@ -1087,16 +1087,16 @@ export const PROJECTS = [
           'git status: allt rent.',
         ],
         tests: [
-          { description: 'Två commits på grenen', commits: 2 },
+          { description: 'Två commits på branchen', commits: 2 },
           { description: 'Meddelandet', message: 'Poängen börjar på 0' },
         ],
       },
       {
         title: 'In i main',
-        why: 'När main inte ändrats under tiden spolar Git bara fram main till grenen – det kallas fast-forward.',
+        why: 'När main inte ändrats under tiden spolar Git bara fram main till branchen – det kallas fast-forward.',
         xp: 15,
         description: 'Lagningen ska in.',
-        task: 'Uppgift: Byt till `main`, slå ihop `laga-poang`, ta bort grenen och visa historien med `git log --oneline`.',
+        task: 'Uppgift: Byt till `main`, merga `laga-poang`, ta bort branchen och visa historien med `git log --oneline`.',
         add: 'git switch main\ngit merge laga-poang\ngit branch -d laga-poang\ngit log --oneline\n',
         hints: [
           'git switch main',
@@ -1131,14 +1131,14 @@ export const PROJECTS = [
       'lordag',
     ),
     setupNote:
-      '📁 Du står på main i repot affisch. main säger söndag, grenen lordag säger lördag.',
+      '📁 Du står på main i repot affisch. main säger söndag, branchen lordag säger lördag.',
     steps: [
       {
         title: 'Krocken',
-        why: 'När två grenar ändrat samma rad vet Git inte vilken som gäller. Den skriver in båda i filen, med markeringar.',
+        why: 'När två brancher ändrat samma rad vet Git inte vilken som gäller. Den skriver in båda i filen, med markeringar.',
         xp: 10,
-        description: 'Slå ihop och se vad som händer.',
-        task: 'Uppgift: Slå ihop `lordag` och visa `affisch.txt` med `cat`.',
+        description: 'Merga och se vad som händer.',
+        task: 'Uppgift: Merga `lordag` och visa `affisch.txt` med `cat`.',
         add: 'git merge lordag\ncat affisch.txt\n',
         hints: [
           'git merge lordag',
@@ -1172,9 +1172,9 @@ export const PROJECTS = [
       },
       {
         title: 'Klart',
-        why: 'Commiten avslutar sammanslagningen. Den får två föräldrar – en från varje gren.',
+        why: 'Commiten avslutar mergen. Den får två föräldrar – en från varje branch.',
         xp: 15,
-        description: 'Avsluta sammanslagningen.',
+        description: 'Avsluta mergen.',
         task: 'Uppgift: Committa med `Festen blir på lördag` och visa historien med `git log --oneline`.',
         add: 'git commit -m "Festen blir på lördag"\ngit log --oneline\n',
         hints: [
@@ -1183,7 +1183,7 @@ export const PROJECTS = [
           'git log --oneline',
         ],
         tests: [
-          { description: 'Sammanslagningen är klar', merged: true },
+          { description: 'Mergen är klar', merged: true },
           { description: 'Meddelandet', message: 'Festen blir på lördag' },
           { description: 'Allt är committat', clean: true },
         ],
@@ -1205,14 +1205,14 @@ export const PROJECTS = [
       'kompis',
     ),
     setupNote:
-      '📁 Du står på main i repot lag. main säger Ali, grenen kompis säger Bea.',
+      '📁 Du står på main i repot lag. main säger Ali, branchen kompis säger Bea.',
     steps: [
       {
         title: 'Vad säger Git?',
         why: 'git status under en konflikt visar vilka filer som krockar och vad du ska göra.',
         xp: 10,
-        description: 'Slå ihop och läs läget.',
-        task: 'Uppgift: Slå ihop `kompis` och kör `git status`.',
+        description: 'Merga och läs läget.',
+        task: 'Uppgift: Merga `kompis` och kör `git status`.',
         add: 'git merge kompis\ngit status\n',
         hints: [
           'git merge kompis',
@@ -1248,10 +1248,10 @@ export const PROJECTS = [
       },
       {
         title: 'Städa',
-        why: 'När grenen är ihopslagen behövs den inte. git branch -d tar bara bort grenar som redan är ihopslagna.',
+        why: 'När branchen är mergad behövs den inte. git branch -d tar bara bort brancher som redan är mergade.',
         xp: 15,
-        description: 'Avsluta och ta bort grenen.',
-        task: 'Uppgift: Committa med `Ali i mål, Bea reserv` och ta bort grenen `kompis`.',
+        description: 'Avsluta och ta bort branchen.',
+        task: 'Uppgift: Committa med `Ali i mål, Bea reserv` och ta bort branchen `kompis`.',
         add: 'git commit -m "Ali i mål, Bea reserv"\ngit branch -d kompis\n',
         hints: [
           'git commit -m "Ali i mål, Bea reserv"',
@@ -1259,7 +1259,7 @@ export const PROJECTS = [
           'git branch visar bara main.',
         ],
         tests: [
-          { description: 'Sammanslagningen är klar', merged: true },
+          { description: 'Mergen är klar', merged: true },
           { description: 'Bara main finns kvar', branches: ['main'] },
         ],
       },
@@ -1289,14 +1289,14 @@ export const PROJECTS = [
       'git commit -am "Mitt förslag"',
     ].join('\n'),
     setupNote:
-      '📁 Du står på main i repot bok. Grenen forlag har ändrat både titel.txt och pris.txt.',
+      '📁 Du står på main i repot bok. Branchen forlag har ändrat både titel.txt och pris.txt.',
     steps: [
       {
         title: 'Krocken',
         why: 'Krockar flera filer listar Git alla. Du lagar dem en i taget.',
         xp: 10,
-        description: 'Slå ihop och se båda filerna.',
-        task: 'Uppgift: Slå ihop `forlag` och visa båda filerna med `cat`.',
+        description: 'Merga och se båda filerna.',
+        task: 'Uppgift: Merga `forlag` och visa båda filerna med `cat`.',
         add: 'git merge forlag\ncat titel.txt\ncat pris.txt\n',
         hints: ['git merge forlag', 'cat titel.txt', 'cat pris.txt'],
         tests: [
@@ -1332,7 +1332,7 @@ export const PROJECTS = [
       },
       {
         title: 'Priset',
-        why: 'Först när alla filer är lagade och tillagda går sammanslagningen att committa.',
+        why: 'Först när alla filer är lagade och tillagda går mergen att committa.',
         xp: 15,
         description: 'Ni möts på mitten: 129 kr.',
         task: 'Uppgift: Skriv `Pris: 129 kr` till `pris.txt`, lägg till den och committa med `Titel och pris klara`.',
@@ -1344,7 +1344,7 @@ export const PROJECTS = [
         ],
         tests: [
           { description: 'Priset', file: 'pris.txt', content: 'Pris: 129 kr' },
-          { description: 'Sammanslagningen är klar', merged: true },
+          { description: 'Mergen är klar', merged: true },
           { description: 'Allt är committat', clean: true },
         ],
       },
@@ -1364,7 +1364,7 @@ export const PROJECTS = [
     steps: [
       {
         title: 'Upp på GitHub',
-        why: 'origin är namnet på servern. -u kommer ihåg grenen, så att nästa gång räcker git push.',
+        why: 'origin är namnet på servern. -u kommer ihåg branchen, så att nästa gång räcker git push.',
         xp: 15,
         description: 'Koppla repot och pusha.',
         task: 'Uppgift: Koppla repot till `https://github.com/kim/portfolio` som `origin` och pusha `main` med `-u`.',
@@ -1489,7 +1489,7 @@ export const PROJECTS = [
     steps: [
       {
         title: 'Hämta det nya',
-        why: 'git pull hämtar det andra pushat och slår ihop det med ditt. Gör det innan du börjar jobba.',
+        why: 'git pull hämtar det andra pushat och mergar det med ditt. Gör det innan du börjar jobba.',
         xp: 10,
         description: 'Få med mormors recept.',
         task: 'Uppgift: Hämta det nya med `git pull` och lista filerna.',
@@ -1538,17 +1538,17 @@ export const PROJECTS = [
   project({
     id: 'git-proj-hjalp',
     track: 'arbetsflode',
-    title: 'En gren per ändring',
+    title: 'En branch per ändring',
     reward: { emoji: '🛠️', name: 'Verktygslåda' },
     summary:
-      'Gör en ändring som i ett riktigt team: gren, push, pull request, merge.',
+      'Gör en ändring som i ett riktigt team: branch, push, pull request, merge.',
     setup:
       'mkdir app\ncd app\ngit init\necho "Hej" > app.txt\ngit add .\ngit commit -m "Första versionen"\ngit remote add origin https://github.com/kim/app\ngit push -u origin main',
     setupNote: '📁 Du står på main i repot app, som är pushat till GitHub.',
     steps: [
       {
-        title: 'Grenen',
-        why: 'En gren per ändring, med ett namn som säger vad den gör. Då är main alltid i ordning.',
+        title: 'Branchen',
+        why: 'En branch per ändring, med ett namn som säger vad den gör. Då är main alltid i ordning.',
         xp: 15,
         description: 'Lägg till en hjälptext.',
         task: 'Uppgift: Skapa och byt till `lagg-till-hjalp`. Skapa `hjalp.txt` med `Skriv ? för hjälp` och committa med `Lägg till hjälptext`.',
@@ -1567,25 +1567,25 @@ export const PROJECTS = [
         ],
       },
       {
-        title: 'Pusha grenen',
-        why: 'Grenen pushas till GitHub, och där öppnar man en pull request: en fråga om att få slå ihop den med main.',
+        title: 'Pusha branchen',
+        why: 'Branchen pushas till GitHub, och där öppnar man en pull request: en fråga om att få merga den med main.',
         xp: 10,
-        description: 'Upp med grenen så att teamet kan titta.',
-        task: 'Uppgift: Pusha grenen med `git push -u origin lagg-till-hjalp`.',
+        description: 'Upp med branchen så att teamet kan titta.',
+        task: 'Uppgift: Pusha branchen med `git push -u origin lagg-till-hjalp`.',
         add: 'git push -u origin lagg-till-hjalp\n',
         hints: [
           'git push -u origin grenens-namn',
           'git push -u origin lagg-till-hjalp',
           'Sedan öppnar man en pull request på GitHub.',
         ],
-        tests: [{ description: 'Grenen finns på servern', pushed: true }],
+        tests: [{ description: 'Branchen finns på servern', pushed: true }],
       },
       {
         title: 'Godkänd',
-        why: 'När pull requesten är godkänd slås grenen ihop med main. Här gör du det själv i terminalen.',
+        why: 'När pull requesten är godkänd slås branchen ihop med main. Här gör du det själv i terminalen.',
         xp: 15,
         description: 'Teamet sa ja.',
-        task: 'Uppgift: Byt till `main`, slå ihop `lagg-till-hjalp`, pusha och ta bort grenen.',
+        task: 'Uppgift: Byt till `main`, merga `lagg-till-hjalp`, pusha och ta bort branchen.',
         add: 'git switch main\ngit merge lagg-till-hjalp\ngit push\ngit branch -d lagg-till-hjalp\n',
         hints: [
           'git switch main och git merge lagg-till-hjalp',
@@ -1672,16 +1672,16 @@ export const PROJECTS = [
     track: 'arbetsflode',
     title: 'Hela flödet',
     reward: { emoji: '🏁', name: 'Målflagga' },
-    summary: 'Klona, gren, push, pull och merge – allt i ett.',
+    summary: 'Klona, branch, push, pull och merge – allt i ett.',
     setup: onServer(TEAM, [['meny.txt', 'Kaffe']]),
     setupNote: `☁️ Teamets repo finns på ${TEAM.replace('https://', '')}.`,
     steps: [
       {
         title: 'Klona och grena',
-        why: 'Så börjar varje uppgift i ett team: hämta senaste versionen och gör en gren.',
+        why: 'Så börjar varje uppgift i ett team: hämta senaste versionen och gör en branch.',
         xp: 15,
         description: 'Kaféet vill ha te på menyn.',
-        task: `Uppgift: Klona \`${TEAM}\`, gå in i \`kafe\` och skapa grenen \`te\`. Lägg till \`Te\` i \`meny.txt\` och committa med \`Lägg till te\`.`,
+        task: `Uppgift: Klona \`${TEAM}\`, gå in i \`kafe\` och skapa branchen \`te\`. Lägg till \`Te\` i \`meny.txt\` och committa med \`Lägg till te\`.`,
         add: `git clone ${TEAM}\ncd kafe\ngit switch -c te\necho "Te" >> meny.txt\ngit commit -am "Lägg till te"\n`,
         hints: [
           `git clone ${TEAM} och cd kafe`,
@@ -1695,24 +1695,24 @@ export const PROJECTS = [
       },
       {
         title: 'Pusha',
-        why: 'Grenen på GitHub är det teamet granskar i pull requesten.',
+        why: 'Branchen på GitHub är det teamet granskar i pull requesten.',
         xp: 10,
-        description: 'Upp med grenen.',
-        task: 'Uppgift: Pusha grenen `te` med `-u`.',
+        description: 'Upp med branchen.',
+        task: 'Uppgift: Pusha branchen `te` med `-u`.',
         add: 'git push -u origin te\n',
         hints: [
           'git push -u origin te',
           '-u kommer ihåg kopplingen.',
           'Sedan en pull request på GitHub.',
         ],
-        tests: [{ description: 'Grenen finns på servern', pushed: true }],
+        tests: [{ description: 'Branchen finns på servern', pushed: true }],
       },
       {
         title: 'In i main',
         why: 'Pull först, så att main är senaste versionen. Merge, push – och ändringen är ute.',
         xp: 20,
         description: 'Pull requesten är godkänd.',
-        task: 'Uppgift: Byt till `main`, kör `git pull`, slå ihop `te` och pusha.',
+        task: 'Uppgift: Byt till `main`, kör `git pull`, merga `te` och pusha.',
         add: 'git switch main\ngit pull\ngit merge te\ngit push\n',
         hints: ['git switch main', 'git pull', 'git merge te och git push'],
         tests: [

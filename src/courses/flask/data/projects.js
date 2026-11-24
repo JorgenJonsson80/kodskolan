@@ -37,7 +37,7 @@ export const PROJECTS = [
       },
       {
         title: 'Om mig',
-        why: 'En egen väg per sida håller isär innehållet, och adressen säger vad sidan handlar om.',
+        why: 'En egen route per sida håller isär innehållet, och adressen säger vad sidan handlar om.',
         xp: 15,
         description: 'En sida om dig.',
         task: 'Uppgift: Lägg till `/om` som svarar med en `<p>` om dig.',
@@ -58,7 +58,7 @@ export const PROJECTS = [
       },
       {
         title: 'Kontakt',
-        why: 'Med tre vägar är sajten klar. app.run sist gör att den går att starta på din egen dator.',
+        why: 'Med tre routes är sajten klar. app.run sist gör att den går att starta på din egen dator.',
         xp: 20,
         description: 'Sist ett sätt att nå dig.',
         task: "Uppgift: Lägg till `/kontakt` med en e-postadress, och `app.run(debug=True)` sist i en `if __name__ == '__main__':`.",
@@ -74,7 +74,7 @@ export const PROJECTS = [
             code: "'@' in __get('/kontakt').text",
             expected: true,
           },
-          { description: 'Tre vägar', code: 'len(__vagar())', expected: 3 },
+          { description: 'Tre routes', code: 'len(__vagar())', expected: 3 },
         ],
         sourceChecks: [{ description: 'Har app.run', pattern: /app\.run\(/ }],
         request: { path: '/kontakt' },
@@ -112,7 +112,7 @@ export const PROJECTS = [
       },
       {
         title: 'Nollställ',
-        why: 'Nollställningen är en egen väg. Den ändrar något, men ett riktigt API skulle använda POST för det (bana 5).',
+        why: 'Nollställningen är en egen route. Den ändrar något, men ett riktigt API skulle använda POST för det (bana 5).',
         xp: 15,
         description: 'Ägaren vill kunna börja om.',
         task: "Uppgift: Lägg till `/noll` som sätter `antal` till 0 och svarar `'Nollställd'`.",
@@ -169,7 +169,7 @@ export const PROJECTS = [
     steps: [
       {
         title: 'Menyn',
-        why: 'Rätterna ligger i en lista utanför funktionerna. Då kan flera vägar använda samma data.',
+        why: 'Rätterna ligger i en lista utanför funktionerna. Då kan flera routes använda samma data.',
         xp: 15,
         description: 'Veckans luncher.',
         task: "Uppgift: Skapa `luncher = ['Ärtsoppa', 'Pasta', 'Fisk']` och `/` som svarar `', '.join(luncher)`.",
@@ -374,7 +374,7 @@ export const PROJECTS = [
       },
       {
         title: 'Alla ord',
-        why: 'url_for bygger länken från funktionens namn. Byter vi adress på vägen följer länkarna med.',
+        why: 'url_for bygger länken från funktionens namn. Byter vi adress på routen följer länkarna med.',
         xp: 20,
         description: 'En startsida med länkar till alla ord.',
         task: 'Uppgift: Importera `url_for` och låt `/` svara med en länk per svenskt ord till `till_engelska`, med mellanslag emellan.',
@@ -504,7 +504,7 @@ export const PROJECTS = [
     steps: [
       {
         title: 'Alla filmer',
-        why: 'Ett API börjar nästan alltid med en väg som ger hela listan.',
+        why: 'Ett API börjar nästan alltid med en route som ger hela listan.',
         xp: 15,
         description: 'Hela listan.',
         task: 'Uppgift: Skapa `filmer` med de tre filmerna (id, titel, år) och `/filmer` som svarar med listan.',
@@ -643,7 +643,7 @@ export const PROJECTS = [
       },
       {
         title: 'Antal',
-        why: 'En liten väg som berättar hur stort quizet är, så att appen vet när det är slut.',
+        why: 'En liten route som berättar hur stort quizet är, så att appen vet när det är slut.',
         xp: 10,
         description: 'Hur många frågor finns det?',
         task: "Uppgift: Skapa `/antal` som svarar `{'antal': 2}`.",
@@ -1333,7 +1333,7 @@ export const PROJECTS = [
       },
       {
         title: 'En och ändra',
-        why: 'hitta används av båda vägarna, så letandet finns på ett enda ställe.',
+        why: 'hitta används av båda routes, så letandet finns på ett enda ställe.',
         xp: 20,
         description: 'Läs och ändra en anteckning.',
         task: 'Uppgift: Skapa `GET /anteckningar/<int:id>` och `PUT /anteckningar/<int:id>` (404 och 400 som förut).',
@@ -1362,7 +1362,7 @@ export const PROJECTS = [
       },
       {
         title: 'Ta bort',
-        why: '204 säger att det gick, utan något innehåll. Nu har API:t alla fem vägarna.',
+        why: '204 säger att det gick, utan något innehåll. Nu har API:t alla fem routes.',
         xp: 15,
         description: 'Ta bort en anteckning.',
         task: 'Uppgift: Skapa `DELETE /anteckningar/<int:id>` som svarar 204, eller 404.',
@@ -1400,7 +1400,7 @@ export const PROJECTS = [
     steps: [
       {
         title: 'En vara',
-        why: 'Den vanliga GET-vägen för en sak, som resten bygger på.',
+        why: 'Den vanliga GET-routen för en sak, som resten bygger på.',
         xp: 10,
         description: 'Visa en vara.',
         task: 'Uppgift: Skapa `GET /varor/<int:id>` med 404 för varor som saknas.',
@@ -1464,7 +1464,7 @@ export const PROJECTS = [
       },
       {
         title: 'Sälj',
-        why: 'Att sälja är en handling, inte en ändring av ett fält. Därför en egen POST-väg, och 409 när det inte räcker.',
+        why: 'Att sälja är en handling, inte en ändring av ett fält. Därför en egen POST-route, och 409 när det inte räcker.',
         xp: 20,
         description: 'Sälj ur lagret.',
         task: "Uppgift: Skapa `POST /varor/<int:id>/salj` som tar `{'antal': …}` (standard 1) och minskar lagret. Finns det inte tillräckligt: `{'fel': 'Inte tillräckligt i lager'}` med 409.",
@@ -1608,7 +1608,7 @@ export const PROJECTS = [
     steps: [
       {
         title: 'En föreställning',
-        why: 'hitta gör abort själv, så vägfunktionen blir en enda rad. Felhanteraren gör svaret till JSON.',
+        why: 'hitta gör abort själv, så route-funktionen blir en enda rad. Felhanteraren gör svaret till JSON.',
         xp: 15,
         description: 'Visa en föreställning.',
         task: "Uppgift: Skapa `GET /forestallningar/<int:id>` med `hitta`, och en felhanterare för 400, 404 och 409 som svarar `{'fel': fel.description}`.",
@@ -3358,7 +3358,7 @@ export const PROJECTS = [
       },
       {
         title: 'Fullbokat',
-        why: 'dag() används också inne i boka. En funktion kan vara både en väg och en hjälpfunktion.',
+        why: 'dag() används också inne i boka. En funktion kan vara både en route och en hjälpfunktion.',
         xp: 15,
         description: 'Max 20 gäster per dag.',
         task: "Uppgift: En bokning som skulle ge fler än 20 gäster en dag ger `abort(409, description='Fullbokat')`.",

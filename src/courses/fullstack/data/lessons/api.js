@@ -13,7 +13,7 @@ export const API = [
     description:
       'Kursen bygger hundpensionatet Tassen hela vägen: ett API i Flask och en sida i React som pratar med det. Sidan finns redan (📄 App.tsx ovanför editorn). Den hämtar /api/hundar – ge den något att hämta.',
     explain:
-      'Ett API för en sida svarar med JSON, inte HTML. Returnerar vägfunktionen en lista eller en dictionary gör Flask om den till JSON, som sidan läser med `svar.json()`.\n\nAdresserna börjar med `/api/`. Då syns det direkt vad som är data till sidan, och i ett riktigt projekt skickar utvecklingsservern för React allt under /api vidare till Flask.\n\nNär du kört koden visas sidan under feedbacken, kopplad till din app. Klicka i den – anropen går till din Flask-app på riktigt.',
+      'Ett API för en sida svarar med JSON, inte HTML. Returnerar route-funktionen en lista eller en dictionary gör Flask om den till JSON, som sidan läser med `svar.json()`.\n\nAdresserna börjar med `/api/`. Då syns det direkt vad som är data till sidan, och i ett riktigt projekt skickar utvecklingsservern för React allt under /api vidare till Flask.\n\nNär du kört koden visas sidan under feedbacken, kopplad till din app. Klicka i den – anropen går till din Flask-app på riktigt.',
     example:
       "@app.get('/api/bocker')\ndef bocker():\n    return fraga('SELECT * FROM bocker ORDER BY titel')",
     task: 'Uppgift: `GET /api/hundar` svarar med alla hundar, sorterade på namn.',
@@ -53,7 +53,7 @@ export const API = [
     description:
       'Klickar man på en hund i sidan hämtar den /api/hundar/1, /api/hundar/2 och så vidare.',
     explain:
-      '`<int:id>` i adressen blir ett heltal till funktionen. Finns hunden inte ska svaret vara 404, så att sidan vet att den inte finns.\n\n`abort(404, description=…)` avbryter vägfunktionen med statuskoden och en förklaring.',
+      '`<int:id>` i adressen blir ett heltal till funktionen. Finns hunden inte ska svaret vara 404, så att sidan vet att den inte finns.\n\n`abort(404, description=…)` avbryter route-funktionen med statuskoden och en förklaring.',
     example:
       "@app.get('/api/bocker/<int:id>')\ndef bok(id):\n    rader = fraga('SELECT * FROM bocker WHERE id = ?', (id,))\n    if not rader:\n        abort(404, description='Ingen sådan bok')\n    return rader[0]",
     task: "Uppgift: `GET /api/hundar/<id>` svarar med hunden, eller 404 med beskrivningen `'Ingen sådan hund'`.",
@@ -116,7 +116,7 @@ export const API = [
         expected: 404,
       },
       {
-        description: 'Även för vägar som inte finns',
+        description: 'Även för routes som inte finns',
         code: "'fel' in __get('/api/katter').json",
         expected: true,
       },

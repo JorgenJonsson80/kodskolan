@@ -402,7 +402,7 @@ export const IDEAS = [
       'Kunderna som köpt något från varje kategori.',
     ],
     extra:
-      'Skriv samma fråga med JOIN och med delfråga. Vilken är lättast att läsa?',
+      'Skriv samma fråga med JOIN och med subquery. Vilken är lättast att läsa?',
   },
   {
     id: 'idea-lasvanor',

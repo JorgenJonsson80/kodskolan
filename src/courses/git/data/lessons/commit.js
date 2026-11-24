@@ -149,7 +149,7 @@ export const COMMIT = [
     xp: 10,
     description: 'Se alla versioner du har sparat.',
     explain:
-      '`git log` visar alla commits, den senaste först: id, vem, när och meddelandet.\n\n`git log --oneline` visar en rad per commit. `(HEAD -> main)` betyder att du står på den senaste versionen på grenen `main`.',
+      '`git log` visar alla commits, den senaste först: id, vem, när och meddelandet.\n\n`git log --oneline` visar en rad per commit. `(HEAD -> main)` betyder att du står på den senaste versionen på branchen `main`.',
     example: 'git log --oneline',
     task: 'Uppgift: Visa historiken med `git log --oneline`.',
     setup: `${COMMITTED}\necho "<p>Hej</p>" >> index.html\ngit add .\ngit commit -m "Lägg till text"`,

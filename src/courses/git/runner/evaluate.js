@@ -32,7 +32,7 @@ function describeFailure(test, entry) {
   if (test.output !== undefined)
     return `utskriften saknar ${show(test.output)}.`;
   if (test.commits !== undefined)
-    return `grenen har ${entry.actual} commits men ska ha ${entry.expected}.`;
+    return `branchen har ${entry.actual} commits men ska ha ${entry.expected}.`;
   if (test.message !== undefined)
     return `senaste commit heter ${show(entry.actual)} men ska heta ${show(entry.expected)}.`;
   if (test.clean !== undefined)
@@ -42,11 +42,10 @@ function describeFailure(test, entry) {
   if (test.tracked !== undefined)
     return `Git följer ${show(entry.actual)}, men ska följa ${show(entry.expected)}.`;
   if (test.branch !== undefined)
-    return `du står på grenen ${show(entry.actual)} men ska stå på ${show(entry.expected)}.`;
+    return `du står på branchen ${show(entry.actual)} men ska stå på ${show(entry.expected)}.`;
   if (test.branches !== undefined)
-    return `grenarna är ${show(entry.actual)} men ska vara ${show(entry.expected)}.`;
-  if (test.merged !== undefined)
-    return 'senaste commit är ingen sammanslagning.';
+    return `brancherna är ${show(entry.actual)} men ska vara ${show(entry.expected)}.`;
+  if (test.merged !== undefined) return 'senaste commit är ingen merge.';
   if (test.pushed !== undefined)
     return 'servern har inte dina senaste commits. Har du pushat?';
   return 'stämmer inte.';

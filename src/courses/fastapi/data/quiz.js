@@ -9,7 +9,7 @@ const APP =
 export const QUIZ = {
   forsta: [
     {
-      question: 'Vad svarar API:et när en vägfunktion returnerar en dict?',
+      question: 'Vad svarar API:et när en route-funktion returnerar en dict?',
       options: [
         'JSON',
         'En HTML-sida',
@@ -25,20 +25,20 @@ export const QUIZ = {
       check: "__get('/finns-inte').status",
       options: ['404', '200', '500', '405'],
       explain:
-        'FastAPI svarar 404 för alla adresser som ingen vägfunktion tar hand om.',
+        'FastAPI svarar 404 för alla adresser som ingen route-funktion tar hand om.',
     },
     {
-      question: 'Vad svarar appen på POST till en väg med @app.get?',
+      question: 'Vad svarar appen på POST till en route med @app.get?',
       code: APP,
       check: "__post('/').status",
       options: ['405', '200', '404', '201'],
-      explain: '405 betyder att vägen finns, men inte för den metoden.',
+      explain: '405 betyder att routen finns, men inte för den metoden.',
     },
     {
       question: 'Var hittar man dokumentationen som FastAPI gör själv?',
       options: ['/docs', '/hjalp', '/api', 'Den måste man skriva själv'],
       explain:
-        'FastAPI läser vägarna och visar dem på /docs, där man också kan prova dem.',
+        'FastAPI läser routes och visar dem på /docs, där man också kan prova dem.',
     },
   ],
   vagar: [
@@ -60,23 +60,23 @@ export const QUIZ = {
     },
     {
       question:
-        "Vägarna '/filmer/{titel}' och '/filmer/senaste' står i den ordningen. Vad händer med /filmer/senaste?",
+        "Routes '/filmer/{titel}' och '/filmer/senaste' står i den ordningen. Vad händer med /filmer/senaste?",
       options: [
-        "Den första vägen svarar, med titel = 'senaste'",
-        'Den andra vägen svarar',
+        "Den första routen svarar, med titel = 'senaste'",
+        'Den andra routen svarar',
         'FastAPI svarar 409',
-        'Båda vägarna svarar',
+        'Båda routes svarar',
       ],
       explain:
-        'FastAPI tar den första vägen som passar. Den fasta vägen ska stå först.',
+        'FastAPI tar den första routen som passar. Den fasta routen ska stå först.',
     },
     {
-      question: 'Vad är en Enum bra för i en väg?',
+      question: 'Vad är en Enum bra för i en route?',
       options: [
         'Att bara tillåta några bestämda värden',
         'Att räkna antalet anrop',
-        'Att göra vägen snabbare',
-        'Att dölja vägen i dokumentationen',
+        'Att göra routen snabbare',
+        'Att dölja routen i dokumentationen',
       ],
       explain:
         'Med en Enum som typ svarar FastAPI 422 för alla värden som inte finns i den.',
@@ -244,7 +244,8 @@ export const QUIZ = {
       code: "from fastapi import FastAPI, Depends, Header, HTTPException\n\napp = FastAPI()\n\ndef nyckel(x_api_nyckel: str | None = Header(default=None)):\n    if x_api_nyckel != 'hemlig':\n        raise HTTPException(status_code=401, detail='Fel nyckel')\n\n@app.get('/hemligt', dependencies=[Depends(nyckel)])\ndef hemligt():\n    return 42",
       check: "__get('/hemligt').status",
       options: ['401', '200', '422', '403'],
-      explain: 'Beroendet körs före vägen och gör raise, så vägen körs aldrig.',
+      explain:
+        'Beroendet körs före routen och gör raise, så routen körs aldrig.',
     },
     {
       question: 'Vilken header läser parametern x_api_nyckel: str = Header()?',
@@ -259,7 +260,7 @@ export const QUIZ = {
         'Att köra beroenden två gånger',
         'Att visa beroenden i dokumentationen',
       ],
-      explain: 'Vägarna ändras inte – de får bara en annan sak från Depends.',
+      explain: 'Routes ändras inte – de får bara en annan sak från Depends.',
     },
   ],
   databas: [
@@ -294,10 +295,10 @@ export const QUIZ = {
     {
       question: 'När körs koden efter yield i ett beroende?',
       options: [
-        'När vägen är klar, t.ex. för att stänga databasen',
-        'Före vägen',
+        'När routen är klar, t.ex. för att stänga databasen',
+        'Före routen',
         'Aldrig',
-        'Bara om vägen kraschar',
+        'Bara om routen kraschar',
       ],
       explain:
         'Det före yield förbereder, det efter städar upp – oftast i en finally.',
@@ -351,7 +352,7 @@ export const QUIZ = {
         'return x, 201 är Flask-stil. I FastAPI blir det en lista, och statuskoden 200.',
     },
     {
-      question: 'Vad svarar en vägfunktion som saknar return?',
+      question: 'Vad svarar en route-funktion som saknar return?',
       code: "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/')\ndef start():\n    svar = {'hej': True}",
       check: "__get('/').text",
       options: ['null', '{}', '""', '404'],
@@ -394,22 +395,22 @@ export const QUIZ = {
     {
       question: 'Varför kopplas AI-modellen in med Depends(hamta_ai)?',
       options: [
-        'Så att den kan bytas mot en låtsasmodell i tester, eller en annan modell, utan att ändra vägarna',
+        'Så att den kan bytas mot en låtsasmodell i tester, eller en annan modell, utan att ändra routes',
         'Annars fungerar inte await',
         'Depends gör modellen snabbare',
         'Det krävs av Pydantic',
       ],
-      explain: 'Vägarna bryr sig bara om att de får något med rätt metoder.',
+      explain: 'Routes bryr sig bara om att de får något med rätt metoder.',
     },
     {
-      question: 'Vilka vägar ska kräva en nyckel i ett API där alla får läsa?',
+      question: 'Vilka routes ska kräva en nyckel i ett API där alla får läsa?',
       options: [
         'POST, PATCH och DELETE – de som ändrar något',
         'Bara GET',
-        'Alla vägar',
-        'Inga vägar',
+        'Alla routes',
+        'Inga routes',
       ],
-      explain: 'Läsvägarna är öppna, skrivvägarna skyddas.',
+      explain: 'Läs-routes är öppna, skriv-routes skyddas.',
     },
     {
       question: 'Varför loggas frågor med BackgroundTasks?',

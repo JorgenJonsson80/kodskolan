@@ -364,10 +364,10 @@ export const QUIZ = {
     {
       question: 'När är EXISTS (SELECT …) sant?',
       options: [
-        'När delfrågan ger minst en rad',
-        'När delfrågan ger exakt en rad',
-        'När delfrågan ger värdet 1',
-        'När tabellen i delfrågan finns',
+        'När subqueryn ger minst en rad',
+        'När subqueryn ger exakt en rad',
+        'När subqueryn ger värdet 1',
+        'När tabellen i subqueryn finns',
       ],
       explain:
         'EXISTS bryr sig bara om att det finns rader, inte vad de innehåller.',

@@ -140,7 +140,7 @@ export const RESOURCES = {
   ],
   delfragor: [
     {
-      topic: 'Delfrågor',
+      topic: 'Subqueries',
       read: `${TUTORIAL}sqlite-subquery/`,
       video: 'sql subquery explained beginners',
     },

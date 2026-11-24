@@ -232,7 +232,7 @@ export const IDEAS = [
     track: 'crud',
     emoji: '🏫',
     title: 'Klasslistan',
-    summary: 'Elever i klasser, med vägar under vägar.',
+    summary: 'Elever i klasser, med routes under routes.',
     goals: [
       'Gör CRUD för klasser.',
       'Gör POST /klasser/{id}/elever som lägger till en elev.',
@@ -249,9 +249,9 @@ export const IDEAS = [
     goals: [
       'Gör tokens med en roll per användare.',
       'Gör beroenden kan_skriva och ar_admin som ger 403.',
-      'Gör vägar som kräver olika roller.',
+      'Gör routes som kräver olika roller.',
     ],
-    extra: 'Gör en väg där admin kan ändra någons roll.',
+    extra: 'Gör en route där admin kan ändra någons roll.',
   },
   {
     id: 'fa-idea-sprak',
@@ -262,7 +262,7 @@ export const IDEAS = [
     goals: [
       'Gör ett beroende som läser headern accept-language.',
       'Ge svaren på svenska, engelska eller tyska.',
-      'Använd det i minst tre vägar.',
+      'Använd det i minst tre routes.',
     ],
     extra: 'Låt en fråga ?sprak=… gå före headern.',
   },
@@ -274,7 +274,7 @@ export const IDEAS = [
     summary: 'Ett API som pratar med en tjänst som inte finns.',
     goals: [
       'Gör en klass RiktigTjanst som kraschar utan internet.',
-      'Använd den som ett beroende i två vägar.',
+      'Använd den som ett beroende i två routes.',
       'Byt ut den med dependency_overrides mot en låtsasversion.',
     ],
     extra: 'Låt låtsasversionen räkna hur många gånger den anropats.',
@@ -364,7 +364,7 @@ export const IDEAS = [
     title: 'Gör en bugg',
     summary: 'Lär dig av fel genom att göra dem med flit.',
     goals: [
-      'Skriv ett fungerande API med tre vägar.',
+      'Skriv ett fungerande API med tre routes.',
       'Lägg in ett av felen från banan med flit.',
       'Läs felet och laga det igen.',
     ],
@@ -379,7 +379,7 @@ export const IDEAS = [
     goals: [
       'Gör en modell med flera Field-regler.',
       'Skicka fel data med 📮 och läs svaret.',
-      'Gör en egen väg som förklarar loc och msg på svenska.',
+      'Gör en egen route som förklarar loc och msg på svenska.',
     ],
     extra: 'Gör ett test med __post som kollar exakt vilket fält som är fel.',
   },

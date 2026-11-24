@@ -1,4 +1,4 @@
-// En förenklad Git för kursen: index, commits, grenar, sammanslagning med
+// En förenklad Git för kursen: index, commits, brancher, merge med
 // konflikter och en låtsasserver för push, pull och clone. Utskrifterna
 // liknar riktiga Git (på engelska, som eleven kommer att se dem), men är
 // kortare. Felen förklaras på svenska i friendlyErrors.js.

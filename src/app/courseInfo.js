@@ -102,7 +102,7 @@ medel([])  # ZeroDivisionError!`,
   git: {
     title: 'Lär dig Git och terminalen på svenska',
     description:
-      'En kurs i terminalen, Git och GitHub på svenska. Skriv riktiga kommandon i webbläsaren: mappar, filer, commits, grenar och push – utan att installera något.',
+      'En kurs i terminalen, Git och GitHub på svenska. Skriv riktiga kommandon i webbläsaren: mappar, filer, commits, branches och push – utan att installera något.',
     intro:
       'Alla som kodar på riktigt använder terminalen och Git varje dag, men få kurser lär ut det från början. Här skriver du riktiga kommandon i en terminal i webbläsaren och ser direkt vad som händer – utan risk att förstöra något.',
     forWhom:

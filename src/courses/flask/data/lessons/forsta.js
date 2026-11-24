@@ -13,11 +13,11 @@ export const FORSTA = [
     description:
       'En webbapp väntar på att någon ska fråga efter en adress, och svarar. Med Flask räcker det med några rader.',
     explain:
-      "`app = Flask(__name__)` skapar appen. `@app.get('/')` säger att funktionen under ska köras när någon frågar efter adressen `/` – startsidan. Det funktionen returnerar är svaret.\n\nEn sådan funktion kallas en **vägfunktion** (view). Raden med `@` framför kallas en **decorator**.\n\nI Kodskolan startas ingen riktig server. Appen anropas direkt, och svaret visas under **📮 Svaret** när du kört koden.",
+      "`app = Flask(__name__)` skapar appen. `@app.get('/')` säger att funktionen under ska köras när någon frågar efter adressen `/` – startsidan. Det funktionen returnerar är svaret.\n\nAdressen och funktionen kallas tillsammans en **route** – en väg in i appen – och funktionen en **route-funktion** (view). Raden med `@` framför kallas en **decorator**.\n\nI Kodskolan startas ingen riktig server. Appen anropas direkt, och svaret visas under **📮 Svaret** när du kört koden.",
     example:
       "from flask import Flask\n\napp = Flask(__name__)\n\n@app.get('/')\ndef start():\n    return 'Välkommen!'",
     task: "Uppgift: Gör så att startsidan `/` svarar `'Hej, webben!'`.",
-    starterCode: `${IMPORT}\n# Skriv vägen här\n`,
+    starterCode: `${IMPORT}\n# Skriv routen här\n`,
     solution: `${IMPORT}\n@app.get('/')\ndef start():\n    return 'Hej, webben!'\n`,
     hints: [
       "Raden före funktionen: @app.get('/')",
@@ -42,7 +42,7 @@ export const FORSTA = [
     explain:
       'Webbläsaren skickar ett **anrop** (request), och appen skickar ett **svar** (response). Svaret har en statuskod och ett innehåll.\n\nDe vanligaste:\n- `200` – OK\n- `404` – finns inte\n- `500` – appen kraschade\n\nFlask sätter `200` själv när funktionen returnerar något. Statuskoden står först under 📮 Svaret.',
     example: "@app.get('/ping')\ndef ping():\n    return 'pong'",
-    task: "Uppgift: Skapa vägen `/status` som svarar `'Allt fungerar'`. Ändra adressen i 📮 till `/status` och kör koden för att se svaret.",
+    task: "Uppgift: Skapa routen `/status` som svarar `'Allt fungerar'`. Ändra adressen i 📮 till `/status` och kör koden för att se svaret.",
     starterCode: IMPORT,
     solution: `${IMPORT}\n@app.get('/status')\ndef status():\n    return 'Allt fungerar'\n`,
     hints: [
@@ -70,16 +70,16 @@ export const FORSTA = [
     title: 'Flera sidor',
     xp: 10,
     description:
-      'En app kan ha hur många vägar som helst. Varje väg får sin egen funktion.',
+      'En app kan ha hur många routes som helst. Varje route får sin egen funktion.',
     explain:
-      'Varje adress får en egen `@app.get` och en egen funktion. Funktionerna måste ha olika namn – Flask använder namnet för att hålla isär vägarna.\n\nUnder svaret står alla vägar appen har.',
+      'Varje adress får en egen `@app.get` och en egen funktion. Funktionerna måste ha olika namn – Flask använder namnet för att hålla isär routes.\n\nUnder svaret står alla routes appen har.',
     example:
       "@app.get('/')\ndef start():\n    return 'Start'\n\n@app.get('/hjalp')\ndef hjalp():\n    return 'Hjälp'",
     task: "Uppgift: `/` ska svara `'Startsidan'` och `/om` ska svara `'Om oss'`.",
     starterCode: IMPORT,
     solution: `${IMPORT}\n@app.get('/')\ndef start():\n    return 'Startsidan'\n\n\n@app.get('/om')\ndef om():\n    return 'Om oss'\n`,
     hints: [
-      'Två vägar, två funktioner.',
+      'Två routes, två funktioner.',
       'Funktionerna behöver olika namn.',
       "@app.get('/om')\ndef om():\n    return 'Om oss'",
     ],
@@ -104,13 +104,13 @@ export const FORSTA = [
     description:
       'Frågar någon efter en adress som appen inte har, svarar Flask själv med 404.',
     explain:
-      'Du behöver inte skriva något för att få 404. Flask svarar så för alla adresser som ingen vägfunktion tar hand om.\n\nAnropa `/kontakt` med 📮 och se 404. Lägg sedan till vägen och kör igen.',
+      'Du behöver inte skriva något för att få 404. Flask svarar så för alla adresser som ingen route-funktion tar hand om.\n\nAnropa `/kontakt` med 📮 och se 404. Lägg sedan till routen och kör igen.',
     example: '# /hemlig finns inte, så den ger 404',
-    task: "Uppgift: Lägg till vägen `/kontakt` som svarar `'Mejla oss på hej@kafe.se'`.",
+    task: "Uppgift: Lägg till routen `/kontakt` som svarar `'Mejla oss på hej@kafe.se'`.",
     starterCode: `${IMPORT}\n@app.get('/')\ndef start():\n    return 'Startsidan'\n`,
     solution: `${IMPORT}\n@app.get('/')\ndef start():\n    return 'Startsidan'\n\n\n@app.get('/kontakt')\ndef kontakt():\n    return 'Mejla oss på hej@kafe.se'\n`,
     hints: [
-      'En väg till.',
+      'En route till.',
       "@app.get('/kontakt')",
       "return 'Mejla oss på hej@kafe.se'",
     ],
@@ -165,12 +165,12 @@ export const FORSTA = [
     title: 'Funktionen körs vid varje anrop',
     xp: 15,
     description:
-      'Vägfunktionen körs på nytt varje gång någon anropar adressen. Därför kan svaret ändras.',
+      'Route-funktionen körs på nytt varje gång någon anropar adressen. Därför kan svaret ändras.',
     explain:
       'En variabel utanför funktionerna finns kvar så länge appen kör. Med `global besok` kan funktionen ändra den.\n\nI en riktig app sparas sådant i en databas (bana 10), för variabeln försvinner när servern startas om.',
     example:
       "antal = 0\n\n@app.get('/')\ndef start():\n    global antal\n    antal += 1\n    return f'Anrop nummer {antal}'",
-    task: "Uppgift: Skapa `besok = 0` och vägen `/besok` som ökar `besok` med 1 och svarar `f'Du är besökare nummer {besok}'`.",
+    task: "Uppgift: Skapa `besok = 0` och routen `/besok` som ökar `besok` med 1 och svarar `f'Du är besökare nummer {besok}'`.",
     starterCode: IMPORT,
     solution: `${IMPORT}\nbesok = 0\n\n\n@app.get('/besok')\ndef besokare():\n    global besok\n    besok += 1\n    return f'Du är besökare nummer {besok}'\n`,
     hints: [
@@ -202,7 +202,7 @@ export const FORSTA = [
     description:
       'Ett anrop har också en **metod**. `GET` hämtar, `POST` skickar. `@app.get` tar bara emot GET.',
     explain:
-      'Webbläsaren använder `GET` när du skriver en adress. Formulär och appar skickar ofta `POST`.\n\nFrågar någon med fel metod svarar Flask `405 Method Not Allowed` – vägen finns, men inte för den metoden. Byt metod i 📮 till POST och se själv.',
+      'Webbläsaren använder `GET` när du skriver en adress. Formulär och appar skickar ofta `POST`.\n\nFrågar någon med fel metod svarar Flask `405 Method Not Allowed` – routen finns, men inte för den metoden. Byt metod i 📮 till POST och se själv.',
     example:
       "@app.get('/meny')   # bara GET\ndef meny():\n    return 'Kaffe, te'",
     task: "Uppgift: Skapa `/meny` med `@app.get` som svarar `'Kaffe, te, bulle'`. Testerna kollar att POST ger 405.",
@@ -233,12 +233,12 @@ export const FORSTA = [
     title: 'Två funktioner med samma namn',
     xp: 15,
     description:
-      'Appen startar inte. Felet säger att en vägfunktion skrivs över.',
+      'Appen startar inte. Felet säger att en route-funktion skrivs över.',
     explain:
-      'Flask känner igen varje väg på funktionens namn. Har två vägar funktioner som heter likadant vet Flask inte vilken som är vilken, och stoppar med `AssertionError: View function mapping is overwriting an existing endpoint function`.\n\nByt namn på den ena.',
+      'Flask känner igen varje route på funktionens namn. Har två routes funktioner som heter likadant vet Flask inte vilken som är vilken, och stoppar med `AssertionError: View function mapping is overwriting an existing endpoint function`.\n\nByt namn på den ena.',
     example:
       "@app.get('/a')\ndef sida_a():\n    ...\n\n@app.get('/b')\ndef sida_b():\n    ...",
-    task: 'Uppgift: Laga appen så att båda vägarna fungerar.',
+    task: 'Uppgift: Laga appen så att båda routes fungerar.',
     starterCode: `${IMPORT}\n@app.get('/')\ndef sida():\n    return 'Start'\n\n\n@app.get('/om')\ndef sida():\n    return 'Om oss'\n`,
     solution: `${IMPORT}\n@app.get('/')\ndef sida():\n    return 'Start'\n\n\n@app.get('/om')\ndef om():\n    return 'Om oss'\n`,
     hints: [

@@ -18,8 +18,8 @@ export const TRACKS = [
   },
   {
     id: 'vagar',
-    title: 'Vägar',
-    teaches: ['<namn>', '<int:id>', 'flera vägar', 'url_for'],
+    title: 'Routes',
+    teaches: ['<namn>', '<int:id>', 'flera routes', 'url_for'],
     reward: { emoji: '🛤️', name: 'Räls' },
     canBuild: 'sidor som ändras efter adressen, som /hund/Bamse eller /bok/3',
     docs: [
@@ -142,7 +142,7 @@ export const TRACKS = [
     teaches: [
       'läsa statuskoder',
       '404 eller 405',
-      'fel i vägfunktionen',
+      'fel i route-funktionen',
       'mallfel',
     ],
     reward: { emoji: '🩹', name: 'Plåster' },
@@ -155,7 +155,7 @@ export const TRACKS = [
   {
     id: 'inloggning',
     title: 'Inloggning',
-    teaches: ['session', 'secret_key', 'hashade lösenord', 'skyddade vägar'],
+    teaches: ['session', 'secret_key', 'hashade lösenord', 'skyddade routes'],
     reward: { emoji: '🔐', name: 'Hänglås' },
     canBuild: 'en inloggning med hashade lösenord och sidor bara inloggade ser',
     docs: [

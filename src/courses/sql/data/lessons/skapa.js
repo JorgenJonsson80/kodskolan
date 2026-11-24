@@ -214,7 +214,7 @@ export const SKAPA = [
     xp: 20,
     description: 'Butiken vill spara kundernas omdömen om produkterna.',
     explain:
-      '`produkt_id INTEGER REFERENCES produkter (id)` gör kolumnen till en **främmande nyckel**: värdet måste finnas som `id` i `produkter`.\n\nDå kan ingen spara ett omdöme om en produkt som inte finns. Det är så tabellerna i alla databaserna hänger ihop.',
+      '`produkt_id INTEGER REFERENCES produkter (id)` gör kolumnen till en **foreign key** – en nyckel som pekar på en annan tabell: värdet måste finnas som `id` i `produkter`.\n\nDå kan ingen spara ett omdöme om en produkt som inte finns. Det är så tabellerna i alla databaserna hänger ihop.',
     example:
       'CREATE TABLE favoriter (kund_id INTEGER REFERENCES kunder (id), produkt_id INTEGER REFERENCES produkter (id));',
     task: 'Uppgift: Skapa `omdomen` med `id INTEGER PRIMARY KEY`, `produkt_id INTEGER NOT NULL` som pekar på `produkter (id)`, och `betyg INTEGER`.',

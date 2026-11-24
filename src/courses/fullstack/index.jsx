@@ -165,7 +165,7 @@ export default {
           gjort. Sedan är det sidans tur.
         </li>
         <li>
-          <strong>Läs statuskoden.</strong> 404 betyder att vägen inte finns,
+          <strong>Läs statuskoden.</strong> 404 betyder att routen inte finns,
           400 att något i anropet var fel och 401 att man måste logga in.
         </li>
       </>

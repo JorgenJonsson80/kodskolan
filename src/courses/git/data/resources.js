@@ -50,7 +50,7 @@ export const RESOURCES = {
   ],
   grenar: [
     {
-      topic: 'Grenar visuellt',
+      topic: 'Brancher visuellt',
       read: 'https://learngitbranching.js.org/?locale=sv_SE',
       video: 'git branches explained visually',
     },

@@ -23,8 +23,8 @@ export const IDEAS = [
     title: 'Slumpsidan',
     summary: 'En sida som svarar olika varje gång.',
     goals: [
-      'Gör en väg som svarar ett slumpat tal mellan 1 och 6.',
-      'Gör en väg som slumpar ett råd ur en lista.',
+      'Gör en route som svarar ett slumpat tal mellan 1 och 6.',
+      'Gör en route som slumpar ett råd ur en lista.',
       'Kör flera gånger och se svaret ändras.',
     ],
     extra: 'Räkna hur många gånger varje råd har visats.',
@@ -38,7 +38,7 @@ export const IDEAS = [
     goals: [
       'Få ett 200 och ett 404.',
       'Få ett 405 genom att anropa med fel metod.',
-      'Få ett 500 genom att låta en vägfunktion krascha – och läs felet.',
+      'Få ett 500 genom att låta en route-funktion krascha – och läs felet.',
     ],
     extra: 'Läs om fler statuskoder på MDN.',
   },
@@ -49,7 +49,7 @@ export const IDEAS = [
     title: 'Adressräknaren',
     summary: 'En miniräknare där talen står i adressen.',
     goals: [
-      'Gör vägar för plus, minus, gånger och delat.',
+      'Gör routes för plus, minus, gånger och delat.',
       'Låt delat med noll svara med en förklaring i stället för att krascha.',
       'Gör en startsida med länkar till några exempel med url_for.',
     ],
@@ -89,10 +89,10 @@ export const IDEAS = [
     summary: 'Ett API om något du gillar: spel, djur, låtar …',
     goals: [
       'Skapa en lista med minst fem saker, som dictionaries med id.',
-      'Gör en väg för hela listan och en för en sak med id.',
+      'Gör en route för hela listan och en för en sak med id.',
       'Ge 404 med ett felmeddelande när id:t inte finns.',
     ],
-    extra: 'Lägg till en väg med statistik om listan.',
+    extra: 'Lägg till en route med statistik om listan.',
   },
   {
     id: 'idea-tarnings-api',
@@ -115,10 +115,10 @@ export const IDEAS = [
     summary: 'Data i flera nivåer, som riktiga API:er har.',
     goals: [
       'Skapa skolor som har klasser som har elever.',
-      'Gör en väg som svarar med en hel skola, med allt i.',
-      'Gör en väg som bara svarar med eleverna i en klass.',
+      'Gör en route som svarar med en hel skola, med allt i.',
+      'Gör en route som bara svarar med eleverna i en klass.',
     ],
-    extra: 'Räkna ut antalet elever per skola i en egen väg.',
+    extra: 'Räkna ut antalet elever per skola i en egen route.',
   },
   {
     id: 'idea-filter-api',
@@ -144,7 +144,7 @@ export const IDEAS = [
       'Låt 25 vara standard för sats.',
       'Svara 400 för en sats som inte är 6, 12 eller 25.',
     ],
-    extra: 'Gör en väg som räknar baklänges: från pris med moms till utan.',
+    extra: 'Gör en route som räknar baklänges: från pris med moms till utan.',
   },
   {
     id: 'idea-ordlek',
@@ -206,7 +206,7 @@ export const IDEAS = [
     summary: 'Välj något du samlar på och bygg ett komplett API för det.',
     goals: [
       'Välj vad: skivor, spel, växter …',
-      'Bygg alla fem vägarna: lista, en, ny, ändra och ta bort.',
+      'Bygg alla fem routes: lista, en, ny, ändra och ta bort.',
       'Kontrollera all data som skickas in.',
     ],
     extra: 'Lägg till PATCH för att bara ändra en sak.',
@@ -273,7 +273,7 @@ export const IDEAS = [
     goals: [
       'Skriv en funktion felsvar(meddelande, kod).',
       'Använd den i felhanterare för 400, 404, 405 och 409.',
-      'Gör en väg som kan ge vart och ett av felen.',
+      'Gör en route som kan ge vart och ett av felen.',
     ],
     extra: 'Lägg till en tid för när felet hände i varje felsvar.',
   },
@@ -311,7 +311,7 @@ export const IDEAS = [
     title: 'XSS-labbet',
     summary: 'Se med egna ögon varför mallar skyddar.',
     goals: [
-      'Gör en väg som visar ett namn med en f-sträng, och en med en mall.',
+      'Gör en route som visar ett namn med en f-sträng, och en med en mall.',
       'Anropa båda med HTML i namnet och jämför svaren.',
       'Läs om filtret safe och fundera på när det är farligt.',
     ],
@@ -365,7 +365,7 @@ export const IDEAS = [
     summary: 'Ett API för filmer och betyg, med två tabeller.',
     goals: [
       'Skapa tabellerna filmer och betyg.',
-      'Gör vägar för att lägga till filmer och sätta betyg.',
+      'Gör routes för att lägga till filmer och sätta betyg.',
       'Visa varje film med sitt snittbetyg med AVG och JOIN.',
     ],
     extra: 'Gör /topp med de tre bästa filmerna.',
@@ -403,7 +403,7 @@ export const IDEAS = [
     title: 'Bugg-bygget',
     summary: 'Bygg in fel med flit, och låt en kompis hitta dem.',
     goals: [
-      'Skriv en app som fungerar, med fem vägar.',
+      'Skriv en app som fungerar, med fem routes.',
       'Bygg in tre fel: ett som kraschar, ett med fel statuskod och ett med fel data.',
       'Byt med någon och laga varandras.',
     ],
@@ -416,7 +416,7 @@ export const IDEAS = [
     title: 'Felsök med print',
     summary: 'Följ ett anrop genom appen med print.',
     goals: [
-      'Lägg in print överst i en vägfunktion med request.method och request.path.',
+      'Lägg in print överst i en route-funktion med request.method och request.path.',
       'Skriv ut det som skickas in och det som svaras.',
       'Använd det för att hitta ett fel du byggt in.',
     ],
@@ -458,7 +458,7 @@ export const IDEAS = [
     goals: [
       'Ge varje användare en roll.',
       'Skriv en decorator kraver_roll(roll).',
-      'Använd den på tre vägar med olika krav.',
+      'Använd den på tre routes med olika krav.',
     ],
     extra: 'Låt admin ändra andras roller.',
   },
@@ -471,7 +471,7 @@ export const IDEAS = [
       'Appar loggar inte in med formulär. De skickar en nyckel med varje anrop.',
     goals: [
       'Ge varje användare en slumpad nyckel med secrets.token_hex.',
-      'Låt vägarna läsa nyckeln från request.headers.',
+      'Låt routes läsa nyckeln från request.headers.',
       'Svara 401 när nyckeln saknas eller är fel.',
     ],
     extra: 'Räkna hur många anrop varje nyckel har gjort.',
@@ -497,10 +497,10 @@ export const IDEAS = [
     summary: 'Planera och bygg en egen app – databasen först.',
     goals: [
       'Välj något du bryr dig om och rita upp tabellerna.',
-      'Bygg API:t väg för väg, med kontroller och felsvar.',
+      'Bygg API:t route för route, med kontroller och felsvar.',
       'Lägg till inloggning om appen har användare.',
     ],
-    extra: 'Skriv en README som förklarar alla vägar.',
+    extra: 'Skriv en README som förklarar alla routes.',
   },
   {
     id: 'idea-pa-riktigt',

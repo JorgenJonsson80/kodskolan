@@ -47,7 +47,7 @@ export const GITHUB = [
     xp: 15,
     description: 'Lägg upp dina commits på GitHub.',
     explain:
-      '`git push -u origin main` skickar grenen `main` till `origin`. `-u` kommer ihåg kopplingen, så att det räcker med `git push` nästa gång.\n\nNu finns projektet på GitHub, och andra kan se det och hämta det.',
+      '`git push -u origin main` skickar branchen `main` till `origin`. `-u` kommer ihåg kopplingen, så att det räcker med `git push` nästa gång.\n\nNu finns projektet på GitHub, och andra kan se det och hämta det.',
     example: 'git push -u origin main',
     task: 'Uppgift: Skicka upp main till GitHub med `git push -u origin main`.',
     setup: `${LOCAL}\ngit remote add origin https://github.com/ada/hemsida`,
@@ -62,7 +62,7 @@ export const GITHUB = [
     tests: [
       { description: 'GitHub har dina commits', pushed: true },
       {
-        description: 'En ny gren skapades på servern',
+        description: 'En ny branch skapades på servern',
         output: '* [new branch]      main -> main',
       },
     ],
@@ -74,7 +74,7 @@ export const GITHUB = [
     xp: 10,
     description: 'Du har committat något nytt. Skicka upp det.',
     explain:
-      'Efter `-u` första gången räcker `git push`. Git vet vart grenen ska.\n\nSå ser vardagen ut: ändra, committa, pusha.',
+      'Efter `-u` första gången räcker `git push`. Git vet vart branchen ska.\n\nSå ser vardagen ut: ändra, committa, pusha.',
     example: 'git commit -am "Ny text"\ngit push',
     task: 'Uppgift: Lägg till `<p>Välkommen</p>` sist i `index.html`, committa med `Lägg till välkomsttext` och pusha.',
     setup: `${LOCAL}\ngit remote add origin https://github.com/ada/hemsida\ngit push -u origin main`,
@@ -120,7 +120,7 @@ export const GITHUB = [
     xp: 15,
     description: 'En kompis har pushat något nytt. Hämta det.',
     explain:
-      '`git pull` hämtar nya commits från GitHub och slår ihop dem med din gren.\n\nKör den innan du börjar jobba, så att du alltid utgår från det senaste.',
+      '`git pull` hämtar nya commits från GitHub och mergar dem med din branch.\n\nKör den innan du börjar jobba, så att du alltid utgår från det senaste.',
     example: 'git pull',
     task: 'Uppgift: Du står i din klon av recept. Hämta det kompisen pushat och lista filerna.',
     setup: `${ON_SERVER}\ngit clone ${URL}\n${FRIEND_PUSHES}\ncd recept`,
@@ -128,7 +128,7 @@ export const GITHUB = [
     starterCode: START,
     solution: 'git pull\nls\n',
     hints: [
-      'Ett kommando hämtar och slår ihop.',
+      'Ett kommando hämtar och mergar.',
       'git pull',
       'ls visar den nya filen.',
     ],
@@ -145,7 +145,7 @@ export const GITHUB = [
     description:
       'Du och kompisen har båda committat. Din push nekas tills du har hämtat kompisens.',
     explain:
-      'Har GitHub commits som du inte har vägrar `git push` – annars skulle kompisens arbete skrivas över. Felet säger _rejected (fetch first)_.\n\nLösningen: `git pull` först. Git slår ihop kompisens commits med dina, och sedan går `git push`.',
+      'Har GitHub commits som du inte har vägrar `git push` – annars skulle kompisens arbete skrivas över. Felet säger _rejected (fetch first)_.\n\nLösningen: `git pull` först. Git mergar kompisens commits med dina, och sedan går `git push`.',
     example: 'git pull\ngit push',
     task: 'Uppgift: Lägg till `pannkakor.txt` (tom fil), committa med `Lägg till pannkakor`, hämta kompisens ändring och pusha.',
     setup: `${ON_SERVER}\ngit clone ${URL}\n${FRIEND_PUSHES}\ncd recept`,
@@ -197,14 +197,14 @@ export const GITHUB = [
   {
     id: 'git-68',
     track: 'github',
-    title: 'Pusha en gren',
+    title: 'Pusha en branch',
     xp: 15,
     description:
-      'Grenar kan också läggas upp, så att andra kan se dem innan de hamnar i main.',
+      'Brancher kan också läggas upp, så att andra kan se dem innan de hamnar i main.',
     explain:
-      'En ny gren finns bara hos dig tills du pushar den:\n\n```\ngit push -u origin namn\n```\n\nPå GitHub kan andra sedan titta på grenen – det är så man jobbar i team, med **pull requests**, som nästa bana handlar om.',
+      'En ny branch finns bara hos dig tills du pushar den:\n\n```\ngit push -u origin namn\n```\n\nPå GitHub kan andra sedan titta på branchen – det är så man jobbar i team, med **pull requests**, som nästa bana handlar om.',
     example: 'git switch -c ny\ngit push -u origin ny',
-    task: 'Uppgift: Skapa grenen `kontakt`, lägg till `kontakt.html` (tom), committa med `Lägg till kontaktsida` och pusha grenen.',
+    task: 'Uppgift: Skapa branchen `kontakt`, lägg till `kontakt.html` (tom), committa med `Lägg till kontaktsida` och pusha branchen.',
     setup: `${LOCAL}\ngit remote add origin https://github.com/ada/hemsida\ngit push -u origin main`,
     setupNote: '📁 main är pushad.',
     starterCode: START,
@@ -217,7 +217,7 @@ export const GITHUB = [
     ],
     tests: [
       { description: 'Du står på kontakt', branch: 'kontakt' },
-      { description: 'Grenen är pushad', pushed: true },
+      { description: 'Branchen är pushad', pushed: true },
     ],
   },
   {
@@ -226,11 +226,11 @@ export const GITHUB = [
     title: 'Klona och bidra',
     xp: 20,
     description:
-      'Hela vägen: hämta ett projekt, gör en ändring på en gren och lägg upp den.',
+      'Hela vägen: hämta ett projekt, gör en ändring på en branch och lägg upp den.',
     explain:
-      'Så bidrar man till ett projekt som redan finns: klona, skapa en gren, gör ändringen, committa och pusha grenen. Resten sköts på GitHub.',
+      'Så bidrar man till ett projekt som redan finns: klona, skapa en branch, gör ändringen, committa och pusha branchen. Resten sköts på GitHub.',
     example: 'git clone …\ncd …\ngit switch -c min-andring',
-    task: `Uppgift: Klona \`${URL}\`, skapa grenen \`kladdkaka\`, lägg till \`kladdkaka.txt\` med texten \`Kladdkaka\`, committa med \`Lägg till kladdkaka\` och pusha grenen.`,
+    task: `Uppgift: Klona \`${URL}\`, skapa branchen \`kladdkaka\`, lägg till \`kladdkaka.txt\` med texten \`Kladdkaka\`, committa med \`Lägg till kladdkaka\` och pusha branchen.`,
     setup: ON_SERVER,
     setupNote: '☁️ På GitHub finns repot ada/recept.',
     starterCode: START,
@@ -241,13 +241,13 @@ export const GITHUB = [
       'git push -u origin kladdkaka',
     ],
     tests: [
-      { description: 'Grenen är pushad', pushed: true },
+      { description: 'Branchen är pushad', pushed: true },
       {
         description: 'kladdkaka.txt finns',
         file: 'kladdkaka.txt',
         content: 'Kladdkaka',
       },
-      { description: 'Två commits på grenen', commits: 2 },
+      { description: 'Två commits på branchen', commits: 2 },
     ],
   },
 ];

@@ -61,17 +61,17 @@ const COMMANDS = {
   ],
   branch: [
     'git branch',
-    'Listar grenarna, eller skapar en ny: `git branch namn`.',
+    'Listar brancherna, eller skapar en ny: `git branch namn`.',
   ],
   switch: [
     'git switch',
-    'Byter gren. `git switch -c namn` skapar en ny och byter till den.',
+    'Byter branch. `git switch -c namn` skapar en ny och byter till den.',
   ],
   checkout: [
     'git checkout',
-    'Äldre sätt att byta gren. `git switch` gör samma sak och är lättare att läsa.',
+    'Äldre sätt att byta branch. `git switch` gör samma sak och är lättare att läsa.',
   ],
-  merge: ['git merge', 'Slår ihop en annan gren med den du står på.'],
+  merge: ['git merge', 'Mergar en annan branch med den du står på.'],
   remote: [
     'git remote',
     'Fjärrar är kopior av repot på en server, t.ex. GitHub.',
@@ -79,7 +79,7 @@ const COMMANDS = {
   push: ['git push', 'Skickar dina commits till servern.'],
   pull: [
     'git pull',
-    'Hämtar nya commits från servern och slår ihop dem med dina.',
+    'Hämtar nya commits från servern och mergar dem med dina.',
   ],
   clone: ['git clone', 'Hämtar ett helt repo från en server till en ny mapp.'],
 };

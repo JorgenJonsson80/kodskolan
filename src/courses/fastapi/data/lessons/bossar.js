@@ -131,10 +131,10 @@ export const BOSSES = {
     description:
       BOSS_INTRO +
       'Biblioteket vill att appen ska kunna hämta böcker på flera sätt.',
-    task: `Uppgift: Bygg vägarna.
+    task: `Uppgift: Bygg routes.
   1. \`/bocker/{id}\` (heltal) svarar med boken, eller \`{'fel': 'Boken finns inte'}\`.
   2. \`/forfattare/{namn}\` svarar med en lista med titlarna av den författaren, t.ex. \`['Pippi Långstrump', 'Emil i Lönneberga']\`. Stora och små bokstäver ska inte spela roll.
-  3. \`/forfattare/okand\` svarar \`{'antal': 0}\` – den ska stå före vägen ovan.
+  3. \`/forfattare/okand\` svarar \`{'antal': 0}\` – den ska stå före routen ovan.
   4. \`/bocker/{id}/titel\` svarar med bara titeln som text.`,
     starterCode:
       "from fastapi import FastAPI\n\napp = FastAPI()\n\nBOCKER = [\n    {'id': 1, 'titel': 'Pippi Långstrump', 'forfattare': 'Astrid Lindgren'},\n    {'id': 2, 'titel': 'Mumintrollet', 'forfattare': 'Tove Jansson'},\n    {'id': 3, 'titel': 'Emil i Lönneberga', 'forfattare': 'Astrid Lindgren'},\n]\n",
@@ -372,7 +372,7 @@ Alla filter ska gå att kombinera. Gör också \`/stader\` som svarar med städe
       BOSS_INTRO + 'Bygg ett helt API för en receptbok, med ingredienser.',
     task: `Uppgift: Recept har \`id\`, \`namn\`, \`portioner\` (1–20) och \`ingredienser\` (lista med texter).
   1. \`GET /recept\` svarar med alla. Med frågan \`?ingrediens=ägg\` bara de som innehåller den.
-  2. \`GET /recept/{id}\`, och 404 med \`detail\` \`'Receptet finns inte'\` för okända id – på alla vägar med id.
+  2. \`GET /recept/{id}\`, och 404 med \`detail\` \`'Receptet finns inte'\` för okända id – på alla routes med id.
   3. \`POST /recept\` (201) ger ett nytt id. Ett namn som redan finns ger 409.
   4. \`PATCH /recept/{id}\` ändrar bara det som skickas.
   5. \`DELETE /recept/{id}\` (204).
@@ -429,7 +429,7 @@ Alla filter ska gå att kombinera. Gör också \`/stader\` som svarar med städe
         expected: 204,
       },
       {
-        description: '404 på alla vägar med id',
+        description: '404 på alla routes med id',
         code: "[__get('/recept/1').status, __patch('/recept/1', {}).status, __delete('/recept/1').status, __post('/recept/1/ingredienser', {'namn': 'x'}).status]",
         expected: [404, 404, 404, 404],
       },
@@ -509,7 +509,7 @@ Alla filter ska gå att kombinera. Gör också \`/stader\` som svarar med städe
     description:
       BOSS_INTRO +
       'Filmklubben sparar filmer och betyg i en databas. Bygg API:et ovanpå den.',
-    task: `Uppgift: Tabellerna \`filmer\` och \`betyg\` finns. Alla vägar får databasen med \`Depends(hamta_db)\`, och all SQL använder \`?\` för värden.
+    task: `Uppgift: Tabellerna \`filmer\` och \`betyg\` finns. Alla routes får databasen med \`Depends(hamta_db)\`, och all SQL använder \`?\` för värden.
   1. \`GET /filmer\` svarar med alla filmer: \`id\`, \`titel\`, \`ar\` – sorterade efter år.
   2. \`GET /filmer/{id}\` svarar med filmen plus \`'snittbetyg'\` (medelvärdet av dess betyg, \`None\` om inga finns). Okänd film: 404.
   3. \`POST /filmer\` (201) sparar en film (\`titel\`, \`ar\` mellan 1888 och 2100) och svarar med den och dess id.
@@ -578,7 +578,7 @@ Alla filter ska gå att kombinera. Gör också \`/stader\` som svarar med städe
     ],
     sourceChecks: [
       {
-        description: 'Alla vägar använder Depends(hamta_db)',
+        description: 'Alla routes använder Depends(hamta_db)',
         pattern:
           /^(?![\s\S]*\n@app[^\n]*\ndef \w+\((?![^)]*Depends\(hamta_db\)))/,
       },

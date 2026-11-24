@@ -2027,7 +2027,7 @@ export const PROJECTS = [
       },
       {
         title: 'Genrens bästa snitt',
-        why: 'En korrelerad delfråga räknar ut det högsta snittet i just radens genre.',
+        why: 'En korrelerad subquery räknar ut det högsta snittet i just radens genre.',
         xp: 20,
         description: 'Vad är det högsta snittet i varje film-genre?',
         task: 'Uppgift: Behåll bara filmerna vars snitt är det högsta i sin genre.',
@@ -2108,7 +2108,7 @@ export const PROJECTS = [
           'WITH klassnitt AS (\n  SELECT e.klass, AVG(r.poang) AS snitt\n  FROM resultat r\n  JOIN elever e ON r.elev_id = e.id\n  WHERE r.kurs_id = 1\n  GROUP BY e.klass\n)\nSELECT e.fornamn, e.klass, r.poang\nFROM resultat r\nJOIN elever e ON r.elev_id = e.id\nJOIN klassnitt k ON k.klass = e.klass\nWHERE r.kurs_id = 1\n  AND NOT EXISTS (\n    SELECT 1\n    FROM resultat r2\n    JOIN elever e2 ON r2.elev_id = e2.id\n    WHERE r2.kurs_id = 1 AND e2.klass = e.klass AND r2.poang > r.poang\n  )\nORDER BY e.klass;\n',
         hints: [
           'NOT EXISTS (SELECT 1 FROM resultat r2 JOIN elever e2 …)',
-          'I delfrågan: samma kurs, samma klass och högre poäng.',
+          'I subqueryn: samma kurs, samma klass och högre poäng.',
           'ORDER BY e.klass',
         ],
         tests: [

@@ -106,7 +106,7 @@ function check(world, transcript, test) {
     };
   }
   if (test.merged !== undefined) {
-    // Senaste commit har två föräldrar: en sammanslagning.
+    // Senaste commit har två föräldrar: en merge.
     const id = head(repo);
     const actual = Boolean(id && repo.commits.get(id).parents.length === 2);
     return { passed: actual === test.merged, actual, expected: test.merged };

@@ -9,9 +9,9 @@ export const FELSOK = [
     description:
       'Appen startar inte: `ValueError: urls must start with a leading slash`.',
     explain:
-      'Varje adress i en väg måste börja med `/`. Felet syns när appen startar, inte när vägen anropas.',
+      'Varje adress i en route måste börja med `/`. Felet syns när appen startar, inte när routen anropas.',
     example: "@app.get('/hundar')",
-    task: 'Uppgift: Laga vägen.',
+    task: 'Uppgift: Laga routen.',
     starterCode:
       "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse'},\n    {'id': 2, 'namn': 'Saga'},\n]\n\n\n@app.get('hundar')\ndef lista():\n    return hundar\n",
     solution:
@@ -33,9 +33,9 @@ export const FELSOK = [
   {
     id: 'felsok-02',
     track: 'felsok',
-    title: '405 fast vägen finns',
+    title: '405 fast routen finns',
     xp: 10,
-    description: 'Appen som skickar nya hundar får 405. Vägen finns ju?',
+    description: 'Appen som skickar nya hundar får 405. Routen finns ju?',
     explain:
       '405 betyder att adressen finns, men inte för den metoden. Kolla decoratorn: `get` eller `post`?',
     example: "@app.post('/hundar')",
@@ -45,7 +45,7 @@ export const FELSOK = [
     solution:
       "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse'},\n    {'id': 2, 'namn': 'Saga'},\n]\n\n\n@app.post('/hundar')\ndef ny():\n    data = request.get_json()\n    hund = {'id': len(hundar) + 1, 'namn': data['namn']}\n    hundar.append(hund)\n    return hund, 201\n",
     hints: [
-      'Vilken metod har vägen?',
+      'Vilken metod har routen?',
       'Funktionen tar emot data, alltså POST.',
       "@app.post('/hundar')",
     ],
@@ -68,7 +68,7 @@ export const FELSOK = [
     explain:
       "Utan `int:` är `id` texten `'1'`, och `'1' == 1` är falskt i Python. Ingen hund hittas.\n\nLägg in `print(type(id))` i funktionen och kör, om du vill se det själv.",
     example: "@app.get('/hundar/<int:id>')",
-    task: 'Uppgift: Laga vägen.',
+    task: 'Uppgift: Laga routen.',
     starterCode:
       "from flask import Flask, request\n\napp = Flask(__name__)\n\nhundar = [\n    {'id': 1, 'namn': 'Bamse'},\n    {'id': 2, 'namn': 'Saga'},\n]\n\n\n@app.get('/hundar/<id>')\ndef en(id):\n    for hund in hundar:\n        if hund['id'] == id:\n            return hund\n    return {'fel': 'Finns inte'}, 404\n",
     solution:

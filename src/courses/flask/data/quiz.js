@@ -22,19 +22,19 @@ export const QUIZ = {
       check: "__get('/finns-inte').status",
       options: ['404', '200', '500', '405'],
       explain:
-        'Flask svarar 404 för alla adresser som ingen vägfunktion tar hand om.',
+        'Flask svarar 404 för alla adresser som ingen route-funktion tar hand om.',
     },
     {
-      question: 'Vad svarar appen på POST till en väg med @app.get?',
+      question: 'Vad svarar appen på POST till en route med @app.get?',
       code: "from flask import Flask\n\napp = Flask(__name__)\n\n@app.get('/')\ndef start():\n    return 'Hej'",
       check: "__post('/').status",
       options: ['405', '200', '404', '201'],
-      explain: '405 betyder att vägen finns, men inte för den metoden.',
+      explain: '405 betyder att routen finns, men inte för den metoden.',
     },
     {
-      question: 'Varför måste två vägfunktioner ha olika namn?',
+      question: 'Varför måste två route-funktioner ha olika namn?',
       options: [
-        'Flask känner igen vägarna på funktionens namn',
+        'Flask känner igen routes på funktionens namn',
         'Python tillåter inte två funktioner',
         'Webbläsaren blir förvirrad',
         'Det behöver de inte',
@@ -55,10 +55,10 @@ export const QUIZ = {
       code: "from flask import Flask\n\napp = Flask(__name__)\n\n@app.get('/dubbla/<int:tal>')\ndef dubbla(tal):\n    return str(tal * 2)",
       check: "__get('/dubbla/fyra').status",
       options: ['404', '200', '500', '400'],
-      explain: 'fyra är inget heltal, så vägen matchar inte.',
+      explain: 'fyra är inget heltal, så routen matchar inte.',
     },
     {
-      question: "Vad ger url_for('hund', nr=2) om vägen är /hund/<int:nr>?",
+      question: "Vad ger url_for('hund', nr=2) om routen är /hund/<int:nr>?",
       options: ["'/hund/2'", "'hund'", "'/hund/<int:nr>'", "'2'"],
       explain: 'url_for bygger adressen utifrån funktionens namn och värdena.',
     },
@@ -72,7 +72,7 @@ export const QUIZ = {
   ],
   json: [
     {
-      question: 'Vad blir svaret om vägfunktionen returnerar en dictionary?',
+      question: 'Vad blir svaret om route-funktionen returnerar en dictionary?',
       options: ['JSON', 'HTML', 'Text med Pythons utskrift', 'Ett fel'],
       explain: 'Flask gör om dict och list till JSON själv.',
     },
@@ -84,7 +84,7 @@ export const QUIZ = {
       explain: 'Det andra värdet efter kommat är statuskoden.',
     },
     {
-      question: 'Vad händer om en vägfunktion inte returnerar något?',
+      question: 'Vad händer om en route-funktion inte returnerar något?',
       options: [
         'Flask kraschar: did not return a valid response',
         'Svaret blir tomt med 200',
@@ -106,7 +106,7 @@ export const QUIZ = {
       question: 'Vad är q i adressen /sok?q=ada?',
       options: [
         'En fråga till appen, som läses med request.args',
-        'En del av vägen',
+        'En del av routen',
         'Ett fel',
         'Ett id',
       ],
@@ -210,7 +210,7 @@ export const QUIZ = {
     {
       question: 'Vad gör abort(404)?',
       options: [
-        'Avbryter vägfunktionen och svarar 404',
+        'Avbryter route-funktionen och svarar 404',
         'Tar bort sidan',
         'Stänger av appen',
         'Skriver ut 404',
@@ -370,8 +370,8 @@ export const QUIZ = {
     {
       question: 'Vad betyder 405?',
       options: [
-        'Vägen finns, men inte för den metoden',
-        'Vägen finns inte',
+        'Routen finns, men inte för den metoden',
+        'Routen finns inte',
         'Appen kraschade',
         'Fel data skickades',
       ],

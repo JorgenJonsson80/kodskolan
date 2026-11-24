@@ -191,7 +191,7 @@ export const SLUTPROJEKT = [
     title: 'Kunskapsbanken: modellen',
     xp: 30,
     description:
-      'Slutprojektet: ett API för artiklar, som till sist kan svara på frågor med hjälp av en AI. Först modellen och de två första vägarna.',
+      'Slutprojektet: ett API för artiklar, som till sist kan svara på frågor med hjälp av en AI. Först modellen och de två första routes.',
     explain:
       'Kunskapsbanken byggs i nio steg. Varje steg börjar med koden från förra steget, så att du till slut har ett helt API.\n\nEn artikel har en `titel` (1–80 tecken), en `text` och `taggar` (en lista, tom om inget skickas). Importerna överst innehåller redan allt du kommer att behöva.',
     example:
@@ -375,10 +375,10 @@ export const SLUTPROJEKT = [
     description:
       'Alla får läsa, men bara den med nyckeln får skapa, ändra och ta bort.',
     explain:
-      "Läsvägarna (GET) ska vara öppna. Skrivvägarna (POST, PATCH, DELETE) får `dependencies=[Depends(kolla_nyckel)]` i decoratorn.\n\nNyckeln är `'hemlig'` och skickas i headern `x-api-nyckel`. Saknas den eller är fel: 401.",
+      "Läs-routes (GET) ska vara öppna. Skriv-routes (POST, PATCH, DELETE) får `dependencies=[Depends(kolla_nyckel)]` i decoratorn.\n\nNyckeln är `'hemlig'` och skickas i headern `x-api-nyckel`. Saknas den eller är fel: 401.",
     example:
       "@app.post('/x', status_code=201, dependencies=[Depends(kolla_nyckel)])",
-    task: 'Uppgift: Skriv `kolla_nyckel` och lägg den på de tre skrivvägarna.',
+    task: 'Uppgift: Skriv `kolla_nyckel` och lägg den på de tre skriv-routes.',
     starterCode: STEG4,
     solution: STEG5,
     hints: [
@@ -461,14 +461,14 @@ export const SLUTPROJEKT = [
     description:
       'Nu kommer AI:n in. En låtsasmodell finns som beroende – precis så som en riktig skulle kopplas in.',
     explain:
-      '`LatsasAI` och `hamta_ai` står i startkoden. Modellen har två async-metoder som tar två sekunder: `sammanfatta(text)` och `svara(fraga, kontext)`.\n\nVägen får modellen med `ai=Depends(hamta_ai)`. När du senare byter till en riktig AI ändrar du bara `hamta_ai` – vägarna är desamma.',
+      '`LatsasAI` och `hamta_ai` står i startkoden. Modellen har två async-metoder som tar två sekunder: `sammanfatta(text)` och `svara(fraga, kontext)`.\n\nRouten får modellen med `ai=Depends(hamta_ai)`. När du senare byter till en riktig AI ändrar du bara `hamta_ai` – routes är desamma.',
     example:
       "@app.get('/x/{id}/kort')\nasync def kort(id: int, ai=Depends(hamta_ai)):\n    return await ai.sammanfatta(hitta(id)['text'])",
     task: "Uppgift: `GET /artiklar/{id}/sammanfattning` svarar `{'id': …, 'sammanfattning': …}` med AI:ns sammanfattning av artikelns text.",
     starterCode: `${STEG6}${AI}`,
     solution: STEG7,
     hints: [
-      'Vägen måste vara async def, eftersom den använder await.',
+      'Routen måste vara async def, eftersom den använder await.',
       'ai=Depends(hamta_ai)',
       "return {'id': id, 'sammanfattning': await ai.sammanfatta(artikel['text'])}",
     ],

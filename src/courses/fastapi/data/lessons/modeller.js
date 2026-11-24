@@ -15,10 +15,10 @@ export const MODELLER = [
     description:
       'Med POST skickar man data till API:et. En modell beskriver hur den datan ska se ut.',
     explain:
-      'En **modell** är en klass som ärver från `BaseModel`. Varje rad är ett fält med en typ:\n\n```\nclass Hund(BaseModel):\n    namn: str\n    alder: int\n```\n\nSom parameter till en `@app.post`-väg läser FastAPI JSON:en som skickas med anropet, kontrollerar den och ger dig en färdig `Hund`. Returnerar du modellen blir den JSON igen.\n\nI 📮 väljer du POST och skriver JSON:en som ska skickas.',
+      'En **modell** är en klass som ärver från `BaseModel`. Varje rad är ett fält med en typ:\n\n```\nclass Hund(BaseModel):\n    namn: str\n    alder: int\n```\n\nSom parameter till en `@app.post`-route läser FastAPI JSON:en som skickas med anropet, kontrollerar den och ger dig en färdig `Hund`. Returnerar du modellen blir den JSON igen.\n\nI 📮 väljer du POST och skriver JSON:en som ska skickas.',
     example:
       "class Bok(BaseModel):\n    titel: str\n    sidor: int\n\n@app.post('/bocker')\ndef ny_bok(bok: Bok):\n    return bok",
-    task: 'Uppgift: Gör modellen `Hund` med `namn` (text) och `alder` (heltal), och vägen `POST /hundar` som svarar med hunden den fick.',
+    task: 'Uppgift: Gör modellen `Hund` med `namn` (text) och `alder` (heltal), och routen `POST /hundar` som svarar med hunden den fick.',
     starterCode: IMPORT,
     solution: `${IMPORT}${HUND}\n\n@app.post('/hundar')\ndef ny_hund(hund: Hund):\n    return hund\n`,
     hints: [
@@ -55,7 +55,7 @@ export const MODELLER = [
       "Modellen är en kontroll vid dörren. Allt som inte stämmer stoppas med **422**, och `loc` i svaret pekar ut fältet:\n\n`['body', 'alder']` betyder: i det som skickades (`body`), fältet `alder`.\n\nDu slipper alltså skriva `if 'alder' not in data` själv.",
     example:
       "# POST /hundar med {'namn': 'Bamse'}\n# ger 422, eftersom alder saknas",
-    task: 'Uppgift: Modellen och vägen finns. Lägg till fältet `ras` (text) i `Hund`, så att en hund utan ras ger 422. Prova med 📮.',
+    task: 'Uppgift: Modellen och routen finns. Lägg till fältet `ras` (text) i `Hund`, så att en hund utan ras ger 422. Prova med 📮.',
     starterCode: `${IMPORT}${HUND}\n\n@app.post('/hundar')\ndef ny_hund(hund: Hund):\n    return hund\n`,
     solution: `${IMPORT}\n\nclass Hund(BaseModel):\n    namn: str\n    alder: int\n    ras: str\n\n\n@app.post('/hundar')\ndef ny_hund(hund: Hund):\n    return hund\n`,
     hints: [
@@ -134,14 +134,14 @@ export const MODELLER = [
     description:
       'Ett API som tar emot data brukar spara den, så att den går att hämta igen.',
     explain:
-      '`hund.model_dump()` gör om modellen till en vanlig dict. Den kan du lägga i en lista.\n\nNu har API:et två vägar till samma adress: `GET /hundar` hämtar, `POST /hundar` lägger till. Det är vanligt – metoden avgör vad som händer.\n\n(Listan töms när appen startar om. I bana 8 sparar vi i en databas.)',
+      '`hund.model_dump()` gör om modellen till en vanlig dict. Den kan du lägga i en lista.\n\nNu har API:et två routes till samma adress: `GET /hundar` hämtar, `POST /hundar` lägger till. Det är vanligt – metoden avgör vad som händer.\n\n(Listan töms när appen startar om. I bana 8 sparar vi i en databas.)',
     example:
       "BOCKER = []\n\n@app.post('/bocker')\ndef ny_bok(bok: Bok):\n    BOCKER.append(bok.model_dump())\n    return bok",
     task: 'Uppgift: `POST /hundar` ska spara hunden i `HUNDAR` och svara med den. `GET /hundar` ska svara med alla sparade hundar.',
     starterCode: `${IMPORT}${HUND}\nHUNDAR = []\n`,
     solution: `${IMPORT}${HUND}\nHUNDAR = []\n\n\n@app.get('/hundar')\ndef alla_hundar():\n    return HUNDAR\n\n\n@app.post('/hundar')\ndef ny_hund(hund: Hund):\n    HUNDAR.append(hund.model_dump())\n    return hund\n`,
     hints: [
-      'Två vägar: @app.get och @app.post till /hundar.',
+      'Två routes: @app.get och @app.post till /hundar.',
       'HUNDAR.append(hund.model_dump())',
       "@app.post('/hundar')\ndef ny_hund(hund: Hund):\n    HUNDAR.append(hund.model_dump())\n    return hund",
     ],
@@ -184,7 +184,7 @@ export const MODELLER = [
     description:
       'Fälten i modellen läser du som vanliga attribut: order.antal, order.pris.',
     explain:
-      'En modell är ett objekt. Fälten nås med punkt: `order.antal`.\n\nVägen behöver inte svara med samma sak som den fick. Här tar den emot en beställning och svarar med vad den kostar.',
+      'En modell är ett objekt. Fälten nås med punkt: `order.antal`.\n\nRouten behöver inte svara med samma sak som den fick. Här tar den emot en beställning och svarar med vad den kostar.',
     example:
       "class Rektangel(BaseModel):\n    bredd: float\n    hojd: float\n\n@app.post('/area')\ndef area(r: Rektangel):\n    return {'area': r.bredd * r.hojd}",
     task: "Uppgift: Modellen `Order` har `vara`, `antal` (heltal) och `styckpris` (decimaltal). `POST /pris` ska svara `{'vara': …, 'summa': antal * styckpris}`.",

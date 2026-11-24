@@ -50,7 +50,7 @@ export const TRACKS = [
     id: 'ihop',
     title: 'Ihop',
     teaches: [
-      'ett nytt fält hela vägen',
+      'ett nytt fält hela routen',
       'filter',
       'inloggning',
       'en hel funktion',

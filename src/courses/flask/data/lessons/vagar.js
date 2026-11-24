@@ -1,4 +1,4 @@
-// Bana 2: vägar med variabler. Fortfarande bara text och HTML som svar.
+// Bana 2: routes med variabler. Fortfarande bara text och HTML som svar.
 
 const IMPORT = 'from flask import Flask\n\napp = Flask(__name__)\n';
 const IMPORT_URL =
@@ -11,7 +11,7 @@ export const VAGAR = [
     title: 'En variabel i adressen',
     xp: 10,
     description:
-      'En del av adressen kan vara en variabel. Då fungerar samma väg för /hej/Ada och /hej/Bo.',
+      'En del av adressen kan vara en variabel. Då fungerar samma route för /hej/Ada och /hej/Bo.',
     explain:
       "`@app.get('/hej/<namn>')` betyder: allt som står efter `/hej/` hamnar i parametern `namn`. Funktionen måste ha en parameter med samma namn.\n\nI Kodskolan skriver du adressen i 📮, t.ex. `/hej/Ada`.",
     example:
@@ -46,7 +46,7 @@ export const VAGAR = [
     description:
       'Allt i en adress är text. Med `<int:tal>` gör Flask om det till ett heltal åt dig.',
     explain:
-      "Utan `int:` är `'4'` text, och `'4' * 2` blir `'44'`. Med `<int:tal>` blir det talet `4`.\n\nEn adress som inte är ett tal, som `/dubbla/fyra`, matchar inte vägen alls – då svarar Flask 404.",
+      "Utan `int:` är `'4'` text, och `'4' * 2` blir `'44'`. Med `<int:tal>` blir det talet `4`.\n\nEn adress som inte är ett tal, som `/dubbla/fyra`, matchar inte routen alls – då svarar Flask 404.",
     example:
       "@app.get('/ar/<int:ar>')\ndef ar(ar):\n    return f'Om tio år är det {ar + 10}'",
     task: 'Uppgift: Skapa `/dubbla/<int:tal>` som svarar med talet gånger två, som text (`str(tal * 2)`).',
@@ -173,7 +173,7 @@ export const VAGAR = [
     description:
       'Hunden med nummer 9 finns inte, och appen kraschar med `IndexError`.',
     explain:
-      'Adressen kan innehålla vilket tal som helst. Kolla att talet finns i listan innan du använder det, annars kraschar vägfunktionen och servern svarar 500.\n\nAnropa `/hund/9` med 📮 och läs felet.',
+      'Adressen kan innehålla vilket tal som helst. Kolla att talet finns i listan innan du använder det, annars kraschar route-funktionen och servern svarar 500.\n\nAnropa `/hund/9` med 📮 och läs felet.',
     example: "if nr >= len(lista):\n    return 'Finns inte'",
     task: "Uppgift: Laga `/hund/<int:nr>` så att ett nummer som inte finns svarar `'Ingen hund med det numret'`.",
     starterCode: `${IMPORT}\nhundar = ['Bamse', 'Saga', 'Rufus']\n\n\n@app.get('/hund/<int:nr>')\ndef hund(nr):\n    return hundar[nr]\n`,
@@ -205,9 +205,9 @@ export const VAGAR = [
     description:
       'Appen kraschar med `TypeError` när någon anropar `/kvadrat/5`.',
     explain:
-      "Utan `int:` är `tal` texten `'5'`, och text gånger text går inte. Felet syns först när vägen anropas – därför är det bra att anropa varje väg med 📮.",
+      "Utan `int:` är `tal` texten `'5'`, och text gånger text går inte. Felet syns först när routen anropas – därför är det bra att anropa varje route med 📮.",
     example: "@app.get('/tre-ganger/<int:tal>')",
-    task: 'Uppgift: Laga vägen så att `/kvadrat/5` svarar `25`.',
+    task: 'Uppgift: Laga routen så att `/kvadrat/5` svarar `25`.',
     starterCode: `${IMPORT}\n@app.get('/kvadrat/<tal>')\ndef kvadrat(tal):\n    return str(tal * tal)\n`,
     solution: `${IMPORT}\n@app.get('/kvadrat/<int:tal>')\ndef kvadrat(tal):\n    return str(tal * tal)\n`,
     hints: [
@@ -230,7 +230,7 @@ export const VAGAR = [
     title: 'url_for',
     xp: 15,
     description:
-      '`url_for` bygger adressen till en väg utifrån funktionens namn. Då blir länkarna aldrig fel.',
+      '`url_for` bygger adressen till en route utifrån funktionens namn. Då blir länkarna aldrig fel.',
     explain:
       "`url_for('hej', namn='Ada')` ger `'/hej/Ada'`. Byter du adress i `@app.get` följer alla länkar med, för de pekar på funktionen och inte på texten.\n\nAnvänd den när du skriver länkar i HTML.",
     example: "url_for('start')   # '/'\nurl_for('hund', nr=2)   # '/hund/2'",

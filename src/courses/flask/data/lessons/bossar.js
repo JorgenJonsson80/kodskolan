@@ -41,7 +41,7 @@ export const BOSSES = {
         code: "__post('/meny').status",
         expected: 405,
       },
-      { description: 'Tre vägar', code: 'len(__vagar())', expected: 3 },
+      { description: 'Tre routes', code: 'len(__vagar())', expected: 3 },
     ],
     sourceChecks: [
       {
@@ -269,7 +269,7 @@ export const BOSSES = {
     isBoss: true,
     xp: 40,
     description:
-      BOSS_INTRO + 'Ett komplett API för bokhyllan, med alla fem vägarna.',
+      BOSS_INTRO + 'Ett komplett API för bokhyllan, med alla fem routes.',
     task: "Uppgift: Bygg API:t för `bocker` (id, titel, sidor):\n  1. `GET /bocker` och `GET /bocker/<int:id>` (404 med `{'fel': 'Finns inte'}`).\n  2. `POST /bocker` – kräver `titel` (text) och `sidor` (heltal), annars `{'fel': 'titel och sidor krävs'}` med 400. Nytt id = högsta + 1. Svar 201.\n  3. `PUT /bocker/<int:id>` – samma krav, byter titel och sidor.\n  4. `DELETE /bocker/<int:id>` – 204.",
     starterCode:
       "from flask import Flask, request\n\napp = Flask(__name__)\n\nbocker = [{'id': 1, 'titel': 'Mio min Mio', 'sidor': 176}]\n",
