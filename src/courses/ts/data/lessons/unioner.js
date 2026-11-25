@@ -1,4 +1,4 @@
-// Bana 5: antingen eller. Unioner, literaltyper och avsmalning: TypeScript
+// Bana 5: antingen eller. Unioner, literal types och narrowing: TypeScript
 // följer if-satserna och vet vilken typ värdet har i varje gren.
 
 export const UNIONER = [
@@ -42,7 +42,7 @@ export const UNIONER = [
     description:
       'En union av texter gör att bara just de texterna är tillåtna.',
     explain:
-      "`type Storlek = 'liten' | 'mellan' | 'stor'` är en typ med tre tillåtna värden. `'jätte'` är fel, och det är `'Liten'` också.\n\nDet kallas **literaltyper**. Editorn föreslår de tre värdena när du skriver.",
+      "`type Storlek = 'liten' | 'mellan' | 'stor'` är en typ med tre tillåtna värden. `'jätte'` är fel, och det är `'Liten'` också.\n\nDet kallas **literal types**. Editorn föreslår de tre värdena när du skriver.",
     example:
       "type Riktning = 'upp' | 'ner' | 'vänster' | 'höger';\n\nlet r: Riktning = 'upp';",
     task: "Uppgift: Skapa `type Storlek = 'liten' | 'mellan' | 'stor'` och `kopp` av typen `Storlek` med värdet `'mellan'`.",
@@ -81,7 +81,7 @@ export const UNIONER = [
     xp: 10,
     description: 'Variabeln har fått ett värde som typen inte tillåter.',
     explain:
-      "Med en literaltyp fångar TypeScript stavfel och påhittade värden. I JavaScript hade `'vänster'` smugit sig in och spelet hade inte vetat vad det skulle göra.",
+      "Med en literal type fångar TypeScript stavfel och påhittade värden. I JavaScript hade `'vänster'` smugit sig in och spelet hade inte vetat vad det skulle göra.",
     example: "type Svar = 'ja' | 'nej';\n\nconst s: Svar = 'ja';",
     task: "Uppgift: Laga koden så att `riktning` är `'upp'`.",
     starterCode:
@@ -100,12 +100,12 @@ export const UNIONER = [
   {
     id: 'unioner-04',
     track: 'unioner',
-    title: 'Smalna av med typeof',
+    title: 'Narrowing med typeof',
     xp: 15,
     description:
-      'Med en union får du bara använda det som fungerar för **alla** typerna. En if med `typeof` smalnar av typen.',
+      'Med en union får du bara använda det som fungerar för **alla** typerna. En if med `typeof` gör narrowing på typen.',
     explain:
-      "`x.length` fungerar inte på `string | number`, för tal har ingen längd. Men inne i `if (typeof x === 'string')` vet TypeScript att `x` är text.\n\nHåll musen över `x` inne i if-satsen och efter den – typen är olika. Det kallas **avsmalning** (narrowing).",
+      "`x.length` fungerar inte på `string | number`, för tal har ingen längd. Men inne i `if (typeof x === 'string')` vet TypeScript att `x` är text.\n\nHåll musen över `x` inne i if-satsen och efter den – typen är olika. Det kallas **narrowing**.",
     example:
       "function dubbla(x: string | number) {\n  if (typeof x === 'string') {\n    return x + x;   // x: string\n  }\n  return x * 2;     // x: number\n}",
     task: 'Uppgift: Skriv `langd(x: string | number): number`. För text ska den ge antal tecken, för ett tal talet självt.',
@@ -130,7 +130,8 @@ export const UNIONER = [
     track: 'unioner',
     title: 'Ett pris per storlek',
     xp: 15,
-    description: 'En funktion som tar en literaltyp vet vilka fall som finns.',
+    description:
+      'En funktion som tar en literal type vet vilka fall som finns.',
     explain:
       "När parametern är `Storlek` vet TypeScript att den bara kan vara `'liten'`, `'mellan'` eller `'stor'`. Efter två if-satser vet den att det bara är det tredje fallet kvar.\n\nSkriver du `if (storlek === 'jätte')` säger TypeScript att jämförelsen aldrig kan bli sann.",
     example:
@@ -160,7 +161,7 @@ export const UNIONER = [
   {
     id: 'unioner-06',
     track: 'unioner',
-    title: 'Smalna av med in',
+    title: 'Narrowing med in',
     xp: 15,
     description:
       'Är det två sorters objekt kan `in` kolla vilken egenskap som finns.',
@@ -200,12 +201,12 @@ export const UNIONER = [
   {
     id: 'unioner-07',
     track: 'unioner',
-    title: 'filter som smalnar av',
+    title: 'filter med narrowing',
     xp: 20,
     description:
       'En array kan blanda typer. `filter` med `typeof` ger en array med bara en av dem – och TypeScript förstår det.',
     explain:
-      "`(string | number)[]` är en array där varje element är text eller ett tal. Parentesen behövs: `string | number[]` betyder något annat.\n\n`blandat.filter(x => typeof x === 'number')` ger en `number[]`. TypeScript ser vad `filter` kollar och smalnar av hela arrayen. Håll musen över resultatet.",
+      "`(string | number)[]` är en array där varje element är text eller ett tal. Parentesen behövs: `string | number[]` betyder något annat.\n\n`blandat.filter(x => typeof x === 'number')` ger en `number[]`. TypeScript ser vad `filter` kollar och gör narrowing på hela arrayen. Håll musen över resultatet.",
     example: "const svar: (string | boolean)[] = ['ja', true, 'nej'];",
     task: 'Uppgift: Skapa `tal` med bara talen i `blandat` (med `filter` och `typeof`), och `summa` som är talen ihop.',
     starterCode:

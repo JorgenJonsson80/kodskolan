@@ -54,11 +54,11 @@ export const IDEAS = [
     id: 'idea-kmai-kantfall',
     track: 'bestall',
     emoji: '🧱',
-    title: 'Leta kantfall',
-    summary: 'Vilka kantfall finns för en funktion?',
+    title: 'Leta edge cases',
+    summary: 'Vilka edge cases finns för en funktion?',
     goals: [
       'Välj en funktion, t.ex. dela upp en notan på flera personer.',
-      'Skriv alla kantfall du kommer på som kommentarer.',
+      'Skriv alla edge cases du kommer på som kommentarer.',
       'Skriv en beställning som nämner dem.',
     ],
   },
@@ -166,7 +166,7 @@ export const IDEAS = [
     summary: 'Skriv tester för en övning du redan klarat.',
     goals: [
       'Ta en funktion från en tidigare bana.',
-      'Skriv tester för det vanliga fallet och för kantfallen.',
+      'Skriv tester för det vanliga fallet och för edge cases.',
       'Ändra funktionen lite. Märker testerna det?',
     ],
   },

@@ -7,7 +7,7 @@ export const TRACKS = [
   {
     id: 'typer',
     title: 'Första typerna',
-    teaches: [': string', ': number', ': boolean', 'typinferens', 'typfel'],
+    teaches: [': string', ': number', ': boolean', 'type inference', 'typfel'],
     reward: { emoji: '🏷️', name: 'Etikett' },
     canBuild:
       'variabler som TypeScript vakar över, så att ett tal aldrig råkar bli text',
@@ -72,7 +72,7 @@ export const TRACKS = [
   {
     id: 'unioner',
     title: 'Antingen eller',
-    teaches: ['|', 'literaltyper', 'typeof', 'in', 'avsmalning'],
+    teaches: ['|', 'literal types', 'typeof', 'in', 'narrowing'],
     reward: { emoji: '🔀', name: 'Växel' },
     canBuild: "värden som bara får vara vissa saker, som 'liten' | 'stor'",
     docs: [
@@ -109,10 +109,10 @@ export const TRACKS = [
     id: 'fall',
     title: 'Sorterade fall',
     teaches: [
-      'diskriminerade unioner',
+      'discriminated unions',
       'switch',
       'never',
-      'uttömmande kontroll',
+      'exhaustiveness check',
     ],
     reward: { emoji: '🗂️', name: 'Kortregister' },
     canBuild:
@@ -139,7 +139,7 @@ export const TRACKS = [
   },
   {
     id: 'verktyg',
-    title: 'Verktygstyper',
+    title: 'Utility types',
     teaches: ['Partial', 'Pick', 'Omit', 'Record', 'keyof', 'typeof'],
     reward: { emoji: '🧰', name: 'Verktygslåda' },
     canBuild: 'nya typer gjorda av gamla, utan att skriva samma sak två gånger',
@@ -152,7 +152,7 @@ export const TRACKS = [
   {
     id: 'data',
     title: 'Data utifrån',
-    teaches: ['Promise<T>', 'fetch', 'unknown', 'typkontroller (x is T)'],
+    teaches: ['Promise<T>', 'fetch', 'unknown', 'type guards (x is T)'],
     reward: { emoji: '📡', name: 'Parabol' },
     canBuild:
       'kod som hämtar data från nätet och kollar att den ser ut som utlovat',
@@ -181,7 +181,7 @@ export const TRACKS = [
   {
     id: 'react',
     title: 'React med TypeScript',
-    teaches: ['typade props', 'useState<T>', 'händelser', 'children'],
+    teaches: ['typade props', 'useState<T>', 'events', 'children'],
     reward: { emoji: '⚛️', name: 'Atom' },
     canBuild: 'komponenter i React där fel props fångas innan sidan ens laddar',
     docs: [

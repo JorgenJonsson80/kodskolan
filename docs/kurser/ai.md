@@ -66,7 +66,7 @@ som skickar reglerna som filen `.modell.json`.
 | 3  | `samtal`      | Samtal              | historiken är en lista, minnet är det du skickar med            |      |
 | 4  | `struktur`    | Strukturerade svar  | `parse` med Pydantic, JSON-schema, när svaret är fel            |      |
 | 5  | `verktyg`     | Verktyg             | tool use: modellen ber om en funktion, du kör den och svarar    |      |
-| 6  | `embeddings`  | Embeddings          | text som vektorer, cosinuslikhet                                |      |
+| 6  | `embeddings`  | Embeddings          | text som vektorer, cosine similarity                             |      |
 | 7  | `rag`         | Egna dokument (RAG) | dela upp text, hitta de bästa bitarna, skicka med som kontext   |      |
 | 8  | `agent`       | Agenter             | loopen: tänk, gör, titta – och när den ska sluta                |      |
 | 9  | `utvardering` | Testa AI            | rätta svar som aldrig blir exakt lika, testfall, säkerhet       |      |

@@ -116,7 +116,7 @@ export const TYPER = [
     description:
       'Du behöver inte alltid skriva typen. TypeScript ser vad du ger variabeln och räknar ut typen själv.',
     explain:
-      'Skriver du `let antal = 3;` vet TypeScript att `antal` är ett `number`, fast du inte skrev det. Det kallas **typinferens**.\n\nHåll musen över `antal` i editorn, så ser du `let antal: number`.\n\nDe flesta skriver bara typen där TypeScript inte kan gissa. Här ska du låta bli att skriva den.',
+      'Skriver du `let antal = 3;` vet TypeScript att `antal` är ett `number`, fast du inte skrev det. Det kallas **type inference**.\n\nHåll musen över `antal` i editorn, så ser du `let antal: number`.\n\nDe flesta skriver bara typen där TypeScript inte kan gissa. Här ska du låta bli att skriva den.',
     example:
       "let namn = 'Ada';   // string\nlet pris = 49;      // number\nlet medlem = true;  // boolean",
     task: 'Uppgift: Skapa `antal` med värdet `3` **utan** att skriva typen. Öka sedan `antal` med `2` på nästa rad.',
@@ -155,7 +155,7 @@ export const TYPER = [
     description:
       'Med `const` kan värdet aldrig ändras, så TypeScript kan ge en ännu exaktare typ.',
     explain:
-      "`let stad = 'Lund'` får typen `string`, för den kan bli vilken text som helst senare.\n\n`const land = 'Sverige'` kan aldrig ändras. Därför får den typen `'Sverige'` – just den texten och ingen annan. Det kallas en **literaltyp**.\n\nHåll musen över namnen och jämför.",
+      "`let stad = 'Lund'` får typen `string`, för den kan bli vilken text som helst senare.\n\n`const land = 'Sverige'` kan aldrig ändras. Därför får den typen `'Sverige'` – just den texten och ingen annan. Det kallas en **literal type**.\n\nHåll musen över namnen och jämför.",
     example:
       "let a = 'hej';    // let a: string\nconst b = 'hej';  // const b: \"hej\"",
     task: "Uppgift: Skapa `land` med `const` och värdet `'Sverige'`, och `stad` med `let` och värdet `'Lund'`. Skriv inga typer.",

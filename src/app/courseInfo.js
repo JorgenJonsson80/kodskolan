@@ -56,7 +56,7 @@ else:
   sql: {
     title: 'Lär dig SQL på svenska',
     description:
-      'En gratis SQL-kurs på svenska. Ställ frågor till riktiga databaser i webbläsaren, från första SELECT till JOIN, gruppering och fönsterfunktioner.',
+      'En gratis SQL-kurs på svenska. Ställ frågor till riktiga databaser i webbläsaren, från första SELECT till JOIN, gruppering och window functions.',
     intro:
       'SQL är språket för att fråga databaser, och det används i nästan alla företag. Du skriver frågor mot riktiga tabeller och ser svaret direkt.',
     forWhom:

@@ -2359,7 +2359,7 @@ export const PROJECTS = [
       },
       {
         title: 'Med namn',
-        why: 'JOIN mot elever och kurser ger namnen. Fönsterfunktionen fungerar likadant efter en JOIN.',
+        why: 'JOIN mot elever och kurser ger namnen. En window function fungerar likadant efter en JOIN.',
         xp: 20,
         description: 'Siffror är svåra att läsa. Byt till namn.',
         task: 'Uppgift: Visa kursens namn som `kurs`, elevens `fornamn`, `poang` och `plats`.',
@@ -2374,7 +2374,7 @@ export const PROJECTS = [
       },
       {
         title: 'Vinnarna',
-        why: 'Fönsterfunktionen kan inte stå i WHERE, så frågan läggs i en WITH och filtreras på plats.',
+        why: 'En window function kan inte stå i WHERE, så frågan läggs i en WITH och filtreras på plats.',
         xp: 25,
         description: 'Prisutdelningen: vem vann varje kurs?',
         task: 'Uppgift: Visa bara den som har plats 1 i varje kurs (`kurs`, `fornamn`, `poang`), sorterat på kurs.',
@@ -2782,7 +2782,7 @@ INSERT INTO lyssningar (datum, artist, latt, sekunder) VALUES
       },
       {
         title: 'Dagskassan',
-        why: 'Försäljningen per dag med en löpande summa: GROUP BY för dagen och en fönsterfunktion för veckan hittills.',
+        why: 'Försäljningen per dag med en löpande summa: GROUP BY för dagen och en window function för veckan hittills.',
         xp: 25,
         description: 'Hur mycket kom in varje dag, och hur mycket hittills?',
         task: 'Uppgift: Visa `datum`, dagens försäljning som `kassa` och den löpande summan som `hittills`, i datumordning.',

@@ -130,7 +130,7 @@ export const tracks = [
         url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters',
       },
       {
-        title: '? : (villkorsoperatorn)',
+        title: '? : (ternary operator)',
         url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator',
       },
       {
@@ -281,11 +281,11 @@ export const tracks = [
   },
   {
     id: 'state',
-    title: 'React: State & händelser',
+    title: 'React: State & events',
     reward: { emoji: '🎮', name: 'Handkontroll' },
     docs: [
       {
-        title: 'Reagera på händelser',
+        title: 'Reagera på events',
         url: 'https://react.dev/learn/responding-to-events',
       },
       {

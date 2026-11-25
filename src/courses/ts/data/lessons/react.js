@@ -1,5 +1,5 @@
 // Bana 12: React med TypeScript. Eleven kan React från JS-kursen; här får
-// props, state och händelser typer. Testerna använder JS-kursens __render
+// props, state och events typer. Testerna använder JS-kursens __render
 // och __mount (se ../../../js/runner/mount.js), och preview visar
 // komponenten efteråt.
 
@@ -184,12 +184,12 @@ export const REACT = [
   {
     id: 'react-06',
     track: 'react',
-    title: 'Händelser',
+    title: 'Events',
     xp: 20,
     description:
-      'En funktion som tar emot en händelse behöver typen på händelsen, t.ex. `ChangeEvent<HTMLInputElement>`.',
+      'En funktion som tar emot ett event behöver typen på eventet, t.ex. `ChangeEvent<HTMLInputElement>`.',
     explain:
-      'Skriver du händelsen direkt i JSX (`onChange={e => …}`) räknar TypeScript ut typen själv. Men en egen funktion behöver den: `function andra(e: ChangeEvent<HTMLInputElement>)`.\n\nDå vet TypeScript att `e.target.value` är en `string`.',
+      'Skriver du en arrow function direkt i JSX (`onChange={e => …}`) räknar TypeScript ut typen själv. Men en egen funktion behöver den: `function andra(e: ChangeEvent<HTMLInputElement>)`.\n\nDå vet TypeScript att `e.target.value` är en `string`.',
     example:
       "import type { ChangeEvent } from 'react';\n\nfunction andra(e: ChangeEvent<HTMLInputElement>) {\n  console.log(e.target.value);\n}",
     task: 'Uppgift: Skriv `Eko` med en `<input>` och en `<p>` som visar det som skrivs. Hantera ändringen i en egen funktion `andra(e: ChangeEvent<HTMLInputElement>)`.',

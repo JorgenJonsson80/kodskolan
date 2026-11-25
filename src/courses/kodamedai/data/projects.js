@@ -341,8 +341,8 @@ export const PROJECTS = [
         ],
       },
       {
-        title: 'Kantfallet',
-        why: 'Kunder skriver koden som de vill. Ett kantfall du inte nämner i beställningen får du laga själv.',
+        title: 'Ett edge case',
+        why: 'Kunder skriver koden som de vill. Ett edge case du inte nämner i beställningen får du laga själv.',
         xp: 15,
         description: 'En kund skrev "student".',
         task: 'Uppgift: Skriv om `rabatt` så att koden fungerar oavsett stora och små bokstäver.',
@@ -439,8 +439,8 @@ export const PROJECTS = [
     summary: 'Lägga till och ta bort – och vad händer om varan redan finns?',
     steps: [
       {
-        title: 'Beställ med kantfall',
-        why: 'Det vanliga fallet klarar assistenten. Kantfallen – som en vara som redan finns – måste du säga.',
+        title: 'Beställ med edge cases',
+        why: 'Det vanliga fallet klarar assistenten. Edge cases – som en vara som redan finns – måste du säga.',
         xp: 10,
         description: 'Samma vara ska inte stå två gånger.',
         task: 'Uppgift: Beställ `lagg_till(lista, vara)` i `bestallning`. Nämn namnet, ett exempel och vad som ska hända om varan redan finns (ordet `redan`).',
@@ -459,7 +459,7 @@ export const PROJECTS = [
       },
       {
         title: 'Svaret',
-        why: 'Assistenten skrev det enklaste. Kolla alltid kantfallet du beställde.',
+        why: 'Assistenten skrev det enklaste. Kolla alltid de edge cases du beställde.',
         xp: 15,
         description: 'Mjölk, mjölk, mjölk.',
         task: 'Uppgift: Laga `lagg_till` så att en vara som redan finns inte läggs till igen.',
@@ -1180,7 +1180,7 @@ export const PROJECTS = [
       },
       {
         title: 'Över midnatt',
-        why: 'Ett nattpass från 23 till 1 är två timmar. Kantfall som midnatt glöms nästan alltid.',
+        why: 'Ett nattpass från 23 till 1 är två timmar. Edge cases som midnatt glöms nästan alltid.',
         xp: 20,
         description: 'Hur länge varade passet?',
         task: 'Uppgift: Skriv `test_langd(f)` som avslöjar att assistenten inte klarar midnatt.',

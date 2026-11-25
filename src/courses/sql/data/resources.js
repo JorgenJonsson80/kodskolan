@@ -169,7 +169,7 @@ export const RESOURCES = {
   ],
   fonster: [
     {
-      topic: 'Fönsterfunktioner',
+      topic: 'Window functions',
       read: `${TUTORIAL}sqlite-window-functions/`,
       video: 'sql window functions explained',
     },

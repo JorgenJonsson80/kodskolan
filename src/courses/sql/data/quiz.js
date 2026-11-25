@@ -435,13 +435,13 @@ export const QUIZ = {
       question:
         'Varför går det inte att skriva WHERE ROW_NUMBER() OVER (…) <= 3?',
       options: [
-        'WHERE körs innan fönsterfunktionerna räknas ut',
+        'WHERE körs innan window functions räknas ut',
         'ROW_NUMBER kan bara stå i ORDER BY',
         'Det går, men bara i SQLite',
-        'Fönsterfunktioner ger alltid text',
+        'Window functions ger alltid text',
       ],
       explain:
-        'Lägg fönsterfunktionen i en WITH, och filtrera på den i nästa fråga.',
+        'Räkna ut ROW_NUMBER i en WITH, och filtrera på resultatet i nästa fråga.',
     },
     {
       question: 'Vad blir svaret?',

@@ -165,7 +165,7 @@ export default {
     laterTips: (
       <li>
         <strong>Lita inte – testa.</strong> Kör AI:ns kod med egna exempel och
-        kantfall innan du använder den. Det gör proffs också.
+        edge cases innan du använder den. Det gör proffs också.
       </li>
     ),
     stuckTips: (

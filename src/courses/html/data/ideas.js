@@ -383,7 +383,7 @@ export const IDEAS = [
       'Ingenting sticker ut på mobilen – kolla med 📱.',
     ],
     extra:
-      'Bygg sidan med mobilen först, och lägg till kolumnerna med `@media (min-width: …)`.',
+      'Bygg sidan mobile first, och lägg till kolumnerna med `@media (min-width: …)`.',
   },
   {
     id: 'idea-djurhem',

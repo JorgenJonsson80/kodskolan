@@ -28,7 +28,7 @@ appen (ASGI).
   låsa sidan.
 - `uvicorn.run(app)` gör ingenting (en låtsasmodul i `sys.modules`), så att
   elever kan skriva det som i en riktig app.
-- Ett fel i en vägfunktion visas som ett Python-fel med rad, inte som en
+- Ett fel i en route-funktion visas som ett Python-fel med rad, inte som en
   anonym 500.
 - Formulär (`Form`) kräver `python-multipart`, som saknas. Kursen tar bara
   emot JSON, och 📮 visar inget formulärval (`forms={false}` på Flask-

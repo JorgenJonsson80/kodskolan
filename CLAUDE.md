@@ -136,4 +136,8 @@ Push till `main` kör testerna och publicerar via
   exception, decorator, callback, dictionary) – förklara det på svenska
   första gången. Svenska där svenskan är etablerad (funktion, variabel,
   lista, loop, metod, modul, egenskap, nyckelord). Översätt aldrig ett
-  fackord som inte används på svenska.
+  fackord som inte används på svenska – inga halvöversättningar som
+  pilfunktion, avsmalning, fönsterfunktion, kantfall eller "ritas om"
+  (skriv narrowing, window function, edge case, renderas om). Ingen
+  svensk ändelse på engelska uttryck i flera ord: "en arrow function"
+  och "funktionen", inte "arrow functionen".

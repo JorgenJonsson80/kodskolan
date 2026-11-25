@@ -109,7 +109,7 @@ class Klient:
 
 
 def _prepare(app):
-    # Ett fel i elevens vägfunktion ska synas som ett Python-fel med rad och
+    # Ett fel i elevens route-funktion ska synas som ett Python-fel med rad och
     # förklaring, inte som en anonym "500 Internal Server Error".
     app.config['PROPAGATE_EXCEPTIONS'] = True
     return app

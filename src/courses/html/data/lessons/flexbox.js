@@ -11,7 +11,7 @@ export const FLEXBOX = [
     description:
       'Rutorna här står under varandra, som alla block gör. Men de ska stå på en rad.',
     explain:
-      'Med `display: flex` på en förälder ställer sig **barnen** bredvid varandra på en rad.\n\nRegeln skrivs alltså på lådan runt omkring, inte på rutorna själva. Föräldern kallas en *flexbehållare* och barnen *flexelement*.',
+      'Med `display: flex` på en förälder ställer sig **barnen** bredvid varandra på en rad.\n\nRegeln skrivs alltså på lådan runt omkring, inte på rutorna själva. Föräldern kallas en *flex container* och barnen *flex items*.',
     example: '.rad {\n  display: flex;\n}',
     task: 'Uppgift: Ge `.rad` `display: flex` så att de tre rutorna står bredvid varandra.',
     starterCode: `<style>
@@ -522,7 +522,7 @@ export const FLEXBOX = [
     description:
       'Menyn till vänster ska vara 200 pixlar bred. Texten bredvid ska ta all plats som blir över.',
     explain:
-      '`flex: 1` på ett flexelement betyder "ta den plats som blir över".\n\nHar två element `flex: 1` delar de lika. Har ett `flex: 2` och ett `flex: 1` får det första dubbelt så mycket.\n\nUtan `flex: 1` blir det konstigt när texten är lång: flexboxen krymper *alla* för att få plats, även menyn som skulle vara 200 pixlar. När texten tar resten behöver ingenting krympa.',
+      '`flex: 1` på ett flex item betyder "ta den plats som blir över".\n\nHar två element `flex: 1` delar de lika. Har ett `flex: 2` och ett `flex: 1` får det första dubbelt så mycket.\n\nUtan `flex: 1` blir det konstigt när texten är lång: flexboxen krymper *alla* för att få plats, även menyn som skulle vara 200 pixlar. När texten tar resten behöver ingenting krympa.',
     example: 'aside {\n  width: 200px;\n}\nmain {\n  flex: 1;\n}',
     task: 'Uppgift: Ge `main` `flex: 1` så att den tar resten av bredden och `aside` blir 200 pixlar.',
     starterCode: `<style>

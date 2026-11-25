@@ -293,7 +293,7 @@ export const SLUTPROJEKT = [
     xp: 25,
     description: 'Vilket rum används mest? Kanske behövs fler små rum.',
     explain:
-      'Här kommer fönsterfunktionen från förra banan till nytta: räkna nätterna per rum med `GROUP BY`, och ge rummen en plats med `RANK() OVER (ORDER BY …)`.\n\nEn fönsterfunktion kan stå i samma fråga som `GROUP BY` – den räknas ut sist, på grupperna.',
+      'Här kommer window functions från förra banan till nytta: räkna nätterna per rum med `GROUP BY`, och ge rummen en plats med `RANK() OVER (ORDER BY …)`.\n\nEn window function kan stå i samma fråga som `GROUP BY` – den räknas ut sist, på grupperna.',
     example:
       'SELECT genre, COUNT(*) AS antal, RANK() OVER (ORDER BY COUNT(*) DESC) AS plats FROM filmer GROUP BY genre;',
     task: 'Uppgift: Visa rummets `namn`, `storlek`, antal nätter som `natter` och platsen som `plats` (flest nätter är plats 1).',

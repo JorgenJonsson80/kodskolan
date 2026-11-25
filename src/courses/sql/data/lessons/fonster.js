@@ -1,4 +1,4 @@
-// Bana 12: fönsterfunktioner. ROW_NUMBER, RANK och DENSE_RANK, PARTITION
+// Bana 12: window functions. ROW_NUMBER, RANK och DENSE_RANK, PARTITION
 // BY, SUM och AVG med OVER, löpande summor, LAG och topp N per grupp med
 // WITH. Raderna rättas oftast utan ordning, eftersom platsen står i en
 // egen kolumn.
@@ -14,7 +14,7 @@ export const FONSTER = [
     description:
       'Butiken vill ha en prislista där varje produkt har sin plats: 1, 2, 3 …',
     explain:
-      '`ROW_NUMBER() OVER (ORDER BY pris DESC)` numrerar raderna i den ordning som står i `OVER`. Den dyraste får 1.\n\nTill skillnad från `GROUP BY` slås inga rader ihop – varje rad finns kvar och får ett nummer. Det kallas en **fönsterfunktion**: den tittar på flera rader men skriver svaret på varje.',
+      '`ROW_NUMBER() OVER (ORDER BY pris DESC)` numrerar raderna i den ordning som står i `OVER`. Den dyraste får 1.\n\nTill skillnad från `GROUP BY` slås inga rader ihop – varje rad finns kvar och får ett nummer. Det kallas en **window function**: den tittar på flera rader men skriver svaret på varje.',
     example:
       'SELECT titel, langd, ROW_NUMBER() OVER (ORDER BY langd) AS nr FROM filmer;',
     task: 'Uppgift: Visa `namn`, `pris` och platsen som `plats` för alla produkter, där den dyraste har plats 1.',
@@ -111,7 +111,7 @@ export const FONSTER = [
     xp: 20,
     description: 'Läraren vill se varje resultat med kursens snitt bredvid.',
     explain:
-      'Vanliga funktioner som `AVG` och `SUM` blir fönsterfunktioner med `OVER`:\n\n`AVG(poang) OVER (PARTITION BY kurs_id)`\n\nVarje rad behåller sitt resultat och får kursens snitt bredvid. Med `GROUP BY` hade det blivit en rad per kurs.',
+      'Vanliga funktioner som `AVG` och `SUM` blir window functions med `OVER`:\n\n`AVG(poang) OVER (PARTITION BY kurs_id)`\n\nVarje rad behåller sitt resultat och får kursens snitt bredvid. Med `GROUP BY` hade det blivit en rad per kurs.',
     example:
       'SELECT titel, genre, AVG(langd) OVER (PARTITION BY genre) AS genresnitt FROM filmer;',
     task: 'Uppgift: Visa `elev_id`, `kurs_id`, `poang` och kursens snitt med en decimal som `kurssnitt` för alla resultat.',
@@ -134,7 +134,7 @@ export const FONSTER = [
     description:
       'Hur mycket över eller under kursens snitt hamnade varje elev?',
     explain:
-      'En fönsterfunktion går att räkna med som vilket värde som helst: `poang - AVG(poang) OVER (PARTITION BY kurs_id)`.\n\nEtt positivt svar är över snittet, ett negativt under.',
+      'En window function går att räkna med som vilket värde som helst: `poang - AVG(poang) OVER (PARTITION BY kurs_id)`.\n\nEtt positivt svar är över snittet, ett negativt under.',
     example:
       'SELECT titel, langd - AVG(langd) OVER () AS skillnad FROM filmer;',
     task: 'Uppgift: Visa `elev_id`, `poang` och skillnaden mot kursens snitt med en decimal som `skillnad`, för resultaten i Matematik (`kurs_id` 1).',
@@ -200,7 +200,7 @@ export const FONSTER = [
     xp: 30,
     description: 'Vilken är den längsta filmen i varje genre?',
     explain:
-      'En fönsterfunktion kan inte stå i `WHERE`, eftersom `WHERE` körs innan den räknas ut. Lägg den i en `WITH` först, och filtrera sedan:\n\n`WITH rankade AS (SELECT …, RANK() OVER (…) AS plats FROM …)`\n`SELECT … FROM rankade WHERE plats = 1`\n\nSå gör man "topp N per grupp", en av de vanligaste frågorna i jobbet.',
+      'En window function kan inte stå i `WHERE`, eftersom `WHERE` körs innan den räknas ut. Lägg den i en `WITH` först, och filtrera sedan:\n\n`WITH rankade AS (SELECT …, RANK() OVER (…) AS plats FROM …)`\n`SELECT … FROM rankade WHERE plats = 1`\n\nSå gör man "topp N per grupp", en av de vanligaste frågorna i jobbet.',
     example:
       'WITH r AS (SELECT namn, kategori, pris, RANK() OVER (PARTITION BY kategori ORDER BY pris) AS plats FROM produkter)\nSELECT * FROM r WHERE plats = 1;',
     task: 'Uppgift: Visa `genre`, `titel` och `langd` för den längsta filmen i varje genre.',

@@ -19,7 +19,7 @@ export const GITHUB = [
     description:
       'GitHub är en webbplats där repon sparas, så att du har en kopia i molnet och kan jobba med andra.',
     explain:
-      'Ett repo på GitHub kallas **remote** (fjärr). Du kopplar ditt repo till det en gång:\n\n```\ngit remote add origin https://github.com/ada/hemsida\n```\n\n`origin` är namnet på fjärren – det heter nästan alltid så. `git remote -v` visar vad repot är kopplat till.\n\n(Här är GitHub på låtsas. På riktigt skapar du först repot på github.com och kopierar adressen därifrån.)',
+      'Ett repo på GitHub kallas en **remote**. Du kopplar ditt repo till det en gång:\n\n```\ngit remote add origin https://github.com/ada/hemsida\n```\n\n`origin` är namnet på din remote – det heter nästan alltid så. `git remote -v` visar vad repot är kopplat till.\n\n(Här är GitHub på låtsas. På riktigt skapar du först repot på github.com och kopierar adressen därifrån.)',
     example:
       'git remote add origin https://github.com/ada/projekt\ngit remote -v',
     task: 'Uppgift: Koppla repot till `https://github.com/ada/hemsida` med namnet `origin`, och visa kopplingen med `git remote -v`.',

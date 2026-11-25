@@ -101,7 +101,7 @@ export const SAKNAS = [
     title: 'Kolla först',
     xp: 15,
     description:
-      'En vanlig if-sats smalnar av typen. Efter `if (text === null) return` vet TypeScript att `text` finns.',
+      'En vanlig if-sats gör narrowing på typen. Efter `if (text === null) return` vet TypeScript att `text` finns.',
     explain:
       'Inne i funktionen är `text` av typen `string | null`. Efter `if (text === null) { return 0; }` kan den bara vara en `string`, så `text.length` fungerar.\n\nHåll musen över `text` före och efter if-satsen.',
     example:

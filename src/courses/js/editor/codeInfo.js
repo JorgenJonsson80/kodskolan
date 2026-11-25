@@ -74,7 +74,7 @@ const OPERATORS = {
   '||': 'Eller – sant om minst en sida är sann.',
   '??': 'Ger högra sidan bara om vänstra är `null` eller `undefined`.',
   '!': 'Inte – vänder sant till falskt och tvärtom.',
-  '?': 'Villkorsoperatorn: `villkor ? omSant : omFalskt`.',
+  '?': 'Ternary operator: `villkor ? omSant : omFalskt`.',
   '+': 'Plus – adderar tal eller sätter ihop strängar.',
   '%': 'Rest vid division, t.ex. `7 % 2` blir 1. Bra för att hitta jämna tal.',
   '++': 'Ökar variabeln med 1.',

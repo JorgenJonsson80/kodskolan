@@ -23,7 +23,7 @@ export const RESOURCES = {
       video: 'prompt engineering tutorial',
     },
     {
-      topic: 'Promptinjektion',
+      topic: 'Prompt injection',
       read: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/',
       video: 'prompt injection explained',
     },
@@ -71,7 +71,7 @@ export const RESOURCES = {
       video: 'embeddings explained simply',
     },
     {
-      topic: 'Cosinuslikhet',
+      topic: 'Cosine similarity',
       read: 'https://en.wikipedia.org/wiki/Cosine_similarity',
       video: 'cosine similarity explained',
     },

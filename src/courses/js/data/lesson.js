@@ -1260,10 +1260,10 @@ function sumOfSquares(a, b) {
     description:
       'Behöver en arrow function flera rader använder du klamrar. Då måste du skriva return själv, precis som i en vanlig funktion. Utan return blir resultatet undefined.',
     explain:
-      'Med klamrar efter pilen blir arrow functionen ett kodblock, precis som en vanlig funktion. Då kan du ha flera rader och if-satser inuti.\n\nSkillnaden är att inget returneras automatiskt längre. Du måste skriva return själv.',
+      'Med klamrar efter pilen blir funktionen ett kodblock, precis som en vanlig funktion. Då kan du ha flera rader och if-satser inuti.\n\nSkillnaden är att inget returneras automatiskt längre. Du måste skriva return själv.',
     example:
       "const getSize = cm => {\n  if (cm >= 180) return 'Lång';\n  if (cm >= 150) return 'Mellan';\n  return 'Kort';\n};",
-    task: 'Uppgift: Skapa arrow functionen `getGrade` med parametern points. Den returnerar "A" om points är minst 90, "B" om points är minst 50 och annars "C". Använd klamrar och if.',
+    task: 'Uppgift: Skapa `getGrade` som en arrow function med parametern points. Den returnerar "A" om points är minst 90, "B" om points är minst 50 och annars "C". Använd klamrar och if.',
     starterCode: '// Skriv din kod här',
     solution: `const getGrade = points => {
   if (points >= 90) return 'A';
@@ -1326,7 +1326,7 @@ function sumOfSquares(a, b) {
       'När du skickar in en funktion som argument skriver du bara namnet, utan parenteser. Med parenteser körs funktionen direkt, och då skickar du in svaret i stället för funktionen.\n\nFunktionen som tar emot den kan sedan anropa den när den vill, så många gånger den vill.',
     example:
       "function runTwice(fn) {\n  fn();\n  fn();\n}\n\nconst sayHi = () => console.log('Hej!');\nrunTwice(sayHi); // Hej! Hej!",
-    task: 'Uppgift: Skapa arrow functionen `addThree` som returnerar talet plus 3. Anropa sedan applyTwice med addThree och 10, och spara svaret i `result`.',
+    task: 'Uppgift: Skapa `addThree`, en arrow function som returnerar talet plus 3. Anropa sedan applyTwice med addThree och 10, och spara svaret i `result`.',
     starterCode: `function applyTwice(fn, value) {
   return fn(fn(value));
 }
@@ -2028,7 +2028,7 @@ const doubled = numbers.map(number => number * 2);`,
     hints: [
       'Börja med const doubled = numbers.map(...).',
       'Skicka in en arrow function till map, till exempel number => ...',
-      'Arrow functionen ska returnera number * 2.',
+      'Funktionen ska returnera number * 2.',
     ],
     tests: [
       {
@@ -2078,7 +2078,7 @@ const doubled = numbers.map(number => number * 2);`,
 const names = users.map(user => user.name);`,
     hints: [
       'Börja med const names = users.map(...).',
-      'Arrow functionen tar emot en användare åt gången, till exempel user => ...',
+      'Funktionen tar emot en användare åt gången, till exempel user => ...',
       'Returnera user.name.',
     ],
     tests: [
@@ -2116,7 +2116,7 @@ const names = users.map(user => user.name);`,
 const bigNumbers = numbers.filter(number => number > 10);`,
     hints: [
       'Börja med const bigNumbers = numbers.filter(...).',
-      'Arrow functionen ska returnera true för de tal som ska vara kvar.',
+      'Funktionen ska returnera true för de tal som ska vara kvar.',
       'Jämför med number > 10.',
     ],
     tests: [
@@ -2162,7 +2162,7 @@ const bigNumbers = numbers.filter(number => number > 10);`,
 const doneTodos = todos.filter(todo => todo.done);`,
     hints: [
       'Börja med const doneTodos = todos.filter(...).',
-      'Arrow functionen tar emot en todo åt gången.',
+      'Funktionen tar emot en todo åt gången.',
       'todo.done är redan true eller false, så du kan returnera det direkt.',
     ],
     tests: [
@@ -2213,7 +2213,7 @@ const doneTodos = todos.filter(todo => todo.done);`,
 const todo = todos.find(item => item.id === 2);`,
     hints: [
       'Börja med const todo = todos.find(...).',
-      'Arrow functionen tar emot ett objekt åt gången, till exempel item => ...',
+      'Funktionen tar emot ett objekt åt gången, till exempel item => ...',
       'Jämför item.id === 2.',
     ],
     tests: [
@@ -2673,8 +2673,8 @@ const { id, ...details } = user;`,
     track: 'modern-js',
     isBoss: false,
     description:
-      'Villkorsoperatorn villkor ? a : b ger a om villkoret är sant och annars b. Den är ett uttryck, så den fungerar mitt i JSX där if inte gör det.',
-    task: 'Uppgift: Skapa arrow functionen `getLabel` med parametern isLoggedIn. Den ska returnera "Logga ut" om isLoggedIn är true och annars "Logga in". Använd ? : och inte if.',
+      'Ternary operator `villkor ? a : b` ger a om villkoret är sant och annars b. Den är ett uttryck, så den fungerar mitt i JSX där if inte gör det.',
+    task: 'Uppgift: Skapa `getLabel` som en arrow function med parametern isLoggedIn. Den ska returnera "Logga ut" om isLoggedIn är true och annars "Logga in". Använd ? : och inte if.',
     starterCode: '// Skriv din kod här',
     solution:
       "const getLabel = isLoggedIn => (isLoggedIn ? 'Logga ut' : 'Logga in');",
@@ -2717,7 +2717,7 @@ const { id, ...details } = user;`,
     isBoss: false,
     description:
       'a && b ger a om a är falskt och annars b. I React används det för att visa något bara när ett villkor är sant: {count > 0 && <Badge />}.',
-    task: 'Uppgift: Skapa arrow functionen `getBadge` med parametern count. Returnera count > 0 && en template literal med texten "3 nya" (med count i stället för 3). Använd varken if eller ? :.',
+    task: 'Uppgift: Skapa `getBadge` som en arrow function med parametern count. Returnera count > 0 && en template literal med texten "3 nya" (med count i stället för 3). Använd varken if eller ? :.',
     starterCode: '// Skriv din kod här',
     solution: 'const getBadge = count => count > 0 && `${count} nya`;',
     hints: [
@@ -3399,7 +3399,7 @@ export const result = add(2, 3);`,
     isBoss: false,
     description:
       'En fil kan ha hur många named exports som helst. export fungerar framför const också, så både vanliga värden och arrow functions kan exporteras.',
-    task: 'Uppgift: Exportera konstanten `PI` med värdet 3.14 och arrow functionen `double`, som returnerar talet gånger 2. app.js importerar båda.',
+    task: 'Uppgift: Exportera konstanten `PI` med värdet 3.14 och `double`, en arrow function som returnerar talet gånger 2. app.js importerar båda.',
     fileName: 'math.js',
     files: {
       'app.js': `import { PI, double } from './math.js';
@@ -3623,7 +3623,7 @@ const isFull = todos.length >= MAX_TODOS;`,
   Default export: funktionen \`addTodo(todos, text)\`.
   Är todos.length minst MAX_TODOS returneras todos oförändrad.
   Annars returneras en ny array med spread: todos följt av text.
-  Named export: arrow functionen \`countTodos(todos)\`.
+  Named export: \`countTodos(todos)\` som en arrow function.
   Den returnerar en template literal som "2 av 3", med MAX_TODOS som sista tal.`,
     fileName: 'todoUtils.js',
     files: {
@@ -4153,7 +4153,7 @@ async function loadCounts() {
     solution: 'const doubleAll = numbers => numbers.map(n => n * 2);',
     hints: [
       'Testet visar en array full av null. Så skrivs undefined i en array som text.',
-      'Arrow functionen i map har klamrar men ingen return.',
+      'Funktionen i map har klamrar men ingen return.',
       'Skriv numbers.map(n => n * 2) eller lägg till return.',
     ],
     tests: [
@@ -5936,12 +5936,12 @@ function Page({ user }) {
   },
   {
     id: 'state-01',
-    title: 'Händelser: onClick',
+    title: 'Events: onClick',
     xp: 10,
     track: 'state',
     isBoss: false,
     description:
-      'Med onClick talar du om vilken funktion som ska köras när någon klickar. Skicka funktionen, anropa den inte: onClick={onLike} är rätt. onClick={onLike()} anropar funktionen direkt när komponenten ritas, och sedan händer ingenting vid klick.',
+      'Med onClick talar du om vilken funktion som ska köras när någon klickar. Skicka funktionen, anropa den inte: onClick={onLike} är rätt. onClick={onLike()} anropar funktionen direkt när komponenten renderas, och sedan händer ingenting vid klick.',
     task: 'Uppgift: Skriv komponenten `LikeButton({ onLike })` som returnerar en button med texten "Gilla". onLike ska anropas när man klickar.',
     fileName: 'App.jsx',
     preview: '<LikeButton onLike={() => {}} />',
@@ -5979,7 +5979,7 @@ function Page({ user }) {
     track: 'state',
     isBoss: false,
     description:
-      'En vanlig variabel glöms bort varje gång komponenten ritas om, och React vet inte att den ändrats. För värden som ändras använder du state: const [count, setCount] = useState(0). count är värdet just nu och setCount(…) sparar ett nytt värde och ritar om komponenten. useState importeras från react.',
+      'En vanlig variabel glöms bort varje gång komponenten renderas om, och React vet inte att den ändrats. För värden som ändras använder du state: const [count, setCount] = useState(0). count är värdet just nu och setCount(…) sparar ett nytt värde och renderar om komponenten. useState importeras från react.',
     task: 'Uppgift: Skriv komponenten `Counter`. Den har state `count` som börjar på 0, visar count i en p och har en button "+1" som ökar count med 1.',
     fileName: 'App.jsx',
     preview: '<Counter />',
@@ -8194,7 +8194,7 @@ function UserSearch() {
     track: 'debug-react',
     isBoss: false,
     description:
-      'onClick ska få en funktion som React anropar vid klick. Skriver du onClick={onLike()} anropas funktionen direkt när komponenten ritas, och onClick får det funktionen returnerar. Skicka funktionen utan parenteser: onClick={onLike}.',
+      'onClick ska få en funktion som React anropar vid klick. Skriver du onClick={onLike()} anropas funktionen direkt när komponenten renderas, och onClick får det funktionen returnerar. Skicka funktionen utan parenteser: onClick={onLike}.',
     task: 'Uppgift: `LikeButton` anropar onLike en gång direkt, och sedan inte när man klickar. Hitta felet och rätta det.',
     fileName: 'App.jsx',
     preview: '<LikeButton onLike={() => {}} />',
@@ -8282,7 +8282,7 @@ function NameForm() {
     track: 'debug-react',
     isBoss: false,
     description:
-      'React ritar bara om när du ger state ett nytt värde. push ändrar arrayen som redan finns, och setTodos(todos) skickar samma array igen. Då ser React ingen ändring och ritar inte om. Skapa alltid en ny array, t.ex. med spread.',
+      'React ritar bara om när du ger state ett nytt värde. push ändrar arrayen som redan finns, och setTodos(todos) skickar samma array igen. Då ser React ingen ändring och renderar inte om. Skapa alltid en ny array, t.ex. med spread.',
     task: 'Uppgift: Knappen "Lägg till" ska lägga till en uppgift i listan, men ingenting händer. Hitta felet och rätta det.',
     fileName: 'App.jsx',
     preview: '<TodoList />',
@@ -8503,7 +8503,7 @@ function App() {
     track: 'debug-react',
     isBoss: false,
     description:
-      'setCount(count + 1) ändrar inte count direkt. Det ber React om ett nytt värde vid nästa ritning, så count har kvar sitt gamla värde resten av funktionen. Vill du räkna vidare på det senaste värdet skickar du en funktion: setCount(c => c + 1). Då får c alltid det senaste värdet.',
+      'setCount(count + 1) ändrar inte count direkt. Det ber React om ett nytt värde vid nästa rendering, så count har kvar sitt gamla värde resten av funktionen. Vill du räkna vidare på det senaste värdet skickar du en funktion: setCount(c => c + 1). Då får c alltid det senaste värdet.',
     task: 'Uppgift: Knappen "+2" ökar bara count med 1. Rätta `handleAddTwo` så att den ökar med 2. Behåll två anrop av setCount.',
     fileName: 'App.jsx',
     preview: '<Counter />',

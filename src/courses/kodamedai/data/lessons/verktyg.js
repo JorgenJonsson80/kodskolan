@@ -236,7 +236,7 @@ export const VERKTYG = [
     xp: 15,
     description: 'Sätt stegen i rätt ordning – så jobbar proffsen med AI.',
     explain:
-      'Ett bra arbetssätt med AI-assistenter:\n\n1. **Beställ** tydligt: vad, med exempel och kantfall.\n2. **Läs** koden du får, rad för rad.\n3. **Testa** den med egna exempel.\n4. **Laga** eller be om ändringar.\n5. **Committa** när du förstår och har testat.\n\nResten av kursen tränar varje steg.',
+      'Ett bra arbetssätt med AI-assistenter:\n\n1. **Beställ** tydligt: vad, med exempel och edge cases.\n2. **Läs** koden du får, rad för rad.\n3. **Testa** den med egna exempel.\n4. **Laga** eller be om ändringar.\n5. **Committa** när du förstår och har testat.\n\nResten av kursen tränar varje steg.',
     example: 'steg = ["…"]',
     task: 'Uppgift: Sätt stegen `"laga"`, `"testa"`, `"beställ"`, `"committa"` och `"läs"` i rätt ordning i listan `steg`.',
     starterCode: 'steg = ["laga", "testa", "beställ", "committa", "läs"]\n',

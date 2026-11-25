@@ -25,7 +25,7 @@ const CONCEPTS = [
   ['filter', /\.filter\(/, 'array-methods'],
   ['find', /\.find\(/, 'array-methods'],
   ['reduce', /\.reduce\(/, 'array-methods'],
-  ['villkorsoperatorn ? :', /[^?.]\?[^?.][^:\n]*:/, 'modern-js'],
+  ['ternary operator ? :', /[^?.]\?[^?.][^:\n]*:/, 'modern-js'],
   ['spread och rest', /\.\.\./, 'modern-js'],
   ['destructuring', /(const|let)\s*[{[]/, 'modern-js'],
   ['some', /\.some\(/, 'immutable'],

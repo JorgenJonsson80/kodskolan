@@ -64,7 +64,7 @@ export const QUIZ = {
         'I max_tokens',
         'Det spelar ingen roll',
       ],
-      explain: 'Så skyddar du dig mot promptinjektion.',
+      explain: 'Så skyddar du dig mot prompt injection.',
     },
     {
       question: 'Vad är few-shot?',
@@ -219,7 +219,7 @@ export const QUIZ = {
         'Texter med liknande betydelse får vektorer som pekar åt samma håll.',
     },
     {
-      question: 'Vad blir cosinuslikheten?',
+      question: 'Vad blir cosine similarity?',
       code: 'import math\n\ndef likhet(a, b):\n    return sum(x * y for x, y in zip(a, b)) / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(x * x for x in b)))',
       check: 'round(likhet([1, 0], [0, 1]), 1)',
       options: ['0.0', '1.0', '0.5', '-1.0'],

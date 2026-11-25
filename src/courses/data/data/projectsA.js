@@ -196,7 +196,7 @@ export const PROJECTS_A = [
     title: 'Väderstationen',
     reward: { emoji: '🌦️', name: 'Väderflöjel' },
     summary:
-      'Juni i Stockholm, Göteborg och Kiruna: var var det varmast och blötast?',
+      'Juni i Stockholm, Göteborg och Kiruna: i vilken stad var det varmast och blötast?',
     files: FIL.vader,
     steps: [
       {

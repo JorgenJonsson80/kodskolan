@@ -17,7 +17,7 @@ export const RESOURCES = {
       video: 'typescript basic types tutorial beginners',
     },
     {
-      topic: 'Typinferens',
+      topic: 'Type inference',
       read: `${HANDBOOK}type-inference.html`,
       video: 'typescript type inference explained',
     },
@@ -60,12 +60,12 @@ export const RESOURCES = {
   ],
   unioner: [
     {
-      topic: 'Unioner och literaltyper',
+      topic: 'Unioner och literal types',
       read: `${HANDBOOK}2/everyday-types.html#union-types`,
       video: 'typescript union types literal types',
     },
     {
-      topic: 'Avsmalning med typeof och in',
+      topic: 'Narrowing med typeof och in',
       read: `${HANDBOOK}2/narrowing.html`,
       video: 'typescript narrowing typeof',
     },
@@ -84,12 +84,12 @@ export const RESOURCES = {
   ],
   fall: [
     {
-      topic: 'Diskriminerade unioner',
+      topic: 'Discriminated unions',
       read: `${HANDBOOK}2/narrowing.html#discriminated-unions`,
       video: 'typescript discriminated unions',
     },
     {
-      topic: 'never och uttömmande kontroll',
+      topic: 'never och exhaustiveness check',
       read: `${HANDBOOK}2/narrowing.html#exhaustiveness-checking`,
       video: 'typescript exhaustive switch never',
     },
@@ -125,7 +125,7 @@ export const RESOURCES = {
       video: 'typescript async await promise types',
     },
     {
-      topic: 'unknown och typkontroller',
+      topic: 'unknown och type guards',
       read: `${HANDBOOK}2/narrowing.html#using-type-predicates`,
       video: 'typescript unknown type guards',
     },
@@ -149,7 +149,7 @@ export const RESOURCES = {
       video: 'react typescript tutorial beginners',
     },
     {
-      topic: 'Props och händelser',
+      topic: 'Props och events',
       read: 'https://react.dev/learn/typescript#typing-dom-events',
       video: 'react typescript props events',
     },

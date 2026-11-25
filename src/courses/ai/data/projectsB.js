@@ -85,9 +85,9 @@ export const PROJECTS_B = [
       },
       {
         title: 'Hur lika?',
-        why: 'Cosinuslikhet jämför riktningen på två vektorer: 1 är samma riktning, 0 inget gemensamt. Längden spelar ingen roll.',
+        why: 'Cosine similarity jämför riktningen på två vektorer: 1 är samma riktning, 0 inget gemensamt. Längden spelar ingen roll.',
         xp: 20,
-        description: 'Cosinuslikhet.',
+        description: 'Cosine similarity.',
         task: 'Uppgift: Skriv `likhet(a, b)`: skalärprodukten delat med längderna. Är någon längd 0 blir likheten 0.',
         add: LIKHET,
         hints: [
@@ -244,7 +244,7 @@ export const PROJECTS_B = [
         why: 'Samma ordlista för alla texter gör att vektorerna går att jämföra plats för plats.',
         xp: 15,
         description: 'En vektor per text.',
-        task: 'Uppgift: Skriv `vektor(text, ord)` som räknar hur många gånger varje ord i `ord` finns bland textens ord, och `likhet(a, b)` med cosinuslikhet.',
+        task: 'Uppgift: Skriv `vektor(text, ord)` som räknar hur många gånger varje ord i `ord` finns bland textens ord, och `likhet(a, b)` med cosine similarity.',
         add: `def vektor(text, ord):\n    orden = text.lower().split()\n    return [orden.count(o) for o in ord]\n\n\n${LIKHET}`,
         hints: [
           'orden = text.lower().split()',

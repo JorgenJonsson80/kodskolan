@@ -24,7 +24,7 @@ ska göra något med det:
   trasiga och godkänna den lagade.
 - **Beställa:** skriv en beställning (prompt) till assistenten. Den rättas
   med kontroller av innehållet: nämner den indata, utdata, ett exempel
-  och kantfall? Sedan får eleven "svaret" och fortsätter med det.
+  och edge cases? Sedan får eleven "svaret" och fortsätter med det.
 - **Förstå:** förklara vad koden gör genom att förutsäga utskriften
   (variabler som eleven fyller i).
 
@@ -36,10 +36,10 @@ från kod, men tyngdpunkten ligger på eleven som granskare.
 | # | id | Bana | Lär ut |
 | -- | -- | -- | -- |
 | 0 | `verktyg` | AI-verktygen | chatt, editor och agent, vad man får skicka, påhittade funktioner och paket, ansvar |
-| 1 | `bestall` | Beställ rätt | tydlig uppgift, exempel på indata och utdata, kantfall, en sak i taget |
+| 1 | `bestall` | Beställ rätt | tydlig uppgift, exempel på indata och utdata, edge cases, en sak i taget |
 | 2 | `las` | Läs koden du får | förutsäga vad koden gör, följa den rad för rad, fråga när något är oklart |
 | 3 | `fel` | AI:ns vanliga fel | gränser (`<` mot `<=`), tomma listor, fel typ, påhittade funktioner och bibliotek |
-| 4 | `testa` | Testa AI:ns kod | `assert`, testfall för kantfall, test som avslöjar ett fel |
+| 4 | `testa` | Testa AI:ns kod | `assert`, testfall för edge cases, test som avslöjar ett fel |
 | 5 | `sakerhet` | Säker kod | lösenord i koden, SQL-injektion, lita aldrig på indata, beroenden som inte finns |
 | 6 | `refaktor` | Gör om och förbättra | be om mindre ändringar, behålla testerna gröna, läsbar kod |
 | 7 | `slutprojekt` | Slutprojektet | bygg ett litet program tillsammans med "assistenten": beställ, granska, testa och laga |

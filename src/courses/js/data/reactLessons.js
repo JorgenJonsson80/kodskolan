@@ -396,7 +396,7 @@ export const reactLessons = [
     track: 'reducer',
     isBoss: false,
     description:
-      "useReducer(reducer, startvärde) ger [state, dispatch]. dispatch({ type: 'increment' }) skickar en action till reducern, och komponenten ritas om med det nya state.",
+      "useReducer(reducer, startvärde) ger [state, dispatch]. dispatch({ type: 'increment' }) skickar en action till reducern, och komponenten renderas om med det nya state.",
     task: 'Uppgift: Skriv `Counter` med `useReducer(counterReducer, 0)`, en `p` med värdet och knapparna `+1` och `-1`.',
     fileName: 'App.jsx',
     preview: '<Counter />',
@@ -1258,7 +1258,7 @@ export const reactLessons = [
     track: 'hooks',
     isBoss: false,
     description:
-      'useRef ger en låda som finns kvar mellan renderingar utan att rita om när den ändras. usePrevious sparar värdet i en effekt, så att det under nästa rendering är det förra.',
+      'useRef ger en låda som finns kvar mellan renderingar utan att rendera om när den ändras. usePrevious sparar värdet i en effekt, så att det under nästa rendering är det förra.',
     task: 'Uppgift: Skriv `usePrevious(value)` med `useRef` och `useEffect`. `Score({ points })` visar `<p>Nu: N, förut: M</p>` (förut är `-` första gången).',
     fileName: 'App.jsx',
     preview: '<Score points={1} />',
@@ -1355,8 +1355,8 @@ export const reactLessons = [
     track: 'performance',
     isBoss: false,
     description:
-      'När en komponent ritas om ritas alla dess barn om också – även de som inte fått något nytt. memo(Komponent) gör att barnet hoppar över ritningen när dess props är desamma.',
-    task: 'Uppgift: Gör `Child` till `memo(…)`, så att den inte ritas om när man klickar i `Parent`. `childRenders` räknar hur många gånger den ritas.',
+      'När en komponent renderas om renderas alla dess barn om också – även de som inte fått något nytt. memo(Komponent) gör att barnet hoppar över renderingen när dess props är desamma.',
+    task: 'Uppgift: Gör `Child` till `memo(…)`, så att den inte renderas om när man klickar i `Parent`. `childRenders` räknar hur många gånger den ritas.',
     fileName: 'App.jsx',
     preview: '<Parent />',
     starterCode:
@@ -1383,8 +1383,8 @@ export const reactLessons = [
     track: 'performance',
     isBoss: false,
     description:
-      'memo jämför props. Får barnet ett nytt värde ritas det om – precis som det ska. Men inte när något annat i föräldern ändras.',
-    task: 'Uppgift: `Name` ska vara `memo`. Den ska ritas om när `name` ändras, men inte när `clicks` ändras.',
+      'memo jämför props. Får barnet ett nytt värde renderas det om – precis som det ska. Men inte när något annat i föräldern ändras.',
+    task: 'Uppgift: `Name` ska vara `memo`. Den ska renderas om när `name` ändras, men inte när `clicks` ändras.',
     fileName: 'App.jsx',
     preview: '<Parent />',
     starterCode:
@@ -1398,12 +1398,12 @@ export const reactLessons = [
     ],
     tests: [
       {
-        description: 'Klick ritar inte om',
+        description: 'Klick renderar inte om',
         code: "(__mount(<Parent />).click('Klick 0').click('Klick 1'), nameRenders)",
         expected: 1,
       },
       {
-        description: 'Nytt namn ritar om',
+        description: 'Nytt namn renderar om',
         code: "(__mount(<Parent />).click('Byt namn'), nameRenders)",
         expected: 2,
       },
@@ -1416,7 +1416,7 @@ export const reactLessons = [
     track: 'performance',
     isBoss: false,
     description:
-      'En tung uträkning i komponenten körs vid varje ritning. useMemo(() => uträkning, [beroenden]) sparar svaret och räknar bara om när något i listan ändrats.',
+      'En tung uträkning i komponenten körs vid varje rendering. useMemo(() => uträkning, [beroenden]) sparar svaret och räknar bara om när något i listan ändrats.',
     task: 'Uppgift: Använd `useMemo` så att `slowTotal` bara körs när `prices` ändras – inte när man skriver i fältet. `calls` räknar anropen.',
     fileName: 'App.jsx',
     preview: '<Receipt prices={[10, 20]} />',
@@ -1477,8 +1477,8 @@ export const reactLessons = [
     track: 'performance',
     isBoss: false,
     description:
-      'En funktion som skapas i komponenten är en ny funktion vid varje ritning. Då tror memo att propen ändrats. useCallback(fn, [beroenden]) ger samma funktion tills något i listan ändras.',
-    task: 'Uppgift: Använd `useCallback` för `handleSave`, så att `SaveButton` inte ritas om när man skriver i fältet.',
+      'En funktion som skapas i komponenten är en ny funktion vid varje rendering. Då tror memo att propen ändrats. useCallback(fn, [beroenden]) ger samma funktion tills något i listan ändras.',
+    task: 'Uppgift: Använd `useCallback` för `handleSave`, så att `SaveButton` inte renderas om när man skriver i fältet.',
     fileName: 'App.jsx',
     preview: '<Editor />',
     starterCode:
@@ -1492,7 +1492,7 @@ export const reactLessons = [
     ],
     tests: [
       {
-        description: 'Skriv utan omritning',
+        description: 'Skriv utan omrendering',
         code: "(() => { const app = __mount(<Editor />); app.type('a'); app.type('ab'); return buttonRenders; })()",
         expected: 1,
       },
@@ -1510,8 +1510,8 @@ export const reactLessons = [
     track: 'performance',
     isBoss: false,
     description:
-      "{{ color: 'red' }} i JSX skapar ett nytt objekt vid varje ritning, så memo ritar om ändå. Ett objekt som aldrig ändras kan ligga utanför komponenten.",
-    task: 'Uppgift: Flytta stilen till en konstant `BADGE_STYLE` utanför `Card`, så att `Badge` inte ritas om vid klick.',
+      "{{ color: 'red' }} i JSX skapar ett nytt objekt vid varje rendering, så memo renderar om ändå. Ett objekt som aldrig ändras kan ligga utanför komponenten.",
+    task: 'Uppgift: Flytta stilen till en konstant `BADGE_STYLE` utanför `Card`, så att `Badge` inte renderas om vid klick.',
     fileName: 'App.jsx',
     preview: '<Card />',
     starterCode:
@@ -1539,7 +1539,7 @@ export const reactLessons = [
     isBoss: false,
     description:
       'Ofta behövs varken memo eller useCallback. Om bara en liten del av sidan använder ett state kan det flyttas ner till en egen komponent. Då ritas bara den om.',
-    task: 'Uppgift: Flytta fältet och dess state till en ny komponent `SearchBox`, så att `BigList` inte ritas om när man skriver. Använd inte `memo`.',
+    task: 'Uppgift: Flytta fältet och dess state till en ny komponent `SearchBox`, så att `BigList` inte renderas om när man skriver. Använd inte `memo`.',
     fileName: 'App.jsx',
     preview: '<Page />',
     starterCode:
@@ -1574,7 +1574,7 @@ export const reactLessons = [
     track: 'performance',
     isBoss: false,
     description:
-      'useState(dyrFunktion()) anropar funktionen vid varje ritning, fast värdet bara används första gången. useState(() => dyrFunktion()) anropar den bara en gång.',
+      'useState(dyrFunktion()) anropar funktionen vid varje rendering, fast värdet bara används första gången. useState(() => dyrFunktion()) anropar den bara en gång.',
     task: 'Uppgift: Laga `Notes` så att `loadNotes` bara anropas en gång.',
     fileName: 'App.jsx',
     preview: '<Notes />',
@@ -1635,7 +1635,7 @@ export const reactLessons = [
     track: 'performance',
     isBoss: true,
     description:
-      'En lista med sökning och favoriter, där varje rad bara ritas om när den själv ändras.',
+      'En lista med sökning och favoriter, där varje rad bara renderas om när den själv ändras.',
     task: 'Uppgift: Skriv `ProductList({ products })`.\n  Ett sökfält filtrerar på namn (utan hänsyn till stora bokstäver) med `useMemo`.\n  `Item` är `memo`, visar `NAME` plus ` ★` för favoriter, och anropar `onToggle(id)` vid klick.\n  `favorites` är ett `Set` i state, och `onToggle` gjord med `useCallback` (med en funktion i `setFavorites`).\n  `itemRenders` räknar hur många gånger `Item` ritas.',
     fileName: 'App.jsx',
     preview:
@@ -1657,7 +1657,7 @@ export const reactLessons = [
         expected: 'MössaVantar ★',
       },
       {
-        description: 'Bara den klickade ritas om',
+        description: 'Bara den klickade renderas om',
         code: "(() => { const products = [{ id: 1, name: 'Mössa' }, { id: 2, name: 'Vantar' }, { id: 3, name: 'Keps' }]; const app = __mount(<ProductList products={products} />); const before = itemRenders; app.click('Vantar'); return itemRenders - before; })()",
         expected: 1,
       },
@@ -1920,7 +1920,7 @@ export const reactLessons = [
     isBoss: false,
     description:
       'Varje gång en hund väljs ritas alla kort om, fast bara ett ändrats. memo på kortet och useCallback på funktionen löser det.',
-    task: 'Uppgift: Gör `DogCard` till `memo` och `pick` i `DogPicker` till `useCallback`, så att inget kort ritas om när man väljer.',
+    task: 'Uppgift: Gör `DogCard` till `memo` och `pick` i `DogPicker` till `useCallback`, så att inget kort renderas om när man väljer.',
     fileName: 'App.jsx',
     preview: '<DogPicker />',
     starterCode:

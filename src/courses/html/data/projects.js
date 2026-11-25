@@ -4169,16 +4169,16 @@ ${PRODUKT}`,
     track: 'responsivt',
     title: 'Evenemangssidan',
     reward: { emoji: '🎪', name: 'Cirkustält' },
-    summary: 'En sida för cirkusdagen, byggd med mobilen först.',
+    summary: 'En sida för cirkusdagen, byggd mobile first.',
     steps: [
       {
-        title: 'Mobilen först',
+        title: 'Mobile first',
         why: 'De flesta läser sidan på mobilen. Därför byggs den först: en kolumn med jämn luft. Ett grid utan kolumner har en kolumn.',
         xp: 15,
         description:
           'Programmet är fyra lådor. Börja med hur de ska se ut på mobilen: under varandra med luft emellan.',
         task: 'Uppgift: Gör `.program` till ett grid med `12px` gap. Ge `.punkt` bakgrunden `lavender`, padding `12px` och hörnen `8px`, och `.punkt h2` `margin: 0`.',
-        starterCode: `<!-- Steg 1: mobilen först -->
+        starterCode: `<!-- Steg 1: mobile first -->
 ${EVENEMANG}`,
         solution: evenemang(`  .program {
     display: grid;
@@ -4215,7 +4215,7 @@ ${EVENEMANG}`,
       },
       {
         title: 'Två kolumner på datorn',
-        why: 'Med mobilen först lägger man till för större skärmar. min-width gäller från 700 pixlar och uppåt, så mobilen behåller sin enda kolumn.',
+        why: 'Med mobile first lägger man till för större skärmar. min-width gäller från 700 pixlar och uppåt, så mobilen behåller sin enda kolumn.',
         xp: 20,
         description:
           'På datorn blir lådorna onödigt breda. Där ska programmet ha två kolumner.',
@@ -5252,7 +5252,7 @@ ${TW_RAD}
     steps: [
       {
         title: 'Tre kort',
-        why: 'grid-cols-1 md:grid-cols-3 är mobilen först i en enda rad: en kolumn alltid, tre från md.',
+        why: 'grid-cols-1 md:grid-cols-3 är mobile first i en enda rad: en kolumn alltid, tre från md.',
         xp: 15,
         description:
           'Tre prisplaner står under varandra. På datorn ska de stå bredvid varandra.',

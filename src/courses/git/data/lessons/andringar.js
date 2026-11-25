@@ -38,7 +38,7 @@ export const ANDRINGAR = [
     explain:
       'Vanlig `git diff` visar bara det som **inte** är tillagt än. `git diff --staged` visar det som är tillagt och kommer med i nästa commit.\n\nKör den precis innan du committar, så vet du vad commiten innehåller.',
     example: 'git add index.html\ngit diff --staged',
-    task: 'Uppgift: Byt färg i `style.css` till `red` (skriv över filen med `h1 { color: red; }`), lägg till den och visa vad som ska med med `git diff --staged`.',
+    task: 'Uppgift: Byt färg i `style.css` till `red` (skriv över filen med `h1 { color: red; }`), lägg till den och visa med `git diff --staged` vad som ska med.',
     setup: REPO,
     setupNote: '📁 style.css innehåller h1 { color: blue; }.',
     starterCode: START,

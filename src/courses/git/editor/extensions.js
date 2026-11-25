@@ -74,7 +74,7 @@ const COMMANDS = {
   merge: ['git merge', 'Mergar en annan branch med den du står på.'],
   remote: [
     'git remote',
-    'Fjärrar är kopior av repot på en server, t.ex. GitHub.',
+    'En remote är en kopia av repot på en server, t.ex. GitHub.',
   ],
   push: ['git push', 'Skickar dina commits till servern.'],
   pull: [

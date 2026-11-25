@@ -35,13 +35,13 @@ const RULES = [
   },
   {
     track: 'verktyg',
-    name: 'verktygstyper',
+    name: 'utility types',
     pattern:
       /\b(Partial|Pick|Omit|Record|Required|Readonly|ReturnType)\s*<|\bkeyof\b|:\s*typeof\b/,
   },
   {
     track: 'data',
-    name: 'unknown, Promise och typkontroller',
+    name: 'unknown, Promise och type guards',
     pattern: /\bunknown\b|\bPromise\s*<|\)\s*:\s*\w+\s+is\s/,
   },
   {

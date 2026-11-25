@@ -188,7 +188,7 @@ export const resources = {
   ],
   state: [
     { topic: 'useState', video: 'react useState explained' },
-    { topic: 'Händelser', video: 'react onClick event handling' },
+    { topic: 'Events', video: 'react onClick event handling' },
   ],
   lifting: [{ topic: 'Lyfta state', video: 'react lifting state up' }],
   effects: [{ topic: 'useEffect', video: 'react useEffect explained' }],

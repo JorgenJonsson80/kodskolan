@@ -244,7 +244,7 @@ export const TRACKS = [
       'max-width',
       'bilder som krymper',
       '@media',
-      'mobilen först',
+      'mobile first',
     ],
     reward: { emoji: '📱', name: 'Mobil' },
     canBuild: 'sidor som fungerar lika bra på mobilen som på datorn',

@@ -218,7 +218,7 @@ export const TRACKS = [
   },
   {
     id: 'fonster',
-    title: 'Fönsterfunktioner',
+    title: 'Window functions',
     teaches: [
       'ROW_NUMBER',
       'RANK',
@@ -233,11 +233,11 @@ export const TRACKS = [
       'topplistor per grupp, löpande summor och jämförelser med raden före – det dataanalytiker gör varje dag',
     docs: [
       {
-        title: 'Fönsterfunktioner',
+        title: 'Window functions',
         url: `${TUTORIAL}sqlite-window-functions/`,
       },
       {
-        title: 'Fönsterfunktioner i SQLite',
+        title: 'Window functions i SQLite',
         url: 'https://www.sqlite.org/windowfunctions.html',
       },
     ],

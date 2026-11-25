@@ -37,7 +37,7 @@ export const BOSSES = {
     task: `Uppgift: Beställ en Python-funktion \`rabatt(pris, kod)\` som returnerar priset efter rabatt: koden \`"STUDENT"\` ger 20 % rabatt, alla andra koder ingen rabatt. Beställningen ska ha:
   - funktionens namn och vad den returnerar (ordet \`returnera\`)
   - ett exempel (ordet \`Exempel\`) med \`rabatt(100, "STUDENT")\` som ger \`80\`
-  - ett kantfall: vad som händer med ett negativt pris (ordet \`negativt\`)
+  - ett edge case: vad som händer med ett negativt pris (ordet \`negativt\`)
   - att den ska vara i Python utan bibliotek
   - en begäran om testfall med \`assert\``,
     starterCode: 'bestallning = ""\n',
@@ -61,7 +61,7 @@ export const BOSSES = {
         expected: true,
       },
       {
-        description: 'Har kantfallet',
+        description: 'Har med ett negativt pris',
         code: '"negativt" in bestallning.lower()',
         expected: true,
       },

@@ -1,7 +1,7 @@
 # SQL-kursen
 
 Ställ frågor till data, från första `SELECT` till egna databaser och
-fönsterfunktioner. För den som aldrig kodat, men också för den som
+window functions. För den som aldrig kodat, men också för den som
 jobbar med listor, Excel och rapporter.
 
 Eleven skriver SQL mot en liten svensk databas, och svaret visas som en
@@ -41,7 +41,7 @@ WebAssembly, `sql.js`), så det gör inget om eleven råkar radera allt.
 | 9  | `skapa`       | Bygg en databas     | `CREATE TABLE`, typer, `PRIMARY KEY`, `NOT NULL`, `REFERENCES` |
 | 10 | `delfragor`   | Frågor i frågor     | delfrågor, `IN (SELECT …)`, `WITH`                            |
 | 11 | `felsok`      | Felsökning          | trasiga frågor att laga (startkoden är trasig)                |
-| 12 | `fonster`     | Fönsterfunktioner   | `ROW_NUMBER`, `RANK`, `OVER (PARTITION BY … ORDER BY …)`      |
+| 12 | `fonster`     | Window functions    | `ROW_NUMBER`, `RANK`, `OVER (PARTITION BY … ORDER BY …)`      |
 | 13 | `slutprojekt` | Slutprojektet       | en egen databas med rapportfrågor                             |
 
 Varje bana: 9 övningar och en boss, tre projekt med tre steg, tre idéer

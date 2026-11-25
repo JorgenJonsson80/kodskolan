@@ -257,7 +257,7 @@ export const PROJECTS = [
       },
       {
         title: 'Varmt eller kallt?',
-        why: 'arVarmt är en boolean, och villkorsoperatorn väljer text efter den. Båda grenarna är text, så TypeScript vet att resultatet är en string.',
+        why: 'arVarmt är en boolean, och ? : (ternary operator) väljer text efter den. Båda grenarna är text, så TypeScript vet att resultatet är en string.',
         xp: 20,
         description: 'Termometern säger om det är varmt.',
         task: "Uppgift: Skapa `arVarmt` (`boolean`) som är `celsius >= 20`, och `text` som är `arVarmt ? 'Varmt' : 'Kallt'`.",
@@ -1188,7 +1188,7 @@ export const PROJECTS = [
       },
       {
         title: 'Poäng som text',
-        why: 'Poängen kan komma från ett formulär som text. typeof smalnar av, och efter if-satsen är det säkert ett tal.',
+        why: 'Poängen kan komma från ett formulär som text. typeof ger narrowing, och efter if-satsen är det säkert ett tal.',
         xp: 20,
         description: 'Poängen kan vara text eller tal.',
         task: 'Uppgift: Skriv `franSvar(poang: string | number): Betyg` som gör om text med `Number` och sedan använder `betyg`.',
@@ -1790,7 +1790,7 @@ export const PROJECTS = [
       },
       {
         title: 'Meddelandet',
-        why: 'if (s.ok) smalnar av: i den ena grenen finns varde, i den andra fel.',
+        why: 'if (s.ok) ger narrowing: i den ena grenen finns varde, i den andra fel.',
         xp: 15,
         description: 'Visa vad som hände.',
         task: "Uppgift: Skriv `meddelande(s: Svar): string`: `'Ålder: 42'` eller `'Fel: Inget tal'`.",
@@ -2403,7 +2403,7 @@ export const PROJECTS = [
       },
       {
         title: 'Kortet',
-        why: '?: smalnar av: när a finns är det en Anvandare, annars null.',
+        why: '?: ger narrowing: när a finns är det en Anvandare, annars null.',
         xp: 15,
         description: 'Visa ett kort.',
         task: "Uppgift: Skriv `async function kort(id: number): Promise<string>` som ger `'Namn <e-post>'` eller `'Finns inte'`.",

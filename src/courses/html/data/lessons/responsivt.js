@@ -453,12 +453,12 @@ export const RESPONSIVT = [
   {
     id: 'responsivt-08',
     track: 'responsivt',
-    title: 'Mobilen först',
+    title: 'Mobile first',
     xp: 25,
     description:
       'Många börjar med mobilen och lägger till för större skärmar. Då vänds `@media` åt andra hållet.',
     explain:
-      'Hittills har de vanliga reglerna varit för datorn och `@media (max-width: …)` för mobilen.\n\nMan kan också göra tvärtom – *mobilen först*:\n\n- de vanliga reglerna är för mobilen, där allt står under varandra\n- `@media (min-width: 700px)` gäller när fönstret är **minst** 700 pixlar brett\n\nMobilsidan är ofta den enklaste. Det är lättare att lägga till kolumner än att ta bort dem.',
+      'Hittills har de vanliga reglerna varit för datorn och `@media (max-width: …)` för mobilen.\n\nMan kan också göra tvärtom – *mobile first*:\n\n- de vanliga reglerna är för mobilen, där allt står under varandra\n- `@media (min-width: 700px)` gäller när fönstret är **minst** 700 pixlar brett\n\nMobilsidan är ofta den enklaste. Det är lättare att lägga till kolumner än att ta bort dem.',
     example:
       '@media (min-width: 700px) {\n  .sida {\n    grid-template-columns: 200px 1fr;\n  }\n}',
     task: 'Uppgift: Ge `.sida` kolumnerna `200px 1fr` när fönstret är minst `700px` brett. På mobilen ska den ha kvar en kolumn.',

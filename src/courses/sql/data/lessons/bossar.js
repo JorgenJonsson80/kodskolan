@@ -431,7 +431,7 @@ export const BOSSES = {
     xp: 80,
     description:
       BOSS_INTRO +
-      'Sista uppgiften: pensionatets årsfaktura per ägare. Den använder nästan allt i kursen: JOIN, GROUP BY, datum, WITH och fönsterfunktioner.',
+      'Sista uppgiften: pensionatets årsfaktura per ägare. Den använder nästan allt i kursen: JOIN, GROUP BY, datum, WITH och window functions.',
     task: `Uppgift: Gör fakturan.
   1. En rad per ägare med \`namn\`, antal olika hundar som bott här som \`hundar\`, antal nätter som \`natter\` och vad ägaren ska betala som \`att_betala\`.
   2. \`plats\` sist: ägaren som betalar mest har plats 1.

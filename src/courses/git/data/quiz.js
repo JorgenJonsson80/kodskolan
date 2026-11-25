@@ -271,7 +271,7 @@ export const QUIZ = {
       explain: '-u sätter upstream: branchen kopplas till origin/main.',
     },
     {
-      question: 'Vad heter fjärren nästan alltid?',
+      question: 'Vad brukar din remote heta?',
       options: ['origin', 'main', 'github', 'remote'],
       explain: 'origin är standardnamnet på repot du klonade eller kopplade.',
     },

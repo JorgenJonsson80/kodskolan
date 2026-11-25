@@ -1,5 +1,5 @@
 // Bana 7: sorterade fall. En union av objekt som skiljs åt av en egenskap
-// (kind, typ, ok). TypeScript smalnar av i varje case och kan med never
+// (kind, typ, ok). TypeScript gör narrowing i varje case och kan med never
 // påminna om fall man glömt.
 
 const FORMER =
@@ -14,7 +14,7 @@ export const FALL = [
     description:
       'När en union består av objekt kan en gemensam egenskap, som `kind`, säga vilket sorts objekt det är.',
     explain:
-      "Både `Cirkel` och `Kvadrat` har `kind`, men med olika värden. Kollar du `f.kind === 'cirkel'` vet TypeScript att `f` är en `Cirkel` – och att den har en `radie`.\n\nDet kallas en **diskriminerad union**. Egenskapen kan heta vad som helst, men `kind` och `type` är vanligast.",
+      "Både `Cirkel` och `Kvadrat` har `kind`, men med olika värden. Kollar du `f.kind === 'cirkel'` vet TypeScript att `f` är en `Cirkel` – och att den har en `radie`.\n\nDet kallas en **discriminated union**. Egenskapen kan heta vad som helst, men `kind` och `type` är vanligast.",
     example:
       "type Hund = { art: 'hund'; ras: string };\ntype Katt = { art: 'katt'; inne: boolean };\n\nfunction beskriv(d: Hund | Katt) {\n  if (d.art === 'hund') {\n    return d.ras;\n  }\n  return d.inne ? 'innekatt' : 'utekatt';\n}",
     task: 'Uppgift: Skriv `area(f: Form): number`. En cirkel har arean `Math.PI * radie * radie`, en kvadrat `sida * sida`.',
@@ -52,7 +52,7 @@ export const FALL = [
     xp: 15,
     description: 'Med fler fall blir en `switch` tydligare än många if-satser.',
     explain:
-      "`switch (f.kind)` med ett `case` per värde. TypeScript smalnar av i varje case: i `case 'rektangel':` är `f` en `Rektangel`.\n\nEditorn föreslår till och med vilka värden som finns efter `case`.",
+      "`switch (f.kind)` med ett `case` per värde. TypeScript gör narrowing i varje case: i `case 'rektangel':` är `f` en `Rektangel`.\n\nEditorn föreslår till och med vilka värden som finns efter `case`.",
     example:
       "switch (d.art) {\n  case 'hund':\n    return d.ras;\n  case 'katt':\n    return 'katt';\n}",
     task: "Uppgift: Lägg till `type Rektangel = { kind: 'rektangel'; bredd: number; hojd: number }` i `Form`, och skriv `area` med en `switch`.",
@@ -123,7 +123,7 @@ export const FALL = [
     description:
       '`never` är typen för något som aldrig kan hända. Den kan vakta att alla fall är med.',
     explain:
-      'Efter alla case är `f` av typen `never` – det finns inget kvar. Skriver du `const koll: never = f;` i `default` fungerar det bara om alla fall är hanterade.\n\nLägger någon senare till en ny form blir det typfel just där, med namnet på det som saknas. Det kallas **uttömmande kontroll** (exhaustiveness check).',
+      'Efter alla case är `f` av typen `never` – det finns inget kvar. Skriver du `const koll: never = f;` i `default` fungerar det bara om alla fall är hanterade.\n\nLägger någon senare till en ny form blir det typfel just där, med namnet på det som saknas. Det kallas **exhaustiveness check**.',
     example: 'default: {\n  const koll: never = f;\n  return koll;\n}',
     task: 'Uppgift: Lägg till ett `default` i `area` som sparar `f` i `const koll: never` och returnerar `koll`.',
     starterCode: `${FORMER}\nfunction area(f: Form): number {\n  switch (f.kind) {\n    case 'cirkel':\n      return Math.PI * f.radie * f.radie;\n    case 'kvadrat':\n      return f.sida * f.sida;\n  }\n}\n`,

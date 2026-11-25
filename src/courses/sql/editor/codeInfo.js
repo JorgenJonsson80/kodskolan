@@ -133,12 +133,12 @@ export const KEYWORDS = {
     'Sant om frågan inom parentesen ger någon rad.',
   ],
   OVER: [
-    'OVER – fönsterfunktion',
+    'OVER – window function',
     'Räknar över flera rader men behåller varje rad, i stället för att slå ihop dem som `GROUP BY`.',
   ],
   PARTITION: [
     'PARTITION BY – per grupp',
-    'Fönsterfunktionen börjar om för varje grupp.',
+    'Funktionen börjar om för varje grupp.',
   ],
 };
 

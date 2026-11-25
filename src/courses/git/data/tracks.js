@@ -80,7 +80,7 @@ export const TRACKS = [
   {
     id: 'konflikter',
     title: 'Konflikter',
-    teaches: ['merge-konflikter', 'konfliktmarkeringar', 'git merge main'],
+    teaches: ['merge-konflikter', 'conflict markers', 'git merge main'],
     reward: { emoji: '🤝', name: 'Handslag' },
     canBuild:
       'samarbete där två ändrar samma fil – och lugnt lösa det när Git säger CONFLICT',

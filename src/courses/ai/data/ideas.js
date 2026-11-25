@@ -202,7 +202,7 @@ export const IDEAS = [
     summary: 'Tipsa om låtar med likhet.',
     goals: [
       'Beskriv tio låtar med några ord var.',
-      'Gör vektorer och cosinuslikhet.',
+      'Gör vektorer och cosine similarity.',
       'Tipsa om den låt som liknar din favorit mest.',
     ],
   },

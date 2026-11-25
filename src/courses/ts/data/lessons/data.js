@@ -1,6 +1,6 @@
 // Bana 10: data utifrån. Promise<T>, fetch mot JS-kursens låtsas-API
 // (/api/users, /api/users/1/todos, /api/broken ger 500, se
-// ../../../js/runner/fakes.js) och unknown med egna typkontroller.
+// ../../../js/runner/fakes.js) och unknown med egna type guards.
 
 const ANVANDARE =
   'type Anvandare = { id: number; name: string; email: string };\n';
@@ -175,10 +175,10 @@ export const DATA = [
   {
     id: 'data-05',
     track: 'data',
-    title: 'En egen typkontroll',
+    title: 'En egen type guard',
     xp: 20,
     description:
-      'En funktion med returtypen `x is Anvandare` är en typkontroll: när den svarar `true` vet TypeScript att `x` är en `Anvandare`.',
+      'En funktion med returtypen `x is Anvandare` är en **type guard**: när den svarar `true` vet TypeScript att `x` är en `Anvandare`.',
     explain:
       'Kontrollen från förra övningen blir lång. Lägg den i en funktion med returtypen `x is Anvandare`, så kan den användas överallt: `if (arAnvandare(data)) { data.name … }`.\n\nTypeScript litar på att funktionen kollar rätt, så kolla alla fält.',
     example:
@@ -255,7 +255,7 @@ export const DATA = [
     title: 'En lista från servern',
     xp: 20,
     description:
-      'En typkontroll fungerar också i `filter`. Då blir resultatet en lista med rätt typ.',
+      'En type guard fungerar också i `filter`. Då blir resultatet en lista med rätt typ.',
     explain:
       '`Array.isArray(data)` kollar att det är en array. Sedan ger `data.filter(arAnvandare)` en `Anvandare[]` – bara de element som klarade kontrollen.\n\nHåll musen över resultatet från `filter`.',
     example: 'const tal = blandat.filter(arTal); // number[]',
@@ -312,7 +312,7 @@ export const DATA = [
     description:
       'I `catch` är felet `unknown` – vad som helst kan kastas. Kolla med `instanceof Error` innan du läser `message`.',
     explain:
-      '`throw` kan kasta vad som helst, även text eller ett tal. Därför är `fel` i `catch (fel)` av typen `unknown`.\n\n`fel instanceof Error` smalnar av, så att `fel.message` fungerar.\n\nHär blir svaret en union som i bana 7: antingen `ok` med data, eller ett fel.',
+      '`throw` kan kasta vad som helst, även text eller ett tal. Därför är `fel` i `catch (fel)` av typen `unknown`.\n\n`fel instanceof Error` ger narrowing, så att `fel.message` fungerar.\n\nHär blir svaret en union som i bana 7: antingen `ok` med data, eller ett fel.',
     example:
       "try {\n  JSON.parse('{');\n} catch (fel) {\n  console.log(fel instanceof Error ? fel.message : 'Okänt fel');\n}",
     task: "Uppgift: Skriv `async function sakert(url: string): Promise<Svar>`. Ett svar som inte är ok ger `{ ok: false, fel: 'Status 500' }` (med rätt nummer). Kastas ett fel ger det `{ ok: false, fel: meddelandet }`.",

@@ -51,14 +51,14 @@ export const QUIZ = {
       explain: 'Exempel tar bort missförstånd.',
     },
     {
-      question: 'Vad är ett kantfall?',
+      question: 'Vad är ett edge case?',
       options: [
         'Ett konstigt fall, som en tom lista',
         'Den vanligaste indatan',
         'Ett fel i Python',
         'Sista raden i koden',
       ],
-      explain: 'Kantfall är där koden oftast går sönder.',
+      explain: 'Edge cases är där koden oftast går sönder.',
     },
     {
       question: 'Du vill att AI:n ska laga din funktion. Vad behöver den?',

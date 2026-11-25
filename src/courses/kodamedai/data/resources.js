@@ -38,7 +38,7 @@ export const RESOURCES = {
   ],
   fel: [
     {
-      topic: 'Kantfall och gränser',
+      topic: 'Edge cases och gränser',
       read: 'https://en.wikipedia.org/wiki/Off-by-one_error',
       video: 'off by one error explained',
     },

@@ -111,7 +111,7 @@ export const ARBETSFLODE = [
     starterCode: START,
     solution: 'git pull origin main\nls\n',
     hints: [
-      'git pull med fjärr och branch.',
+      'git pull med remote och branch.',
       'git pull origin main',
       'ls visar om.html.',
     ],

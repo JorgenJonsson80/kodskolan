@@ -18,7 +18,7 @@ med Flasks testklient.
   och packas upp med `pyodide.unpackArchive`. Jinja2, MarkupSafe och click
   kommer med Pyodide.
 - `app.run()` gör ingenting, så att elever kan skriva det som i en riktig
-  app. Ett fel i en vägfunktion visas som ett Python-fel med rad
+  app. Ett fel i en route-funktion visas som ett Python-fel med rad
   (`PROPAGATE_EXCEPTIONS`).
 - Pyodide saknar OpenSSL. `hashlib.pbkdf2_hmac` finns därför i ren Python
   i `flask_harness.py`, och `generate_password_hash` använder pbkdf2 med
@@ -41,7 +41,7 @@ med Flasks testklient.
 | 9  | `formular`    | Formulär          | `request.form`, `redirect`, POST/Redirect/GET            |
 | 10 | `databas`     | Databas           | sqlite3, `?`-parametrar, SQL-injektion, JOIN             |
 | 11 | `felsok`      | Felsökning        | trasiga appar att laga (startkoden är trasig)            |
-| 12 | `inloggning`  | Inloggning        | `session`, hashade lösenord, dekorator, 401 och 403      |
+| 12 | `inloggning`  | Inloggning        | `session`, hashade lösenord, decorator, 401 och 403      |
 | 13 | `slutprojekt` | Slutprojektet     | boknings-API för hundpensionatet Tassen                  |
 
 Varje bana: 9 övningar och en boss, tre projekt med tre steg, tre idéer

@@ -355,7 +355,7 @@ export const BOSSES = {
       BOSS_INTRO +
       'En streamingtjänst vill visa "Om du gillade den här …". Bygg rekommendationen med vektorer.',
     task: `Uppgift: \`FILMER\` har titlar och beskrivningar.
-  1. Skriv \`ord_i\`, \`vektor\` och \`likhet\` (cosinuslikhet, 0 för tomma vektorer).
+  1. Skriv \`ord_i\`, \`vektor\` och \`likhet\` (cosine similarity, 0 för tomma vektorer).
   2. Skriv \`liknande(titel, k)\` som returnerar de k andra filmerna vars beskrivning liknar filmens mest, bäst först. Filmen själv ska aldrig vara med.
   3. En okänd titel ger en tom lista.`,
     starterCode:

@@ -178,7 +178,7 @@ export const QUIZ = {
         "'ja', 'nej' och 'kanske'",
         'true och false',
       ],
-      explain: 'En union av literaltyper tillåter bara just de värdena.',
+      explain: 'En union av literal types tillåter bara just de värdena.',
     },
     {
       question: 'Vad händer med koden?',
@@ -196,7 +196,7 @@ export const QUIZ = {
       question:
         "Vilken typ har x inne i if (typeof x === 'string'), om x: string | number?",
       options: ['string', 'number', 'string | number', 'any'],
-      explain: 'TypeScript smalnar av typen inne i if-satsen.',
+      explain: 'TypeScript gör narrowing på typen inne i if-satsen.',
     },
     {
       question: 'Vad skrivs ut?',
@@ -247,7 +247,7 @@ export const QUIZ = {
     {
       question: 'Vad gör kind i en union som Cirkel | Kvadrat?',
       options: [
-        'Säger vilken sort objektet är, så att TypeScript kan smalna av',
+        'Säger vilken sort objektet är, så att TypeScript kan göra narrowing',
         'Gör objektet snabbare',
         'Är ett reserverat ord i TypeScript',
         'Räknar hur många det finns',
@@ -371,7 +371,7 @@ export const QUIZ = {
         'unknown gör om datan till rätt typ',
       ],
       explain:
-        'Med any kontrolleras ingenting. Med unknown måste du smalna av först.',
+        'Med any kontrolleras ingenting. Med unknown måste du göra narrowing först.',
     },
     {
       question: 'Vad betyder returtypen x is Kund?',
@@ -381,7 +381,7 @@ export const QUIZ = {
         'Att x alltid är en Kund',
         'Att funktionen gör om x till en Kund',
       ],
-      explain: 'Det är en typkontroll. TypeScript litar på den efter en if.',
+      explain: 'Det är en type guard. TypeScript litar på den efter en if.',
     },
     {
       question: 'Vad skrivs ut?',

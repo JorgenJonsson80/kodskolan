@@ -24,13 +24,13 @@ export const TRACKS = [
     teaches: [
       'tydlig uppgift',
       'exempel',
-      'kantfall',
+      'edge cases',
       'ramar',
       'en sak i taget',
     ],
     reward: { emoji: '📋', name: 'Beställning' },
     canBuild:
-      'beställningar som ger rätt kod första gången: tydliga, med exempel och kantfall',
+      'beställningar som ger rätt kod första gången: tydliga, med exempel och edge cases',
     docs: [
       {
         title: 'Anthropic: tydliga instruktioner',
@@ -77,7 +77,7 @@ export const TRACKS = [
     title: 'Testa AI:ns kod',
     teaches: [
       'assert',
-      'testfall för gränser och kantfall',
+      'testfall för gränser och edge cases',
       'sidoeffekter',
       'låta testerna styra',
     ],

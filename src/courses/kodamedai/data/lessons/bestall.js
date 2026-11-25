@@ -1,6 +1,6 @@
 // Bana 2: beställ rätt. Eleven skriver en beställning (prompt) som en
 // Python-text. Rättningen kollar att den innehåller delarna en bra
-// beställning har: vad, exempel, kantfall, ramar – inte att den är
+// beställning har: vad, exempel, edge cases, ramar – inte att den är
 // "perfekt". Förklaringarna säger det.
 const NOTE =
   '\n\nRättningen kollar att beställningen innehåller rätt delar – den läser den inte som en människa. Skriv som till en kollega.';
@@ -86,12 +86,12 @@ export const BESTALL = [
   {
     id: 'kmai-13',
     track: 'bestall',
-    title: 'Kantfallen',
+    title: 'Edge cases',
     xp: 15,
     description:
       'Vad ska hända med en tom lista? Assistenten gissar – om du inte säger det.',
     explain:
-      '**Kantfall** är de konstiga fallen: tom lista, noll, negativa tal, tom text. Det är där koden oftast går sönder.\n\nSäg vad som ska hända: _Om listan är tom ska funktionen returnera `None`._' +
+      '**Edge cases** är de konstiga fallen: tom lista, noll, negativa tal, tom text. Det är där koden oftast går sönder.\n\nSäg vad som ska hända: _Om listan är tom ska funktionen returnera `None`._' +
       NOTE,
     example: 'bestallning = "… Om listan är tom ska den returnera 0."',
     task: 'Uppgift: Beställ `medel(tal)` som returnerar medelvärdet av en lista. Säg att den ska returnera `None` om listan är tom.',
@@ -222,7 +222,7 @@ export const BESTALL = [
     xp: 15,
     description: 'Be assistenten visa hur du kan veta att koden fungerar.',
     explain:
-      'Be om **testfall** tillsammans med koden: ett par vanliga exempel och kantfallen. Då ser du direkt om assistenten tänkt på samma saker som du – och du kan köra dem.\n\n_Ge också tre testfall med assert, varav ett för en tom lista._' +
+      'Be om **testfall** tillsammans med koden: ett par vanliga exempel och edge cases. Då ser du direkt om assistenten tänkt på samma saker som du – och du kan köra dem.\n\n_Ge också tre testfall med assert, varav ett för en tom lista._' +
       NOTE,
     example: 'bestallning = "… och tre testfall med assert."',
     task: 'Uppgift: Beställ `summa_jamna(tal)` som returnerar summan av de jämna talen i en lista. Be om testfall med `assert`, och att ett av dem ska gälla en tom lista.',
@@ -294,17 +294,17 @@ export const BESTALL = [
     description:
       'Den här beställningen kommer att ge ett dåligt svar. Skriv om den.',
     explain:
-      'Allt från banan på en gång: **vad** (namn, indata, utdata), **exempel**, **kantfall** och **ramar**.\n\nEn bra beställning är ofta tre–fem meningar. Det tar en minut att skriva och sparar tio minuter av att laga fel svar.' +
+      'Allt från banan på en gång: **vad** (namn, indata, utdata), **exempel**, **edge cases** och **ramar**.\n\nEn bra beställning är ofta tre–fem meningar. Det tar en minut att skriva och sparar tio minuter av att laga fel svar.' +
       NOTE,
     example: '',
-    task: 'Uppgift: Skriv om `"fixa en funktion för lösenord"` till en bra beställning av `starkt(losenord)`, som returnerar `True` om lösenordet har minst 12 tecken och minst en siffra. Ta med ett exempel, ett kantfall (tom text) och att den ska vara i Python.',
+    task: 'Uppgift: Skriv om `"fixa en funktion för lösenord"` till en bra beställning av `starkt(losenord)`, som returnerar `True` om lösenordet har minst 12 tecken och minst en siffra. Ta med ett exempel, ett edge case (tom text) och att den ska vara i Python.',
     starterCode: 'bestallning = "fixa en funktion för lösenord"\n',
     solution:
       'bestallning = "Skriv en Python-funktion starkt(losenord) som returnerar True om lösenordet har minst 12 tecken och minst en siffra, annars False. Exempel: starkt(\\"kanelbulle2026\\") ska ge True. Om lösenordet är en tom text ska den returnera False."\n',
     hints: [
       'Namn, vad den får och vad den returnerar.',
       'Exempel: … ska ge True.',
-      'Kantfallet: en tom text.',
+      'Edge case: en tom text.',
     ],
     tests: [
       {
@@ -323,7 +323,7 @@ export const BESTALL = [
         expected: true,
       },
       {
-        description: 'Har kantfallet',
+        description: 'Har med en tom text',
         code: '"tom" in bestallning.lower()',
         expected: true,
       },

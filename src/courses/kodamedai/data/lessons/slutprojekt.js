@@ -19,16 +19,16 @@ export const SLUTPROJEKT = [
     description:
       'Kafé Kanel vill ha en enkel kassa. Börja som proffsen: med en tydlig beställning till assistenten.',
     explain:
-      'Hela kursen på en gång. Först beställningen av första biten: en funktion som lägger till en vara i varukorgen.\n\nKom ihåg delarna: namn och vad den får och returnerar, ett exempel, ett kantfall och ramarna.',
+      'Hela kursen på en gång. Först beställningen av första biten: en funktion som lägger till en vara i varukorgen.\n\nKom ihåg delarna: namn och vad den får och returnerar, ett exempel, ett edge case och ramarna.',
     example: '',
-    task: 'Uppgift: Beställ `lagg_till(vagn, produkt, antal)` som lägger till varor i en vagn (en dictionary). Ta med ett exempel (`Exempel`), kantfallet att produkten inte finns i prislistan och att den ska returnera vagnen (ordet `returnera`).',
+    task: 'Uppgift: Beställ `lagg_till(vagn, produkt, antal)` som lägger till varor i en vagn (en dictionary). Ta med ett exempel (`Exempel`), ett edge case – att produkten inte finns i prislistan – och att den ska returnera vagnen (ordet `returnera`).',
     starterCode: 'bestallning = ""\n',
     solution:
       'bestallning = "Skriv en Python-funktion lagg_till(vagn, produkt, antal) som lägger till antal av produkten i vagnen, en dictionary, och ska returnera vagnen. Exempel: lagg_till({}, \\"kaffe\\", 2) ska ge {\\"kaffe\\": 2}. Om produkten inte finns i prislistan PRISER ska den returnera None."\n',
     hints: [
       'Namn och vad den returnerar.',
       'Exempel: … ska ge …',
-      'Kantfallet: produkten finns inte.',
+      'Edge case: produkten finns inte.',
     ],
     tests: [
       {
@@ -47,7 +47,7 @@ export const SLUTPROJEKT = [
         expected: true,
       },
       {
-        description: 'Har kantfallet',
+        description: 'Har med en produkt som saknas',
         code: '"finns inte" in bestallning.lower() or "inte finns" in bestallning.lower()',
         expected: true,
       },
@@ -252,15 +252,15 @@ export const SLUTPROJEKT = [
     xp: 15,
     description: 'Innan du committar: granska hela kassan med assistenten.',
     explain:
-      'Sista steget innan koden går live: be assistenten granska **hela** koden – säkerhet, kantfall och läsbarhet – och lista problemen. Laga det som är rimligt, och skriv test för det du lagar.\n\nOch kom ihåg: det är du som avgör. En granskning från AI är förslag, inte sanning.',
+      'Sista steget innan koden går live: be assistenten granska **hela** koden – säkerhet, edge cases och läsbarhet – och lista problemen. Laga det som är rimligt, och skriv test för det du lagar.\n\nOch kom ihåg: det är du som avgör. En granskning från AI är förslag, inte sanning.',
     example: '',
-    task: 'Uppgift: Skriv en fråga i `granskning` som ber assistenten granska kassans kod och nämner `säkerhet`, `kantfall` och `läsbarhet`, och ber om en `lista`.',
+    task: 'Uppgift: Skriv en fråga i `granskning` som ber assistenten granska kassans kod och nämner `säkerhet`, `edge cases` och `läsbarhet`, och ber om en `lista`.',
     starterCode: 'granskning = ""\n',
     solution:
-      'granskning = "Granska koden för kassan. Leta efter problem med säkerhet, kantfall och läsbarhet, och ge mig en lista med det viktigaste först."\n',
+      'granskning = "Granska koden för kassan. Leta efter problem med säkerhet, edge cases och läsbarhet, och ge mig en lista med det viktigaste först."\n',
     hints: [
       'Börja med Granska.',
-      'Nämn säkerhet, kantfall och läsbarhet.',
+      'Nämn säkerhet, edge cases och läsbarhet.',
       'Be om en lista.',
     ],
     tests: [
@@ -271,7 +271,7 @@ export const SLUTPROJEKT = [
       },
       {
         description: 'Nämner de tre',
-        code: 'all(ord in granskning.lower() for ord in ["säkerhet", "kantfall", "läsbarhet"])',
+        code: 'all(ord in granskning.lower() for ord in ["säkerhet", "läsbarhet"]) and ("edge case" in granskning.lower() or "kantfall" in granskning.lower())',
         expected: true,
       },
       {

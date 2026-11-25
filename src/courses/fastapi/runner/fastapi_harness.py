@@ -138,7 +138,7 @@ def _call(app, method, path, data=None, headers=None):
         elif message['type'] == 'http.response.body':
             response['body'] += message.get('body', b'')
 
-    # Ett fel i elevens vägfunktion når hit som ett vanligt Python-fel, med
+    # Ett fel i elevens route-funktion når hit som ett vanligt Python-fel, med
     # rad och förklaring, i stället för som en anonym 500.
     _LOOP.run(app(scope, receive, send))
     return Svar(response['status'], response['headers'], response['body'])

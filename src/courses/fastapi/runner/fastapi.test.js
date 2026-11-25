@@ -127,7 +127,7 @@ describe('FastAPI i Pyodide', () => {
     expect(tests.map(entry => entry.passed)).toEqual([true, true]);
   });
 
-  it('visar ett fel i en vägfunktion som ett Python-fel med rad', () => {
+  it('visar ett fel i en route-funktion som ett Python-fel med rad', () => {
     const { tests } = check([test("__get('/krasch').status", 500)]);
     expect(tests[0].error.type).toBe('ZeroDivisionError');
     expect(tests[0].error.line).toBe(49);

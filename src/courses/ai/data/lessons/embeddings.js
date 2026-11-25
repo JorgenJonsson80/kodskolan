@@ -1,4 +1,4 @@
-// Bana 6: embeddings. Text som vektorer och cosinuslikhet, byggt i ren
+// Bana 6: embeddings. Text som vektorer och cosine similarity, byggt i ren
 // Python för att förstå idén. Riktiga embeddings kommer från en
 // embeddingsmodell (Anthropic har ingen egen – de rekommenderar t.ex.
 // Voyage AI) och fångar betydelse, inte bara samma ord.
@@ -194,12 +194,12 @@ export const EMBEDDINGS = [
   {
     id: 'ai-embeddings-06',
     track: 'embeddings',
-    title: 'Cosinuslikhet',
+    title: 'Cosine similarity',
     xp: 25,
     description:
       'Hur lika är två texter? Ett tal mellan 0 och 1 – samma mått som används med riktiga embeddings.',
     explain:
-      '**Cosinuslikhet** jämför vektorernas riktning:\n\n`likhet = skalar(a, b) / (langd(a) * langd(b))`\n\n- 1 – samma riktning (samma ord, i samma proportioner)\n- 0 – inget gemensamt\n\nÄr någon vektor tom (längd 0) går det inte att dela – svara 0.',
+      '**Cosine similarity** jämför vektorernas riktning:\n\n`likhet = skalar(a, b) / (langd(a) * langd(b))`\n\n- 1 – samma riktning (samma ord, i samma proportioner)\n- 0 – inget gemensamt\n\nÄr någon vektor tom (längd 0) går det inte att dela – svara 0.',
     example: 'skalar(a, b) / (langd(a) * langd(b))',
     task: 'Uppgift: Skriv `likhet(a, b)` med `langd` och `skalar`, som ger 0 om någon vektor har längden 0.',
     starterCode: `${MATH}${LANGD}${SKALAR}`,

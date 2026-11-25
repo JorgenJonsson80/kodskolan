@@ -43,7 +43,7 @@ const RULES = [
     name: 'subqueries och WITH',
     pattern: /\(\s*SELECT\b|\bWITH\b|\bEXISTS\b/i,
   },
-  { track: 'fonster', name: 'fönsterfunktioner', pattern: /\bOVER\s*\(/i },
+  { track: 'fonster', name: 'window functions', pattern: /\bOVER\s*\(/i },
 ];
 
 const trackIndex = id => TRACKS.findIndex(track => track.id === id);

@@ -28,7 +28,7 @@ export const TS_WORDS = {
   undefined: 'Inget värde än.',
   private: 'Går bara att använda inne i klassen.',
   public: 'Går att använda överallt (det gäller om inget annat står).',
-  is: 'En typkontroll: `x is Kund` lovar att x är en Kund när funktionen svarar `true`.',
+  is: 'En type guard: `x is Kund` lovar att x är en Kund när funktionen svarar `true`.',
   infer: 'Låter TypeScript räkna ut en del av en typ.',
 };
 

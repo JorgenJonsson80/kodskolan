@@ -207,7 +207,7 @@ export const COMMIT = [
     xp: 15,
     description: 'Två ändringar som inte hör ihop blir två commits.',
     explain:
-      'En bra commit gör **en sak**. Har du både rättat ett stavfel och lagt till en ny sida blir det lättare att förstå historiken – och att ångra en av dem – om de är två commits.\n\nDärför väljer man vad som ska med med `git add fil`, i stället för allt med `git add .`.',
+      'En bra commit gör **en sak**. Har du både rättat ett stavfel och lagt till en ny sida blir det lättare att förstå historiken – och att ångra en av dem – om de är två commits.\n\nDärför väljer man med `git add fil` vad som ska med, i stället för allt med `git add .`.',
     example: 'git add om.html\ngit commit -m "Lägg till om-sidan"',
     task: 'Uppgift: Du har ändrat `index.html` och skapat `kontakt.html`. Committa dem var för sig: först `kontakt.html` med `Lägg till kontaktsida`, sedan `index.html` med `Rätta stavfel`.',
     setup: `${COMMITTED}\necho "<h1>Hej!</h1>" > index.html\necho "<h1>Kontakt</h1>" > kontakt.html`,

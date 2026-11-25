@@ -107,7 +107,7 @@ export const MODULER = [
         expected: [1, 2, 3, 4, 5],
       },
       {
-        description: 'Ordningen blir olika olika gånger',
+        description: 'Ordningen blir olika från gång till gång',
         code: 'len(set(tuple(blanda(lek)) for _ in range(30))) > 1',
         expected: true,
       },

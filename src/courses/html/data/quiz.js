@@ -253,7 +253,7 @@ export const QUIZ = {
       check: "css('.lista', 'flex-direction')",
     },
     {
-      question: 'Vad gör flex: 1 på ett flexelement?',
+      question: 'Vad gör flex: 1 på ett flex item?',
       options: [
         'Det tar den plats som blir över',
         'Det blir 1 pixel brett',

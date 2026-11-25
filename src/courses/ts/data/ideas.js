@@ -375,7 +375,7 @@ export const IDEAS = [
     goals: [
       'Hämta `/api/users`, `/api/todos` och `/api/users/1/todos` och skriv ut svaren.',
       'Skriv en typ för varje sorts svar.',
-      'Skriv en typkontroll för varje typ och testa den på svaren.',
+      'Skriv en type guard för varje typ och testa den på svaren.',
     ],
     extra: 'Hämta `/api/broken` och visa ett snällt felmeddelande.',
   },
@@ -388,7 +388,7 @@ export const IDEAS = [
     goals: [
       'Skriv några JSON-texter, en del rätt och en del fel.',
       'Läs dem med `JSON.parse` som `unknown`.',
-      'Kolla dem med en egen typkontroll och skriv ut vad som var fel.',
+      'Kolla dem med en egen type guard och skriv ut vad som var fel.',
     ],
     extra:
       'Låt kontrollen säga vilket fält som var fel, inte bara att något var det.',
@@ -441,7 +441,7 @@ export const IDEAS = [
     goals: [
       'Skriv tre exempel där `as` gör att koden kraschar.',
       'Skriv ett exempel där `as` faktiskt behövs.',
-      'Byt de farliga mot `satisfies` eller en typkontroll.',
+      'Byt de farliga mot `satisfies` eller en type guard.',
     ],
     extra: 'Läs om `as const` och prova den på en lista.',
   },
@@ -466,7 +466,7 @@ export const IDEAS = [
     summary: 'Ett formulär med typade fält och fel per fält.',
     goals: [
       'Skapa en typ för formulärets fält.',
-      'Bygg formuläret med ett state per fält och typade händelser.',
+      'Bygg formuläret med ett state per fält och typade events.',
       'Visa ett fel under varje fält som är fel.',
     ],
     extra: 'Spara allt i ett enda state-objekt och uppdatera med `Partial`.',

@@ -70,7 +70,7 @@ export const QUIZ = {
       question: 'När körs useEffect(() => { … }, [])?',
       options: [
         'En gång, när komponenten visas',
-        'Varje gång komponenten ritas om',
+        'Varje gång komponenten renderas om',
         'Aldrig',
         'När användaren klickar',
       ],

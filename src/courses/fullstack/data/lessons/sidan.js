@@ -57,7 +57,7 @@ export const SIDAN = [
     xp: 15,
     description: 'Sidan ska visa hundarna så fort den öppnas.',
     explain:
-      '`useEffect` med en tom lista `[]` körs en gång, när komponenten visas. Där hämtar du från API:t och sparar svaret i state. Då ritas sidan om med hundarna.\n\nAnropet går till Flask-appen i app.py på riktigt, både i testerna och i förhandsvisningen.',
+      '`useEffect` med en tom lista `[]` körs en gång, när komponenten visas. Där hämtar du från API:t och sparar svaret i state. Då renderas sidan om med hundarna.\n\nAnropet går till Flask-appen i app.py på riktigt, både i testerna och i förhandsvisningen.',
     example:
       "useEffect(() => {\n  fetch('/api/bocker')\n    .then(svar => svar.json())\n    .then(setBocker);\n}, []);",
     task: 'Uppgift: Hämta `/api/hundar` i en `useEffect` och visa varje hunds namn i ett `<li>`.',

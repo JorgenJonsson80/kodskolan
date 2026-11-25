@@ -83,15 +83,15 @@ export const TESTA = [
     track: 'testa',
     title: 'Testa den tomma listan',
     xp: 15,
-    description: 'Kantfallen ska alltid ha ett eget test.',
+    description: 'Edge cases ska alltid ha ett eget test.',
     explain:
-      'Skriv ett test för varje kantfall du kan komma på: tom lista, ett enda element, negativa tal. Kraschar koden blir testet underkänt även det – med `ZeroDivisionError` i stället för `AssertionError`.',
+      'Skriv ett test för varje edge case du kan komma på: tom lista, ett enda element, negativa tal. Kraschar koden blir testet underkänt även det – med `ZeroDivisionError` i stället för `AssertionError`.',
     example: 'assert f([]) is None',
     task: 'Uppgift: Skriv `test_medel(f)`: `f([2, 4])` ska bli `3` och `f([])` ska bli `None`.',
     starterCode: `${HEAD}def ai_medel(tal):\n    return sum(tal) / len(tal)\n\ndef lagad_medel(tal):\n    if not tal:\n        return None\n    return sum(tal) / len(tal)\n\n# Skriv test_medel(f) här\n`,
     solution: `${HEAD}def ai_medel(tal):\n    return sum(tal) / len(tal)\n\ndef lagad_medel(tal):\n    if not tal:\n        return None\n    return sum(tal) / len(tal)\n\ndef test_medel(f):\n    assert f([2, 4]) == 3\n    assert f([]) is None\n`,
     hints: [
-      'Ett vanligt fall och ett kantfall.',
+      'Ett vanligt fall och ett edge case.',
       'assert f([2, 4]) == 3',
       'assert f([]) is None',
     ],

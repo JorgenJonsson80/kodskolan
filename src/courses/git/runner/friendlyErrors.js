@@ -56,9 +56,9 @@ const TEXTS = {
     `Hittar ingen commit som heter ${code(e.revision)}. Se id:na med ${code('git log --oneline')}.`,
   badUrl: () => 'Adressen ska se ut som https://github.com/namn/repo.',
   noRemote: e =>
-    `Repot har ingen fjärr som heter ${code(e.remote)}. Lägg till den med ${code('git remote add origin https://github.com/…')}.`,
+    `Repot har ingen remote som heter ${code(e.remote)}. Lägg till den med ${code('git remote add origin https://github.com/…')}.`,
   remoteExists: e =>
-    `Fjärren ${code(e.remote)} finns redan. Se vilka som finns med ${code('git remote -v')}.`,
+    `Det finns redan en remote som heter ${code(e.remote)}. Se vilka som finns med ${code('git remote -v')}.`,
   rejected: () =>
     `Servern har commits som du inte har. Hämta dem först med ${code('git pull')}, och pusha sedan igen.`,
 };

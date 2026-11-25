@@ -1,4 +1,4 @@
-// Bana 9: verktygstyper. Nya typer gjorda av gamla, så att samma sak inte
+// Bana 9: utility types. Nya typer gjorda av gamla, så att samma sak inte
 // skrivs två gånger: Partial, Pick, Omit, Record, keyof och typeof.
 
 const PRODUKT =

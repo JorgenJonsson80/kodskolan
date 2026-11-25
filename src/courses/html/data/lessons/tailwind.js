@@ -323,7 +323,7 @@ export const TAILWIND = [
     description:
       'I Tailwind skrivs `:hover` och `@media` som ett ord före klassen. Det är det smartaste med Tailwind.',
     explain:
-      'Sätt ett ord och kolon före en klass, så gäller den bara ibland:\n\n- `hover:bg-sky-700` – bakgrunden när musen är över\n- `md:grid-cols-3` – tre kolumner när fönstret är minst 768 pixlar brett\n\nTailwind tänker *mobilen först*: klassen utan ord gäller alltid, och `md:` lägger till för större skärmar. `grid-cols-1 md:grid-cols-3` är en kolumn på mobilen och tre på datorn.\n\nSå slipper du skriva `@media` själv.',
+      'Sätt ett ord och kolon före en klass, så gäller den bara ibland:\n\n- `hover:bg-sky-700` – bakgrunden när musen är över\n- `md:grid-cols-3` – tre kolumner när fönstret är minst 768 pixlar brett\n\nTailwind tänker *mobile first*: klassen utan ord gäller alltid, och `md:` lägger till för större skärmar. `grid-cols-1 md:grid-cols-3` är en kolumn på mobilen och tre på datorn.\n\nSå slipper du skriva `@media` själv.',
     example:
       '<div class="grid grid-cols-1 md:grid-cols-3">…</div>\n<a class="bg-sky-600 hover:bg-sky-700">…</a>',
     task: 'Uppgift: Ge `.lista` en kolumn på mobilen och tre från `md:`. Ge knappen bakgrunden `sky-700` när musen är över.',

@@ -27,15 +27,15 @@ Koden är `main.tsx` när den har JSX eller importerar från react, annars
 
 | #  | id            | Bana                 | Lär ut                                                       |
 | -- | ------------- | -------------------- | ------------------------------------------------------------ |
-| 1  | `typer`       | Första typerna       | `: string`, `: number`, `: boolean`, typinferens, typfel    |
+| 1  | `typer`       | Första typerna       | `: string`, `: number`, `: boolean`, type inference, typfel    |
 | 2  | `funktioner`  | Typade funktioner    | parametrar, returtyp, valfria `?`, standardvärden, `void`    |
 | 3  | `objekt`      | Arrayer och objekt   | `string[]`, objekttyper, valfria egenskaper, `readonly`      |
 | 4  | `egna`        | Egna typer           | `type`, `interface`, `extends`, `&`                          |
-| 5  | `unioner`     | Antingen eller       | `\|`, literaltyper, `typeof`, `in`, avsmalning               |
+| 5  | `unioner`     | Antingen eller       | `\|`, literal types, `typeof`, `in`, narrowing               |
 | 6  | `saknas`      | Det som kan saknas   | `null`, `undefined`, `?.`, `??`, `!`                         |
 | 7  | `fall`        | Sorterade fall       | unioner med `kind`, `switch`, `never`                        |
 | 8  | `generics`    | Generics             | `<T>`, generiska funktioner, `Array<T>`, `extends` som krav  |
-| 9  | `verktyg`     | Verktygstyper        | `Partial`, `Pick`, `Omit`, `Record`, `keyof`, `typeof`       |
+| 9  | `verktyg`     | Utility types        | `Partial`, `Pick`, `Omit`, `Record`, `keyof`, `typeof`       |
 | 10 | `data`        | Data utifrån         | `Promise<T>`, `fetch`, `unknown`, `x is T`                   |
 | 11 | `felsok`      | Felsökning           | typfel att laga (startkoden är trasig), `any`, `as`          |
 | 12 | `react`       | React med TypeScript | typade props, `useState<T>`, händelser, `children`           |
@@ -79,7 +79,7 @@ Som i JS-kursen (`id`, `track`, `title`, `xp`, `description`, `explain`,
   inga typade parametrar före bana 2, inga `[]`-typer, objekttyper
   eller `readonly` före 3, ingen `type`/`interface` före 4, ingen union
   före 5, ingen `| null` eller `!` före 6, ingen `never` före 7, inga
-  generics före 8, inga verktygstyper eller `keyof` före 9, ingen
+  generics före 8, inga utility types eller `keyof` före 9, ingen
   `unknown`, `Promise<…>` eller `x is T` före 10 och ingen React före 12.
   I bana 1 finns inga funktioner med parametrar alls, för utan typer
   blir det typfel.
